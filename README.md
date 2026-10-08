@@ -23,7 +23,8 @@ Each lecture module contains:
 AI-ML/
 ├── .gitignore
 ├── README.md
-├── lecture_1/ ... lecture_17/    # (Foundations, Python & Numerical Computing)
+├── lecture_00/                   # Course Orientation & Environment Setup
+├── lecture_01/ ... lecture_17/   # (Foundations, Python & Numerical Computing)
 ├── lecture_18/                   # Data Visualization (Part 1 - Matplotlib Fundamentals)
 │   ├── Notes_18.1/ to 18.18/     # Sub-topics with notes.md, notes.pdf, .ipynb
 │   └── reference_materials/      # Cheatsheets & references
