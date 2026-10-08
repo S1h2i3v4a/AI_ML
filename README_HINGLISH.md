@@ -128,10 +128,12 @@ Har category ka baseline index $x_i = i$ ($i \in \{0, 1, \dots, N-1\}$) hota hai
 
 $$
 \begin{cases}
-y_{1, i} = x_i - \dfrac{w}{2} & \quad (\text{Series 1: Budget}) \\[12pt]
-y_{2, i} = x_i + \dfrac{w}{2} & \quad (\text{Series 2: Spend})
+y_{1, i} = x_i - \dfrac{w}{2} \\
+y_{2, i} = x_i + \dfrac{w}{2}
 \end{cases}
 $$
+
+jahan $y_{1, i}$ Series 1 (Budget) ka center coordinate hai aur $y_{2, i}$ Series 2 (Spend) ka center coordinate hai.
 
 Tick label $t_i$ dono bars ke arithmetic mean par perfectly center hota hai:
 
@@ -150,7 +152,7 @@ $$
 
 $$
 \begin{cases}
-\text{Lower Whisker Fence} &= Q_1 - 1.5 \times \text{IQR} \\[6pt]
+\text{Lower Whisker Fence} &= Q_1 - 1.5 \times \text{IQR} \\
 \text{Upper Whisker Fence} &= Q_3 + 1.5 \times \text{IQR}
 \end{cases}
 $$

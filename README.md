@@ -128,10 +128,12 @@ Let the baseline category coordinate be $x_i = i$ for $i \in \{0, 1, \dots, N-1\
 
 $$
 \begin{cases}
-y_{1, i} = x_i - \dfrac{w}{2} & \quad (\text{Series 1: Budget}) \\[12pt]
-y_{2, i} = x_i + \dfrac{w}{2} & \quad (\text{Series 2: Spend})
+y_{1, i} = x_i - \dfrac{w}{2} \\
+y_{2, i} = x_i + \dfrac{w}{2}
 \end{cases}
 $$
+
+where $y_{1, i}$ denotes the center coordinate for Series 1 (Budget) and $y_{2, i}$ denotes the center coordinate for Series 2 (Spend).
 
 The category label tick mark $t_i$ satisfies the central symmetry theorem:
 

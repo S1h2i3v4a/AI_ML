@@ -87,13 +87,15 @@ K \cdot w < 1.0 \implies w < \frac{1}{K} = \frac{1}{2} = 0.5 \quad \left(\text{C
 $$
 
 #### System of Shifted Coordinate Equations:
-The shifted position coordinates $\left(y_{1, i}, y_{2, i}\right)$ for category $i$ are determined by the symmetric piecewise system:
+The shifted position coordinates $(y_{1, i}, y_{2, i})$ for category $i$ are determined by the symmetric piecewise system:
 $$
 \begin{cases}
-y_{1, i} = x_i - \dfrac{w}{2} & \quad \left(\text{Series 1: Budget}\right) \\[12pt]
-y_{2, i} = x_i + \dfrac{w}{2} & \quad \left(\text{Series 2: Spend}\right)
+y_{1, i} = x_i - \dfrac{w}{2} \\
+y_{2, i} = x_i + \dfrac{w}{2}
 \end{cases}
 $$
+
+where $y_{1, i}$ denotes the center coordinate for Series 1 (Budget) and $y_{2, i}$ denotes the center coordinate for Series 2 (Spend).
 
 #### Center Tick Alignment Theorem:
 To ensure the categorical tick mark $t_i$ lies precisely equidistant between the two comparative bars:
@@ -171,13 +173,14 @@ $$
 
 Where each attribute is mathematically encoded via the channel mapping:
 $$
-\begin{cases}
-X_i \in \mathbb{R}^+ & \quad (\text{Total Funding Raised in \$M}) \\[6pt]
-Y_i \in \mathbb{R} & \quad (\text{Annual Revenue Growth Rate in \%}) \\[6pt]
-S_i = \kappa \cdot h_i & \quad (\text{Marker Area Scaling, Headcount } h_i, \; \kappa = 2.5) \\[6pt]
-C_i = \phi(v_i) & \quad (\text{Colormap Mapping: } v_i \in [1, 10] \xrightarrow{\text{viridis}} \mathbf{c}_i \in [0, 1]^3)
-\end{cases}
+\mathbf{p}_i = \begin{pmatrix} X_i \\ Y_i \\ S_i \\ C_i \end{pmatrix} \in \mathbb{R}^4
 $$
+
+where each visual channel corresponds to:
+- **Abscissa ($X_i$)**: $X_i \in \mathbb{R}_{>0}$ denotes Total Funding Raised (in Millions USD).
+- **Ordinate ($Y_i$)**: $Y_i \in \mathbb{R}$ denotes Annual Revenue Growth Rate (percentage).
+- **Marker Area ($S_i$)**: $S_i = \kappa \cdot h_i$ scales geometrically with employee headcount $h_i$ ($\kappa = 2.5$).
+- **Color Metric ($C_i$)**: $C_i = \phi(v_i)$ projects valuation score $v_i \in [1, 10]$ through Viridis colormap $\phi: [1, 10] \to [0, 1]^3$.
 
 #### Optical Density & Cluster Overplotting via Alpha ($\alpha$):
 When $m$ distinct observation points overlap at identical coordinates, the transmitted background luminance $I$ through $m$ overlapping circular markers is governed by the discrete Beer-Lambert extinction model:

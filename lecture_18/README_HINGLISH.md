@@ -57,10 +57,9 @@ Ek professional visualization me hume hamesha chart junk (faltu decorations, unn
 ### 2. Symmetrical Grouped Bar Coordinate Calculation
 $k=2$ bars ko category index $X_i$ ke aage-peeche barabar (symmetrically) rakhne ke liye:
 
-$$\begin{aligned}
-X_i &= \text{Base category index } (i = 0, 1, \dots, n-1) \\[6pt]
-\boxed{\text{Coordinate}_{\text{Budget}}(i) = X_i - \dfrac{w}{2}} & \quad\text{aur}\quad \boxed{\text{Coordinate}_{\text{Spend}}(i) = X_i + \dfrac{w}{2}}
-\end{aligned}$$
+$$\boxed{\text{Coordinate}_{\text{Budget}}(i) = X_i - \dfrac{w}{2}} \qquad\text{aur}\qquad \boxed{\text{Coordinate}_{\text{Spend}}(i) = X_i + \dfrac{w}{2}}$$
+
+jahan $X_i = i$ base category index ($i \in \{0, 1, \dots, n-1\}$) hai.
 
 Agar $K$ categories hon jinki width $w$ hai, toh generalized coordinate formula:
 $$\boxed{\text{Coordinate}_k(i) = X_i + \left(k - \dfrac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}$$

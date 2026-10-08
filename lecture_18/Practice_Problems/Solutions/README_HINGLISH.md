@@ -95,13 +95,15 @@ K \cdot w < 1.0 \implies w < \frac{1}{K} = \frac{1}{2} = 0.5 \quad \left(\text{C
 $$
 
 #### Symmetrical Shifted Coordinates:
-Category $i$ ke liye shifted coordinates $\left(y_{1, i}, y_{2, i}\right)$:
+Category $i$ ke liye shifted coordinates $(y_{1, i}, y_{2, i})$:
 $$
 \begin{cases}
-y_{1, i} = x_i - \dfrac{w}{2} & \quad \left(\text{Series 1: Budget}\right) \\[12pt]
-y_{2, i} = x_i + \dfrac{w}{2} & \quad \left(\text{Series 2: Spend}\right)
+y_{1, i} = x_i - \dfrac{w}{2} \\
+y_{2, i} = x_i + \dfrac{w}{2}
 \end{cases}
 $$
+
+jahan $y_{1, i}$ Series 1 (Budget) ka center coordinate hai aur $y_{2, i}$ Series 2 (Spend) ka center coordinate hai.
 
 #### Center Tick Alignment Formula:
 Category name tick mark $t_i$ dono bars ke bilkul theek beech me aane ke liye:
@@ -173,13 +175,14 @@ $$
 
 Mapping:
 $$
-\begin{cases}
-X_i \in \mathbb{R}^+ & \quad (\text{Total Funding Raised in \$M}) \\[6pt]
-Y_i \in \mathbb{R} & \quad (\text{Annual Revenue Growth Rate in \%}) \\[6pt]
-S_i = \kappa \cdot h_i & \quad (\text{Marker Area Scaling, Headcount } h_i, \; \kappa = 2.5) \\[6pt]
-C_i = \phi(v_i) & \quad (\text{Colormap Mapping: } v_i \in [1, 10] \xrightarrow{\text{viridis}} \mathbf{c}_i \in [0, 1]^3)
-\end{cases}
+\mathbf{p}_i = \begin{pmatrix} X_i \\ Y_i \\ S_i \\ C_i \end{pmatrix} \in \mathbb{R}^4
 $$
+
+jahan har visual channel ek mathematical mapping darshata hai:
+- **Abscissa ($X_i$)**: $X_i \in \mathbb{R}_{>0}$ (Total Funding Raised, Millions USD me)
+- **Ordinate ($Y_i$)**: $Y_i \in \mathbb{R}$ (Annual Revenue Growth Rate, percentage me)
+- **Marker Area ($S_i$)**: $S_i = \kappa \cdot h_i$ (Employee headcount $h_i$ ke anusaar scaled area, jahan $\kappa = 2.5$)
+- **Color Metric ($C_i$)**: $C_i = \phi(v_i)$ (Valuation score $v_i \in [1, 10]$ ko Viridis colormap function $\phi: [1, 10] \to [0, 1]^3$ me map karta hai)
 
 #### Overplotting & Alpha ($\alpha$):
 Jab multiple points aapas me chipak jate hain (overplotting), tab transparency model:

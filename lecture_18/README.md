@@ -57,10 +57,9 @@ A visualization should aim to maximize this ratio by eliminating chart junk, exc
 ### 2. Symmetrical Grouped Bar Coordinate Calculation
 To position $k=2$ bars symmetrically around category center indices $X_i$:
 
-$$\begin{aligned}
-X_i &= \text{Base category index } (i = 0, 1, \dots, n-1) \\[6pt]
-\boxed{\text{Coordinate}_{\text{Budget}}(i) = X_i - \dfrac{w}{2}} & \quad\text{and}\quad \boxed{\text{Coordinate}_{\text{Spend}}(i) = X_i + \dfrac{w}{2}}
-\end{aligned}$$
+$$\boxed{\text{Coordinate}_{\text{Budget}}(i) = X_i - \dfrac{w}{2}} \qquad\text{and}\qquad \boxed{\text{Coordinate}_{\text{Spend}}(i) = X_i + \dfrac{w}{2}}$$
+
+where $X_i = i$ is the base category index ($i \in \{0, 1, \dots, n-1\}$).
 
 For generalized $K$ categories of width $w$:
 $$\boxed{\text{Coordinate}_k(i) = X_i + \left(k - \dfrac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}$$
