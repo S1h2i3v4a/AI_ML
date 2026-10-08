@@ -7,7 +7,9 @@
 [![Status](https://img.shields.io/badge/Status-Actively%20Maintained-success.svg)](#)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
-A comprehensive, organized, and production-grade knowledge repository covering the complete **Artificial Intelligence & Machine Learning Journey (Lectures 1 to 60)**.
+🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md)
+
+A comprehensive, organized, and production-grade knowledge repository covering the complete **Artificial Intelligence & Machine Learning Journey (Lectures 00 to 60)**.
 
 Each lecture module contains:
 - 📝 **Structured Markdown Notes (`notes.md`)**: In-depth theoretical concepts, mathematical formulas, syntax breakdowns, and best practices.
@@ -42,6 +44,8 @@ AI-ML/
 ## 📊 Detailed Module Breakdown
 
 ### 🎨 Day 18: Data Visualization (Part 1 — Matplotlib Mastery)
+*Module Guides:* [📖 English Guide](lecture_18/README.md) \| [हिंदी / Hinglish Guide](lecture_18/README_HINGLISH.md)
+
 Focuses on data visualization theory, the anatomy of plots, and core 2D plotting with **Matplotlib**.
 
 | Lecture | Topic Title | Core Concepts | Quick Links |
@@ -67,13 +71,16 @@ Focuses on data visualization theory, the anatomy of plots, and core 2D plotting
 
 
 > [!TIP]
-> **🧪 Day 18 Comprehensive Case Studies & Practice Problem Set:**
+> **🧪 Day 18 Comprehensive Case Studies & Practice Problem Set:**  
+> *Module Guides:* [📖 English Guide](lecture_18/Practice_Problems/README.md) \| [हिंदी / Hinglish Guide](lecture_18/Practice_Problems/README_HINGLISH.md)  
 > - 📝 **Problem Statements:** [questions.md](lecture_18/Practice_Problems/Questions/questions.md) \| [questions.pdf](lecture_18/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_18/Practice_Problems/Questions/questions.ipynb)
 > - 💡 **Complete Solutions:** [solutions.md](lecture_18/Practice_Problems/Solutions/solutions.md) \| [solutions.pdf](lecture_18/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_18/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
 
 ### 📈 Day 19: Data Visualization (Part 2 — Advanced Matplotlib & Seaborn)
+*Module Guides:* [📖 English Guide](lecture_19/README.md) \| [हिंदी / Hinglish Guide](lecture_19/README_HINGLISH.md)
+
 Advanced statistical visualizations, distributions, five-number summary, object-oriented Matplotlib API, and high-level **Seaborn** statistical graphics.
 
 | Lecture | Topic Title | Core Concepts | Quick Links |

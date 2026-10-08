@@ -1,0 +1,81 @@
+# 📊 Lecture 18: Data Visualization (Part 1 — Matplotlib Mastery)
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![Matplotlib](https://img.shields.io/badge/Matplotlib-Visualization-11557c.svg)](https://matplotlib.org/)
+[![Jupyter](https://img.shields.io/badge/Jupyter-Notebooks-orange.svg?logo=jupyter&logoColor=white)](https://jupyter.org/)
+[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
+
+🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Main Repository](../README.md)
+
+---
+
+## 📌 Module Overview
+
+Lecture 18 covers foundational and intermediate data visualization using **Matplotlib**. It focuses on human visual perception, graphic integrity, the Matplotlib object-oriented architecture, line plots, styling, formatting, discrete bar charts, continuous scatter plots, and composition pie charts.
+
+Every subtopic is organized into an isolated module containing:
+- 📝 **Markdown Notes (`notes.md`)**: Comprehensive theory, method parameters, and best practices.
+- 📕 **High-Definition PDF (`notes.pdf`)**: Styled document with rendered vector formulas and diagrams.
+- 💻 **Jupyter Notebook (`.ipynb`)**: Runnable Python code examples.
+
+---
+
+## 🗺️ Sub-Topic Navigation
+
+| Sub-Module | Topic Title | Core Concepts Covered | Fast Links |
+| :--- | :--- | :--- | :--- |
+| **Notes_18.01** | What is Data Visualization? | Visual perception, exploratory vs explanatory, Anscombe's Quartet | [Notes](Notes_18.01/notes.md) \| [PDF](Notes_18.01/notes.pdf) \| [Notebook](Notes_18.01/lecture_18_01.ipynb) |
+| **Notes_18.02** | How to Plot Data - Basic Structure | Coordinate systems, Data Prep $\to$ Canvas $\to$ Plot $\to$ Decoration $\to$ Render | [Notes](Notes_18.02/notes.md) \| [PDF](Notes_18.02/notes.pdf) \| [Notebook](Notes_18.02/lecture_18_02.ipynb) |
+| **Notes_18.03** | Introduction to Matplotlib | Architecture (`Backend`, `Artist`, `Scripting`), Pyplot state machine vs OO | [Notes](Notes_18.03/notes.md) \| [PDF](Notes_18.03/notes.pdf) \| [Notebook](Notes_18.03/lecture_18_03.ipynb) |
+| **Notes_18.04** | Important Plot Methods | `plt.plot()`, `plt.title()`, `plt.xlabel()`, `plt.ylabel()`, `plt.grid()`, `plt.show()` | [Notes](Notes_18.04/notes.md) \| [PDF](Notes_18.04/notes.pdf) \| [Notebook](Notes_18.04/lecture_18_04.ipynb) |
+| **Notes_18.05** | Multiple Datasets on Line Plot | Multi-series plotting, legends (`plt.legend`), color differentiation, z-order | [Notes](Notes_18.05/notes.md) \| [PDF](Notes_18.05/notes.pdf) \| [Notebook](Notes_18.05/lecture_18_05.ipynb) |
+| **Notes_18.06** | Format Strings (`fmt`) | Syntax `[marker][line][color]`, e.g., `'ro--'`, `'b^:'`, hex styling | [Notes](Notes_18.06/notes.md) \| [PDF](Notes_18.06/notes.pdf) \| [Notebook](Notes_18.06/lecture_18_06.ipynb) |
+| **Notes_18.07** | Styling & Saving Plots | `figsize`, DPI scaling, vector/raster export via `plt.savefig()` (PNG, SVG, PDF) | [Notes](Notes_18.07/notes.md) \| [PDF](Notes_18.07/notes.pdf) \| [Notebook](Notes_18.07/lecture_18_07.ipynb) |
+| **Notes_18.08** | Chart Selection Taxonomy | Choosing the right chart: Comparison, Distribution, Composition, Relationship | [Notes](Notes_18.08/notes.md) \| [PDF](Notes_18.08/notes.pdf) \| [Notebook](Notes_18.08/lecture_18_08.ipynb) |
+| **Notes_18.09** | Vertical Bar Charts (`plt.bar`) | Discrete categorical comparison, bar width, alignment, edge styling | [Notes](Notes_18.09/notes.md) \| [PDF](Notes_18.09/notes.pdf) \| [Notebook](Notes_18.09/lecture_18_09.ipynb) |
+| **Notes_18.10** | Adding Labels to Bars | Direct data labels via `plt.text()` & `ax.bar_label()` container iteration | [Notes](Notes_18.10/notes.md) \| [PDF](Notes_18.10/notes.pdf) \| [Notebook](Notes_18.10/lecture_18_10.ipynb) |
+| **Notes_18.11** | Grouped Bar Charts | Side-by-side comparative bars, NumPy index offset math (`np.arange()`) | [Notes](Notes_18.11/notes.md) \| [PDF](Notes_18.11/notes.pdf) \| [Notebook](Notes_18.11/lecture_18_11.ipynb) |
+| **Notes_18.12** | Horizontal Bar Charts (`plt.barh`) | Long categorical labels, axis sorting, horizontal orientation | [Notes](Notes_18.12/notes.md) \| [PDF](Notes_18.12/notes.pdf) \| [Notebook](Notes_18.12/lecture_18_12.ipynb) |
+| **Notes_18.13** | Scatter Plots (`plt.scatter`) | Bivariate correlation, dispersion, clusters, outliers | [Notes](Notes_18.13/notes.md) \| [PDF](Notes_18.13/notes.pdf) \| [Notebook](Notes_18.13/lecture_18_13.ipynb) |
+| **Notes_18.14** | Advanced Scatter Customizations | 4D visual encoding: Marker size (`s`), colormap (`c`, `cmap`), alpha transparency | [Notes](Notes_18.14/notes.md) \| [PDF](Notes_18.14/notes.pdf) \| [Notebook](Notes_18.14/lecture_18_14.ipynb) |
+| **Notes_18.15** | Annotations on Scatter Plots | Specific data callouts (`plt.annotate`, `arrowprops`, `bbox`) | [Notes](Notes_18.15/notes.md) \| [PDF](Notes_18.15/notes.pdf) \| [Notebook](Notes_18.15/lecture_18_15.ipynb) |
+| **Notes_18.16** | Multiple Datasets on Scatter Plots | Multi-class categories, legend construction, marker variations | [Notes](Notes_18.16/notes.md) \| [PDF](Notes_18.16/notes.pdf) \| [Notebook](Notes_18.16/lecture_18_16.ipynb) |
+| **Notes_18.17** | Pie Charts (`plt.pie`) | Part-to-whole composition, `autopct`, `startangle`, shadow effects | [Notes](Notes_18.17/notes.md) \| [PDF](Notes_18.17/notes.pdf) \| [Notebook](Notes_18.17/lecture_18_17.ipynb) |
+| **Notes_18.18** | Advanced Pie Charts | Donut charts (center hollow circle), `explode` slices, custom palettes | [Notes](Notes_18.18/notes.md) \| [PDF](Notes_18.18/notes.pdf) \| [Notebook](Notes_18.18/lecture_18_18.ipynb) |
+
+---
+
+## 📐 Mathematical Foundations
+
+### 1. Data-Ink Ratio (Edward Tufte)
+The efficiency of a chart is defined mathematically by Edward Tufte as:
+
+$$\boxed{\text{Data-Ink Ratio} = \dfrac{\text{Data-Ink}}{\text{Total ink used to print the graphic}} = 1.0 - \text{Proportion of non-data-ink}}$$
+
+A visualization should aim to maximize this ratio by eliminating chart junk, excessive grid lines, and decorative elements.
+
+### 2. Symmetrical Grouped Bar Coordinate Calculation
+To position $k=2$ bars symmetrically around category center indices $X_i$:
+
+$$\begin{aligned}
+X_i &= \text{Base category index } (i = 0, 1, \dots, n-1) \\[6pt]
+\boxed{\text{Coordinate}_{\text{Budget}}(i) = X_i - \dfrac{w}{2}} & \quad\text{and}\quad \boxed{\text{Coordinate}_{\text{Spend}}(i) = X_i + \dfrac{w}{2}}
+\end{aligned}$$
+
+For generalized $K$ categories of width $w$:
+$$\boxed{\text{Coordinate}_k(i) = X_i + \left(k - \dfrac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}$$
+
+---
+
+## 🎯 Practice Problems & Case Studies
+
+To master the concepts of Lecture 18, solve the practical case studies in the [Practice Problems](Practice_Problems/) module:
+
+- 📁 **[Questions/](Practice_Problems/Questions/)**:
+  - `questions.md` | `questions.pdf` | `questions.ipynb`
+  - Problem 1: Healthcare Operations Multi-Metric Bar & Line Chart
+  - Problem 2: E-Commerce Multi-Touch Attribution 4D Scatter Plot
+  - Problem 3: SaaS Executive Boardroom YoY Revenue Dashboard
+- 📁 **[Solutions/](Practice_Problems/Solutions/)**:
+  - `solutions.md` | `solutions.pdf` | `solutions.ipynb`
+  - Production-ready, fully commented Python solutions with exported figures.
