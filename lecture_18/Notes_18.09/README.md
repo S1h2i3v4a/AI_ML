@@ -62,6 +62,20 @@ plt.show()
 
 ---
 
+## 📐 Geometric Formulation of Vertical Bar Charts
+
+For a discrete categorical set with $N$ items, each bar $i \in \{0, 1, \dots, N-1\}$ of uniform width $w$ and magnitude $y_i \ge 0$ defines a compact 2D bounding rectangle:
+
+$$
+\boxed{\mathcal{R}_i = \left[ x_i - \frac{w}{2}, \; x_i + \frac{w}{2} \right] \times [0, \; y_i]}
+$$
+
+The surface area $A_i$ scales linearly with magnitude $y_i$, satisfying Steven's Power Law with perceptual exponent $\beta = 1.0$:
+$$
+\boxed{A_i = w \cdot y_i \implies \frac{A_i}{A_j} = \frac{y_i}{y_j}}
+$$
+
+---
 ## 4. Key Takeaways
 - Use `width` to control the thickness of bars (e.g., `width=0.5` makes them narrower).
 - Adding `grid(axis='y')` provides horizontal reference lines without cluttering the vertical space.

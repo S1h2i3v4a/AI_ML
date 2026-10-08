@@ -23,13 +23,29 @@ flowchart TD
 
 ---
 
-## 2. Mathematical Coordinate Formulation
+## 📐 Grouped Bars Ka Ganitiya Sutra (Coordinate Formulation)
 
-Let $w$ be the individual bar width (e.g., $w = 0.4$):
-$$\text{Position}_{\text{Group 1}} = x - \frac{w}{2}$$
-$$\text{Position}_{\text{Group 2}} = x + \frac{w}{2}$$
+Maan lijiye $N$ categories hain aur $K = 2$ comparative series hain. Har category ka base coordinate $x_i = i$ ($i \in \{0, 1, \dots, N-1\}$) hai.
 
-The centers of the two bars are separated by exactly $w$, placing them neatly side-by-side without any gap or overlap between pair members.
+Dono bars ko bar-width $w$ ke sath side-by-side bina overlap ke place karne ka formula:
+$$
+\boxed{
+\begin{cases}
+x_{1, i} = x_i - \dfrac{w}{2} & (\text{Series 1: Budget}) \\
+x_{2, i} = x_i + \dfrac{w}{2} & (\text{Series 2: Spend})
+\end{cases}
+}
+$$
+
+Category tick label $t_i$ dono bars ke arithmetic mean (center symmetry) par align hota hai:
+$$
+\boxed{t_i = \frac{x_{1, i} + x_{2, i}}{2} = x_i}
+$$
+
+Agar $K \ge 2$ series hon, toh generalized coordinate offset formula:
+$$
+\boxed{x_{k, i} = x_i + \left(k - \frac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}
+$$
 
 ---
 

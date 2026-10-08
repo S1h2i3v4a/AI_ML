@@ -50,19 +50,37 @@ Every subtopic is organized into an isolated module containing:
 ### 1. Data-Ink Ratio (Edward Tufte)
 The efficiency of a chart is defined mathematically by Edward Tufte as:
 
-$$\boxed{\text{Data-Ink Ratio} = \dfrac{\text{Data-Ink}}{\text{Total ink used to print the graphic}} = 1.0 - \text{Proportion of non-data-ink}}$$
+$$
+\boxed{
+\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]
+}
+$$
 
 A visualization should aim to maximize this ratio by eliminating chart junk, excessive grid lines, and decorative elements.
 
 ### 2. Symmetrical Grouped Bar Coordinate Calculation
-To position $k=2$ bars symmetrically around category center indices $X_i$:
+To position $K=2$ bars symmetrically around category center index $x_i$:
 
-$$\boxed{\text{Coordinate}_{\text{Budget}}(i) = X_i - \dfrac{w}{2}} \qquad\text{and}\qquad \boxed{\text{Coordinate}_{\text{Spend}}(i) = X_i + \dfrac{w}{2}}$$
+$$
+\boxed{
+\begin{cases}
+x_{1, i} = x_i - \dfrac{w}{2} \\
+x_{2, i} = x_i + \dfrac{w}{2}
+\end{cases}
+}
+$$
 
-where $X_i = i$ is the base category index ($i \in \{0, 1, \dots, n-1\}$).
+where $x_i = i$ is the base category index ($i \in \{0, 1, \dots, n-1\}$).
 
-For generalized $K$ categories of width $w$:
-$$\boxed{\text{Coordinate}_k(i) = X_i + \left(k - \dfrac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}$$
+The category tick label location $t_i$ satisfies the central symmetry theorem:
+$$
+\boxed{t_i = \frac{x_{1, i} + x_{2, i}}{2} = x_i}
+$$
+
+For generalized $K \ge 2$ categories of width $w$:
+$$
+\boxed{x_{k, i} = x_i + \left(k - \frac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}
+$$
 
 ---
 

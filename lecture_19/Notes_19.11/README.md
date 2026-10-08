@@ -85,6 +85,20 @@ plt.show()
 
 ---
 
+## 📐 Matrix Grid Discretization & Colormap Transfer Function
+
+In a matrix heatmap (`plt.imshow`), discrete array $\mathbf{M} \in \mathbb{R}^{m \times n}$ is mapped to normalized color intensity values $z_{ij} \in [0, 1]$:
+
+$$
+\boxed{z_{ij} = \frac{M_{ij} - M_{\min}}{M_{\max} - M_{\min}}}
+$$
+
+Each normalized scalar $z_{ij}$ is transformed into an RGB vector via transfer function $\Phi$:
+$$
+\boxed{\mathbf{C}_{ij} = \Phi(z_{ij}) \in [0, 1]^3}
+$$
+
+---
 ## 4. Key Takeaways
 - **`hue` + `style` pairing:** When plotting scatter points, using `hue="smoker", style="smoker"` ensures both color and shape change together, making the chart **accessible to colorblind viewers**.
 - `sns.relplot()` is a **Figure-level function** that returns a `FacetGrid` object, allowing automated subplot generation via `col` and `row`.

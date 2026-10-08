@@ -113,3 +113,26 @@ plt.show()
    - *Too few bins (underfitting):* Oversimplifies the distribution, hiding modes and clusters.
    - *Too many bins (overfitting):* Creates a jagged, noisy plot dominated by sampling noise.
 3. **Horizontal orientation:** Use `orientation='horizontal'` when comparing against vertical axes or side-by-side marginal distributions.
+
+
+---
+
+## 📐 Ganitiya aur Sankhyikiya Adhaar (Histogram Bins)
+
+Continuous dataset $X = \{x_1, x_2, \dots, x_n\}$ ke liye range $[\min(X), \max(X)]$ ko $k$ equal bins me divide karne ka formula:
+
+$$
+\boxed{\Delta = \frac{\max(X) - \min(X)}{k}}
+$$
+
+### Optimal Bins Calculate Karne Ke Standard Niyam:
+1. **Sturges' Formula** (Normal distribution ke liye optimal):
+$$
+\boxed{k = 1 + \lceil \log_2(n) \rceil}
+$$
+
+2. **Freedman-Diaconis Rule** (Skewed data aur outliers ke against robust):
+$$
+\boxed{h = 2 \cdot \frac{\text{IQR}(X)}{n^{1/3}} \qquad\implies\qquad k = \left\lceil \frac{\max(X) - \min(X)}{h} \right\rceil}
+$$
+jahan $\text{IQR}(X) = Q_3 - Q_1$ Interquartile Range hai.

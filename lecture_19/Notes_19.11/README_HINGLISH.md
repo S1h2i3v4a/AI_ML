@@ -85,6 +85,20 @@ plt.show()
 
 ---
 
+## 📐 Matrix Grid aur Colormap Transfer Function Ka Ganitiya Sutra
+
+Heatmap (`plt.imshow`) me 2D matrix $\mathbf{M} \in \mathbb{R}^{m \times n}$ ke elements normalized scalars $z_{ij} \in [0, 1]$ me convert hote hain:
+
+$$
+\boxed{z_{ij} = \frac{M_{ij} - M_{\min}}{M_{\max} - M_{\min}}}
+$$
+
+Colormap transfer function $\Phi$ har scalar ko RGB color vector me project karta hai:
+$$
+\boxed{\mathbf{C}_{ij} = \Phi(z_{ij}) \in [0, 1]^3}
+$$
+
+---
 ## 4. Mukhya Batein (Key Takeaways)
 - **`hue` + `style` pairing:** When plotting scatter points, using `hue="smoker", style="smoker"` ensures both color and shape change together, making the chart **accessible to colorblind viewers**.
 - `sns.relplot()` is a **Figure-level function** that returns a `FacetGrid` object, allowing automated subplot generation via `col` and `row`.

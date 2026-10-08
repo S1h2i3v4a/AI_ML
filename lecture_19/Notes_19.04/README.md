@@ -85,3 +85,30 @@ plt.show()
    John Tukey chose $1.5$ empirically. For a standard normal distribution, $\pm 1.5 \times \text{IQR}$ corresponds to approximately $\pm 2.7\sigma$ (covering 99.3% of the data). Points beyond it have a $<0.7\%$ probability under normality, making them plausible anomalies.
 2. **Is the median sensitive to outliers?**
    No, the median and IQR are **robust statistics** (resistant to extreme outliers), unlike the mean and standard deviation.
+
+
+---
+
+## 📐 Tukey's Five-Number Summary & Outlier Detection Mathematics
+
+Given ordered observations $X_{(1)} \le X_{(2)} \le \dots \le X_{(n)}$, the distribution is summarized by John Tukey's Five-Number Summary:
+
+$$
+\boxed{\text{Summary} = \left( X_{(1)}, \; Q_1, \; Q_2, \; Q_3, \; X_{(n)} \right)}
+$$
+
+where:
+- $Q_2 = \text{Median} = \text{50th percentile}$
+- $Q_1 = \text{First Quartile} = \text{25th percentile}$
+- $Q_3 = \text{Third Quartile} = \text{75th percentile}$
+- $\boxed{\text{IQR} = Q_3 - Q_1 \quad (\text{Interquartile Range})}$
+
+Tukey's Fences for automated outlier identification:
+$$
+\boxed{\text{Lower Fence} = Q_1 - 1.5 \cdot \text{IQR} \qquad\text{and}\qquad \text{Upper Fence} = Q_3 + 1.5 \cdot \text{IQR}}
+$$
+
+Any observation $x_i$ outside these boundaries is mathematically flagged as an outlier:
+$$
+\boxed{\text{Outlier}(x_i) \iff x_i < \text{Lower Fence} \quad\lor\quad x_i > \text{Upper Fence}}
+$$

@@ -69,6 +69,26 @@ plt.show()
 
 ---
 
+## 📐 4D Multivariate Visual Mapping Ka Ganitiya Sutra
+
+2D scatter canvas par ek sath 4 dimensions ko encode karne ke liye formal 4-dimensional vector use hota hai:
+
+$$
+\boxed{\mathbf{p}_i = \begin{pmatrix} X_i \\ Y_i \\ S_i \\ C_i \end{pmatrix} \in \mathbb{R}^4}
+$$
+
+jahan visual dimensions ka mapping:
+- **X-axis ($X_i$)**: Horizontal continuous metric
+- **Y-axis ($Y_i$)**: Vertical continuous metric
+- **Marker Area ($S_i$)**: $S_i = \kappa \cdot h_i$ (Metric $h_i$ ke sath scaled area, $\kappa = 2.5$)
+- **Color Metric ($C_i$)**: Colormap function $\phi$ dwara continuous metric mapping
+
+Dense clusters me overplotting transparency model:
+$$
+\boxed{I_{\text{transmitted}} = I_0 \cdot (1 - \alpha)^m}
+$$
+
+---
 ## 4. Mukhya Batein (Key Takeaways)
 - `c=` accepts an array of numerical values mapped through `cmap`, whereas `color=` takes static color strings or an array of literal color names.
 - Always include `plt.colorbar()` when using `cmap` so viewers understand what the gradient represents.

@@ -55,3 +55,19 @@ plt.show()
 ## 3. Mukhya Batein (Key Takeaways)
 - Without `xlabel` and `ylabel`, a chart is uninterpretable to stakeholders. Always include units (e.g. `(in $M)` or `(in kg)`).
 - Calling `plt.show()` tells Matplotlib that figure definition is finished and ready for display.
+
+
+---
+
+## 📐 Piecewise Linear Spline aur Arc Length Ka Ganitiya Sutra
+
+Line plot ordered discrete samples $D = \{(x_0, y_0), (x_1, y_1), \dots, (x_{n-1}, y_{n-1})\}$ ke beech linear interpolation ke zariye continuous curve banata hai:
+
+$$
+\boxed{\mathcal{L}(x) = y_i + \frac{y_{i+1} - y_i}{x_{i+1} - x_i}(x - x_i), \quad \forall x \in [x_i, x_{i+1}]}
+$$
+
+Poore line plot ka total Euclidean curve length $S$:
+$$
+\boxed{S = \sum_{i=0}^{n-2} \sqrt{(x_{i+1} - x_i)^2 + (y_{i+1} - y_i)^2}}
+$$

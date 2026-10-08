@@ -102,3 +102,25 @@ plt.show()
 ## 5. Summary & Best Practices
 - Always add `label=` to `axvline` and invoke `plt.legend()`.
 - Use contrasting styles (e.g. dashed red) so the threshold stands out clearly against the histogram bins.
+
+
+---
+
+## 📐 Mathematical Statistical Benchmarks & Gaussian Moments
+
+Vertical reference lines mark key parametric population measures:
+
+$$
+\boxed{\mu = \frac{1}{N} \sum_{i=1}^N x_i \qquad\text{and}\qquad \sigma = \sqrt{\frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2}}
+$$
+
+Under the **Empirical Rule** for unimodal Gaussian distributions:
+$$
+\boxed{
+\begin{aligned}
+\Pr(\mu - 1\sigma \le X \le \mu + 1\sigma) &\approx 68.27\% \\
+\Pr(\mu - 2\sigma \le X \le \mu + 2\sigma) &\approx 95.45\% \\
+\Pr(\mu - 3\sigma \le X \le \mu + 3\sigma) &\approx 99.73\%
+\end{aligned}
+}
+$$

@@ -93,6 +93,20 @@ plt.show()
 
 ---
 
+## 📐 Subplot Matrix Topology aur Indexing Ka Ganitiya Sutra
+
+$(R \times C)$ grid me subplots ka 2D matrix structure hota hai:
+
+$$
+\boxed{\mathbf{A} = (a_{r, c}) \in \mathcal{H}^{R \times C}, \quad r \in \{0, \dots, R-1\}, \; c \in \{0, \dots, C-1\}}
+$$
+
+Linear 1D index $i$ se 2D row aur column calculate karne ka formula:
+$$
+\boxed{r = \lfloor i / C \rfloor \qquad\text{aur}\qquad c = i \pmod C}
+$$
+
+---
 ## 4. Mukhya Batein (Key Takeaways) & Best Practices
 - In production, data pipelines, and dashboards, **always prefer `fig, ax = plt.subplots()`**.
 - `ax.set(...)` saves multiple lines of code by setting titles, labels, and limits in a single method call.

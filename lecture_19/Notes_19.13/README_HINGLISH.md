@@ -66,6 +66,20 @@ plt.show()
 
 ---
 
+## 📐 Categorical Estimator aur Bootstrap CI Ka Ganitiya Sutra
+
+Seaborn categorical plots (`sns.barplot`) me error bars sample mean $\bar{x}$ ke around confidence interval show karte hain:
+
+$$
+\boxed{\text{SE}(\bar{x}) = \frac{s}{\sqrt{n}} = \sqrt{\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n(n - 1)}}}
+$$
+
+95% Confidence Interval error bar ka sutra:
+$$
+\boxed{\text{CI}_{95\%} = \bar{x} \pm t_{n-1, \; 0.025} \cdot \text{SE}(\bar{x})}
+$$
+
+---
 ## 4. Mukhya Batein (Key Takeaways)
 - Seaborn's `barplot` calculates statistical aggregates (**mean**) automatically—do not confuse it with a Matplotlib bar chart which plots raw values passed to it.
 - Adding `hue="sex"` automatically groups and dodges the bars or boxes side by side.

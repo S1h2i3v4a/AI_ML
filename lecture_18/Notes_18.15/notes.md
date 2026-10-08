@@ -62,6 +62,20 @@ plt.show()
 
 ---
 
+## 📐 Vector Annotation & Directed Callout Mathematics
+
+An annotation arrow represents a directed displacement vector $\mathbf{v} \in \mathbb{R}^2$ connecting text coordinate $\mathbf{x}_{\text{text}}$ to target data point $\mathbf{x}_{\text{target}}$:
+
+$$
+\boxed{\mathbf{v} = \mathbf{x}_{\text{target}} - \mathbf{x}_{\text{text}} = \begin{pmatrix} x_{\text{target}} - x_{\text{text}} \\ y_{\text{target}} - y_{\text{text}} \end{pmatrix}}
+$$
+
+The Euclidean length and directional angle $\theta$ of the callout arrow are:
+$$
+\boxed{\|\mathbf{v}\|_2 = \sqrt{(x_{\text{target}} - x_{\text{text}})^2 + (y_{\text{target}} - y_{\text{text}})^2} \qquad\text{and}\qquad \theta = \operatorname{atan2}(v_y, v_x)}
+$$
+
+---
 ## 4. Key Takeaways
 - Always apply an offset (`x + dx`, `y + dy`); placing text at the exact point coordinate will superimpose text directly over the marker symbol.
 - Use `plt.xlim()` and `plt.ylim()` padding whenever annotations sit near the plot periphery.

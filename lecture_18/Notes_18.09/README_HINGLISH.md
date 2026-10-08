@@ -62,6 +62,20 @@ plt.show()
 
 ---
 
+## 📐 Vertical Bar Chart Ka Ganitiya Sutra
+
+$N$ categories ke liye har bar $i \in \{0, 1, \dots, N-1\}$ jinki uniform width $w$ aur height $y_i \ge 0$ hai, ek rectangular area define karta hai:
+
+$$
+\boxed{\mathcal{R}_i = \left[ x_i - \frac{w}{2}, \; x_i + \frac{w}{2} \right] \times [0, \; y_i]}
+$$
+
+Har bar ka surface area $A_i$ directly magnitude $y_i$ ke proportional hota hai:
+$$
+\boxed{A_i = w \cdot y_i \implies \frac{A_i}{A_j} = \frac{y_i}{y_j}}
+$$
+
+---
 ## 4. Mukhya Batein (Key Takeaways)
 - Use `width` to control the thickness of bars (e.g., `width=0.5` makes them narrower).
 - Adding `grid(axis='y')` provides horizontal reference lines without cluttering the vertical space.

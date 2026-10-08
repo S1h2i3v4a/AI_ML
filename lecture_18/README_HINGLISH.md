@@ -50,19 +50,37 @@ Har subtopic ek separate module me organized hai:
 ### 1. Data-Ink Ratio (Edward Tufte)
 Kisi bhi chart ki visual efficiency Edward Tufte ke Data-Ink formula se measure hoti hai:
 
-$$\boxed{\text{Data-Ink Ratio} = \dfrac{\text{Data-Ink}}{\text{Total ink used to print the graphic}} = 1.0 - \text{Proportion of non-data-ink}}$$
+$$
+\boxed{
+\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]
+}
+$$
 
 Ek professional visualization me hume hamesha chart junk (faltu decorations, unnecessary 3D effects, over-dense grids) hata kar is ratio ko maximize karna chahiye.
 
 ### 2. Symmetrical Grouped Bar Coordinate Calculation
-$k=2$ bars ko category index $X_i$ ke aage-peeche barabar (symmetrically) rakhne ke liye:
+$K=2$ bars ko category index $x_i$ ke dono taraf barabar (symmetrically) rakhne ke liye:
 
-$$\boxed{\text{Coordinate}_{\text{Budget}}(i) = X_i - \dfrac{w}{2}} \qquad\text{aur}\qquad \boxed{\text{Coordinate}_{\text{Spend}}(i) = X_i + \dfrac{w}{2}}$$
+$$
+\boxed{
+\begin{cases}
+x_{1, i} = x_i - \dfrac{w}{2} \\
+x_{2, i} = x_i + \dfrac{w}{2}
+\end{cases}
+}
+$$
 
-jahan $X_i = i$ base category index ($i \in \{0, 1, \dots, n-1\}$) hai.
+jahan $x_i = i$ base category index ($i \in \{0, 1, \dots, n-1\}$) hai.
 
-Agar $K$ categories hon jinki width $w$ hai, toh generalized coordinate formula:
-$$\boxed{\text{Coordinate}_k(i) = X_i + \left(k - \dfrac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}$$
+Category tick label $t_i$ central symmetry satisfy karta hai:
+$$
+\boxed{t_i = \frac{x_{1, i} + x_{2, i}}{2} = x_i}
+$$
+
+Agar $K \ge 2$ categories hon jinki width $w$ hai, toh generalized coordinate formula:
+$$
+\boxed{x_{k, i} = x_i + \left(k - \frac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}
+$$
 
 ---
 

@@ -91,3 +91,19 @@ plt.show()
 
 ## 5. Limitations of Stateful `plt.subplot()`
 The stateful approach relies on a global pointer to the "current active axis". For complex multi-panel figures or interactive code, this quickly leads to bugs. In the next lecture, we learn the superior **Object-Oriented API** (`fig, axes = plt.subplots()`).
+
+
+---
+
+## 📐 Violin Plot Geometry & Kernel Density Profile
+
+A Violin Plot combines a box plot with a rotated, symmetric continuous Kernel Density Estimate $\hat{f}_h(y)$. The horizontal envelope width $w(y)$ at continuous elevation $y$ is:
+
+$$
+\boxed{x(y) = x_0 \pm \kappa \cdot \hat{f}_h(y)}
+$$
+
+where $x_0$ is the category anchor coordinate, $\kappa$ is a visual scaling factor, and $\hat{f}_h(y)$ is the normalized density satisfying:
+$$
+\boxed{\int_{-\infty}^{\infty} \hat{f}_h(y) \, dy = 1.0}
+$$

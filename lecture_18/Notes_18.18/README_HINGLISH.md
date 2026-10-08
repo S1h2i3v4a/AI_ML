@@ -82,6 +82,22 @@ plt.show()
 
 ---
 
+## 📐 Donut Chart Ka Annular Ring Ganitiya Sutra
+
+Donut Chart ek concentric circular ring hota hai jisme outer circle ($r_{\text{out}}$) ke beech se inner hollow core ($r_{\text{in}}$) subtract kiya jata hai:
+
+$$
+\boxed{r_{\text{in}} = (1 - w) \cdot r_{\text{out}} \quad \text{jahan } w \in (0, 1] \text{ relative ring width hai}}
+$$
+
+Central angle $\theta_i$ wale slice ka net area:
+$$
+\boxed{A_i = \frac{\theta_i}{360^\circ} \cdot \pi \left(r_{\text{out}}^2 - r_{\text{in}}^2\right) = \pi \left(r_{\text{out}}^2 - r_{\text{in}}^2\right) \cdot \frac{p_i}{100}}
+$$
+
+Human eye angles ke mukable arc length ko behtar judge karti hai, isliye donut chart cognitive misjudgment ko kam karta hai.
+
+---
 ## 4. Mukhya Batein (Key Takeaways)
 - Setting `wedgeprops=dict(width=0.4)` automatically turns a pie chart into a modern **Donut Chart**, which is widely preferred in corporate dashboards because the empty center can display the total budget ($920K).
 - Use `startangle=90` so the largest slice starts at 12 o'clock and rotates clockwise.

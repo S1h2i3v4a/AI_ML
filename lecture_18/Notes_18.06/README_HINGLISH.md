@@ -80,3 +80,21 @@ plt.show()
 ## 5. Mukhya Batein (Key Takeaways)
 - Use format strings for rapid prototyping and notebooks.
 - Use explicit keyword arguments (`color`, `linestyle`, `linewidth`, `marker`) in production code for readability and maintainability.
+
+
+---
+
+## 📐 Axis Range Discretization aur Aspect Ratio Ka Ganitiya Sutra
+
+Axis interval $[x_{\min}, x_{\max}]$ par $k$ major ticks ke beech uniform spacing ka formula:
+
+$$
+\boxed{\Delta x = \frac{x_{\max} - x_{\min}}{k - 1}}
+$$
+
+Physical canvas ($W \times H$) par data slope ka optical aspect ratio ($\text{AR}$):
+$$
+\boxed{\text{AR} = \left(\frac{y_{\max} - y_{\min}}{x_{\max} - x_{\min}}\right) \cdot \left(\frac{W}{H}\right)}
+$$
+
+$45^\circ$ slope angle human eye ke liye slopes judge karne ka sabse accurate angle hota hai.

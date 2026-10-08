@@ -51,6 +51,20 @@ plt.show()
 
 ---
 
+## 📐 Mathematical Correlation & Dispersion Formulation
+
+A scatter plot displays pairwise observations $(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n)$. The linear association between $X$ and $Y$ is measured by the **Pearson Sample Correlation Coefficient** $r_{xy}$:
+
+$$
+\boxed{r_{xy} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2} \sqrt{\sum_{i=1}^n (y_i - \bar{y})^2}} \in [-1, +1]}
+$$
+
+Expressed through sample covariance and standard deviations:
+$$
+\boxed{\text{Cov}(X, Y) = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}) \implies r_{xy} = \frac{\text{Cov}(X, Y)}{s_x \cdot s_y}}
+$$
+
+---
 ## 4. Key Takeaways
 - The Pearson correlation coefficient $r \approx 0.96$ indicates a strong positive linear relationship between age and blood pressure.
 - Notice patient at Age 55 with BP 123 mmHg dips below the trendline—scatter plots make individual variances instantly visible.

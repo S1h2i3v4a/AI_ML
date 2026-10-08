@@ -47,3 +47,19 @@ plt.show()
 ## 3. Key Takeaways
 - Without `xlabel` and `ylabel`, a chart is uninterpretable to stakeholders. Always include units (e.g. `(in $M)` or `(in kg)`).
 - Calling `plt.show()` tells Matplotlib that figure definition is finished and ready for display.
+
+
+---
+
+## 📐 Mathematical Piecewise Linear Spline & Path Length
+
+A continuous line plot approximates continuous function $y = f(x)$ from ordered discrete samples $D = \{(x_0, y_0), (x_1, y_1), \dots, (x_{n-1}, y_{n-1})\}$ using piecewise linear interpolation:
+
+$$
+\boxed{\mathcal{L}(x) = y_i + \frac{y_{i+1} - y_i}{x_{i+1} - x_i}(x - x_i), \quad \forall x \in [x_i, x_{i+1}]}
+$$
+
+The total Euclidean path length $S$ of the rendered line across the canvas is given by:
+$$
+\boxed{S = \sum_{i=0}^{n-2} \sqrt{(x_{i+1} - x_i)^2 + (y_{i+1} - y_i)^2}}
+$$

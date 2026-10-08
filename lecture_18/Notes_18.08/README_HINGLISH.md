@@ -37,3 +37,19 @@ flowchart TD
 
 ## 3. Mukhya Batein (Key Takeaways)
 - **The Golden Rule:** Always identify whether your variables are **continuous (quantitative)** or **categorical (qualitative)** before selecting a chart type.
+
+
+---
+
+## 📐 Visual Encoding Channel Capacity Ka Ganitiya Sutra
+
+Data visualization me raw attributes $\mathcal{D} = \{d_1, d_2, \dots, d_m\}$ ko visual channels $\mathcal{V}$ par map kiya jata hai:
+
+$$
+\boxed{\Phi: \mathcal{D}_1 \times \mathcal{D}_2 \times \dots \times \mathcal{D}_m \to \mathcal{V}_1 \times \mathcal{V}_2 \times \dots \times \mathcal{V}_m}
+$$
+
+Cleveland & McGill hierarchy ke anusar human eye position aur length ko sabse accurately judge karti hai:
+$$
+\boxed{\epsilon_{\text{position}} < \epsilon_{\text{length}} < \epsilon_{\text{angle}} < \epsilon_{\text{area}} < \epsilon_{\text{color intensity}}}
+$$

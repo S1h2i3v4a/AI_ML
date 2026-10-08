@@ -61,6 +61,26 @@ plt.show()
 
 ---
 
+## 📐 4D Multivariate Mathematical Mapping
+
+A 2D Cartesian scatter canvas is formally extended to represent 4-dimensional observations $\mathbf{p}_i \in \mathbb{R}^4$:
+
+$$
+\boxed{\mathbf{p}_i = \begin{pmatrix} X_i \\ Y_i \\ S_i \\ C_i \end{pmatrix} \in \mathbb{R}^4}
+$$
+
+where visual channels correspond to formal mathematical transformations:
+- **Abscissa ($X_i$)**: $X_i \in \mathbb{R}_{>0}$ (Primary continuous metric)
+- **Ordinate ($Y_i$)**: $Y_i \in \mathbb{R}$ (Secondary continuous metric)
+- **Marker Area ($S_i$)**: $S_i = \kappa \cdot h_i$ where area scales linearly with metric $h_i$ ($\kappa = 2.5$)
+- **Color Metric ($C_i$)**: $C_i = \phi(v_i)$ where continuous metric $v_i$ is mapped through colormap function $\phi: [v_{\min}, v_{\max}] \to [0, 1]^3$
+
+The optical transmission $I$ under marker overplotting follows the discrete Beer-Lambert model:
+$$
+\boxed{I_{\text{transmitted}} = I_0 \cdot (1 - \alpha)^m}
+$$
+
+---
 ## 4. Key Takeaways
 - `c=` accepts an array of numerical values mapped through `cmap`, whereas `color=` takes static color strings or an array of literal color names.
 - Always include `plt.colorbar()` when using `cmap` so viewers understand what the gradient represents.

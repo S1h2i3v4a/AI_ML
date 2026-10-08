@@ -58,6 +58,20 @@ plt.show()
 
 ---
 
+## 📐 Categorical Estimator & Bootstrap Confidence Interval Mathematics
+
+In Seaborn categorical plots (`sns.barplot`), the central tendency estimator is the sample mean $\bar{x} = \frac{1}{n}\sum x_i$. The Standard Error of the Mean ($\text{SE}$) is:
+
+$$
+\boxed{\text{SE}(\bar{x}) = \frac{s}{\sqrt{n}} = \sqrt{\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n(n - 1)}}}
+$$
+
+The 95% Confidence Interval error bar is given by:
+$$
+\boxed{\text{CI}_{95\%} = \bar{x} \pm t_{n-1, \; 0.025} \cdot \text{SE}(\bar{x})}
+$$
+
+---
 ## 4. Key Takeaways
 - Seaborn's `barplot` calculates statistical aggregates (**mean**) automatically—do not confuse it with a Matplotlib bar chart which plots raw values passed to it.
 - Adding `hue="sex"` automatically groups and dodges the bars or boxes side by side.

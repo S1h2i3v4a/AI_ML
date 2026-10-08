@@ -100,3 +100,19 @@ plt.show()
   - For **Correlations** (ranging from $-1$ to $+1$), use a **diverging colormap** like `coolwarm` with `center=0`.
   - For **Magnitudes / Counts** (ranging from $0$ to large values), use a **sequential colormap** like `YlGnBu` or `viridis`.
 - Always set `fmt="d"` for integers and `fmt=".2f"` for floats; otherwise, scientific notation will clutter cells.
+
+
+---
+
+## 📐 Correlation Matrix Ka Ganitiya Sutra
+
+Matrix $\mathbf{X} \in \mathbb{R}^{n \times p}$ ke $p$ variables ke beech pairwise correlation matrix $\mathbf{R} \in \mathbb{R}^{p \times p}$ ka formula:
+
+$$
+\boxed{r_{jk} = \frac{\sum_{i=1}^n (x_{ij} - \bar{x}_j)(x_{ik} - \bar{x}_k)}{\sqrt{\sum_{i=1}^n (x_{ij} - \bar{x}_j)^2} \sqrt{\sum_{i=1}^n (x_{ik} - \bar{x}_k)^2}} \in [-1, +1]}
+$$
+
+Correlation Matrix Ki Properties:
+1. **Symmetric**: $\mathbf{R} = \mathbf{R}^T$ kyunki $r_{jk} = r_{kj}$.
+2. **Main Diagonal**: $r_{jj} = 1.0$ (har variable ka khud ke sath correlation 1 hota hai).
+3. **Positive Semi-Definite**: $\mathbf{z}^T \mathbf{R} \mathbf{z} \ge 0$.

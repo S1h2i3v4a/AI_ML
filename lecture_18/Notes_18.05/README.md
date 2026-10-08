@@ -55,6 +55,23 @@ plt.show()
 
 ---
 
+## 📐 Comparative Time-Series Mathematics (Growth & Indexing)
+
+When analyzing multiple concurrent datasets $\{y_{1, t}\}$ and $\{y_{2, t}\}$ across temporal steps $t$, comparative performance is quantified using two standard formulations:
+
+1. **Periodic Rate of Change (YoY Growth Rate):**
+$$
+\boxed{g_t = \left(\frac{y_t - y_{t-1}}{y_{t-1}}\right) \times 100\%}
+$$
+
+2. **Base Index Normalization ($t_0 = 100$):**
+$$
+\boxed{I_t = \left(\frac{y_t}{y_0}\right) \times 100}
+$$
+
+Base indexing eliminates scale bias when comparing metrics with non-commensurate absolute magnitudes.
+
+---
 ## 4. Key Takeaways
 - Without `plt.legend()`, labels defined in `plt.plot(..., label="...")` will not appear on the chart.
 - Ensure both datasets share the same x-axis values or are plotted over compatible ranges.

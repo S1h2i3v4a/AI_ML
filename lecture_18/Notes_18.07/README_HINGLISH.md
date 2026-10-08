@@ -87,3 +87,19 @@ plt.style.use("default")
 ## 5. Mukhya Batein (Key Takeaways)
 - For presentations, `dark_background` looks great on screens. For print papers, use `default` or `tableau-colorblind10` with high DPI (`dpi=300`).
 - Always use `bbox_inches="tight"` to avoid cropped axis labels.
+
+
+---
+
+## 📐 Canvas Resolution aur DPI Ka Ganitiya Sutra
+
+Matplotlib figure ka total pixel dimension $(W_{\text{px}}, H_{\text{px}})$ canvas ke physical inches aur DPI (Dots Per Inch) ke gunankfal par nirbhar karta hai:
+
+$$
+\boxed{W_{\text{px}} = W_{\text{in}} \times \text{DPI} \qquad\text{aur}\qquad H_{\text{px}} = H_{\text{in}} \times \text{DPI}}
+$$
+
+Agar $10 \times 6\text{ inches}$ ka canvas $300\text{ DPI}$ par export kiya jaye:
+$$
+\boxed{\text{Total Resolution} = (10 \times 300) \times (6 \times 300) = 3000 \times 1800 \text{ pixels} = 5.4 \text{ Megapixels}}
+$$

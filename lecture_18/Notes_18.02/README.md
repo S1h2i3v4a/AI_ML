@@ -61,6 +61,23 @@ plt.show()
 
 ---
 
+## 📐 Mathematical Coordinate Mapping & Affine Transformation
+
+Every data point plotted on a digital canvas undergoes an affine mapping from continuous **Data Space** $\mathcal{D} = [x_{\min}, x_{\max}] \times [y_{\min}, y_{\max}]$ to discrete **Screen Pixel Coordinates** $\mathcal{S} = [0, W] \times [0, H]$:
+
+First, coordinates are normalized to the unit interval $[0, 1]^2$:
+$$
+\boxed{u = \frac{x - x_{\min}}{x_{\max} - x_{\min}} \qquad\text{and}\qquad v = \frac{y - y_{\min}}{y_{\max} - y_{\min}}}
+$$
+
+Then, normalized coordinates are projected onto the pixel canvas via the affine viewport transformation matrix:
+$$
+\boxed{\begin{pmatrix} x_{\text{pixel}} \\ y_{\text{pixel}} \\ 1 \end{pmatrix} = \begin{pmatrix} W & 0 & 0 \\ 0 & -H & H \\ 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} u \\ v \\ 1 \end{pmatrix}}
+$$
+
+where the vertical reflection $-H$ maps standard Cartesian space to top-left screen pixel origins.
+
+---
 ## 4. Key Takeaways
 - If you only pass a single list to `plt.plot(Y)`, Matplotlib automatically infers $X = [0, 1, 2, \dots, N-1]$ as index positions.
 - Always ensure $X$ is monotonically increasing if plotting time-series or line graphs to prevent zig-zag lines.

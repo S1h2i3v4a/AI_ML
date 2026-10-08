@@ -79,3 +79,19 @@ plt.style.use("default")
 ## 5. Key Takeaways
 - For presentations, `dark_background` looks great on screens. For print papers, use `default` or `tableau-colorblind10` with high DPI (`dpi=300`).
 - Always use `bbox_inches="tight"` to avoid cropped axis labels.
+
+
+---
+
+## 📐 Mathematical Canvas Resolution & DPI Formulation
+
+The total pixel dimension $(W_{\text{px}}, H_{\text{px}})$ of a rendered Matplotlib figure is governed by physical canvas dimensions and Dots-Per-Inch (DPI) sampling density:
+
+$$
+\boxed{W_{\text{px}} = W_{\text{in}} \times \text{DPI} \qquad\text{and}\qquad H_{\text{px}} = H_{\text{in}} \times \text{DPI}}
+$$
+
+For a canvas $(W = 10\text{ in}, H = 6\text{ in})$ at $\text{DPI} = 300$:
+$$
+\boxed{\text{Total Resolution} = (10 \times 300) \times (6 \times 300) = 3000 \times 1800 \text{ pixels} = 5.4 \text{ Megapixels}}
+$$

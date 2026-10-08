@@ -59,6 +59,20 @@ plt.show()
 
 ---
 
+## 📐 Multi-Dataset Clustering aur Centroid Ka Ganitiya Sutra
+
+Scatter plot par $C$ alag-alag classes ke points ko compare karne ke liye har class ka centroid $\boldsymbol{\mu}_c \in \mathbb{R}^2$ calculate hota hai:
+
+$$
+\boxed{\boldsymbol{\mu}_c = \frac{1}{N_c} \sum_{i \in \mathcal{C}_c} \mathbf{x}_i = \begin{pmatrix} \frac{1}{N_c} \sum x_{i} \\ \frac{1}{N_c} \sum y_{i} \end{pmatrix}}
+$$
+
+Do clusters ke beech separability unke centroids ke Euclidean distance se nikalti hai:
+$$
+\boxed{d(\boldsymbol{\mu}_a, \boldsymbol{\mu}_b) = \|\boldsymbol{\mu}_a - \boldsymbol{\mu}_b\|_2 = \sqrt{(\mu_{a, x} - \mu_{b, x})^2 + (\mu_{a, y} - \mu_{b, y})^2}}
+$$
+
+---
 ## 4. Mukhya Batein (Key Takeaways)
 - Using distinct markers (circles for Winter, squares for Summer) along with distinct colors makes the visualization accessible to colorblind readers.
 - Scatter plots instantly expose whether two classes are linearly separable for classification models (e.g. SVM or Logistic Regression).

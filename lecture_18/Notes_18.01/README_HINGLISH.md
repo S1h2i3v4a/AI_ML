@@ -59,5 +59,21 @@ plt.show()
 
 ---
 
+## 📐 Ganitiya aur Sankhyikiya Adhaar (Anscombe's Quartet)
+
+Anscombe's Quartet (1973) yeh pramanit karta hai ki bina visual plot dekhe sirf summary statistics par bharosa kyu nahi karna chahiye. Chaar alag datasets $(X_1, Y_1), \dots, (X_4, Y_4)$ ki statistical properties bilkul identical hoti hain:
+
+$$
+\boxed{\mu_x = 9.0, \quad \sigma_x^2 = 11.0, \quad \mu_y = 7.50, \quad \sigma_y^2 = 4.125, \quad r_{xy} = 0.816}
+$$
+
+Chaar datasets ka linear regression equation bhi ek jaisa banta hai:
+$$
+\boxed{\hat{y} = 3.00 + 0.500x \qquad (R^2 = 0.67)}
+$$
+
+Lekin plot karne par charo ka pattern alag dikhta hai (linear, quadratic curve, outlier effect, aur extreme leverage point).
+
+---
 ## 4. Mukhya Batein (Key Takeaways) & Interview Points
 - **Anscombe's Quartet:** Ek prasiddh statistical dataset jisme 4 alag datasets ki summary statistics bilkul same hoti hain (mean, variance, correlation, regression line), yet look completely different when plotted visually. This proves: *Keval numerical statistics par depend mat raho—hamesha data visualize karke dekho!*

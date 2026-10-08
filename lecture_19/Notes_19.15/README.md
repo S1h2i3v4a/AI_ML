@@ -100,3 +100,19 @@ plt.show()
   - For **Correlations** (ranging from $-1$ to $+1$), use a **diverging colormap** like `coolwarm` with `center=0`.
   - For **Magnitudes / Counts** (ranging from $0$ to large values), use a **sequential colormap** like `YlGnBu` or `viridis`.
 - Always set `fmt="d"` for integers and `fmt=".2f"` for floats; otherwise, scientific notation will clutter cells.
+
+
+---
+
+## 📐 Mathematical Correlation Matrix Formulation
+
+For an observation matrix $\mathbf{X} \in \mathbb{R}^{n \times p}$ with $p$ quantitative variables, the pairwise linear correlation matrix $\mathbf{R} \in \mathbb{R}^{p \times p}$ is defined by:
+
+$$
+\boxed{r_{jk} = \frac{\sum_{i=1}^n (x_{ij} - \bar{x}_j)(x_{ik} - \bar{x}_k)}{\sqrt{\sum_{i=1}^n (x_{ij} - \bar{x}_j)^2} \sqrt{\sum_{i=1}^n (x_{ik} - \bar{x}_k)^2}} \in [-1, +1]}
+$$
+
+Properties of the Correlation Matrix:
+1. **Symmetry**: $\mathbf{R} = \mathbf{R}^T$ since $r_{jk} = r_{kj}$.
+2. **Unit Diagonal**: $r_{jj} = 1.0$ for all $j \in \{1, 2, \dots, p\}$.
+3. **Positive Semi-Definite**: $\mathbf{z}^T \mathbf{R} \mathbf{z} \ge 0$ for all non-zero vectors $\mathbf{z} \in \mathbb{R}^p$.

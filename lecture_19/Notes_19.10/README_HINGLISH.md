@@ -76,6 +76,17 @@ plt.show()
 
 ---
 
+## 📐 Dual-Axis Affine Transformation (`twinx`) Ka Ganitiya Sutra
+
+Dual-axis plots me do alag-alag metrics $Y_1 \in [a_1, b_1]$ aur $Y_2 \in [a_2, b_2]$ shared physical height $H$ par alag-alag affine maps se project hote hain:
+
+$$
+\boxed{v_1(y_1) = H \cdot \frac{y_1 - a_1}{b_1 - a_1} \qquad\text{aur}\qquad v_2(y_2) = H \cdot \frac{y_2 - a_2}{b_2 - a_2}}
+$$
+
+Dono y-axes independent normalization use karte hain jisse unke units aapas me clash nahi karte.
+
+---
 ## 4. Mukhya Batein (Key Takeaways)
 - Seaborn does not replace Matplotlib—it **extends** it. Every Seaborn plot is drawn on Matplotlib `Figure` and `Axes` objects.
 - Always use `sns.set_theme()` at the start of your notebooks to instantly upgrade plot aesthetics.

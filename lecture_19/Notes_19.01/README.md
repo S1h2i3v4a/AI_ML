@@ -113,3 +113,26 @@ plt.show()
    - *Too few bins (underfitting):* Oversimplifies the distribution, hiding modes and clusters.
    - *Too many bins (overfitting):* Creates a jagged, noisy plot dominated by sampling noise.
 3. **Horizontal orientation:** Use `orientation='horizontal'` when comparing against vertical axes or side-by-side marginal distributions.
+
+
+---
+
+## 📐 Mathematical & Statistical Foundation (Histogram Bins)
+
+For a continuous dataset $X = \{x_1, x_2, \dots, x_n\}$, the continuous range $[\min(X), \max(X)]$ is divided into $k$ contiguous intervals of width $\Delta$:
+
+$$
+\boxed{\Delta = \frac{\max(X) - \min(X)}{k}}
+$$
+
+### Optimal Bin Selection Rules:
+1. **Sturges' Rule** (Optimal for symmetric, normally distributed data):
+$$
+\boxed{k = 1 + \lceil \log_2(n) \rceil}
+$$
+
+2. **Freedman-Diaconis Rule** (Robust against heavy tails, skewness, and outliers):
+$$
+\boxed{h = 2 \cdot \frac{\text{IQR}(X)}{n^{1/3}} \qquad\implies\qquad k = \left\lceil \frac{\max(X) - \min(X)}{h} \right\rceil}
+$$
+where $\text{IQR}(X) = Q_3 - Q_1$ represents the sample interquartile range.

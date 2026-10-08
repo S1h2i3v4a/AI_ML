@@ -76,6 +76,17 @@ plt.show()
 
 ---
 
+## 📐 Dual-Axis Affine Transformation Mathematics (`twinx`)
+
+Dual-axis plots superimpose two distinct vertical coordinate mappings $Y_1 \in [a_1, b_1]$ and $Y_2 \in [a_2, b_2]$ over a shared horizontal range $X$:
+
+$$
+\boxed{v_1(y_1) = H \cdot \frac{y_1 - a_1}{b_1 - a_1} \qquad\text{and}\qquad v_2(y_2) = H \cdot \frac{y_2 - a_2}{b_2 - a_2}}
+$$
+
+Each axis executes independent linear scaling onto canvas height $H$ without modifying the numerical values of the alternate metric.
+
+---
 ## 4. Key Takeaways
 - Seaborn does not replace Matplotlib—it **extends** it. Every Seaborn plot is drawn on Matplotlib `Figure` and `Axes` objects.
 - Always use `sns.set_theme()` at the start of your notebooks to instantly upgrade plot aesthetics.

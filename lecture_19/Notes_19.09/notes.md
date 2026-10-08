@@ -77,6 +77,17 @@ plt.show()
 
 ---
 
+## 📐 Shared Axes Domain Synchronization Mathematics
+
+When synchronizing scales across $M$ subplots (`sharex=True`, `sharey=True`), the global viewing domain $\mathcal{D}_X$ is computed as the union interval:
+
+$$
+\boxed{\mathcal{D}_X = \left[ \min_{1 \le m \le M} x_{\min}^{(m)}, \; \max_{1 \le m \le M} x_{\max}^{(m)} \right]}
+$$
+
+This guarantees uniform linear metric scaling across all comparative panes, eliminating visual scale distortion.
+
+---
 ## 4. Key Takeaways
 1. **`fig.supxlabel()` and `fig.supylabel()`:** Replaces repetitive axis labels on every individual subplot, giving a cleaner, publication-grade appearance.
 2. **Unified Axis Scales:** Notice that setting `ax.set_ylim(15, 38)` across all panels allows immediate visual comparison of absolute temperatures (e.g. noticing Delhi is significantly hotter than London).

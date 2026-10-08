@@ -54,6 +54,21 @@ plt.show()
 
 ---
 
+## 📐 Mathematical Formulation of Stack Plots (Area Charts)
+
+A stack plot partitions the total area beneath a cumulative curve into $K$ constituent components $\{y_1(t), y_2(t), \dots, y_K(t)\}$ across sequence $t \in [t_0, t_1]$:
+
+The cumulative baseline functions $S_k(t)$ are defined recursively:
+$$
+\boxed{S_k(t) = \sum_{j=1}^k y_j(t), \quad\text{with } S_0(t) \equiv 0}
+$$
+
+The net area contribution $\mathcal{A}_k$ of each individual category corresponds to the definite integral:
+$$
+\boxed{\mathcal{A}_k = \int_{t_0}^{t_1} y_k(t) \, dt = \int_{t_0}^{t_1} [S_k(t) - S_{k-1}(t)] \, dt}
+$$
+
+---
 ## 4. Key Takeaways & Limitations
 - **Readability Caution:** Because layers are stacked on top of each other, only the bottom-most layer has a flat baseline. Higher layers have curved baselines, making it harder to judge exact numerical values of upper layers.
 - Limit the number of categories to 3–5. Beyond that, the chart becomes cluttered and hard to interpret.

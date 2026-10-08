@@ -75,6 +75,17 @@ plt.show()
 
 ---
 
+## 📐 Grammar of Graphics Semantic Mapping Ka Ganitiya Sutra
+
+Seaborn statistical attributes ko visual dimensions par formal aesthetic mapping $\Phi$ se bind karta hai:
+
+$$
+\boxed{\Phi: \mathcal{D}_1 \times \mathcal{D}_2 \times \mathcal{D}_3 \to \mathbb{R}^2 \times \mathcal{C} \times \mathcal{S}}
+$$
+
+jahan data columns simultaneously spatial position $(x, y)$, color hue $\mathcal{C}$, aur marker style $\mathcal{S}$ me encode hote hain.
+
+---
 ## 4. Mukhya Batein (Key Takeaways) & Best Practices
 - Use **`sns.scatterplot`** to spot bivariate correlation and non-linear patterns.
 - Use **`sns.lineplot`** whenever $x$ represents time series or sequential tracking.

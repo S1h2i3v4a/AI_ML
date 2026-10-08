@@ -40,6 +40,21 @@ import numpy as np
 
 ---
 
+## 📐 Mathematical Transformation Pipeline & Artist Hierarchy
+
+Matplotlib renders graphic elements using a 3-stage coordinate transformation pipeline:
+$$
+\boxed{\mathbf{T}_{\text{total}} = \mathbf{T}_{\text{fig}\to\text{disp}} \circ \mathbf{T}_{\text{axes}\to\text{fig}} \circ \mathbf{T}_{\text{data}\to\text{axes}}}
+$$
+
+Any 2D vector $\mathbf{p}_{\text{data}} = (x, y)^T \in \mathbb{R}^2$ is mapped to physical device pixels $\mathbf{p}_{\text{disp}} \in \mathbb{N}^2$:
+$$
+\boxed{\mathbf{p}_{\text{disp}} = \mathbf{T}_{\text{total}}(\mathbf{p}_{\text{data}})}
+$$
+
+This separation ensures resolution independence: zooming or resizing dynamically recalculates $\mathbf{T}_{\text{axes}\to\text{fig}}$ without mutating the underlying data points.
+
+---
 ## 4. Key Takeaways
 - `pyplot` is a module inside `matplotlib` providing the stateful scripting interface.
 - Always use `import matplotlib.pyplot as plt`.

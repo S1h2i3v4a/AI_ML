@@ -29,3 +29,19 @@ flowchart TD
 
 ## 3. Key Takeaways
 - **The Golden Rule:** Always identify whether your variables are **continuous (quantitative)** or **categorical (qualitative)** before selecting a chart type.
+
+
+---
+
+## 📐 Visual Encoding Channel Capacity & Dimensionality
+
+Information visualization maps raw data attributes $\mathcal{D} = \{d_1, d_2, \dots, d_m\}$ into orthogonal visual channels $\mathcal{V} = \{\text{position}, \text{length}, \text{hue}, \text{area}, \text{shape}\}$:
+
+$$
+\boxed{\Phi: \mathcal{D}_1 \times \mathcal{D}_2 \times \dots \times \mathcal{D}_m \to \mathcal{V}_1 \times \mathcal{V}_2 \times \dots \times \mathcal{V}_m}
+$$
+
+According to Cleveland and McGill's psychophysical hierarchy, positional and length encodings exhibit minimal decoding error $\epsilon$, while area and color encodings have higher perceptual error variance:
+$$
+\boxed{\epsilon_{\text{position}} < \epsilon_{\text{length}} < \epsilon_{\text{angle}} < \epsilon_{\text{area}} < \epsilon_{\text{color intensity}}}
+$$

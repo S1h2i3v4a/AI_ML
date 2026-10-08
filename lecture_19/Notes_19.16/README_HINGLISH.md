@@ -105,3 +105,24 @@ plt.show()
 ### Problem 4: Average Tip Heatmap Pivot Table
 - **Task:** Pivot table of average tip with Rows=`day`, Columns=`time`, annotated heatmap.
 - **Answer:** Sunday Dinner delivers the highest average tip.
+
+
+---
+
+## 📐 Edward Tufte Ka Visual Ganitiya Sutra (Data-Ink & Lie Factor)
+
+Graphics engineering me Edward Tufte (1983) ke do mukhya ganitiya formulas:
+
+### 1. Data-Ink Ratio ($\eta$):
+$$
+\boxed{\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]}
+$$
+
+Uddeshya: Faltu background, grid lines aur 3D chart junk hata kar $\eta \to 1.0$ maximize karna.
+
+### 2. Lie Factor (LF):
+$$
+\boxed{\text{Lie Factor} = \frac{\text{Size of effect shown in graphic}}{\text{Size of effect in data}} = \frac{\dfrac{|G_2 - G_1|}{G_1}}{\dfrac{|D_2 - D_1|}{D_1}}}
+$$
+
+Ek truthful visualization ka $\boxed{\text{Lie Factor} = 1.0 \pm 0.05}$ hona chahiye. Agar $\text{LF} > 1.05$ ya $\text{LF} < 0.95$ ho, toh chart data ko exaggerate ya distort kar raha hota hai.

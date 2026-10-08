@@ -75,3 +75,19 @@ plt.show()
 ## 5. Key Takeaways
 - `vert=False` is especially helpful when dealing with lengthy category names to prevent label overlap.
 - Setting `patch_artist=True` converts the wireframe box into a filled polygon, enabling company branding colors.
+
+
+---
+
+## 📐 Notched Box Plot Median Confidence Interval
+
+Notched box plots provide a visual hypothesis test for comparing medians across groups. The 95% confidence interval notch around median $Q_2$ is derived as:
+
+$$
+\boxed{\text{Notch} = Q_2 \pm 1.57 \cdot \frac{\text{IQR}}{\sqrt{n}}}
+$$
+
+**Decision Rule**: If the notches of two comparative box plots do not overlap, their true medians differ at an approximate 95% statistical confidence level ($\alpha = 0.05$):
+$$
+\boxed{\text{Notch}_A \cap \text{Notch}_B = \emptyset \implies \text{Medians differ significantly}}
+$$

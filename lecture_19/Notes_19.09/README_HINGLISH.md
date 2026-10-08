@@ -85,6 +85,17 @@ plt.show()
 
 ---
 
+## 📐 Shared Axes Synchronization Ka Ganitiya Sutra
+
+Multiple subplots me scales synchronize karne par (`sharex=True`, `sharey=True`), unified viewing domain sabhi subplots ka union interval hota hai:
+
+$$
+\boxed{\mathcal{D}_X = \left[ \min_{1 \le m \le M} x_{\min}^{(m)}, \; \max_{1 \le m \le M} x_{\max}^{(m)} \right]}
+$$
+
+Isse sabhi charts par data ek samaan scale par compare hota hai.
+
+---
 ## 4. Mukhya Batein (Key Takeaways)
 1. **`fig.supxlabel()` and `fig.supylabel()`:** Replaces repetitive axis labels on every individual subplot, giving a cleaner, publication-grade appearance.
 2. **Unified Axis Scales:** Notice that setting `ax.set_ylim(15, 38)` across all panels allows immediate visual comparison of absolute temperatures (e.g. noticing Delhi is significantly hotter than London).

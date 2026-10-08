@@ -74,6 +74,22 @@ plt.show()
 
 ---
 
+## 📐 Annular Sector Geometry of Donut Charts
+
+A Donut Chart is mathematically constructed as an annulus (concentric circular ring) where a hollow core of inner radius $r_{\text{in}}$ is subtracted from an outer circle of radius $r_{\text{out}}$:
+
+$$
+\boxed{r_{\text{in}} = (1 - w) \cdot r_{\text{out}} \quad \text{where } w \in (0, 1] \text{ is the relative ring width}}
+$$
+
+The net area of category wedge $i$ subtending central angle $\theta_i$:
+$$
+\boxed{A_i = \frac{\theta_i}{360^\circ} \cdot \pi \left(r_{\text{out}}^2 - r_{\text{in}}^2\right) = \pi \left(r_{\text{out}}^2 - r_{\text{in}}^2\right) \cdot \frac{p_i}{100}}
+$$
+
+Because human perception estimates length and width more accurately than angular areas, donut charts reduce cognitive distortion compared to standard pie charts.
+
+---
 ## 4. Key Takeaways
 - Setting `wedgeprops=dict(width=0.4)` automatically turns a pie chart into a modern **Donut Chart**, which is widely preferred in corporate dashboards because the empty center can display the total budget ($920K).
 - Use `startangle=90` so the largest slice starts at 12 o'clock and rotates clockwise.
