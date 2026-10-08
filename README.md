@@ -97,6 +97,75 @@ Advanced statistical visualizations, distributions, five-number summary, object-
 
 ---
 
+## 📐 Mathematical Formulations & Statistical Expressions
+
+The mathematical formulations across these visualization modules adhere to formal academic and textbook definitions:
+
+### 1. Data-Ink Principle (Tufte Formulation)
+The efficiency of a visual graphic is formally measured by the **Data-Ink Ratio**:
+
+$$
+\boxed{
+\text{Data-Ink Ratio} = \frac{\text{Data-Ink}}{\text{Total Ink Used in Graphic}} = 1.0 - \text{Proportion of Graph that Can Be Erased Without Loss of Data}
+}
+$$
+
+---
+
+### 2. Grouped Bar Clustered Coordinate Mathematics
+For $K$ series across $N$ discrete categories with a non-overlap bar width constraint $w < \frac{1}{K}$:
+
+$$
+\mathbf{X} = [0, 1, 2, \dots, N-1] = \text{np.arange}(N)
+$$
+
+$$
+\begin{aligned}
+\text{Position}_{\text{Series}_1}(i) &= X_i - \frac{w}{2} \\[6pt]
+\text{Position}_{\text{Series}_2}(i) &= X_i + \frac{w}{2} \\[6pt]
+\text{Tick Coordinate } (X_{\text{tick}}) &= X_i = \frac{\text{Position}_{\text{Series}_1}(i) + \text{Position}_{\text{Series}_2}(i)}{2}
+\end{aligned}
+$$
+
+---
+
+### 3. Tukey's Five-Number Summary & Box Plot Outlier Fences
+Given an ordered sample $\mathcal{D} = \{x_{(1)}, x_{(2)}, \dots, x_{(n)}\}$, the Interquartile Range ($\text{IQR}$) and whisker fences are defined as:
+
+$$
+\boxed{\text{IQR} = Q_3 - Q_1}
+$$
+
+$$
+\begin{aligned}
+\text{Lower Whisker Fence} &= Q_1 - 1.5 \times \text{IQR} \\
+\text{Upper Whisker Fence} &= Q_3 + 1.5 \times \text{IQR}
+\end{aligned}
+$$
+
+$$
+\text{Outlier Set } \mathcal{O} = \left\{ x_i \in \mathcal{D} \;\middle|\; x_i < Q_1 - 1.5 \times \text{IQR} \;\lor\; x_i > Q_3 + 1.5 \times \text{IQR} \right\}
+$$
+
+---
+
+### 4. Histogram Bin Estimation Models
+For continuous feature distribution partitioning:
+
+- **Sturges' Rule** (Normal distributions):
+  $$
+  k = \left\lceil 1 + \log_2(n) \right\rceil
+  $$
+
+- **Freedman-Diaconis Rule** (Robust against outliers):
+  $$
+  h = 2 \cdot \frac{\text{IQR}}{\sqrt[3]{n}}, \qquad k = \left\lceil \frac{\max(x) - \min(x)}{h} \right\rceil
+  $$
+
+Where $n$ is total sample count, $h$ is optimal bin width, and $k$ is the total bin count.
+
+---
+
 ## 🗺️ 60-Day Curriculum Roadmap
 
 The repository is structured to take a learner from foundational mathematics and Python programming to cutting-edge AI architectures and real-world deployment:

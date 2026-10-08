@@ -12,7 +12,16 @@ This document provides exhaustive, production-grade solutions to all three case-
   Human perception naturally interprets connected lines as continuous temporal progressions (rates of change, velocity, acceleration). When categorical bar charts are used for time-series data, discrete vertical bars imply isolated, independent events rather than an evolving trajectory.
 - **Anscombe's Quartet & Data-Ink Ratio**:
   Tabular summaries (e.g., printed spreadsheets) fail to convey inflection points. Two datasets can share identical mean and variance yet display drastically divergent trends. A multi-series line plot maximizes Edward Tufte's **Data-Ink Ratio**:
-  $$\text{Data-Ink Ratio} = \frac{\text{Data-Ink}}{\text{Total ink used in plot}}$$
+
+  $$
+  \boxed{
+  \text{Data-Ink Ratio} = \frac{\text{Data-Ink}}{\text{Total Ink Used in Graphic}} = 1.0 - \text{Proportion of Eraseable Non-Data Ink}
+  }
+  $$
+
+  Where:
+  - $\text{Data-Ink}$: Non-redundant ink dedicated strictly to conveying information about the dataset (e.g., trends, markers).
+  - $\text{Total Ink}$: All graphic marks including gridlines, background fill, frames, tick borders, and text labels.
   It minimizes cognitive friction and enables executive decision-makers to immediately spot the growth divergence between FY 2023 and FY 2024.
 
 ---
@@ -62,14 +71,36 @@ plt.show()
 # 📌 Solution to Case 2: Enterprise Financial Audit & Spending Variance
 
 ### 1. Mathematical Coordinate Offset Derivation
-When comparing $K$ series (e.g., $K=2$: Budget vs. Spend) across $N$ categorical departments:
-- Let the base categorical indices be:
-  $$X = [0, 1, 2, \dots, N-1] = \text{np.arange}(N)$$
-- Choose a bar width $w < \frac{1}{K}$ (e.g., $w = 0.35$ or $0.38$).
-- To center the cluster around index $i$:
-  $$\text{Pos}_{\text{Budget}}(i) = i - \frac{w}{2}$$
-  $$\text{Pos}_{\text{Spend}}(i) = i + \frac{w}{2}$$
-- **Centering Ticks**: Categorical axis ticks (`xticks` or `yticks`) are placed strictly at the unshifted coordinate $X$. This centers the department label directly between the two comparative bars.
+When comparing $K$ series (e.g., $K=2$: Budget vs. Spend) across $N$ discrete categorical departments:
+
+#### Step 1: Base Categorical Coordinate Vector
+Let the base discrete indices along the categorical axis be:
+$$
+\mathbf{X} = [0, 1, 2, \dots, N - 1] = \text{np.arange}(N)
+$$
+
+#### Step 2: Bar Width & Non-Overlap Constraint
+To guarantee zero collision between neighboring department clusters, the bar width $w$ must satisfy:
+$$
+K \cdot w < 1.0 \implies w < \frac{1}{K} = \frac{1}{2} = 0.5 \quad (\text{e.g., } w = 0.38)
+$$
+
+#### Step 3: Symmetric Center-Offset Calculations
+To position the two bars symmetrically around each department's center index $X_i$:
+$$
+\begin{aligned}
+\text{Coordinate}_{\text{Budget}}(i) &= X_i - \frac{w}{2} \\[6pt]
+\text{Coordinate}_{\text{Spend}}(i) &= X_i + \frac{w}{2}
+\end{aligned}
+$$
+
+#### Step 4: Tick Alignment Criterion
+To ensure that the department name label is perfectly centered between both bars:
+$$
+\boxed{
+\text{Tick Coordinate } (X_{\text{tick}}) = X_i = \frac{\text{Coordinate}_{\text{Budget}}(i) + \text{Coordinate}_{\text{Spend}}(i)}{2}
+}
+$$
 
 ---
 
@@ -130,13 +161,35 @@ plt.show()
 # 📌 Solution to Case 3: Venture Capital Portfolio & Sector Allocation
 
 ### 1. 4D Visual Encoding & Alpha Transparency
-- **4D Mapping Schema**:
-  1. **Horizontal Coordinate ($X$)**: Funding Amount ($M)
-  2. **Vertical Coordinate ($Y$)**: Annual Growth Rate (%)
-  3. **Marker Area ($s$)**: Team Size (Headcount $\times$ scaling factor)
-  4. **Marker Color ($c$)**: Valuation Tier (Mapped via continuous colormap `cmap='viridis'`)
-- **Mitigating Overplotting with `alpha`**:
-  When dozens of points share similar coordinates, solid markers obscure overlapping points completely. By setting `alpha=0.75` (or lower), overlapping regions become darker, visually alerting analysts to high-density clusters.
+In multivariate visualization, a 2D Cartesian scatter canvas is formally extended to represent 4-dimensional observations:
+
+$$
+\mathcal{P}_i = \left( X_i, \; Y_i, \; S_i, \; C_i \right) \in \mathbb{R}^4
+$$
+
+Where the mathematical encodings are formally mapped as:
+$$
+\begin{aligned}
+X_i &= \text{Total Funding Raised } (\$M) \in \mathbb{R}^+ \\[6pt]
+Y_i &= \text{Annual Revenue Growth Rate } (\%) \in \mathbb{R} \\[6pt]
+S_i &= k \cdot \text{Headcount}_i \quad (k = 2.5, \; \text{Marker Area Scaling Function}) \\[6pt]
+C_i &= \text{Valuation Tier}_i \in [1, 10] \xrightarrow{\text{cmap: viridis}} \mathbf{c}_i \in [0, 1]^3 \; (\text{RGB Color Vector})
+\end{aligned}
+$$
+
+#### Optical Density & Cluster Overplotting via Alpha ($\alpha$):
+When $m$ distinct observation points overlap at identical coordinates, the transmitted background luminance $I$ through $m$ overlapping circular markers is governed by the discrete Beer-Lambert extinction model:
+$$
+\boxed{
+I_{\text{transmitted}} = I_0 \cdot (1 - \alpha)^m
+}
+$$
+Where:
+- $I_0$: Initial background intensity.
+- $\alpha \in (0, 1]$: Matplotlib alpha transparency coefficient (`alpha=0.75`).
+- $m$: Local cluster density of overlapping points.
+
+As density $m$ increases, local luminance decreases exponentially, visually revealing dense clusters to human perception.
 
 ---
 
