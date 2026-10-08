@@ -27,6 +27,9 @@ AI-ML/
 ├── lecture_01/ ... lecture_17/   # (Foundations, Python & Numerical Computing)
 ├── lecture_18/                   # Data Visualization (Part 1 - Matplotlib Fundamentals)
 │   ├── Notes_18.01/ to 18.18/    # Sub-topics with notes.md, notes.pdf, .ipynb
+│   ├── Practice_Problems/        # Case Studies & Challenges (Questions & Solutions)
+│   │   ├── Questions/            # questions.md, questions.pdf, questions.ipynb
+│   │   └── Solutions/            # solutions.md, solutions.pdf, solutions.ipynb
 │   └── reference_materials/      # Cheatsheets & references
 ├── lecture_19/                   # Data Visualization (Part 2 - Advanced Matplotlib & Seaborn)
 │   ├── Notes_19.01/ to 19.16/    # Sub-topics with notes.md, notes.pdf, .ipynb, diagrams
@@ -61,6 +64,12 @@ Focuses on data visualization theory, the anatomy of plots, and core 2D plotting
 | **18.16** | Multiple Datasets on Scatter Plots | Multi-class scatter plots, category-wise legend separation | [Notes](lecture_18/Notes_18.16/notes.md) \| [PDF](lecture_18/Notes_18.16/notes.pdf) \| [Notebook](lecture_18/Notes_18.16/lecture_18_16.ipynb) |
 | **18.17** | Pie Charts (`plt.pie`) | Composition plotting, `autopct`, `startangle`, shadow, limitations | [Notes](lecture_18/Notes_18.17/notes.md) \| [PDF](lecture_18/Notes_18.17/notes.pdf) \| [Notebook](lecture_18/Notes_18.17/lecture_18_17.ipynb) |
 | **18.18** | Advanced Pie Charts | Donut charts (center circle wedge), `explode` slices, custom palettes | [Notes](lecture_18/Notes_18.18/notes.md) \| [PDF](lecture_18/Notes_18.18/notes.pdf) \| [Notebook](lecture_18/Notes_18.18/lecture_18_18.ipynb) |
+
+
+> [!TIP]
+> **🧪 Day 18 Comprehensive Case Studies & Practice Problem Set:**
+> - 📝 **Problem Statements:** [questions.md](lecture_18/Practice_Problems/Questions/questions.md) \| [questions.pdf](lecture_18/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_18/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions:** [solutions.md](lecture_18/Practice_Problems/Solutions/solutions.md) \| [solutions.pdf](lecture_18/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_18/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
 
