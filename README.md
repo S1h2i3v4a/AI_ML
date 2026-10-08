@@ -102,29 +102,34 @@ Advanced statistical visualizations, distributions, five-number summary, object-
 The mathematical formulations across these visualization modules adhere to formal academic and textbook definitions:
 
 ### 1. Data-Ink Principle (Tufte Formulation)
-The efficiency of a visual graphic is formally measured by the **Data-Ink Ratio**:
+The efficiency of a visual graphic is formally measured by the **Data-Ink Ratio** $\eta$:
 
 $$
 \boxed{
-\text{Data-Ink Ratio} = \frac{\text{Data-Ink}}{\text{Total Ink Used in Graphic}} = 1.0 - \text{Proportion of Graph that Can Be Erased Without Loss of Data}
+\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}}
 }
 $$
+
+where $\mathcal{I}_{\text{data}}$ represents informative data-ink, $\mathcal{I}_{\text{total}}$ represents total graphic ink, and $\eta \in (0, 1]$.
 
 ---
 
 ### 2. Grouped Bar Clustered Coordinate Mathematics
-For $K$ series across $N$ discrete categories with a non-overlap bar width constraint $w < \frac{1}{K}$:
+For $K = 2$ comparative series across $N$ discrete categories with bar width constraint $w < \frac{1}{K} = 0.5$:
+
+Let the baseline category coordinate be $x_i = i$ for $i \in \{0, 1, \dots, N-1\}$. The shifted bar coordinates $(y_{1, i}, y_{2, i})$ follow the symmetric piecewise system:
 
 $$
-\mathbf{X} = [0, 1, 2, \dots, N-1] = \text{np.arange}(N)
+\begin{cases}
+y_{1, i} = x_i - \dfrac{w}{2} & \quad (\text{Series 1: Budget}) \\[12pt]
+y_{2, i} = x_i + \dfrac{w}{2} & \quad (\text{Series 2: Spend})
+\end{cases}
 $$
 
+The category label tick mark $t_i$ satisfies the central symmetry theorem:
+
 $$
-\begin{aligned}
-\text{Position}_{\text{Series}_1}(i) &= X_i - \frac{w}{2} \\[6pt]
-\text{Position}_{\text{Series}_2}(i) &= X_i + \frac{w}{2} \\[6pt]
-\text{Tick Coordinate } (X_{\text{tick}}) &= X_i = \frac{\text{Position}_{\text{Series}_1}(i) + \text{Position}_{\text{Series}_2}(i)}{2}
-\end{aligned}
+\boxed{t_i = \frac{y_{1, i} + y_{2, i}}{2} = x_i}
 $$
 
 ---

@@ -11,6 +11,8 @@ __pycache__/
 *.tmp
 *.log
 temp_*.html
+*_render_temp.html
+render_pdf.py
 *.bak
 
 # OS generated files

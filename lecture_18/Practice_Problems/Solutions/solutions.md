@@ -10,18 +10,19 @@ This document provides exhaustive, production-grade solutions to all three case-
 ### 1. Perception & Chart Selection Theory
 - **Visual Encoding of Temporal Continuity**:
   Human perception naturally interprets connected lines as continuous temporal progressions (rates of change, velocity, acceleration). When categorical bar charts are used for time-series data, discrete vertical bars imply isolated, independent events rather than an evolving trajectory.
-- **Anscombe's Quartet & Data-Ink Ratio**:
-  Tabular summaries (e.g., printed spreadsheets) fail to convey inflection points. Two datasets can share identical mean and variance yet display drastically divergent trends. A multi-series line plot maximizes Edward Tufte's **Data-Ink Ratio**:
+- **Anscombe's Quartet & Data-Ink Ratio Formulation**:
+  Tabular summaries (e.g., printed spreadsheets) fail to convey inflection points. Two datasets can share identical mean and variance yet display drastically divergent trends. A multi-series line plot maximizes Edward Tufte's **Data-Ink Ratio** $\eta$:
 
   $$
   \boxed{
-  \text{Data-Ink Ratio} = \frac{\text{Data-Ink}}{\text{Total Ink Used in Graphic}} = 1.0 - \text{Proportion of Eraseable Non-Data Ink}
+  \eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}}
   }
   $$
 
   Where:
-  - $\text{Data-Ink}$: Non-redundant ink dedicated strictly to conveying information about the dataset (e.g., trends, markers).
-  - $\text{Total Ink}$: All graphic marks including gridlines, background fill, frames, tick borders, and text labels.
+  - $\mathcal{I}_{\text{data}}$: Integral of non-redundant visual elements dedicated strictly to displaying data information (trendlines, data points, markers).
+  - $\mathcal{I}_{\text{total}}$: Total ink area of the visual display (including background, borders, ticks, and grids).
+  - Domain: $\eta \in (0, 1]$, where optimal graphical efficiency is achieved as $\eta \to 1.0$.
   It minimizes cognitive friction and enables executive decision-makers to immediately spot the growth divergence between FY 2023 and FY 2024.
 
 ---
@@ -71,36 +72,37 @@ plt.show()
 # 📌 Solution to Case 2: Enterprise Financial Audit & Spending Variance
 
 ### 1. Mathematical Coordinate Offset Derivation
-When comparing $K$ series (e.g., $K=2$: Budget vs. Spend) across $N$ discrete categorical departments:
+Let $N$ denote the total number of categorical entities (departments), and let $K = 2$ denote the number of comparative series ($\text{Series}_1$: Budget, $\text{Series}_2$: Spend).
 
-#### Step 1: Base Categorical Coordinate Vector
-Let the base discrete indices along the categorical axis be:
+#### Definition 1 (Baseline Categorical Domain):
+The discrete baseline index of the $i$-th category along the category axis is given by:
 $$
-\mathbf{X} = [0, 1, 2, \dots, N - 1] = \text{np.arange}(N)
-$$
-
-#### Step 2: Bar Width & Non-Overlap Constraint
-To guarantee zero collision between neighboring department clusters, the bar width $w$ must satisfy:
-$$
-K \cdot w < 1.0 \implies w < \frac{1}{K} = \frac{1}{2} = 0.5 \quad (\text{e.g., } w = 0.38)
+x_i = i, \quad \forall i \in \{0, 1, 2, \dots, N-1\}
 $$
 
-#### Step 3: Symmetric Center-Offset Calculations
-To position the two bars symmetrically around each department's center index $X_i$:
+#### Condition 1 (Non-Overlapping Criterion):
+Let $w$ denote the uniform bar width. To guarantee zero collision between adjacent departmental clusters, $w$ must satisfy the inequality:
 $$
-\begin{aligned}
-\text{Coordinate}_{\text{Budget}}(i) &= X_i - \frac{w}{2} \\[6pt]
-\text{Coordinate}_{\text{Spend}}(i) &= X_i + \frac{w}{2}
-\end{aligned}
+K \cdot w < 1.0 \implies w < \frac{1}{K} = \frac{1}{2} = 0.5 \quad \left(\text{Chosen: } w = 0.38\right)
 $$
 
-#### Step 4: Tick Alignment Criterion
-To ensure that the department name label is perfectly centered between both bars:
+#### System of Shifted Coordinate Equations:
+The shifted position coordinates $\left(y_{1, i}, y_{2, i}\right)$ for category $i$ are determined by the symmetric piecewise system:
+$$
+\begin{cases}
+y_{1, i} = x_i - \dfrac{w}{2} & \quad \left(\text{Series 1: Budget}\right) \\[12pt]
+y_{2, i} = x_i + \dfrac{w}{2} & \quad \left(\text{Series 2: Spend}\right)
+\end{cases}
+$$
+
+#### Center Tick Alignment Theorem:
+To ensure the categorical tick mark $t_i$ lies precisely equidistant between the two comparative bars:
 $$
 \boxed{
-\text{Tick Coordinate } (X_{\text{tick}}) = X_i = \frac{\text{Coordinate}_{\text{Budget}}(i) + \text{Coordinate}_{\text{Spend}}(i)}{2}
+t_i = \frac{y_{1, i} + y_{2, i}}{2} = \frac{\left(x_i - \dfrac{w}{2}\right) + \left(x_i + \dfrac{w}{2}\right)}{2} = x_i
 }
 $$
+Thus, category labels are rendered directly at the unshifted coordinate $x_i$, guaranteeing perfect optical symmetry.
 
 ---
 
@@ -167,14 +169,14 @@ $$
 \mathcal{P}_i = \left( X_i, \; Y_i, \; S_i, \; C_i \right) \in \mathbb{R}^4
 $$
 
-Where the mathematical encodings are formally mapped as:
+Where each attribute is mathematically encoded via the channel mapping:
 $$
-\begin{aligned}
-X_i &= \text{Total Funding Raised } (\$M) \in \mathbb{R}^+ \\[6pt]
-Y_i &= \text{Annual Revenue Growth Rate } (\%) \in \mathbb{R} \\[6pt]
-S_i &= k \cdot \text{Headcount}_i \quad (k = 2.5, \; \text{Marker Area Scaling Function}) \\[6pt]
-C_i &= \text{Valuation Tier}_i \in [1, 10] \xrightarrow{\text{cmap: viridis}} \mathbf{c}_i \in [0, 1]^3 \; (\text{RGB Color Vector})
-\end{aligned}
+\begin{cases}
+X_i \in \mathbb{R}^+ & \quad (\text{Total Funding Raised in \$M}) \\[6pt]
+Y_i \in \mathbb{R} & \quad (\text{Annual Revenue Growth Rate in \%}) \\[6pt]
+S_i = \kappa \cdot h_i & \quad (\text{Marker Area Scaling, Headcount } h_i, \; \kappa = 2.5) \\[6pt]
+C_i = \phi(v_i) & \quad (\text{Colormap Mapping: } v_i \in [1, 10] \xrightarrow{\text{viridis}} \mathbf{c}_i \in [0, 1]^3)
+\end{cases}
 $$
 
 #### Optical Density & Cluster Overplotting via Alpha ($\alpha$):
