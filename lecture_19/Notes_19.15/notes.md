@@ -1,0 +1,94 @@
+# Day 19 - Lecture 19.15: Relational & Matrix Plots - Heatmaps
+
+## 1. Overview & Purpose
+A **Heatmap** represents 2D tabular or matrix data where individual values are encoded as **color variations**.
+Primary use cases in Machine Learning and Data Science:
+1. **Correlation Matrix:** Detecting multi-collinearity and linear relationships between feature columns.
+2. **Pivot Tables & Cross-Tabulations:** Analyzing interactions between two categorical dimensions (e.g., Passengers across Years and Months).
+3. **Confusion Matrices:** Evaluating classification model performance.
+
+---
+
+## 2. Pivot Tables & Matrix Transformation
+
+Raw time-series data often comes in "long form":
+| year | month | passengers |
+| :--- | :--- | :--- |
+| 1949 | Jan | 112 |
+| 1949 | Feb | 118 |
+
+To plot a heatmap, we must reshape it into "wide/matrix form" using Pandas **`.pivot()`**:
+```python
+flights_pivot = flights.pivot(index="month", columns="year", values="passengers")
+```
+$$\begin{matrix} & 1949 & 1950 & \dots & 1960 \\ \text{Jan} & 112 & 115 & \dots & 417 \\ \text{Feb} & 118 & 126 & \dots & 391 \end{matrix}$$
+
+---
+
+## 3. Key Parameters of `sns.heatmap()`
+
+```python
+sns.heatmap(
+    data,                # 2D rectangular dataset (DataFrame or 2D array)
+    annot=True,          # If True, prints numerical values inside each cell
+    fmt="d",             # Format string: "d" for integer, ".2f" for 2 decimals
+    cmap="coolwarm",     # Colormap ('viridis', 'coolwarm', 'YlGnBu', 'magma')
+    linewidths=0.5,      # Width of lines separating each cell
+    cbar=True            # Show colorbar legend
+)
+```
+
+---
+
+## 4. Code Implementation
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# 1. Pivot Table Heatmap: Flight Passengers
+flights = sns.load_dataset("flights")
+flights_pivot = flights.pivot(index="month", columns="year", values="passengers")
+
+plt.figure(figsize=(11, 7))
+sns.heatmap(
+    flights_pivot,
+    cmap="YlGnBu",
+    annot=True,
+    fmt="d",
+    linewidths=0.5
+)
+plt.title("Monthly Airline Passengers from 1949 to 1960", fontsize=15, fontweight="bold")
+plt.xlabel("Year", fontsize=12)
+plt.ylabel("Month", fontsize=12)
+plt.tight_layout()
+plt.show()
+
+# 2. Correlation Matrix Heatmap: Tips Dataset
+tips = sns.load_dataset("tips")
+# Select only numeric columns for correlation
+numeric_tips = tips.select_dtypes(include=['float64', 'int64'])
+corr_matrix = numeric_tips.corr()
+
+plt.figure(figsize=(7, 5))
+sns.heatmap(
+    corr_matrix,
+    cmap="coolwarm",
+    annot=True,
+    fmt=".2f",
+    vmin=-1, vmax=1,
+    center=0,
+    square=True
+)
+plt.title("Correlation Matrix (Tips Dataset)", fontsize=14, fontweight="bold")
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 5. Key Takeaways
+- **Diverging vs. Sequential Colormaps:**
+  - For **Correlations** (ranging from $-1$ to $+1$), use a **diverging colormap** like `coolwarm` with `center=0`.
+  - For **Magnitudes / Counts** (ranging from $0$ to large values), use a **sequential colormap** like `YlGnBu` or `viridis`.
+- Always set `fmt="d"` for integers and `fmt=".2f"` for floats; otherwise, scientific notation will clutter cells.

@@ -1,0 +1,49 @@
+# Day 18 - Lecture 18.4: Important Plot Methods
+
+## 1. Overview & Core Functions
+To turn raw lines into meaningful figures, Matplotlib provides essential helper methods that label, scale, and display the plot:
+
+| Method | Purpose |
+| :--- | :--- |
+| `plt.plot(x, y)` | Draws line plots and markers connecting coordinates |
+| `plt.title("...")` | Sets the main title centered above the plot |
+| `plt.xlabel("...")` | Sets descriptive label for the horizontal axis |
+| `plt.ylabel("...")` | Sets descriptive label for the vertical axis |
+| `plt.grid(True)` | Displays grid lines to facilitate reading exact values |
+| `plt.xlim(min, max)` | Sets manual boundaries for the X-axis |
+| `plt.ylim(min, max)` | Sets manual boundaries for the Y-axis |
+| `plt.show()` | Flushes and renders the figure to the screen / notebook |
+
+---
+
+## 2. Practical Case Study: Oscar Winner Revenues
+
+Tracking the box office revenue of Academy Award (Oscar) Best Picture winners:
+- 2008: *The Dark Knight* ($1005M)
+- 2009: *The Hurt Locker* ($170M)
+- 2010: *The King's Speech* ($427M)
+- 2011: *The Artist* ($133M)
+- 2012: *Argo* ($232M)
+
+```python
+import matplotlib.pyplot as plt
+
+oscar_years = [2008, 2009, 2010, 2011, 2012]
+oscar_revenue = [1005, 170, 427, 133, 232]  # in $M
+
+plt.figure(figsize=(8, 5))
+plt.plot(oscar_years, oscar_revenue)
+
+# Adding labels and title
+plt.title("Oscar Years vs Revenue (in $M)", fontsize=14, fontweight='bold')
+plt.xlabel("Years", fontsize=12)
+plt.ylabel("Revenue (in $M)", fontsize=12)
+plt.grid(True, linestyle=':', alpha=0.6)
+plt.show()
+```
+
+---
+
+## 3. Key Takeaways
+- Without `xlabel` and `ylabel`, a chart is uninterpretable to stakeholders. Always include units (e.g. `(in $M)` or `(in kg)`).
+- Calling `plt.show()` tells Matplotlib that figure definition is finished and ready for display.
