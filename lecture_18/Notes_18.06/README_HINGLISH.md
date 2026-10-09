@@ -93,6 +93,7 @@ $$
 $$
 
 Physical canvas ($W \times H$) par data slope ka optical aspect ratio ($\text{AR}$):
+
 $$
 \boxed{\text{AR} = \left(\frac{y_{\max} - y_{\min}}{x_{\max} - x_{\min}}\right) \cdot \left(\frac{W}{H}\right)}
 $$

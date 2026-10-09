@@ -96,6 +96,7 @@ $$
 $$
 
 **Decision Rule**: If the notches of two comparative box plots do not overlap, their true medians differ at an approximate 95% statistical confidence level ($\alpha = 0.05$):
+
 $$
 \boxed{\text{Notch}_A \cap \text{Notch}_B = \emptyset \implies \text{Medians differ significantly}}
 $$

@@ -86,6 +86,7 @@ $$
 where data variables map simultaneously to spatial coordinates $(x, y)$, color space $\mathcal{C}$ (hue), and geometric glyph styles $\mathcal{S}$ (marker/style).
 
 ---
+
 ## 4. Key Takeaways & Best Practices
 - Use **`sns.scatterplot`** to spot bivariate correlation and non-linear patterns.
 - Use **`sns.lineplot`** whenever $x$ represents time series or sequential tracking.

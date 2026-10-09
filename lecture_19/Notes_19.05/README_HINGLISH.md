@@ -96,6 +96,7 @@ $$
 $$
 
 **Hypothesis Testing Rule**: Agar do box plots ke notches aapas me overlap nahi karte, toh lagbhag 95% statistical confidence level par dono medians significantly alag hain:
+
 $$
 \boxed{\text{Notch}_A \cap \text{Notch}_B = \emptyset \implies \text{Medians differ significantly}}
 $$

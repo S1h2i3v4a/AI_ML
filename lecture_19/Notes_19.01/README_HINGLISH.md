@@ -127,12 +127,15 @@ $$
 
 ### Optimal Bins Calculate Karne Ke Standard Niyam:
 1. **Sturges' Formula** (Normal distribution ke liye optimal):
+
 $$
 \boxed{k = 1 + \lceil \log_2(n) \rceil}
 $$
 
 2. **Freedman-Diaconis Rule** (Skewed data aur outliers ke against robust):
+
 $$
 \boxed{h = 2 \cdot \frac{\text{IQR}(X)}{n^{1/3}} \qquad\implies\qquad k = \left\lceil \frac{\max(X) - \min(X)}{h} \right\rceil}
 $$
+
 jahan $\text{IQR}(X) = Q_3 - Q_1$ Interquartile Range hai.

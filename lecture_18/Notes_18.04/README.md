@@ -61,13 +61,14 @@ plt.show()
 
 ## 📐 Mathematical Piecewise Linear Spline & Path Length
 
-A continuous line plot approximates continuous function $y = f(x)$ from ordered discrete samples $D = \{(x_0, y_0), (x_1, y_1), \dots, (x_{n-1}, y_{n-1})\}$ using piecewise linear interpolation:
+A continuous line plot reconstructs a functional curve from ordered discrete observations $D = \{(x_0, y_0), (x_1, y_1), \dots, (x_{n-1}, y_{n-1})\}$ using piecewise linear interpolation:
 
 $$
 \boxed{\mathcal{L}(x) = y_i + \frac{y_{i+1} - y_i}{x_{i+1} - x_i}(x - x_i), \quad \forall x \in [x_i, x_{i+1}]}
 $$
 
-The total Euclidean path length $S$ of the rendered line across the canvas is given by:
+The total Euclidean path length $S$ of the plotted trajectory across the coordinate plane is:
+
 $$
 \boxed{S = \sum_{i=0}^{n-2} \sqrt{(x_{i+1} - x_i)^2 + (y_{i+1} - y_i)^2}}
 $$

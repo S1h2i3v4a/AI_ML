@@ -91,6 +91,7 @@ $$
 $$
 
 The net area of category wedge $i$ subtending central angle $\theta_i$:
+
 $$
 \boxed{A_i = \frac{\theta_i}{360^\circ} \cdot \pi \left(r_{\text{out}}^2 - r_{\text{in}}^2\right) = \pi \left(r_{\text{out}}^2 - r_{\text{in}}^2\right) \cdot \frac{p_i}{100}}
 $$
@@ -98,6 +99,7 @@ $$
 Because human perception estimates length and width more accurately than angular areas, donut charts reduce cognitive distortion compared to standard pie charts.
 
 ---
+
 ## 4. Key Takeaways
 - Setting `wedgeprops=dict(width=0.4)` automatically turns a pie chart into a modern **Donut Chart**, which is widely preferred in corporate dashboards because the empty center can display the total budget ($920K).
 - Use `startangle=90` so the largest slice starts at 12 o'clock and rotates clockwise.

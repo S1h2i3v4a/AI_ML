@@ -62,18 +62,20 @@ plt.show()
 
 ## 📐 Horizontal aur Stacked Bar Charts Ka Ganitiya Sutra
 
-Horizontal bar charts me length horizontal hoti hai aur category vertical axis par hoti hai:
+Horizontal bar charts me category vertical axis par aur magnitude horizontal axis par hota hai:
 
 $$
 \boxed{\mathcal{R}_i = [0, \; x_i] \times \left[ y_i - \frac{h}{2}, \; y_i + \frac{h}{2} \right]}
 $$
 
-Stacked bar charts me $k$-th layer pichli sabhi layers ke cumulative sum ke upar banti hai:
+Stacked bar charts me $k$-th segment pichle sabhi segments ke cumulative sum ke upar banta hai:
+
 $$
 \boxed{y_{k, i}^{(\text{bottom})} = \sum_{j=1}^{k-1} h_{j, i} \qquad\text{aur}\qquad y_{k, i}^{(\text{top})} = \sum_{j=1}^k h_{j, i}}
 $$
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - Use `plt.barh` whenever you have $\ge 7$ categories or when category strings exceed 10 characters.
 - Invert the y-axis if desired (`plt.gca().invert_yaxis()`) to display the highest ranked category at the very top.

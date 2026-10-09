@@ -86,15 +86,16 @@ plt.show()
 
 ## 📐 Axis Range Discretization & Aspect Ratio Mathematics
 
-Grid and tick line layout along an axis interval $[x_{\min}, x_{\max}]$ with $k$ major tick divisions follows uniform discretization:
+Grid and tick interval placement along continuous interval $[x_{\min}, x_{\max}]$ with $k$ major ticks follows uniform discretization:
 
 $$
 \boxed{\Delta x = \frac{x_{\max} - x_{\min}}{k - 1}}
 $$
 
-The optical aspect ratio ($\text{AR}$) of the data representation on a figure canvas of physical width $W$ and height $H$ is:
+The optical aspect ratio ($\text{AR}$) of the visual data curve on a canvas of physical width $W$ and height $H$ is:
+
 $$
 \boxed{\text{AR} = \left(\frac{y_{\max} - y_{\min}}{x_{\max} - x_{\min}}\right) \cdot \left(\frac{W}{H}\right)}
 $$
 
-Maintaining an aspect ratio close to $1.0$ (or banking to $45^\circ$) minimizes visual slope perception distortion.
+Maintaining an aspect ratio close to $1.0$ (or banking slopes to $45^\circ$) minimizes perceptual error in trend judgment.

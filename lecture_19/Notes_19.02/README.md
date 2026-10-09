@@ -80,6 +80,7 @@ $$
 $$
 
 The sum of rectangular bar areas satisfies the fundamental probability axiom:
+
 $$
 \boxed{\sum_{j=1}^k f_j \cdot \Delta_j = \sum_{j=1}^k \left(\frac{c_j}{n \cdot \Delta_j}\right) \Delta_j = \frac{1}{n} \sum_{j=1}^k c_j = \frac{n}{n} = 1.0}
 $$
@@ -87,6 +88,7 @@ $$
 This normalization allows direct superimposition with continuous probability density functions $p(x)$ where $\int_{-\infty}^{\infty} p(x) \, dx = 1$.
 
 ---
+
 ## 4. Key Takeaways & Best Practices
 - When data scale varies dramatically (e.g. 1,000,000 legit vs 500 fraud), raw counts make the smaller class invisible. Use **`density=True`** (probability density) or a log scale (`plt.yscale('log')`).
 - Keep colors intuitive: Red/Crimson for anomalies/fraud/errors, Green/Blue for normal/legitimate data.

@@ -27,22 +27,28 @@ flowchart TD
 
 Maan lijiye $N$ categories hain aur $K = 2$ comparative series hain. Har category ka base coordinate $x_i = i$ ($i \in \{0, 1, \dots, N-1\}$) hai.
 
-Dono bars ko bar-width $w$ ke sath side-by-side bina overlap ke place karne ka formula:
+Dono bars ko bar-width $w$ ke sath category center $x_i$ par side-by-side symmetrically place karne ka formula:
+
 $$
-\boxed{
 \begin{cases}
-x_{1, i} = x_i - \dfrac{w}{2} & (\text{Series 1: Budget}) \\
-x_{2, i} = x_i + \dfrac{w}{2} & (\text{Series 2: Spend})
+x_{1, i} = x_i - \dfrac{w}{2} \\
+x_{2, i} = x_i + \dfrac{w}{2}
 \end{cases}
-}
 $$
 
-Category tick label $t_i$ dono bars ke arithmetic mean (center symmetry) par align hota hai:
+jahan:
+- $x_{1, i}$: Group 1 (Series 1) ka center coordinate
+- $x_{2, i}$: Group 2 (Series 2) ka center coordinate
+- $w$: Har bar ki uniform width
+
+Category tick label $t_i$ dono bars ke center symmetry par align hota hai:
+
 $$
 \boxed{t_i = \frac{x_{1, i} + x_{2, i}}{2} = x_i}
 $$
 
 Agar $K \ge 2$ series hon, toh generalized coordinate offset formula:
+
 $$
 \boxed{x_{k, i} = x_i + \left(k - \frac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}
 $$

@@ -71,18 +71,20 @@ plt.show()
 
 ## 📐 Bar Label Coordinate Geometry aur Padding Sutra
 
-Bar ke upar direct value label place karne ke liye centroid coordinate $(x_{\text{label}}, y_{\text{label}})$ ka formula:
+Bar ke upar direct value text label place karne ke liye centroid coordinate $(x_{\text{label}}, y_{\text{label}})$ ka formula:
 
 $$
 \boxed{x_{\text{label}, i} = x_i \qquad\text{aur}\qquad y_{\text{label}, i} = y_i + \delta}
 $$
 
 jahan vertical offset $\delta$ overall maximum height ka proportional fraction hota hai:
+
 $$
 \boxed{\delta = \epsilon \cdot \max_{0 \le j < N}(y_j), \quad \epsilon \in [0.01, 0.03]}
 $$
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - Always pair direct data labels with `plt.ylim()` to guarantee adequate headroom.
 - In modern Matplotlib (v3.4+), `plt.bar_label()` is also available as an automatic alternative.

@@ -104,6 +104,7 @@ $$
 $$
 
 where $x_0$ is the category anchor coordinate, $\kappa$ is a visual scaling factor, and $\hat{f}_h(y)$ is the normalized density satisfying:
+
 $$
 \boxed{\int_{-\infty}^{\infty} \hat{f}_h(y) \, dy = 1.0}
 $$

@@ -64,15 +64,17 @@ plt.show()
 When visualizing $C$ categorical classes on a scatter canvas, each class $c$ forms a point cloud with sample centroid $\boldsymbol{\mu}_c \in \mathbb{R}^2$:
 
 $$
-\boxed{\boldsymbol{\mu}_c = \frac{1}{N_c} \sum_{i \in \mathcal{C}_c} \mathbf{x}_i = \begin{pmatrix} \frac{1}{N_c} \sum x_{i} \\ \frac{1}{N_c} \sum y_{i} \end{pmatrix}}
+\boldsymbol{\mu}_c = \frac{1}{N_c} \sum_{i \in \mathcal{C}_c} \mathbf{x}_i = \begin{pmatrix} \frac{1}{N_c} \sum x_{i} \\ \frac{1}{N_c} \sum y_{i} \end{pmatrix}
 $$
 
 The Euclidean distance between two class centroids quantifies visual cluster separability:
+
 $$
 \boxed{d(\boldsymbol{\mu}_a, \boldsymbol{\mu}_b) = \|\boldsymbol{\mu}_a - \boldsymbol{\mu}_b\|_2 = \sqrt{(\mu_{a, x} - \mu_{b, x})^2 + (\mu_{a, y} - \mu_{b, y})^2}}
 $$
 
 ---
+
 ## 4. Key Takeaways
 - Using distinct markers (circles for Winter, squares for Summer) along with distinct colors makes the visualization accessible to colorblind readers.
 - Scatter plots instantly expose whether two classes are linearly separable for classification models (e.g. SVM or Logistic Regression).

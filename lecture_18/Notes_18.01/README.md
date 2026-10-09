@@ -61,23 +61,31 @@ plt.show()
 
 ## 📐 Mathematical & Statistical Foundation (Anscombe's Quartet)
 
-Anscombe's Quartet (1973) formally proves why visual plotting is essential. Four distinct synthetic datasets $(X_1, Y_1), \dots, (X_4, Y_4)$ share mathematically identical summary statistics yet reveal completely different structures:
+Anscombe's Quartet (1973) formally demonstrates why graphical visualization is essential alongside numerical summaries. Four synthetic datasets $(X_1, Y_1), \dots, (X_4, Y_4)$ share identical summary statistics:
 
 $$
 \boxed{\mu_x = 9.0, \quad \sigma_x^2 = 11.0, \quad \mu_y = 7.50, \quad \sigma_y^2 = 4.125, \quad r_{xy} = 0.816}
 $$
 
-Every dataset yields the identical Ordinary Least Squares (OLS) linear regression model:
+All four datasets produce the exact same Ordinary Least Squares (OLS) linear regression model:
+
 $$
 \boxed{\hat{y} = 3.00 + 0.500x \qquad (R^2 = 0.67)}
 $$
 
-Yet visually:
-- **Dataset 1**: Clean linear relationship with Gaussian residual variance.
-- **Dataset 2**: Strict non-linear quadratic curve $y = f(x^2)$.
-- **Dataset 3**: Perfect linear line with a single influential outlier.
-- **Dataset 4**: Vertical column of points with a single extreme leverage point.
+where:
+- $\mu$: Sample arithmetic mean
+- $\sigma^2$: Sample variance
+- $r_{xy}$: Pearson correlation coefficient
+- $R^2$: Coefficient of determination
+
+Visual inspection immediately reveals four fundamentally distinct physical processes:
+- **Dataset 1**: Linear relationship with homoscedastic Gaussian residual variance.
+- **Dataset 2**: Pure non-linear quadratic relationship $y = f(x^2)$.
+- **Dataset 3**: Linear line with zero variance disrupted by a single extreme outlier.
+- **Dataset 4**: Vertical column of invariant points at $x=8$ with a single high-leverage point.
 
 ---
+
 ## 4. Key Takeaways & Interview Points
 - **Anscombe's Quartet:** A famous statistical demonstration where 4 distinct datasets share identical summary statistics (mean, variance, correlation, regression line), yet look completely different when plotted visually. This proves: *Never rely solely on numerical summaries—always visualize your data!*

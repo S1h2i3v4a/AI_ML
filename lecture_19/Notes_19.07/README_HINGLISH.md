@@ -104,6 +104,7 @@ $$
 $$
 
 jahan $x_0$ category center hai aur $\hat{f}_h(y)$ normalized density hai:
+
 $$
 \boxed{\int_{-\infty}^{\infty} \hat{f}_h(y) \, dy = 1.0}
 $$

@@ -41,15 +41,18 @@ flowchart TD
 
 ---
 
-## 📐 Visual Encoding Channel Capacity & Dimensionality
+## 📐 Visual Encoding Channel Capacity & Perceptual Error
 
-Information visualization maps raw data attributes $\mathcal{D} = \{d_1, d_2, \dots, d_m\}$ into orthogonal visual channels $\mathcal{V} = \{\text{position}, \text{length}, \text{hue}, \text{area}, \text{shape}\}$:
+Information visualization maps attributes $\mathcal{D} = \{d_1, d_2, \dots, d_m\}$ into orthogonal visual channels $\mathcal{V}$:
 
 $$
 \boxed{\Phi: \mathcal{D}_1 \times \mathcal{D}_2 \times \dots \times \mathcal{D}_m \to \mathcal{V}_1 \times \mathcal{V}_2 \times \dots \times \mathcal{V}_m}
 $$
 
-According to Cleveland and McGill's psychophysical hierarchy, positional and length encodings exhibit minimal decoding error $\epsilon$, while area and color encodings have higher perceptual error variance:
+According to the Cleveland-McGill psychophysical hierarchy, perceptual decoding error $\epsilon$ increases monotonically across channels:
+
 $$
 \boxed{\epsilon_{\text{position}} < \epsilon_{\text{length}} < \epsilon_{\text{angle}} < \epsilon_{\text{area}} < \epsilon_{\text{color intensity}}}
 $$
+
+Bar charts minimize cognitive decoding error by encoding quantities purely through position along a common scale and 1D bar length.

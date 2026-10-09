@@ -71,18 +71,20 @@ plt.show()
 
 ## 📐 Bar Label Coordinate Geometry & Padding Offset
 
-Direct data labeling places numerical callouts directly above each bar without requiring gridline tracing. The centroid coordinate $(x_{\text{label}}, y_{\text{label}})$ for bar $i$ is given by:
+Direct numerical labeling places value annotations directly above each bar without requiring gridline extrapolation. The centroid coordinate $(x_{\text{label}}, y_{\text{label}})$ for bar $i$ is:
 
 $$
 \boxed{x_{\text{label}, i} = x_i \qquad\text{and}\qquad y_{\text{label}, i} = y_i + \delta}
 $$
 
-where vertical offset $\delta$ is computed proportionally from the global range:
+where vertical offset $\delta$ is computed adaptively from the global data range:
+
 $$
 \boxed{\delta = \epsilon \cdot \max_{0 \le j < N}(y_j), \quad \epsilon \in [0.01, 0.03]}
 $$
 
 ---
+
 ## 4. Key Takeaways
 - Always pair direct data labels with `plt.ylim()` to guarantee adequate headroom.
 - In modern Matplotlib (v3.4+), `plt.bar_label()` is also available as an automatic alternative.

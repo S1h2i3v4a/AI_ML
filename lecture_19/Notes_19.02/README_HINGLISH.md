@@ -80,6 +80,7 @@ $$
 $$
 
 Sabhi rectangular bars ke area ka sum probability conservation rule follow karta hai:
+
 $$
 \boxed{\sum_{j=1}^k f_j \cdot \Delta_j = 1.0}
 $$
@@ -87,6 +88,7 @@ $$
 Is normalization se continuous probability density functions $p(x)$ ko histogram ke upar directly compare kiya ja sakta hai.
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways) & Best Practices
 - When data scale varies dramatically (e.g. 1,000,000 legit vs 500 fraud), raw counts make the smaller class invisible. Use **`density=True`** (probability density) or a log scale (`plt.yscale('log')`).
 - Keep colors intuitive: Red/Crimson for anomalies/fraud/errors, Green/Blue for normal/legitimate data.

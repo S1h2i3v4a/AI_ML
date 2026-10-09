@@ -75,11 +75,13 @@ $$
 $$
 
 The 95% Confidence Interval error bar is given by:
+
 $$
 \boxed{\text{CI}_{95\%} = \bar{x} \pm t_{n-1, \; 0.025} \cdot \text{SE}(\bar{x})}
 $$
 
 ---
+
 ## 4. Key Takeaways
 - Seaborn's `barplot` calculates statistical aggregates (**mean**) automatically—do not confuse it with a Matplotlib bar chart which plots raw values passed to it.
 - Adding `hue="sex"` automatically groups and dodges the bars or boxes side by side.

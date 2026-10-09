@@ -75,15 +75,17 @@ plt.show()
 Annotation arrow text coordinate $\mathbf{x}_{\text{text}}$ se target data point $\mathbf{x}_{\text{target}}$ tak ek directed vector $\mathbf{v} \in \mathbb{R}^2$ hota hai:
 
 $$
-\boxed{\mathbf{v} = \mathbf{x}_{\text{target}} - \mathbf{x}_{\text{text}} = \begin{pmatrix} x_{\text{target}} - x_{\text{text}} \\ y_{\text{target}} - y_{\text{text}} \end{pmatrix}}
+\mathbf{v} = \mathbf{x}_{\text{target}} - \mathbf{x}_{\text{text}} = \begin{pmatrix} x_{\text{target}} - x_{\text{text}} \\ y_{\text{target}} - y_{\text{text}} \end{pmatrix}
 $$
 
 Arrow ki Euclidean length aur direction angle $\theta$:
+
 $$
 \boxed{\|\mathbf{v}\|_2 = \sqrt{(x_{\text{target}} - x_{\text{text}})^2 + (y_{\text{target}} - y_{\text{text}})^2} \qquad\text{aur}\qquad \theta = \operatorname{atan2}(v_y, v_x)}
 $$
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - Always apply an offset (`x + dx`, `y + dy`); placing text at the exact point coordinate will superimpose text directly over the marker symbol.
 - Use `plt.xlim()` and `plt.ylim()` padding whenever annotations sit near the plot periphery.

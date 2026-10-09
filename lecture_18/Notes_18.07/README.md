@@ -93,13 +93,20 @@ plt.style.use("default")
 
 ## 📐 Mathematical Canvas Resolution & DPI Formulation
 
-The total pixel dimension $(W_{\text{px}}, H_{\text{px}})$ of a rendered Matplotlib figure is governed by physical canvas dimensions and Dots-Per-Inch (DPI) sampling density:
+The total pixel dimension $(W_{\text{px}}, H_{\text{px}})$ of a rendered Matplotlib figure is governed by physical canvas dimensions in inches and Dots-Per-Inch (DPI) sampling density:
 
 $$
 \boxed{W_{\text{px}} = W_{\text{in}} \times \text{DPI} \qquad\text{and}\qquad H_{\text{px}} = H_{\text{in}} \times \text{DPI}}
 $$
 
-For a canvas $(W = 10\text{ in}, H = 6\text{ in})$ at $\text{DPI} = 300$:
+Total pixel count $N_{\text{pixels}}$:
+
 $$
-\boxed{\text{Total Resolution} = (10 \times 300) \times (6 \times 300) = 3000 \times 1800 \text{ pixels} = 5.4 \text{ Megapixels}}
+\boxed{N_{\text{pixels}} = (W_{\text{in}} \cdot H_{\text{in}}) \cdot (\text{DPI})^2}
+$$
+
+For a standard production export canvas $(W = 10\text{ in}, H = 6\text{ in})$ at $\text{DPI} = 300$:
+
+$$
+\boxed{\text{Resolution} = (10 \times 300) \times (6 \times 300) = 3000 \times 1800 \text{ px} = 5.4 \text{ Megapixels}}
 $$

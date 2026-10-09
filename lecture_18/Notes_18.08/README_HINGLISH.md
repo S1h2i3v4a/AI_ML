@@ -49,7 +49,10 @@ $$
 \boxed{\Phi: \mathcal{D}_1 \times \mathcal{D}_2 \times \dots \times \mathcal{D}_m \to \mathcal{V}_1 \times \mathcal{V}_2 \times \dots \times \mathcal{V}_m}
 $$
 
-Cleveland & McGill hierarchy ke anusar human eye position aur length ko sabse accurately judge karti hai:
+Cleveland & McGill hierarchy ke anusar decoding error $\epsilon$:
+
 $$
 \boxed{\epsilon_{\text{position}} < \epsilon_{\text{length}} < \epsilon_{\text{angle}} < \epsilon_{\text{area}} < \epsilon_{\text{color intensity}}}
 $$
+
+Bar charts sabse accurate hote hain kyunki yeh data ko position aur length ke zariye encode karte hain.

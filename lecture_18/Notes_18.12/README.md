@@ -62,18 +62,20 @@ plt.show()
 
 ## 📐 Horizontal & Stacked Bar Chart Geometry
 
-For horizontal bar charts, the domain and range axes swap orientations. The bounding rectangle for category $i$ with length $x_i$ and height $h$ is:
+For horizontal bar charts, the coordinate axes transpose roles. The bounding box for category $i$ with length $x_i$ and bar thickness $h$ is:
 
 $$
 \boxed{\mathcal{R}_i = [0, \; x_i] \times \left[ y_i - \frac{h}{2}, \; y_i + \frac{h}{2} \right]}
 $$
 
-For stacked bar charts with $K$ segmented components, the $k$-th segment rests on the cumulative sum of preceding segments:
+For stacked bar charts with $K$ components, each segment rests on the cumulative sum of preceding layers:
+
 $$
 \boxed{y_{k, i}^{(\text{bottom})} = \sum_{j=1}^{k-1} h_{j, i} \qquad\text{and}\qquad y_{k, i}^{(\text{top})} = \sum_{j=1}^k h_{j, i}}
 $$
 
 ---
+
 ## 4. Key Takeaways
 - Use `plt.barh` whenever you have $\ge 7$ categories or when category strings exceed 10 characters.
 - Invert the y-axis if desired (`plt.gca().invert_yaxis()`) to display the highest ranked category at the very top.

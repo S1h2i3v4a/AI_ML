@@ -63,21 +63,24 @@ plt.show()
 
 ## 📐 Ganitiya Coordinate Mapping aur Affine Transformation
 
-Screen canvas par plot hone wala har continuous point continuous **Data Space** $\mathcal{D} = [x_{\min}, x_{\max}] \times [y_{\min}, y_{\max}]$ se discrete **Screen Pixel Coordinates** $\mathcal{S} = [0, W] \times [0, H]$ par map hota hai:
+Screen canvas par plot hone wala har continuous data point continuous **Data Space** $\mathcal{D} = [x_{\min}, x_{\max}] \times [y_{\min}, y_{\max}]$ se discrete **Screen Pixel Coordinates** $\mathcal{S} = [0, W] \times [0, H]$ par affine mapping dwara project hota hai.
 
-Pehle coordinates unit interval $[0, 1]^2$ par normalize kiye jaate hain:
+Pehle coordinates unit interval $[0, 1]^2$ par normalize hote hain:
+
 $$
 \boxed{u = \frac{x - x_{\min}}{x_{\max} - x_{\min}} \qquad\text{aur}\qquad v = \frac{y - y_{\min}}{y_{\max} - y_{\min}}}
 $$
 
-Phir affine viewport transformation matrix dwara display pixels calculate hote hain:
+Phir affine viewport transformation matrix se screen pixels calculate hote hain:
+
 $$
-\boxed{\begin{pmatrix} x_{\text{pixel}} \\ y_{\text{pixel}} \\ 1 \end{pmatrix} = \begin{pmatrix} W & 0 & 0 \\ 0 & -H & H \\ 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} u \\ v \\ 1 \end{pmatrix}}
+\begin{pmatrix} x_{\text{pixel}} \\ y_{\text{pixel}} \\ 1 \end{pmatrix} = \begin{pmatrix} W & 0 & 0 \\ 0 & -H & H \\ 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} u \\ v \\ 1 \end{pmatrix}
 $$
 
-jahan $-H$ inversion computer screen ke top-left $(0, 0)$ origin ko standard Cartesian coordinate plane ke sath align karta hai.
+jahan $-H$ inversion computer screen ke top-left $(0, 0)$ pixel origin ko Cartesian plane ke sath align karta hai.
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - Agar aap sirf ek hi list pass karte hain `plt.plot(Y)`, Matplotlib automatically consider karta hai $X = [0, 1, 2, \dots, N-1]$ index positions ke roop me.
 - Hamesha dhyan rakhein $X$ is monotonically increasing if plotting time-series or line graphs to prevent zig-zag lines.

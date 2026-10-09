@@ -77,16 +77,19 @@ $$
 $$
 
 jahan $K(u)$ standard Gaussian kernel hai:
+
 $$
 \boxed{K(u) = \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}u^2}}
 $$
 
 aur bandwidth parameter $h$ Silverman ke formula se optimize hota hai:
+
 $$
 \boxed{h_{\text{opt}} = 0.9 \cdot \min\left(s, \; \frac{\text{IQR}}{1.34}\right) \cdot n^{-1/5}}
 $$
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - `sns.histplot()` handles missing values (`NaN`) gracefully without crashing.
 - Setting `element="step"` or `multiple="stack"` creates clean, uncluttered visual comparisons across multiple species.

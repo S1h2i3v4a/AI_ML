@@ -57,14 +57,16 @@ plt.show()
 
 ## 📐 Multi-Dataset Time-Series Ka Ganitiya Sutra (YoY Growth & Indexing)
 
-Multiple datasets $\{y_{1, t}\}$ aur $\{y_{2, t}\}$ ko ek sath compare karne ke liye standard mathematical formulas:
+Multiple datasets $\{y_{1, t}\}$ aur $\{y_{2, t}\}$ ko ek sath line plot par compare karne ke liye standard mathematical formulas:
 
 1. **Year-over-Year (YoY) Growth Rate:**
+
 $$
 \boxed{g_t = \left(\frac{y_t - y_{t-1}}{y_{t-1}}\right) \times 100\%}
 $$
 
 2. **Base Index Normalization ($t_0 = 100$):**
+
 $$
 \boxed{I_t = \left(\frac{y_t}{y_0}\right) \times 100}
 $$
@@ -72,6 +74,7 @@ $$
 Base index se alag-alag units ya scale wale datasets ko ek hi scale par compare kiya ja sakta hai.
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - Without `plt.legend()`, labels defined in `plt.plot(..., label="...")` will not appear on the chart.
 - Ensure both datasets share the same x-axis values or are plotted over compatible ranges.

@@ -61,18 +61,20 @@ plt.show()
 
 ## 📐 Correlation aur Scatter Dispersion Ka Ganitiya Sutra
 
-Scatter plot par continuous variables $(X, Y)$ ke pairs plot kiye jaate hain. Dono ke beech linear sambandh **Pearson Correlation Coefficient** $r_{xy}$ se nikala jaata hai:
+Scatter plot continuous bivariate pairs $(X, Y)$ ko plot karta hai. Dono ke beech linear relationship **Pearson Correlation Coefficient** $r_{xy}$ se nikala jaata hai:
 
 $$
 \boxed{r_{xy} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2} \sqrt{\sum_{i=1}^n (y_i - \bar{y})^2}} \in [-1, +1]}
 $$
 
-Covariance aur standard deviation ke roop me:
+Covariance aur standard deviation ke form me:
+
 $$
 \boxed{\text{Cov}(X, Y) = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}) \implies r_{xy} = \frac{\text{Cov}(X, Y)}{s_x \cdot s_y}}
 $$
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - The Pearson correlation coefficient $r \approx 0.96$ indicates a strong positive linear relationship between age and blood pressure.
 - Notice patient at Age 55 with BP 123 mmHg dips below the trendline—scatter plots make individual variances instantly visible.

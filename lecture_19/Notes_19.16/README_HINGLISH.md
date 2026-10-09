@@ -114,6 +114,7 @@ plt.show()
 Graphics engineering me Edward Tufte (1983) ke do mukhya ganitiya formulas:
 
 ### 1. Data-Ink Ratio ($\eta$):
+
 $$
 \boxed{\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]}
 $$
@@ -121,6 +122,7 @@ $$
 Uddeshya: Faltu background, grid lines aur 3D chart junk hata kar $\eta \to 1.0$ maximize karna.
 
 ### 2. Lie Factor (LF):
+
 $$
 \boxed{\text{Lie Factor} = \frac{\text{Size of effect shown in graphic}}{\text{Size of effect in data}} = \frac{\dfrac{|G_2 - G_1|}{G_1}}{\dfrac{|D_2 - D_1|}{D_1}}}
 $$

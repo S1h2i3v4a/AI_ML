@@ -87,6 +87,7 @@ $$
 Dono y-axes independent normalization use karte hain jisse unke units aapas me clash nahi karte.
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - Seaborn does not replace Matplotlib—it **extends** it. Every Seaborn plot is drawn on Matplotlib `Figure` and `Axes` objects.
 - Always use `sns.set_theme()` at the start of your notebooks to instantly upgrade plot aesthetics.

@@ -51,18 +51,21 @@ import numpy as np
 ## 📐 Transformation Pipeline aur Artist Hierarchy Ka Ganitiya Sutra
 
 Matplotlib me graphic elements 3-stage coordinate transformation pipeline ke zariye render hote hain:
+
 $$
 \boxed{\mathbf{T}_{\text{total}} = \mathbf{T}_{\text{fig}\to\text{disp}} \circ \mathbf{T}_{\text{axes}\to\text{fig}} \circ \mathbf{T}_{\text{data}\to\text{axes}}}
 $$
 
 Har 2D data vector $\mathbf{p}_{\text{data}} = (x, y)^T \in \mathbb{R}^2$ physical display screen ke pixels par map hota hai:
+
 $$
 \boxed{\mathbf{p}_{\text{disp}} = \mathbf{T}_{\text{total}}(\mathbf{p}_{\text{data}})}
 $$
 
-Yeh mathematical abstraction canvas resize ya zoom hone par data coordinates ko safe rakhta hai.
+jahan yeh pipeline data points ko screen resize aur zoom ke dauran safe rakhti hai.
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways)
 - `pyplot` is a module inside `matplotlib` providing the stateful scripting interface.
 - Always use `import matplotlib.pyplot as plt`.

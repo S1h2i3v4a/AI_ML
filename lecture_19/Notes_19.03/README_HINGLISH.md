@@ -115,12 +115,11 @@ $$
 $$
 
 Normal distribution ke liye **Empirical Rule**:
+
 $$
-\boxed{
 \begin{aligned}
 \Pr(\mu - 1\sigma \le X \le \mu + 1\sigma) &\approx 68.27\% \\
 \Pr(\mu - 2\sigma \le X \le \mu + 2\sigma) &\approx 95.45\% \\
 \Pr(\mu - 3\sigma \le X \le \mu + 3\sigma) &\approx 99.73\%
 \end{aligned}
-}
 $$

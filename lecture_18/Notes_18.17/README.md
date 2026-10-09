@@ -70,17 +70,20 @@ $$
 \boxed{\theta_i = 360^\circ \times \frac{v_i}{\sum_{j=1}^n v_j} \qquad\text{and}\qquad p_i = \frac{v_i}{\sum_{j=1}^n v_j} \times 100\%}
 $$
 
-Satisfying the fundamental conservation axioms:
+Satisfying fundamental conservation axioms:
+
 $$
 \boxed{\sum_{i=1}^n \theta_i = 360^\circ \qquad\text{and}\qquad \sum_{i=1}^n p_i = 100\%}
 $$
 
 The arc length $L_i$ and sector area $A_i$ for a pie circle of radius $R$:
+
 $$
 \boxed{L_i = R \cdot \left(\frac{\pi \theta_i}{180^\circ}\right) \qquad\text{and}\qquad A_i = \frac{1}{2} R^2 \left(\frac{\pi \theta_i}{180^\circ}\right) = \pi R^2 \cdot \frac{p_i}{100}}
 $$
 
 ---
+
 ## 4. Key Takeaways & Limitations
 - **When to Use:** Part-to-whole relationships with **few categories (3 to 5 max)**.
 - **When NOT to Use:** When comparing more than 6 categories, or comparing two categories of similar sizes (e.g. 24% vs 26%). The human brain is poor at estimating angles and areas compared to estimating lengths in bar charts.

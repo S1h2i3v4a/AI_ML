@@ -86,6 +86,7 @@ $$
 jahan data columns simultaneously spatial position $(x, y)$, color hue $\mathcal{C}$, aur marker style $\mathcal{S}$ me encode hote hain.
 
 ---
+
 ## 4. Mukhya Batein (Key Takeaways) & Best Practices
 - Use **`sns.scatterplot`** to spot bivariate correlation and non-linear patterns.
 - Use **`sns.lineplot`** whenever $x$ represents time series or sequential tracking.

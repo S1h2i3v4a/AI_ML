@@ -104,11 +104,13 @@ where:
 - $\boxed{\text{IQR} = Q_3 - Q_1 \quad (\text{Interquartile Range})}$
 
 Tukey's Fences for automated outlier identification:
+
 $$
 \boxed{\text{Lower Fence} = Q_1 - 1.5 \cdot \text{IQR} \qquad\text{and}\qquad \text{Upper Fence} = Q_3 + 1.5 \cdot \text{IQR}}
 $$
 
 Any observation $x_i$ outside these boundaries is mathematically flagged as an outlier:
+
 $$
 \boxed{\text{Outlier}(x_i) \iff x_i < \text{Lower Fence} \quad\lor\quad x_i > \text{Upper Fence}}
 $$

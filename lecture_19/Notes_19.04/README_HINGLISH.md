@@ -104,11 +104,13 @@ jahan:
 - $\boxed{\text{IQR} = Q_3 - Q_1 \quad (\text{Interquartile Range})}$
 
 Outlier detection ke liye Tukey's Fences:
+
 $$
 \boxed{\text{Lower Fence} = Q_1 - 1.5 \cdot \text{IQR} \qquad\text{aur}\qquad \text{Upper Fence} = Q_3 + 1.5 \cdot \text{IQR}}
 $$
 
 In boundaries ke bahar aane wale sabhi points ko outliers mark kiya jaata hai:
+
 $$
 \boxed{\text{Outlier}(x_i) \iff x_i < \text{Lower Fence} \quad\lor\quad x_i > \text{Upper Fence}}
 $$

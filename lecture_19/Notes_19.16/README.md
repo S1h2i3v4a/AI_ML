@@ -114,6 +114,7 @@ plt.show()
 The quantitative foundation of graphics engineering was formulated by Edward Tufte (1983):
 
 ### 1. Data-Ink Ratio ($\eta$):
+
 $$
 \boxed{\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]}
 $$
@@ -121,6 +122,7 @@ $$
 Goal: Maximize $\eta \to 1.0$ by removing non-data ink (redundant borders, 3D effects, dark background fills).
 
 ### 2. Lie Factor (LF):
+
 $$
 \boxed{\text{Lie Factor} = \frac{\text{Size of effect shown in graphic}}{\text{Size of effect in data}} = \frac{\dfrac{|G_2 - G_1|}{G_1}}{\dfrac{|D_2 - D_1|}{D_1}}}
 $$

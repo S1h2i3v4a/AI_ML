@@ -25,24 +25,30 @@ flowchart TD
 
 ## 📐 Mathematical Coordinate Formulation (Grouped Bars)
 
-Let $N$ denote the total number of categories, and let $K = 2$ denote two comparative series. Let $x_i = i$ ($i \in \{0, 1, \dots, N-1\}$) represent the baseline categorical coordinates along the axis.
+Let $N$ denote the number of categorical groups, and let $K = 2$ comparative series be plotted side-by-side. Let $x_i = i$ ($i \in \{0, 1, \dots, N-1\}$) represent the baseline categorical coordinates along the axis.
 
-To position two bars of uniform width $w$ symmetrically side-by-side with zero overlap:
+To position two bars of uniform width $w$ symmetrically around center index $x_i$ with zero overlap:
+
 $$
-\boxed{
 \begin{cases}
-x_{1, i} = x_i - \dfrac{w}{2} & (\text{Series 1: Budget}) \\
-x_{2, i} = x_i + \dfrac{w}{2} & (\text{Series 2: Spend})
+x_{1, i} = x_i - \dfrac{w}{2} \\
+x_{2, i} = x_i + \dfrac{w}{2}
 \end{cases}
-}
 $$
+
+where:
+- $x_{1, i}$: Center coordinate for Group 1 (Series 1)
+- $x_{2, i}$: Center coordinate for Group 2 (Series 2)
+- $w$: Individual bar width (satisfying $2w < 1.0$)
 
 The categorical tick label coordinate $t_i$ satisfies the central symmetry theorem:
+
 $$
 \boxed{t_i = \frac{x_{1, i} + x_{2, i}}{2} = \frac{\left(x_i - \dfrac{w}{2}\right) + \left(x_i + \dfrac{w}{2}\right)}{2} = x_i}
 $$
 
-For generalized $K \ge 2$ comparative series:
+For generalized $K \ge 2$ comparative series of width $w$:
+
 $$
 \boxed{x_{k, i} = x_i + \left(k - \frac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}
 $$

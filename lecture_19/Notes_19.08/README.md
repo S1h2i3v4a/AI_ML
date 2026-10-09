@@ -98,15 +98,17 @@ plt.show()
 An $(R \times C)$ grid of subplots forms a 2-tensor of Axes objects:
 
 $$
-\boxed{\mathbf{A} = (a_{r, c}) \in \mathcal{H}^{R \times C}, \quad r \in \{0, \dots, R-1\}, \; c \in \{0, \dots, C-1\}}
+\mathbf{A} = (a_{r, c}) \in \mathcal{H}^{R \times C}, \quad r \in \{0, \dots, R-1\}, \; c \in \{0, \dots, C-1\}
 $$
 
 Linear index $i \in \{0, 1, \dots, R \cdot C - 1\}$ maps to matrix coordinates via integer quotient and modulo arithmetic:
+
 $$
 \boxed{r = \lfloor i / C \rfloor \qquad\text{and}\qquad c = i \pmod C}
 $$
 
 ---
+
 ## 4. Key Takeaways & Best Practices
 - In production, data pipelines, and dashboards, **always prefer `fig, ax = plt.subplots()`**.
 - `ax.set(...)` saves multiple lines of code by setting titles, labels, and limits in a single method call.
