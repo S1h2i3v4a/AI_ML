@@ -22,11 +22,11 @@ This document provides exhaustive, production-grade solutions to all three case-
 - **Anscombe's Quartet & Data-Ink Ratio Formulation**:
   Tabular summaries (e.g., printed spreadsheets) fail to convey inflection points. Two datasets can share identical mean and variance yet display drastically divergent trends. A multi-series line plot maximizes Edward Tufte's **Data-Ink Ratio** $\eta$:
 
-  $$
+$$
   \boxed{
   \eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}}
   }
-  $$
+$$
 
   Where:
   - $\mathcal{I}_{\text{data}}$: Integral of non-redundant visual elements dedicated strictly to displaying data information (trendlines, data points, markers).
@@ -85,18 +85,21 @@ Let $N$ denote the total number of categorical entities (departments), and let $
 
 #### Definition 1 (Baseline Categorical Domain):
 The discrete baseline index of the $i$-th category along the category axis is given by:
+
 $$
 x_i = i, \quad \forall i \in \{0, 1, 2, \dots, N-1\}
 $$
 
 #### Condition 1 (Non-Overlapping Criterion):
 Let $w$ denote the uniform bar width. To guarantee zero collision between adjacent departmental clusters, $w$ must satisfy the inequality:
+
 $$
 K \cdot w < 1.0 \implies w < \frac{1}{K} = \frac{1}{2} = 0.5 \quad \left(\text{Chosen: } w = 0.38\right)
 $$
 
 #### System of Shifted Coordinate Equations:
 The shifted position coordinates $(y_{1, i}, y_{2, i})$ for category $i$ are determined by the symmetric piecewise system:
+
 $$
 \begin{cases}
 y_{1, i} = x_i - \dfrac{w}{2} \\
@@ -108,11 +111,13 @@ where $y_{1, i}$ denotes the center coordinate for Series 1 (Budget) and $y_{2, 
 
 #### Center Tick Alignment Theorem:
 To ensure the categorical tick mark $t_i$ lies precisely equidistant between the two comparative bars:
+
 $$
 \boxed{
 t_i = \frac{y_{1, i} + y_{2, i}}{2} = \frac{\left(x_i - \dfrac{w}{2}\right) + \left(x_i + \dfrac{w}{2}\right)}{2} = x_i
 }
 $$
+
 Thus, category labels are rendered directly at the unshifted coordinate $x_i$, guaranteeing perfect optical symmetry.
 
 ---
@@ -181,6 +186,7 @@ $$
 $$
 
 Where each attribute is mathematically encoded via the channel mapping:
+
 $$
 \mathbf{p}_i = \begin{pmatrix} X_i \\ Y_i \\ S_i \\ C_i \end{pmatrix} \in \mathbb{R}^4
 $$
@@ -193,11 +199,13 @@ where each visual channel corresponds to:
 
 #### Optical Density & Cluster Overplotting via Alpha ($\alpha$):
 When $m$ distinct observation points overlap at identical coordinates, the transmitted background luminance $I$ through $m$ overlapping circular markers is governed by the discrete Beer-Lambert extinction model:
+
 $$
 \boxed{
 I_{\text{transmitted}} = I_0 \cdot (1 - \alpha)^m
 }
 $$
+
 Where:
 - $I_0$: Initial background intensity.
 - $\alpha \in (0, 1]$: Matplotlib alpha transparency coefficient (`alpha=0.75`).

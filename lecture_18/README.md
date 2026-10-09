@@ -48,41 +48,47 @@ Every subtopic is organized into an isolated module containing:
 ## 📐 Mathematical Foundations
 
 ### 1. Data-Ink Ratio (Edward Tufte)
-The efficiency of a chart is defined mathematically by Edward Tufte as:
+The efficiency of a visual graphic is formally measured by Edward Tufte's Data-Ink formulation:
 
 $$
-\boxed{
-\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]
-}
+\boxed{\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]}
 $$
 
-A visualization should aim to maximize this ratio by eliminating chart junk, excessive grid lines, and decorative elements.
+where:
+- $\mathcal{I}_{\text{data}}$: Ink dedicated to displaying non-redundant data information
+- $\mathcal{I}_{\text{total}}$: Total ink used across the entire graphic
+- $\mathcal{I}_{\text{non-data}}$: Redundant non-data ink (chart junk, excessive gridlines, heavy fills)
 
-### 2. Symmetrical Grouped Bar Coordinate Calculation
-To position $K=2$ bars symmetrically around category center index $x_i$:
+---
+
+### 2. Symmetrical Grouped Bar Coordinate System
+For $K = 2$ comparative series across $N$ discrete categories with uniform bar width $w < \frac{1}{K} = 0.5$:
+
+Let $x_i = i$ ($i \in \{0, 1, \dots, N-1\}$) denote the baseline category index. The shifted horizontal coordinates $(x_{1, i}, x_{2, i})$ follow the symmetric system:
 
 $$
-\boxed{
 \begin{cases}
 x_{1, i} = x_i - \dfrac{w}{2} \\
 x_{2, i} = x_i + \dfrac{w}{2}
 \end{cases}
-}
 $$
 
-where $x_i = i$ is the base category index ($i \in \{0, 1, \dots, n-1\}$).
+where:
+- $x_{1, i}$: Center coordinate for Series 1 (e.g. Budget)
+- $x_{2, i}$: Center coordinate for Series 2 (e.g. Spend)
+- $w$: Uniform width of each bar
 
 The category tick label location $t_i$ satisfies the central symmetry theorem:
+
 $$
 \boxed{t_i = \frac{x_{1, i} + x_{2, i}}{2} = x_i}
 $$
 
-For generalized $K \ge 2$ categories of width $w$:
+For generalized $K \ge 2$ comparative series of uniform width $w$:
+
 $$
 \boxed{x_{k, i} = x_i + \left(k - \frac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}
 $$
-
----
 
 ## 🎯 Practice Problems & Case Studies
 

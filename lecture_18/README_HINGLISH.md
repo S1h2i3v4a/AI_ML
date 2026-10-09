@@ -45,44 +45,50 @@ Har subtopic ek separate module me organized hai:
 
 ---
 
-## 📐 Mathematical Foundations (Ganitiya Sutra)
+## 📐 Ganitiya Adhaar (Mathematical Foundations)
 
 ### 1. Data-Ink Ratio (Edward Tufte)
 Kisi bhi chart ki visual efficiency Edward Tufte ke Data-Ink formula se measure hoti hai:
 
 $$
-\boxed{
-\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]
-}
+\boxed{\eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}} \in (0, 1]}
 $$
 
-Ek professional visualization me hume hamesha chart junk (faltu decorations, unnecessary 3D effects, over-dense grids) hata kar is ratio ko maximize karna chahiye.
+jahan:
+- $\mathcal{I}_{\text{data}}$: Data information dikhane wali zaroori ink
+- $\mathcal{I}_{\text{total}}$: Poore graphic me use hone wali kul ink
+- $\mathcal{I}_{\text{non-data}}$: Faltu decorations, chart junk, aur heavy backgrounds
 
-### 2. Symmetrical Grouped Bar Coordinate Calculation
-$K=2$ bars ko category index $x_i$ ke dono taraf barabar (symmetrically) rakhne ke liye:
+---
+
+### 2. Symmetrical Grouped Bar Coordinate System
+$K = 2$ comparative series aur $N$ categories ke liye ($w < \frac{1}{K} = 0.5$):
+
+Base category index $x_i = i$ ($i \in \{0, 1, \dots, N-1\}$) ke dono taraf side-by-side symmetrically bars place karne ka formula:
 
 $$
-\boxed{
 \begin{cases}
 x_{1, i} = x_i - \dfrac{w}{2} \\
 x_{2, i} = x_i + \dfrac{w}{2}
 \end{cases}
-}
 $$
 
-jahan $x_i = i$ base category index ($i \in \{0, 1, \dots, n-1\}$) hai.
+jahan:
+- $x_{1, i}$: Series 1 (Budget) ka horizontal center
+- $x_{2, i}$: Series 2 (Spend) ka horizontal center
+- $w$: Har bar ki uniform width
 
-Category tick label $t_i$ central symmetry satisfy karta hai:
+Category tick mark $t_i$ central symmetry theorem satisfy karta hai:
+
 $$
 \boxed{t_i = \frac{x_{1, i} + x_{2, i}}{2} = x_i}
 $$
 
-Agar $K \ge 2$ categories hon jinki width $w$ hai, toh generalized coordinate formula:
+Generalized $K \ge 2$ series ke liye:
+
 $$
 \boxed{x_{k, i} = x_i + \left(k - \frac{K - 1}{2}\right) \cdot w \quad \text{for } k \in \{0, 1, \dots, K-1\}}
 $$
-
----
 
 ## 🎯 Practice Problems & Case Studies
 

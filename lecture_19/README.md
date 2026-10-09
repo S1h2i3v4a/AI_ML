@@ -46,35 +46,73 @@ Key topics include:
 
 ---
 
-## 📐 Mathematical & Statistical Formulations
+## 📐 Mathematical Foundations
 
-### 1. Optimal Histogram Bin Selection Rules
+### 1. Optimal Histogram Bin Partitioning
+For a sample of continuous observations $X = \{x_1, x_2, \dots, x_n\}$ with range $\Delta X = \max(X) - \min(X)$:
 
-#### Sturges' Formula (Normal distributions)
-$$\boxed{k = 1 + \lceil \log_2 n \rceil}$$
+1. **Sturges' Rule** (Optimal for Gaussian unimodal distributions):
 
-#### Freedman-Diaconis Rule (Robust to outliers & skewness)
-$$\boxed{\text{Bin Width } h = 2 \cdot \dfrac{\text{IQR}(X)}{n^{1/3}} \quad\implies\quad k = \left\lceil \dfrac{\max(X) - \min(X)}{h} \right\rceil}$$
+$$
+\boxed{k = 1 + \lceil \log_2(n) \rceil}
+$$
+
+2. **Freedman-Diaconis Rule** (Robust against heavy tails, skewness, and outliers):
+
+$$
+\boxed{h = 2 \cdot \frac{\text{IQR}(X)}{n^{1/3}} \qquad\implies\qquad k = \left\lceil \frac{\Delta X}{h} \right\rceil}
+$$
+
+where:
+- $n$: Sample size
+- $h$: Optimal bin width
+- $k$: Total number of histogram bins
+- $\text{IQR}(X) = Q_3 - Q_1$: Interquartile range
 
 ---
 
-### 2. Tukey's Five-Number Summary & Outlier Detection
-Given ordered data $X_{(1)} \le X_{(2)} \le \dots \le X_{(n)}$:
-- Median ($Q_2$): 50th percentile.
-- First Quartile ($Q_1$): 25th percentile.
-- Third Quartile ($Q_3$): 75th percentile.
-- Interquartile Range: $\boxed{\text{IQR} = Q_3 - Q_1}$
+### 2. Tukey's Five-Number Summary & Outlier Fences
+Given ordered sample observations $X_{(1)} \le X_{(2)} \le \dots \le X_{(n)}$, the distribution is summarized by:
 
-Outlier boundaries (Tukey's Fences):
-$$\boxed{\text{Lower Fence} = Q_1 - 1.5 \times \text{IQR}} \qquad\text{and}\qquad \boxed{\text{Upper Fence} = Q_3 + 1.5 \times \text{IQR}}$$
+$$
+\boxed{\text{Summary} = \left( X_{(1)}, \; Q_1, \; Q_2, \; Q_3, \; X_{(n)} \right)}
+$$
 
-Any data point $x < \text{Lower Fence}$ or $x > \text{Upper Fence}$ is flagged as an outlier (flier).
+where:
+- $Q_1$: 25th percentile (First Quartile)
+- $Q_2$: 50th percentile (Sample Median)
+- $Q_3$: 75th percentile (Third Quartile)
+- $\boxed{\text{IQR} = Q_3 - Q_1}$
+
+Tukey's Outlier Fences $(F_L, F_U)$:
+
+$$
+\boxed{F_L = Q_1 - 1.5 \cdot \text{IQR} \qquad\text{and}\qquad F_U = Q_3 + 1.5 \cdot \text{IQR}}
+$$
+
+Outlier decision rule:
+
+$$
+\boxed{\text{Outlier}(x_i) \iff x_i < F_L \quad\lor\quad x_i > F_U}
+$$
 
 ---
 
 ### 3. Univariate Kernel Density Estimation (KDE)
-In Seaborn's `sns.kdeplot()` and `sns.displot(kind='kde')`, continuous distribution probability density is estimated as:
+The continuous probability density function $f(x)$ is estimated non-parametrically as:
 
-$$\boxed{\hat{f}_h(x) = \dfrac{1}{n h} \sum_{i=1}^n K\left( \dfrac{x - x_i}{h} \right)}$$
+$$
+\boxed{\hat{f}_h(x) = \frac{1}{n h} \sum_{i=1}^n K\left( \frac{x - x_i}{h} \right)}
+$$
 
-where $K(u)$ is a symmetric Gaussian smoothing kernel $K(u) = \dfrac{1}{\sqrt{2\pi}} e^{-u^2/2}$ and $h > 0$ is the smoothing bandwidth parameter.
+where $K(u)$ is the standard Gaussian kernel:
+
+$$
+\boxed{K(u) = \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}u^2}}
+$$
+
+and $h > 0$ is the smoothing bandwidth parameter, optimized by Silverman's formulation:
+
+$$
+\boxed{h_{\text{opt}} = 0.9 \cdot \min\left(s, \; \frac{\text{IQR}}{1.34}\right) \cdot n^{-1/5}}
+$$

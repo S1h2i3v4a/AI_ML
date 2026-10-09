@@ -158,7 +158,7 @@ $$
 $$
 
 $$
-\text{Outlier Set } \mathcal{O} = \left\{ x_i \in \mathcal{D} \;\middle|\; x_i < \text{Lower Fence} \;\lor\; x_i > \text{Upper Fence} \right\}
+\boxed{\mathcal{O} = \left\{ x_i \in \mathcal{D} \;\middle|\; x_i < F_L \;\lor\; x_i > F_U \right\}}
 $$
 
 ---

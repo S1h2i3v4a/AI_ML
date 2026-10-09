@@ -151,14 +151,11 @@ $$
 $$
 
 $$
-\begin{aligned}
-\text{Lower Whisker Fence} &= Q_1 - 1.5 \times \text{IQR} \\
-\text{Upper Whisker Fence} &= Q_3 + 1.5 \times \text{IQR}
-\end{aligned}
+\boxed{F_L = Q_1 - 1.5 \cdot \text{IQR} \qquad\text{and}\qquad F_U = Q_3 + 1.5 \cdot \text{IQR}}
 $$
 
 $$
-\text{Outlier Set } \mathcal{O} = \left\{ x_i \in \mathcal{D} \;\middle|\; x_i < Q_1 - 1.5 \times \text{IQR} \;\lor\; x_i > Q_3 + 1.5 \times \text{IQR} \right\}
+\boxed{\mathcal{O} = \left\{ x_i \in \mathcal{D} \;\middle|\; x_i < F_L \;\lor\; x_i > F_U \right\}}
 $$
 
 ---
@@ -167,14 +164,16 @@ $$
 For continuous feature distribution partitioning:
 
 - **Sturges' Rule** (Normal distributions):
-  $$
+
+$$
   k = \left\lceil 1 + \log_2(n) \right\rceil
-  $$
+$$
 
 - **Freedman-Diaconis Rule** (Robust against outliers):
-  $$
+
+$$
   h = 2 \cdot \frac{\text{IQR}}{\sqrt[3]{n}}, \qquad k = \left\lceil \frac{\max(x) - \min(x)}{h} \right\rceil
-  $$
+$$
 
 Where $n$ is total sample count, $h$ is optimal bin width, and $k$ is the total bin count.
 

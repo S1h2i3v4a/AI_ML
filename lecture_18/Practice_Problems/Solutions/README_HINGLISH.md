@@ -22,11 +22,11 @@ Is document me **Lecture 18 Practice Problem Set** ke sabhi teeno case-based pro
 - **Anscombe's Quartet & Data-Ink Ratio Formulation**:
   Table me dekhkar growth ka turning point (inflection point) samajhna mushkil hota hai. Do datasets ka mean aur variance same ho sakta hai par trend bilkul alag ho sakta hai. Multi-series line plot Edward Tufte ke **Data-Ink Ratio** $\eta$ ko maximize karta hai:
 
-  $$
+$$
   \boxed{
   \eta = \frac{\mathcal{I}_{\text{data}}}{\mathcal{I}_{\text{total}}} = 1.0 - \frac{\mathcal{I}_{\text{non-data}}}{\mathcal{I}_{\text{total}}}
   }
-  $$
+$$
 
   Jahan:
   - $\mathcal{I}_{\text{data}}$: Keval useful data information dikhane wali ink (lines, points, markers).
@@ -84,18 +84,21 @@ Maan lijiye $N$ total departments hain aur $K = 2$ comparative series hain ($\te
 
 #### Definition 1 (Baseline Categorical Domain):
 Category axis par $i$-th category ka discrete base index:
+
 $$
 x_i = i, \quad \forall i \in \{0, 1, 2, \dots, N-1\}
 $$
 
 #### Condition 1 (Non-Overlapping Criterion):
 Agar uniform bar width $w$ hai, toh bars ke beech takraav na hone ke liye:
+
 $$
 K \cdot w < 1.0 \implies w < \frac{1}{K} = \frac{1}{2} = 0.5 \quad \left(\text{Chuna gaya: } w = 0.38\right)
 $$
 
 #### Symmetrical Shifted Coordinates:
 Category $i$ ke liye shifted coordinates $(y_{1, i}, y_{2, i})$:
+
 $$
 \begin{cases}
 y_{1, i} = x_i - \dfrac{w}{2} \\
@@ -107,11 +110,13 @@ jahan $y_{1, i}$ Series 1 (Budget) ka center coordinate hai aur $y_{2, i}$ Serie
 
 #### Center Tick Alignment Formula:
 Category name tick mark $t_i$ dono bars ke bilkul theek beech me aane ke liye:
+
 $$
 \boxed{
 t_i = \frac{y_{1, i} + y_{2, i}}{2} = \frac{\left(x_i - \dfrac{w}{2}\right) + \left(x_i + \dfrac{w}{2}\right)}{2} = x_i
 }
 $$
+
 Isliye tick labels direct unshifted coordinate $x_i$ par set kiye jate hain.
 
 ---
@@ -174,6 +179,7 @@ $$
 $$
 
 Mapping:
+
 $$
 \mathbf{p}_i = \begin{pmatrix} X_i \\ Y_i \\ S_i \\ C_i \end{pmatrix} \in \mathbb{R}^4
 $$
@@ -186,11 +192,13 @@ jahan har visual channel ek mathematical mapping darshata hai:
 
 #### Overplotting & Alpha ($\alpha$):
 Jab multiple points aapas me chipak jate hain (overplotting), tab transparency model:
+
 $$
 \boxed{
 I_{\text{transmitted}} = I_0 \cdot (1 - \alpha)^m
 }
 $$
+
 Jahan points ki density $m$ badhne par intensity exponentially drop hoti hai aur human eye ko dense cluster turant samajh aa jata hai.
 
 ---
