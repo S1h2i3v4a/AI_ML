@@ -206,6 +206,36 @@ Rigorous mathematical foundations of Calculus for AI, Machine Learning & Deep Le
 
 ---
 
+### 🤖 Day 23: Machine Learning & Linear Regression Foundations
+*Module Guides:* [📖 English Guide](lecture_23/README.md) | [हिंदी / Hinglish Guide](lecture_23/README_HINGLISH.md)
+
+Rigorous theoretical foundations of Supervised Machine Learning and **Linear Regression**: Arthur Samuel & Tom Mitchell definitions, ML paradigms, Supervised ML workflow, Generalization error & Bias-Variance tradeoff, Regression vs Classification, Scikit-Learn API architecture (Estimators, Transformers, Predictors), Linear Hypothesis line & hyperplane geometry, Ordinary Least Squares (OLS) residual derivation, Mean Squared Error (MSE) cost function, strict convexity & contour geometry, Vectorized Gradient Descent optimization, learning rate dynamics, analytical Normal Equation vs numerical solvers, end-to-end `insurance.csv` implementation, and comprehensive evaluation metrics (MAE, MSE, RMSE, $R^2$, and degrees-of-freedom Adjusted $R^2$).
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **23.01** | Introduction to Machine Learning | Arthur Samuel & Tom Mitchell definitions $E, T, P$; ML paradigms taxonomy | [Notes](lecture_23/Notes_23.01/README.md) \| [PDF](lecture_23/Notes_23.01/notes.pdf) \| [Notebook](lecture_23/Notes_23.01/lecture_23_01.ipynb) |
+| **23.02** | Types of ML: Supervised Learning | Labeled datasets $\mathcal{D} = \{(\mathbf{x}^{(i)}, y^{(i)})\}$, target mapping $f: \mathcal{X} \to \mathcal{Y}$ | [Notes](lecture_23/Notes_23.02/README.md) \| [PDF](lecture_23/Notes_23.02/notes.pdf) \| [Notebook](lecture_23/Notes_23.02/lecture_23_02.ipynb) |
+| **23.03** | Types of ML: Unsupervised & Reinforcement Learning | Latent structure discovery, PCA, K-Means clustering, MDP $(S, A, P, R, \gamma)$ | [Notes](lecture_23/Notes_23.03/README.md) \| [PDF](lecture_23/Notes_23.03/notes.pdf) \| [Notebook](lecture_23/Notes_23.03/lecture_23_03.ipynb) |
+| **23.04** | Supervised ML Workflow & Components | Data splits, generalization error, Bias-Variance tradeoff, Overfitting vs Underfitting | [Notes](lecture_23/Notes_23.04/README.md) \| [PDF](lecture_23/Notes_23.04/notes.pdf) \| [Notebook](lecture_23/Notes_23.04/lecture_23_04.ipynb) |
+| **23.05** | Regression vs. Classification Tasks | Continuous targets vs discrete labels, MSE vs Cross-Entropy loss | [Notes](lecture_23/Notes_23.05/README.md) \| [PDF](lecture_23/Notes_23.05/notes.pdf) \| [Notebook](lecture_23/Notes_23.05/lecture_23_05.ipynb) |
+| **23.06** | Introduction to Scikit-Learn | API design principles: Estimators, Transformers, Predictors, Uniform interface | [Notes](lecture_23/Notes_23.06/README.md) \| [PDF](lecture_23/Notes_23.06/notes.pdf) \| [Notebook](lecture_23/Notes_23.06/lecture_23_06.ipynb) |
+| **23.07** | Starting with Linear Regression | Linear hypothesis $\hat{y} = \mathbf{w}^T \mathbf{x} + b$, geometric hyperplane intuition | [Notes](lecture_23/Notes_23.07/README.md) \| [PDF](lecture_23/Notes_23.07/notes.pdf) \| [Notebook](lecture_23/Notes_23.07/lecture_23_07.ipynb) |
+| **23.08** | What is the Best Fit Line? | Residuals $e_i = y_i - \hat{y}_i$, Ordinary Least Squares (OLS), covariance/variance formula | [Notes](lecture_23/Notes_23.08/README.md) \| [PDF](lecture_23/Notes_23.08/notes.pdf) \| [Notebook](lecture_23/Notes_23.08/lecture_23_08.ipynb) |
+| **23.09** | What is the Cost Function? | Mean Squared Error (MSE), mathematical justification for the $\frac{1}{2m}$ factor | [Notes](lecture_23/Notes_23.09/README.md) \| [PDF](lecture_23/Notes_23.09/notes.pdf) \| [Notebook](lecture_23/Notes_23.09/lecture_23_09.ipynb) |
+| **23.10** | Understanding the Cost Function Curve | Convexity, positive definite Hessian $\mathbf{H}$, 1D parabola vs 3D paraboloid contours | [Notes](lecture_23/Notes_23.10/README.md) \| [PDF](lecture_23/Notes_23.10/notes.pdf) \| [Notebook](lecture_23/Notes_23.10/lecture_23_10.ipynb) |
+| **23.11** | Gradient Descent in Linear Regression | Partial derivatives $\nabla J$, simultaneous update rule, learning rate $\alpha$ dynamics | [Notes](lecture_23/Notes_23.11/README.md) \| [PDF](lecture_23/Notes_23.11/notes.pdf) \| [Notebook](lecture_23/Notes_23.11/lecture_23_11.ipynb) |
+| **23.12** | Summary of Linear Regression Foundations | Normal Equation $\mathbf{w}^* = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}$ vs Gradient Descent comparison | [Notes](lecture_23/Notes_23.12/README.md) \| [PDF](lecture_23/Notes_23.12/notes.pdf) \| [Notebook](lecture_23/Notes_23.12/lecture_23_12.ipynb) |
+| **23.13** | Linear Regression Hands-On Pipeline | End-to-end `insurance.csv` implementation, categorical encoding, scikit-learn training | [Notes](lecture_23/Notes_23.13/README.md) \| [PDF](lecture_23/Notes_23.13/notes.pdf) \| [Notebook](lecture_23/Notes_23.13/lecture_23_13.ipynb) |
+| **23.14** | Evaluation Metrics for Regression | MAE, MSE, RMSE, $R^2$, and degrees-of-freedom Adjusted $R^2$ penalty | [Notes](lecture_23/Notes_23.14/README.md) \| [PDF](lecture_23/Notes_23.14/notes.pdf) \| [Notebook](lecture_23/Notes_23.14/lecture_23_14.ipynb) |
+
+> [!TIP]
+> **🧪 Day 23 Comprehensive Case Studies & Practice Problem Set:**  
+> *Module Guides:* [📖 English Guide](lecture_23/Practice_Problems/README.md) | [हिंदी / Hinglish Guide](lecture_23/Practice_Problems/README_HINGLISH.md)  
+> - 📝 **Problem Statements:** [Questions](lecture_23/Practice_Problems/Questions/README.md) | [questions.pdf](lecture_23/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_23/Practice_Problems/Questions/lecture_23_questions.ipynb)
+> - 💡 **Complete Solutions:** [Solutions](lecture_23/Practice_Problems/Solutions/README.md) | [solutions.pdf](lecture_23/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_23/Practice_Problems/Solutions/lecture_23_solutions.ipynb)
+
+---
+
 ## 📐 Mathematical Formulations & Statistical Expressions
 
 The mathematical formulations across these visualization modules adhere to formal academic and textbook definitions:
