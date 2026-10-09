@@ -41,7 +41,10 @@ AI-ML/
 ├── lecture_21/                   # Mathematics for AI (Part 2 - Linear Algebra Mastery)
 │   ├── Notes_21.01/ to 21.15/    # Sub-topics with README.md, notes.pdf, .ipynb
 │   └── Practice_Problems/        # Industry Case Studies (Questions & Solutions)
-└── lecture_22/ ... lecture_60/   # (Machine Learning, Deep Learning, NLP & Deployment)
+├── lecture_22/                   # Mathematics for AI (Part 3 - Calculus Mastery)
+│   ├── Notes_22.01/ to 22.09/    # Sub-topics with README.md, notes.pdf, .ipynb
+│   └── Practice_Problems/        # Industry Case Studies (Questions & Solutions)
+└── lecture_23/ ... lecture_60/   # (Machine Learning, Deep Learning, NLP & Deployment)
 ```
 
 ---
@@ -177,6 +180,29 @@ Rigorous mathematical foundations of Linear Algebra for AI, Machine Learning & D
 > *Module Guides:* [📖 English Guide](lecture_21/Practice_Problems/README.md) | [हिंदी / Hinglish Guide](lecture_21/Practice_Problems/README_HINGLISH.md)  
 > - 📝 **Problem Statements:** [Questions](lecture_21/Practice_Problems/Questions/README.md) | [questions.pdf](lecture_21/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_21/Practice_Problems/Questions/questions.ipynb)
 > - 💡 **Complete Solutions:** [Solutions](lecture_21/Practice_Problems/Solutions/README.md) | [solutions.pdf](lecture_21/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_21/Practice_Problems/Solutions/solutions.ipynb)
+
+### 📉 Day 22: Mathematics for AI (Part 3 — Calculus Mastery)
+*Module Guides:* [📖 English Guide](lecture_22/README.md) | [हिंदी / Hinglish Guide](lecture_22/README_HINGLISH.md)
+
+Rigorous mathematical foundations of Calculus for AI, Machine Learning & Deep Learning: Functions, composite functions, function arithmetic, vertical/horizontal transformations, limit definition of derivative, differentiation rules, activation derivatives (Sigmoid, Tanh, ReLU), critical points, concavity tests, and Gradient Descent optimization.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **22.01** | Introduction to Calculus for AI & Continuous Change | Continuous change, differential vs integral, parameter sensitivity, loss minimization | [Notes](lecture_22/Notes_22.01/README.md) \| [PDF](lecture_22/Notes_22.01/notes.pdf) \| [Notebook](lecture_22/Notes_22.01/lecture_22_01.ipynb) |
+| **22.02** | Mathematical Functions & Real-World Transformations | Domain, codomain, range, root functions, sinusoids, exponentials, logs in AI | [Notes](lecture_22/Notes_22.02/README.md) \| [PDF](lecture_22/Notes_22.02/notes.pdf) \| [Notebook](lecture_22/Notes_22.02/lecture_22_02.ipynb) |
+| **22.03** | Composite Functions & Deep Neural Architectures | Function composition $(f \circ g)(x)$, nested deep neural network forward pass, non-commutativity | [Notes](lecture_22/Notes_22.03/README.md) \| [PDF](lecture_22/Notes_22.03/notes.pdf) \| [Notebook](lecture_22/Notes_22.03/lecture_22_03.ipynb) |
+| **22.04** | Operations on Functions: Scalar Multiplication & Addition | Vertical stretch, compression, shift, reflection, linear combinations, residual connections | [Notes](lecture_22/Notes_22.04/README.md) \| [PDF](lecture_22/Notes_22.04/notes.pdf) \| [Notebook](lecture_22/Notes_22.04/lecture_22_04.ipynb) |
+| **22.05** | Input Transformations: Scaling & Shifts | Horizontal shifts, horizontal scaling, affine input maps ($z = w x + b$), standardization | [Notes](lecture_22/Notes_22.05/README.md) \| [PDF](lecture_22/Notes_22.05/notes.pdf) \| [Notebook](lecture_22/Notes_22.05/lecture_22_05.ipynb) |
+| **22.06** | Differentiation & Instantaneous Rate of Change | Secant to tangent limit, derivative definition, first-principles proofs, Taylor linear approximation | [Notes](lecture_22/Notes_22.06/README.md) \| [PDF](lecture_22/Notes_22.06/notes.pdf) \| [Notebook](lecture_22/Notes_22.06/lecture_22_06.ipynb) |
+| **22.07** | Differentiation Rules & Activation Derivatives | Power, product, quotient, chain rule. Derivations of Sigmoid, Tanh, ReLU derivatives | [Notes](lecture_22/Notes_22.07/README.md) \| [PDF](lecture_22/Notes_22.07/notes.pdf) \| [Notebook](lecture_22/Notes_22.07/lecture_22_07.ipynb) |
+| **22.08** | Finding Minima & Maxima | Critical points, First & Second Derivative Tests, concavity, Gradient Descent algorithm | [Notes](lecture_22/Notes_22.08/README.md) \| [PDF](lecture_22/Notes_22.08/notes.pdf) \| [Notebook](lecture_22/Notes_22.08/lecture_22_08.ipynb) |
+| **22.09** | Calculus Optimization Practice Problem | Analytical derivation of $f(x) = x^3 - 6x^2 + 9x$, critical points, double derivative test, extrema | [Notes](lecture_22/Notes_22.09/README.md) \| [PDF](lecture_22/Notes_22.09/notes.pdf) \| [Notebook](lecture_22/Notes_22.09/lecture_22_09.ipynb) |
+
+> [!TIP]
+> **🧪 Day 22 Comprehensive Case Studies & Practice Problem Set:**  
+> *Module Guides:* [📖 English Guide](lecture_22/Practice_Problems/README.md) | [हिंदी / Hinglish Guide](lecture_22/Practice_Problems/README_HINGLISH.md)  
+> - 📝 **Problem Statements:** [Questions](lecture_22/Practice_Problems/Questions/README.md) | [questions.pdf](lecture_22/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_22/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions:** [Solutions](lecture_22/Practice_Problems/Solutions/README.md) | [solutions.pdf](lecture_22/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_22/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
 
