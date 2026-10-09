@@ -36,8 +36,13 @@ AI-ML/
 │   └── reference_materials/      # Cheatsheets & references
 ├── lecture_19/                   # Data Visualization (Part 2 - Advanced Matplotlib & Seaborn)
 │   ├── Notes_19.01/ to 19.16/    # Sub-topics (notes.md, notes.pdf, .ipynb, diagrams)
-│   └── reference_materials/      # Cheatsheets, slide notes & sample notebooks
-└── lecture_20/ ... lecture_60/   # (Machine Learning, Deep Learning, NLP & Deployment)
+├── lecture_20/                   # Mathematics for AI (Part 1 - Probability Theory)
+│   ├── Notes_20.01/ to 20.20/    # Sub-topics (README_HINGLISH.md, notes.pdf, .ipynb)
+│   └── Practice_Problems/        # Industry Case Studies (Questions & Solutions)
+├── lecture_21/                   # Mathematics for AI (Part 2 - Linear Algebra Mastery)
+│   ├── Notes_21.01/ to 21.15/    # Sub-topics (README_HINGLISH.md, notes.pdf, .ipynb)
+│   └── Practice_Problems/        # Industry Case Studies (Questions & Solutions)
+└── lecture_22/ ... lecture_60/   # (Machine Learning, Deep Learning, NLP & Deployment)
 ```
 
 ---
@@ -144,6 +149,34 @@ Artificial Intelligence aur Machine Learning ke liye Probability Theory ka mathe
 > - 📝 **Problem Statements:** [Questions](lecture_20/Practice_Problems/Questions/README.md) | [questions.pdf](lecture_20/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_20/Practice_Problems/Questions/questions.ipynb)
 > - 💡 **Complete Solutions:** [Solutions](lecture_20/Practice_Problems/Solutions/README.md) | [solutions.pdf](lecture_20/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_20/Practice_Problems/Solutions/solutions.ipynb)
 
+### 📐 Day 21: Mathematics for AI (Part 2 — Linear Algebra Mastery) [Hinglish]
+*Module Guides:* [📖 Hinglish Guide](lecture_21/README_HINGLISH.md) | [English Guide](lecture_21/README.md)
+
+Artificial Intelligence, Machine Learning aur Deep Learning ke liye Linear Algebra ka complete mathematical foundation: Vectors, matrices, tensors, inner products, norms, span, basis, rank, determinants, Gaussian elimination, Moore-Penrose pseudo-inverses, Gram-Schmidt orthogonalization, QR decomposition, eigenvalues, eigenvectors, symmetric spectral theorem, Singular Value Decomposition (SVD), PCA, aur Deep Learning attention mechanisms (LoRA).
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **21.01** | Vectors, Scalars, Matrices & Tensors | Tensor rank hierarchy (0D se 4D), row/column vectors, batch tensors | [Notes](lecture_21/Notes_21.01/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.01/notes.pdf) \| [Notebook](lecture_21/Notes_21.01/lecture_21_01.ipynb) |
+| **21.02** | Vector Operations & Geometric Intuition | Vector addition, scalar multiplication, $\ell_1$ & $\ell_2$ norms, cosine similarity | [Notes](lecture_21/Notes_21.02/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.02/notes.pdf) \| [Notebook](lecture_21/Notes_21.02/lecture_21_02.ipynb) |
+| **21.03** | Matrix Operations & Special Matrices | Addition, scaling, transposes, symmetric, diagonal, identity, orthogonal matrices | [Notes](lecture_21/Notes_21.03/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.03/notes.pdf) \| [Notebook](lecture_21/Notes_21.03/lecture_21_03.ipynb) |
+| **21.04** | Matrix Multiplication & AI Forward Passes | Dot products vs outer products, linear composition, batch gemm $\mathcal{O}(mnp)$ | [Notes](lecture_21/Notes_21.04/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.04/notes.pdf) \| [Notebook](lecture_21/Notes_21.04/lecture_21_04.ipynb) |
+| **21.05** | Linear Combinations, Span & Basis | Linear combinations, span subspaces, linear independence, canonical basis | [Notes](lecture_21/Notes_21.05/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.05/notes.pdf) \| [Notebook](lecture_21/Notes_21.05/lecture_21_05.ipynb) |
+| **21.06** | Linear Independence & Matrix Rank | Row/column rank, rank-nullity theorem, full rank vs rank deficiency | [Notes](lecture_21/Notes_21.06/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.06/notes.pdf) \| [Notebook](lecture_21/Notes_21.06/lecture_21_06.ipynb) |
+| **21.07** | Determinants & Geometric Singularity | Oriented volume scaling, Laplace expansion, invertibility criterion $\det(A) \ne 0$ | [Notes](lecture_21/Notes_21.07/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.07/notes.pdf) \| [Notebook](lecture_21/Notes_21.07/lecture_21_07.ipynb) |
+| **21.08** | Systems of Linear Equations & Gaussian Elimination | Augmented matrix, forward elimination, back-substitution, REF & RREF | [Notes](lecture_21/Notes_21.08/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.08/notes.pdf) \| [Notebook](lecture_21/Notes_21.08/lecture_21_08.ipynb) |
+| **21.09** | Matrix Inverses & Moore-Penrose Pseudo-Inverse | Gauss-Jordan inversion, overdetermined systems, pseudo-inverse $A^+$, Least Squares | [Notes](lecture_21/Notes_21.09/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.09/notes.pdf) \| [Notebook](lecture_21/Notes_21.09/lecture_21_09.ipynb) |
+| **21.10** | Orthogonality, Orthonormality & Projections | Orthogonal projections, Gram-Schmidt orthogonalization, QR decomposition | [Notes](lecture_21/Notes_21.10/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.10/notes.pdf) \| [Notebook](lecture_21/Notes_21.10/lecture_21_10.ipynb) |
+| **21.11** | Eigenvalues & Eigenvectors | Invariant directions, characteristic equation $\det(A - \lambda I) = 0$, eigenspaces | [Notes](lecture_21/Notes_21.11/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.11/notes.pdf) \| [Notebook](lecture_21/Notes_21.11/lecture_21_11.ipynb) |
+| **21.12** | Diagonalization & Spectral Theorem | Modal matrix $P$, similarity transformation $A = P \Lambda P^{-1}$, symmetric spectral theorem | [Notes](lecture_21/Notes_21.12/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.12/notes.pdf) \| [Notebook](lecture_21/Notes_21.12/lecture_21_12.ipynb) |
+| **21.13** | Singular Value Decomposition (SVD) | Rectangular factorization $A = U \Sigma V^T$, Eckart-Young low-rank theorem | [Notes](lecture_21/Notes_21.13/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.13/notes.pdf) \| [Notebook](lecture_21/Notes_21.13/lecture_21_13.ipynb) |
+| **21.14** | Principal Component Analysis (PCA) via Linear Algebra | Covariance matrix $\mathbf{\Sigma}$, spectral projection, scree plot, dimensionality reduction | [Notes](lecture_21/Notes_21.14/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.14/notes.pdf) \| [Notebook](lecture_21/Notes_21.14/lecture_21_14.ipynb) |
+| **21.15** | Linear Algebra in Deep Learning & Attention | Dense layers, im2col gemm convolution, Transformer Scaled Dot-Product Attention, LoRA | [Notes](lecture_21/Notes_21.15/README_HINGLISH.md) \| [PDF](lecture_21/Notes_21.15/notes.pdf) \| [Notebook](lecture_21/Notes_21.15/lecture_21_15.ipynb) |
+
+> [!TIP]
+> **🧪 Day 21 Comprehensive Case Studies & Practice Problem Set:**  
+> *Module Guides:* [📖 Hinglish Guide](lecture_21/Practice_Problems/README_HINGLISH.md) | [English Guide](lecture_21/Practice_Problems/README.md)  
+> - 📝 **Problem Statements:** [Questions](lecture_21/Practice_Problems/Questions/README_HINGLISH.md) | [questions.pdf](lecture_21/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_21/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions:** [Solutions](lecture_21/Practice_Problems/Solutions/README_HINGLISH.md) | [solutions.pdf](lecture_21/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_21/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
 
