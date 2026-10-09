@@ -236,6 +236,37 @@ Supervised Machine Learning aur **Linear Regression** ka comprehensive mathemati
 
 ---
 
+### 🧠 Day 24: Advanced Regression, Regularization & Logistic Regression [Hinglish]
+*Module Guides:* [📖 Hinglish Guide](lecture_24/README_HINGLISH.md) | [English Guide](lecture_24/README.md)
+
+Machine Learning mein regularized models aur probabilistic classification ka deep masterclass: Categorical encoding (Nominal vs Ordinal, One-Hot Encoding), Dummy Variable Trap aur multicollinearity, Feature scaling (StandardScaler, MinMaxScaler), Discretization aur Interaction features, Bias-Variance tradeoff decomposition, Overfitting vs Underfitting mathematical anatomy, systematic fixing playbook, diagnostic Learning Curves ($m$ vs loss), L1 Regularization (Lasso) diamond geometry aur automatic feature selection, L2 Regularization (Ridge) circular geometry aur closed-form Normal Equation, Lasso Regularization paths aur LassoCV hyperparameter search, ElasticNet hybrid grouping effect, Logistic Regression Odds aur Log-odds Logit, Sigmoid curve $\sigma(z) = \frac{1}{1 + e^{-z}}$, linear decision boundary hyperplane, Maximum Likelihood Estimation (MLE) se Binary Cross-Entropy (Log Loss) ka derivation, gradient updates, clinical `heart.csv` pipeline, Confusion Matrix, aur comprehensive classification evaluation metrics (Accuracy, Precision, Recall, F1-Score, ROC-AUC).
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **24.01** | Feature Engineering: Encoding | Nominal vs Ordinal, Label Encoding, One-Hot Encoding orthogonal basis | [Notes](lecture_24/Notes_24.01/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.01/notes.pdf) \| [Notebook](lecture_24/Notes_24.01/lecture_24_01.ipynb) |
+| **24.02** | Dummy Variable Trap | Perfect multicollinearity, singular matrix $\det(\mathbf{X}^T \mathbf{X}) = 0$, $K-1$ rule | [Notes](lecture_24/Notes_24.02/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.02/notes.pdf) \| [Notebook](lecture_24/Notes_24.02/lecture_24_02.ipynb) |
+| **24.03** | Other Feature Engineering Techniques | Z-score standardization vs MinMax normalization, Binning, Polynomial interactions | [Notes](lecture_24/Notes_24.03/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.03/notes.pdf) \| [Notebook](lecture_24/Notes_24.03/lecture_24_03.ipynb) |
+| **24.04** | Overfitting (High Variance) | Memorizing noise, Bias-Variance decomposition $\text{Bias}^2 + \text{Var} + \sigma^2$, generalization gap | [Notes](lecture_24/Notes_24.04/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.04/notes.pdf) \| [Notebook](lecture_24/Notes_24.04/lecture_24_04.ipynb) |
+| **24.05** | Underfitting (High Bias) | Oversimplified hypothesis space, inability to capture non-linear structure | [Notes](lecture_24/Notes_24.05/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.05/notes.pdf) \| [Notebook](lecture_24/Notes_24.05/lecture_24_05.ipynb) |
+| **24.06** | Fixing Underfit & Overfit | Engineering playbook: Regularization, feature pruning, polynomial expansion | [Notes](lecture_24/Notes_24.06/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.06/notes.pdf) \| [Notebook](lecture_24/Notes_24.06/lecture_24_06.ipynb) |
+| **24.07** | Diagnostic Learning Curves | Training size $m$ vs loss curves, plateau analysis, cross-validation diagnostics | [Notes](lecture_24/Notes_24.07/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.07/notes.pdf) \| [Notebook](lecture_24/Notes_24.07/lecture_24_07.ipynb) |
+| **24.08** | Regularization: Lasso (L1) | $J = MSE + \lambda \|\mathbf{w}\|_1$, geometric diamond constraint, automatic sparsity | [Notes](lecture_24/Notes_24.08/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.08/notes.pdf) \| [Notebook](lecture_24/Notes_24.08/lecture_24_08.ipynb) |
+| **24.09** | Regularization: Ridge (L2) | $J = MSE + \frac{\lambda}{2} \|\mathbf{w}\|_2^2$, Normal Equation $(\mathbf{X}^T \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^T \mathbf{y}$ | [Notes](lecture_24/Notes_24.09/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.09/notes.pdf) \| [Notebook](lecture_24/Notes_24.09/lecture_24_09.ipynb) |
+| **24.10** | Lasso Implementation & Paths | Hands-on `insurance.csv`, tracing coefficient shrinkage paths across $\alpha$ | [Notes](lecture_24/Notes_24.10/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.10/notes.pdf) \| [Notebook](lecture_24/Notes_24.10/lecture_24_10.ipynb) |
+| **24.11** | Using LassoCV | K-Fold cross-validated hyperparameter search for optimal regularizer $\alpha^*$ | [Notes](lecture_24/Notes_24.11/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.11/notes.pdf) \| [Notebook](lecture_24/Notes_24.11/lecture_24_11.ipynb) |
+| **24.12** | ElasticNet Overview | Hybrid convex combination $MSE + \alpha [\rho \|\mathbf{w}\|_1 + \frac{1-\rho}{2} \|\mathbf{w}\|_2^2]$, grouping effect | [Notes](lecture_24/Notes_24.12/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.12/notes.pdf) \| [Notebook](lecture_24/Notes_24.12/lecture_24_12.ipynb) |
+| **24.13** | Logistic Regression Intuition | Odds $\frac{p}{1-p}$, Logit $\ln(\text{Odds})$, Sigmoid function $\sigma(z) = \frac{1}{1 + e^{-z}}$ | [Notes](lecture_24/Notes_24.13/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.13/notes.pdf) \| [Notebook](lecture_24/Notes_24.13/lecture_24_13.ipynb) |
+| **24.14** | Logistic Regression Cost Function | MLE derivation of Binary Cross-Entropy $J = -\frac{1}{m} \sum [y \ln \hat{y} + (1-y) \ln(1-\hat{y})]$ | [Notes](lecture_24/Notes_24.14/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.14/notes.pdf) \| [Notebook](lecture_24/Notes_24.14/lecture_24_14.ipynb) |
+| **24.15** | Classification Code & Metrics | Clinical `heart.csv` pipeline, Confusion Matrix, Precision, Recall, F1, ROC-AUC | [Notes](lecture_24/Notes_24.15/README_HINGLISH.md) \| [PDF](lecture_24/Notes_24.15/notes.pdf) \| [Notebook](lecture_24/Notes_24.15/lecture_24_15.ipynb) |
+
+> [!TIP]
+> **🧪 Day 24 Comprehensive Case Studies & Practice Problem Set:**  
+> *Module Guides:* [📖 Hinglish Guide](lecture_24/Practice_Problems/README_HINGLISH.md) | [English Guide](lecture_24/Practice_Problems/README.md)  
+> - 📝 **Problem Statements:** [Questions](lecture_24/Practice_Problems/Questions/README_HINGLISH.md) | [questions.pdf](lecture_24/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_24/Practice_Problems/Questions/lecture_24_questions.ipynb)
+> - 💡 **Complete Solutions:** [Solutions](lecture_24/Practice_Problems/Solutions/README_HINGLISH.md) | [solutions.pdf](lecture_24/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_24/Practice_Problems/Solutions/lecture_24_solutions.ipynb)
+
+---
+
 ## 📐 Mathematical Formulations & Statistical Expressions (Textbook Reference)
 
 Visualizations ke peeche ke mathematical formulas standard academic textbook style mein:
