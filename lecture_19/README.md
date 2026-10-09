@@ -116,3 +116,19 @@ and $h > 0$ is the smoothing bandwidth parameter, optimized by Silverman's formu
 $$
 \boxed{h_{\text{opt}} = 0.9 \cdot \min\left(s, \; \frac{\text{IQR}}{1.34}\right) \cdot n^{-1/5}}
 $$
+
+---
+
+## 🎯 Practice Problems & Case Studies
+
+To master the concepts of Lecture 19, solve the practical case studies in the [Practice Problems](Practice_Problems/) module:
+
+- 📁 **[Questions/](Practice_Problems/Questions/)**:
+  - [Questions README](Practice_Problems/Questions/README.md) | [questions.pdf](Practice_Problems/Questions/questions.pdf) | [questions.ipynb](Practice_Problems/Questions/questions.ipynb)
+  - **Case 1**: Algorithmic E-Commerce Logistics & Delivery Duration Distribution (KDE & Histogram Density)
+  - **Case 2**: Multi-Cohort Oncology Clinical Trial Biomarker & Outlier Audit (Notched Box Plots & Violins)
+  - **Case 3**: Quantitative Hedge Fund Multi-Asset Risk & Macroeconomic Regime Analysis (Heatmaps & Subplots)
+- 📁 **[Solutions/](Practice_Problems/Solutions/)**:
+  - [Solutions Guide](Practice_Problems/Solutions/README.md) | [solutions.pdf](Practice_Problems/Solutions/solutions.pdf) | [solutions.ipynb](Practice_Problems/Solutions/solutions.ipynb)
+  - Full production Python solutions with formal mathematical derivations and generated high-resolution visualizations.
+

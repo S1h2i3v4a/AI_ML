@@ -95,10 +95,10 @@ $$
 To master the concepts of Lecture 18, solve the practical case studies in the [Practice Problems](Practice_Problems/) module:
 
 - 📁 **[Questions/](Practice_Problems/Questions/)**:
-  - `questions.md` | `questions.pdf` | `questions.ipynb`
+  - [Questions README](Practice_Problems/Questions/README.md) | [questions.pdf](Practice_Problems/Questions/questions.pdf) | [questions.ipynb](Practice_Problems/Questions/questions.ipynb)
   - Problem 1: Healthcare Operations Multi-Metric Bar & Line Chart
   - Problem 2: E-Commerce Multi-Touch Attribution 4D Scatter Plot
   - Problem 3: SaaS Executive Boardroom YoY Revenue Dashboard
 - 📁 **[Solutions/](Practice_Problems/Solutions/)**:
-  - `solutions.md` | `solutions.pdf` | `solutions.ipynb`
+  - [Solutions Guide](Practice_Problems/Solutions/README.md) | [solutions.pdf](Practice_Problems/Solutions/solutions.pdf) | [solutions.ipynb](Practice_Problems/Solutions/solutions.ipynb)
   - Production-ready, fully commented Python solutions with exported figures.

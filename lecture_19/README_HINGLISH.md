@@ -116,3 +116,19 @@ aur bandwidth parameter $h$ Silverman ke formula se optimize hota hai:
 $$
 \boxed{h_{\text{opt}} = 0.9 \cdot \min\left(s, \; \frac{\text{IQR}}{1.34}\right) \cdot n^{-1/5}}
 $$
+
+---
+
+## 🎯 Practice Problems & Case Studies
+
+Lecture 19 ke advanced visualization concepts ko master karne ke liye [Practice Problems](Practice_Problems/) module solve karein:
+
+- 📁 **[Questions/](Practice_Problems/Questions/)**:
+  - [Questions README](Practice_Problems/Questions/README_HINGLISH.md) | [questions.pdf](Practice_Problems/Questions/questions.pdf) | [questions.ipynb](Practice_Problems/Questions/questions.ipynb)
+  - **Case 1**: Algorithmic E-Commerce Logistics & Delivery Duration Distribution (KDE & Histogram Density)
+  - **Case 2**: Multi-Cohort Oncology Clinical Trial Biomarker & Outlier Audit (Notched Box Plots & Violins)
+  - **Case 3**: Quantitative Hedge Fund Multi-Asset Risk & Macroeconomic Regime Analysis (Heatmaps & Subplots)
+- 📁 **[Solutions/](Practice_Problems/Solutions/)**:
+  - [Solutions Guide](Practice_Problems/Solutions/README_HINGLISH.md) | [solutions.pdf](Practice_Problems/Solutions/solutions.pdf) | [solutions.ipynb](Practice_Problems/Solutions/solutions.ipynb)
+  - Industry-standard Python solutions, formal mathematical derivations aur generated high-resolution plots.
+
