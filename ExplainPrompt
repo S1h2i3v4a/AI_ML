@@ -1,0 +1,54 @@
+Concrete Data Numbers (Arrays)
+Formula ka origin (Kahan se aaya)
+Desi/Real-world Analogy
+Common Confusion Busters
+Visual Breakdown
+Aapke liye Master Prompts taiyaar hain jinhe aap copy-paste karke use kar sakte hain:
+
+1. The "Master Prompt" (Sabse Best & Complete Template)
+Jab aapke paas koi complex code ya statistical topic ho, toh yeh prompt use karein:
+
+text
+
+
+Mujhe is code/topic ka ek dam deep, step-by-step first-principles explanation chahiye:
+1. Concrete Data Trace: Abstract formulas se pehle, actual NumPy array/numbers ke form mein dikhao ki shuruat mein data kaisa dikhta hai aur har function ke baad array ke andar numbers kaise badalte hain.
+2. Math + Origin: Har formula (jaise constants ya values) ka mathematical origin explain karo ki yeh number kahan se aaya, sirf formula mat likhna.
+3. Intuition & Analogy: Ek simple real-world analogy (jaise exam marks, courier delays, etc.) se intuition clear karo.
+4. Confusion Buster: Isme sabse bada trap/misconception kya hota hai jahan log confuse hote hain, use alag se highlight karo.
+5. Visual Logic: Graph/Plot ke zariye dikhao ki kaunsa data kahan baitha hai aur kaunse patterns highlight ya hide ho rahe hain.
+Bhasha: Simple Hinglish (Technical terms intact rakhte hue).
+[YAHA APNA CODE YA TOPIC PASTE KAREIN]
+2. Quick 2-Liner Prompt (Jab jaldi mein hon)
+Agar aapko lamba prompt nahi likhna, toh bas yeh 2 lines likh dijiye:
+
+text
+
+
+Isko "First-Principles" se explain karo. Pehle actual array ke numbers ka concrete example do ki har step mein values kaise transform ho rahi hain, fir formulas ka origin aur real-life intuition simple Hinglish mein samjhao.
+3. Machine Learning / Math Formula ke liye Specialized Prompt
+Jab code nahi, balki koi theory ya formula samajhna ho (jaise IQR, PCA, Gradient Descent, P-value):
+
+text
+
+
+Mujhe is concept ka "No-Jargon, High-Rigor" breakdown chahiye:
+1. Iska mathematical derivation kya hai aur iske constants (jaise 1.57, 1.96, etc.) kahan se aaye?
+2. Agar mere paas 5-10 numbers ka ek chhota sample array ho, toh hand-calculation karke dikhao.
+3. Industry/Clinical/Production scenario mein yeh kyu use hota hai aur standard methods (like Mean/t-test) yahan kyu fail ho jaate hain?
+💡 Pro-Tip: Yeh 4 "Power Words" hamesha use karein
+Jab bhi aap kisi AI model se baat karein, prompt mein in words ko zaroor shamil karein:
+
+"Concrete data trace" 
+→
+→ Model ko abstract baatein chhod kar actual numbers dikhane par majboor karta hai.
+"First-principles explanation" 
+→
+→ Model basic fundamental facts se start karke step-by-step logic build karta hai.
+"Origin of constants" 
+→
+→ Model sirf formula chipkane ke bajaye batata hai ki number kahan se derive hua.
+"Common misconceptions" 
+→
+→ Jo confusion aapke dimag mein aa sakta hai, wo pehle hi clear ho jaata hai.
+9:20 AM
