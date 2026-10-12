@@ -7,34 +7,72 @@
 [![Case 2 Plot](https://img.shields.io/badge/Plot-Case%202%20SVM%20Margin-green.svg)](case2_svm_maximum_margin.png)
 [![Case 3 Plot](https://img.shields.io/badge/Plot-Case%203%20PCA%20Spectrum-purple.svg)](case3_pca_covariance_eigenvectors.png)
 
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Questions](../Questions/README.md) | [📁 Practice Problems Overview](../README.md)
+🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Questions](../Questions/README.md) | [📁 Overview](../README.md)
 
 ---
 
-## 📌 Executive Architecture & Engineering Standards
+## 📌 Executive Architecture & Solution Blueprint
 
-This document provides production-grade reference solutions, formal mathematical proofs, and executive visual engineering implementations for the 3 industry case studies in **Lecture 21**.
+This document provides production-grade reference solutions, formal mathematical proofs, and executive engineering implementations for the 3 industry case studies in **Lecture 21**.
+
+Every problem is solved from first principles with full algebraic derivations, step-by-step arithmetic traces, and reproducible Python implementations.
 
 ---
 
 # 📌 Solution to Case 1: Computer Vision 2D Affine Transformations & Homogeneous Coordinates
 
-### 1. Mathematical Derivations & Proofs
-
-#### Task 1: Elementary Homogeneous Matrices
-For angle $\theta = 45^\circ = \frac{\pi}{4}$, $\cos(\frac{\pi}{4}) = \sin(\frac{\pi}{4}) = \frac{\sqrt{2}}{2} \approx 0.7071$:
+### 🎯 Problem Recap
+Given an initial polygon rectangle $V \in \mathbb{R}^{3 \times 4}$ captured by an autonomous robot camera:
 
 $$
-R\left(\frac{\pi}{4}\right) = \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} & 0 \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & 0 \\ 0 & 0 & 1 \end{bmatrix}
+V = \begin{bmatrix} 0 & 2 & 2 & 0 \\ 0 & 0 & 3 & 3 \\ 1 & 1 & 1 & 1 \end{bmatrix}
 $$
 
-For horizontal shear with $k_x = 0.5$:
+Apply:
+1. Rotation: Counter-clockwise by $\theta = 45^\circ = \frac{\pi}{4}$ around the origin.
+2. Horizontal Shear: Factor $k_x = 0.5$.
+3. Translation: Offset $\mathbf{t} = [3, -2]^T$.
+
+---
+
+### 1. Step-by-Step Mathematical Derivations & Calculations
+
+#### 🔹 Task 1: Elementary Homogeneous Matrices Construction
+
+##### (A) Rotation Matrix $R(\theta)$
+In 2D Cartesian space, rotation by angle $\theta$ maps $(x, y)$ to $(x\cos\theta - y\sin\theta, \; x\sin\theta + y\cos\theta)$. In homogeneous coordinates $\tilde{\mathbf{x}} = [x, y, 1]^T$:
+
+$$
+R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+For $\theta = 45^\circ = \frac{\pi}{4}$, with $\cos(\frac{\pi}{4}) = \sin(\frac{\pi}{4}) = \frac{\sqrt{2}}{2} \approx 0.707107$:
+
+$$
+R\left(\frac{\pi}{4}\right) = \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} & 0 \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & 0 \\ 0 & 0 & 1 \end{bmatrix} \approx \begin{bmatrix} 0.7071 & -0.7071 & 0 \\ 0.7071 & 0.7071 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+##### (B) Horizontal Shear Matrix $Sh(k_x)$
+Horizontal shear shifts $x$ proportional to $y$ ($x' = x + k_x y$) while leaving $y$ invariant ($y' = y$):
+
+$$
+Sh(k_x) = \begin{bmatrix} 1 & k_x & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+Substituting $k_x = 0.5$:
 
 $$
 Sh(0.5) = \begin{bmatrix} 1 & 0.5 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}
 $$
 
-For translation vector $\mathbf{t} = [3, -2]^T$:
+##### (C) Translation Matrix $T(t_x, t_y)$
+Translation displaces coordinates by vector $\mathbf{t} = [t_x, t_y]^T$:
+
+$$
+T(t_x, t_y) = \begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+Substituting $t_x = 3.0, t_y = -2.0$:
 
 $$
 T(3, -2) = \begin{bmatrix} 1 & 0 & 3 \\ 0 & 1 & -2 \\ 0 & 0 & 1 \end{bmatrix}
@@ -42,9 +80,11 @@ $$
 
 ---
 
-#### Task 2: Matrix Composition & Non-Commutativity
-Computing $M_1 = T \cdot Sh \cdot R$:
-First, multiply $Sh \cdot R$:
+#### 🔹 Task 2: Matrix Composition & Non-Commutativity Proof
+
+##### Step 1: Standard Pipeline Matrix $M_1 = T \cdot Sh \cdot R$
+Order of application: Rotate first, shear second, translate last.
+First compute $Sh \cdot R$:
 
 $$
 Sh \cdot R = \begin{bmatrix} 1 & 0.5 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} & 0 \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & 0 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} \frac{3\sqrt{2}}{4} & -\frac{\sqrt{2}}{4} & 0 \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & 0 \\ 0 & 0 & 1 \end{bmatrix}
@@ -53,264 +93,376 @@ $$
 Now left-multiply by $T$:
 
 $$
-M_1 = T \cdot (Sh \cdot R) = \begin{bmatrix} \frac{3\sqrt{2}}{4} & -\frac{\sqrt{2}}{4} & 3 \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & -2 \\ 0 & 0 & 1 \end{bmatrix} \approx \begin{bmatrix} 1.0607 & -0.3536 & 3.0 \\ 0.7071 & 0.7071 & -2.0 \\ 0 & 0 & 1.0 \end{bmatrix}
+M_1 = T \cdot (Sh \cdot R) = \begin{bmatrix} 1 & 0 & 3 \\ 0 & 1 & -2 \\ 0 & 0 & 1 \end{bmatrix} \begin{bmatrix} \frac{3\sqrt{2}}{4} & -\frac{\sqrt{2}}{4} & 0 \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & 0 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} \frac{3\sqrt{2}}{4} & -\frac{\sqrt{2}}{4} & 3 \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & -2 \\ 0 & 0 & 1 \end{bmatrix}
 $$
 
-Now computing $M_2 = R \cdot T \cdot Sh$:
-Notice that in $M_2$, the translation occurs before rotation. The translation vector $[3, -2]^T$ gets rotated by $R$, causing the translational component to become:
+Decimal numerical values:
 
 $$
-R \begin{bmatrix} 3 \\ -2 \end{bmatrix} = \begin{bmatrix} \frac{\sqrt{2}}{2}(3 - (-2)) \\ \frac{\sqrt{2}}{2}(3 + (-2)) \end{bmatrix} = \begin{bmatrix} \frac{5\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} \end{bmatrix} \approx \begin{bmatrix} 3.5355 \\ 0.7071 \end{bmatrix} \ne \begin{bmatrix} 3 \\ -2 \end{bmatrix}
+M_1 \approx \begin{bmatrix} 1.0607 & -0.3536 & 3.0 \\ 0.7071 & 0.7071 & -2.0 \\ 0 & 0 & 1.0 \end{bmatrix}
 $$
 
-Hence $M_1 \ne M_2$. In computer vision data augmentation pipelines, changing the order of rotation and translation completely relocates the bounding boxes.
+##### Step 2: Alternate Pipeline Matrix $M_2 = R \cdot T \cdot Sh$
+First compute $T \cdot Sh$:
+
+$$
+T \cdot Sh = \begin{bmatrix} 1 & 0 & 3 \\ 0 & 1 & -2 \\ 0 & 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & 0.5 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0.5 & 3 \\ 0 & 1 & -2 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+Now left-multiply by $R$:
+
+$$
+M_2 = R \cdot (T \cdot Sh) = \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} & 0 \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & 0 \\ 0 & 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & 0.5 & 3 \\ 0 & 1 & -2 \\ 0 & 0 & 1 \end{bmatrix} = \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{4} & \frac{5\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} & \frac{3\sqrt{2}}{4} & \frac{\sqrt{2}}{2} \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+Decimal numerical values:
+
+$$
+M_2 \approx \begin{bmatrix} 0.7071 & -0.3536 & 3.5355 \\ 0.7071 & 1.0607 & 0.7071 \\ 0 & 0 & 1.0 \end{bmatrix}
+$$
+
+##### Step 3: Non-Commutativity Proof & Geometric Insight
+Evidently, $M_1 \ne M_2$.
+In $M_1$, translation is applied last, shifting the object by $[3, -2]^T$.
+In $M_2$, translation occurs prior to rotation. The subsequent rotation $R$ rotates the translation displacement vector itself by $45^\circ$, converting $[3, -2]^T$ into:
+
+$$
+R \begin{bmatrix} 3 \\ -2 \end{bmatrix} = \begin{bmatrix} \frac{5\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} \end{bmatrix} \approx \begin{bmatrix} 3.5355 \\ 0.7071 \end{bmatrix}
+$$
+
+This causes unintended displacement of bounding boxes and spatial masks in vision pipelines.
+
+##### Step 4: Transformed Vertices $V' = M_1 V$
+Computing transformed coordinates for each column of $V$:
+
+$$
+V' = M_1 V = \begin{bmatrix} 1.06066 & -0.35355 & 3.0 \\ 0.70711 & 0.70711 & -2.0 \\ 0 & 0 & 1.0 \end{bmatrix} \begin{bmatrix} 0 & 2 & 2 & 0 \\ 0 & 0 & 3 & 3 \\ 1 & 1 & 1 & 1 \end{bmatrix}
+$$
+
+- **Vertex 1: $(0, 0) \to (3.0000, -2.0000)$**
+- **Vertex 2: $(2, 0) \to (5.1213, -0.5858)$**
+- **Vertex 3: $(2, 3) \to (4.0607, 1.5355)$**
+- **Vertex 4: $(0, 3) \to (1.9393, 0.1213)$**
 
 ---
 
-#### Task 3: Determinant & Area Scaling
-For any 2D affine map in homogeneous coordinates:
+#### 🔹 Task 3: Determinant & Area Scaling Factor
+
+For any 2D affine transformation block $M = \begin{bmatrix} A & \mathbf{t} \\ \mathbf{0}^T & 1 \end{bmatrix}$, the determinant is given by $\det(M) = \det(A)$.
+For $M_1$, the linear block is $A = Sh \cdot R$:
 
 $$
-M = \begin{bmatrix} A & \mathbf{t} \\ \mathbf{0}^T & 1 \end{bmatrix} \implies \det(M) = \det(A)
+A = \begin{bmatrix} \frac{3\sqrt{2}}{4} & -\frac{\sqrt{2}}{4} \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} \end{bmatrix}
 $$
 
-For $M_1$, the linear transformation block is $A = Sh \cdot R$:
-
 $$
-\det(A) = \det(Sh) \cdot \det(R) = (1 \cdot 1 - 0.5 \cdot 0) \cdot (\cos^2\theta + \sin^2\theta) = 1 \cdot 1 = 1
+\det(A) = \left(\frac{3\sqrt{2}}{4}\right)\left(\frac{\sqrt{2}}{2}\right) - \left(-\frac{\sqrt{2}}{4}\right)\left(\frac{\sqrt{2}}{2}\right) = \frac{6}{8} + \frac{2}{8} = \frac{8}{8} = 1.0000
 $$
 
-Since $|\det(A)| = 1.0$, the combined rotation, horizontal shearing, and translation preserves the total polygonal area exactly (area scaling factor is $1.0$).
+The Area Scaling Factor is $|\det(A)| = 1.0$.
+Since rotation and shear preserve area ($\det(R)=1, \det(Sh)=1$) and translation does not compress/dilate space, the polygon's original area of $6.0$ square units remains exactly **$6.0$ square units**.
 
 ---
 
-#### Task 4: Backward Warping & Inverse Matrix
-In forward mapping $\mathbf{x}_{\text{dst}} = M \mathbf{x}_{\text{src}}$, rounding floating-point coordinates to integer pixel coordinates creates "holes" (unmapped destination pixels) and collisions.
-Backward warping avoids this by scanning every discrete destination coordinate $(x_d, y_d)$ and sampling the source image at:
+#### 🔹 Task 4: Backward Warping & Inverse Matrix $M_1^{-1}$
+
+Forward warping $\mathbf{x}_{\text{dst}} = M_1 \mathbf{x}_{\text{src}}$ maps integer pixel coordinates to floating-point values. Rounding causes gaps (holes) and collisions.
+Backward warping scans every integer grid point in the destination image and queries its source coordinate via the analytical inverse:
 
 $$
 \tilde{\mathbf{x}}_{\text{src}} = M_1^{-1} \tilde{\mathbf{x}}_{\text{dst}}
 $$
 
-Since $M_1 = T \cdot Sh \cdot R$, its analytical inverse is:
+Applying the matrix inverse property $(A B C)^{-1} = C^{-1} B^{-1} A^{-1}$:
 
 $$
-M_1^{-1} = R^{-1} \cdot Sh^{-1} \cdot T^{-1} = R(-\theta) \cdot Sh(-k_x) \cdot T(-\mathbf{t})
+M_1^{-1} = R^{-1} \cdot Sh^{-1} \cdot T^{-1} = \begin{bmatrix} \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{4} & -\sqrt{2} \\ -\frac{\sqrt{2}}{2} & \frac{3\sqrt{2}}{4} & 3\sqrt{2} \\ 0 & 0 & 1 \end{bmatrix} \approx \begin{bmatrix} 0.7071 & 0.3536 & -1.4142 \\ -0.7071 & 1.0607 & 4.2426 \\ 0 & 0 & 1.0 \end{bmatrix}
 $$
 
-Numerically:
+---
 
-$$
-M_1^{-1} = \begin{bmatrix} 0.7071 & 0.3536 & -1.4142 \\ -0.7071 & 1.0607 & 4.2426 \\ 0 & 0 & 1 \end{bmatrix}
-$$
+### 2. Visual Analysis & Python Implementation
+
+![Case 1 Affine Transformations Visual Grid](case1_affine_transformation_grid.png)
+
+```python
+import numpy as np
+
+V = np.array([
+    [0.0, 2.0, 2.0, 0.0],
+    [0.0, 0.0, 3.0, 3.0],
+    [1.0, 1.0, 1.0, 1.0]
+])
+
+theta = np.pi / 4
+kx = 0.5
+tx, ty = 3.0, -2.0
+
+R = np.array([
+    [np.cos(theta), -np.sin(theta), 0.0],
+    [np.sin(theta),  np.cos(theta), 0.0],
+    [0.0,            0.0,           1.0]
+])
+
+Sh = np.array([
+    [1.0, kx,  0.0],
+    [0.0, 1.0, 0.0],
+    [0.0, 0.0, 1.0]
+])
+
+T = np.array([
+    [1.0, 0.0, tx],
+    [0.0, 1.0, ty],
+    [0.0, 0.0, 1.0]
+])
+
+M1 = T @ Sh @ R
+M2 = R @ T @ Sh
+V_trans = M1 @ V
+
+print("Composite Matrix M1:\n", np.round(M1, 4))
+print("Area Scaling Factor:", np.round(np.linalg.det(M1[:2, :2]), 4))
+print("Transformed Vertices:\n", np.round(V_trans[:2, :], 4))
+```
 
 ---
 
 # 📌 Solution to Case 2: Support Vector Machine (SVM) Maximum-Margin Hyperplane & Vector Projections
 
-### 1. Mathematical Derivations & Proofs
+### 🎯 Problem Recap
+Given 2D classification training points:
+- Class $+1$: $\mathbf{x}_1 = [1, 2]^T$, $\mathbf{x}_2 = [1, 3]^T$
+- Class $-1$: $\mathbf{x}_3 = [3, 1]^T$, $\mathbf{x}_4 = [4, 2]^T$
 
-#### Task 1: Normal Vector Orthogonality Proof
-Let hyperplane $H = \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{w}^T \mathbf{x} + b = 0\}$.
-Take any two distinct points $\mathbf{x}_a, \mathbf{x}_b \in H$. By definition:
+---
+
+### 1. Step-by-Step Mathematical Derivations & Calculations
+
+#### 🔹 Task 1: Normal Vector Orthogonality Proof
+For any two distinct points $\mathbf{x}_a, \mathbf{x}_b$ on the separating hyperplane $H = \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{w}^T \mathbf{x} + b = 0\}$:
 
 $$
 \mathbf{w}^T \mathbf{x}_a + b = 0 \quad\text{and}\quad \mathbf{w}^T \mathbf{x}_b + b = 0
 $$
 
-Subtracting the two equations:
+Subtracting both equations:
 
 $$
 \mathbf{w}^T (\mathbf{x}_a - \mathbf{x}_b) = 0
 $$
 
-Since the vector $(\mathbf{x}_a - \mathbf{x}_b)$ lies entirely within the hyperplane surface $H$, its dot product with $\mathbf{w}$ is zero. Therefore, $\mathbf{w}$ is orthogonal to every vector in $H$, proving that $\mathbf{w}$ is the normal vector to the hyperplane.
+Because the displacement vector $(\mathbf{x}_a - \mathbf{x}_b)$ lies entirely within the hyperplane and its inner product with $\mathbf{w}$ is zero, $\mathbf{w}$ is strictly orthogonal to the hyperplane. $\quad \blacksquare$
 
 ---
 
-#### Task 2: Orthogonal Point-to-Hyperplane Distance Formula
-Let $\mathbf{x}_0 \in \mathbb{R}^n$ be any arbitrary point, and let $\mathbf{x}_p \in H$ be its orthogonal projection onto the hyperplane.
-Because $\mathbf{x}_0 - \mathbf{x}_p$ is parallel to the normal vector $\mathbf{w}$:
+#### 🔹 Task 2: Point-to-Hyperplane Distance Formula Derivation
+Let $\mathbf{x}_0$ be an arbitrary point, and $\mathbf{x}_p \in H$ be its orthogonal projection onto $H$. The displacement $(\mathbf{x}_0 - \mathbf{x}_p)$ is collinear with unit normal $\hat{\mathbf{w}} = \frac{\mathbf{w}}{\|\mathbf{w}\|_2}$:
 
 $$
-\mathbf{x}_0 - \mathbf{x}_p = d \cdot \hat{\mathbf{w}} = d \cdot \frac{\mathbf{w}}{\|\mathbf{w}\|_2} \implies \mathbf{x}_p = \mathbf{x}_0 - d \frac{\mathbf{w}}{\|\mathbf{w}\|_2}
+d(\mathbf{x}_0, H) = \hat{\mathbf{w}}^T (\mathbf{x}_0 - \mathbf{x}_p) = \frac{\mathbf{w}^T \mathbf{x}_0 - \mathbf{w}^T \mathbf{x}_p}{\|\mathbf{w}\|_2}
 $$
 
-Since $\mathbf{x}_p \in H$, it satisfies $\mathbf{w}^T \mathbf{x}_p + b = 0$:
+Since $\mathbf{x}_p \in H$, $\mathbf{w}^T \mathbf{x}_p + b = 0 \implies \mathbf{w}^T \mathbf{x}_p = -b$:
 
 $$
-\mathbf{w}^T \left(\mathbf{x}_0 - d \frac{\mathbf{w}}{\|\mathbf{w}\|_2}\right) + b = 0 \implies \mathbf{w}^T \mathbf{x}_0 + b - d \frac{\mathbf{w}^T \mathbf{w}}{\|\mathbf{w}\|_2} = 0
-$$
-
-Since $\mathbf{w}^T \mathbf{w} = \|\mathbf{w}\|_2^2$:
-
-$$
-\mathbf{w}^T \mathbf{x}_0 + b - d \|\mathbf{w}\|_2 = 0 \implies \boxed{d(\mathbf{x}_0, H) = \frac{\mathbf{w}^T \mathbf{x}_0 + b}{\|\mathbf{w}\|_2}}
+d(\mathbf{x}_0, H) = \frac{\mathbf{w}^T \mathbf{x}_0 + b}{\|\mathbf{w}\|_2} \quad \blacksquare
 $$
 
 ---
 
-#### Task 3: Geometric Margin Derivation
-For canonical support vectors $\mathbf{x}_+$ on $H_+: \mathbf{w}^T \mathbf{x} + b = +1$ and $\mathbf{x}_-$ on $H_-: \mathbf{w}^T \mathbf{x} + b = -1$:
-Project the difference vector $(\mathbf{x}_+ - \mathbf{x}_-)$ onto the unit normal vector $\hat{\mathbf{w}}$:
+#### 🔹 Task 3: Geometric Margin Formula $\gamma = \frac{2}{\|\mathbf{w}\|_2}$
+For canonical supporting hyperplanes $H_+: \mathbf{w}^T \mathbf{x} + b = +1$ and $H_-: \mathbf{w}^T \mathbf{x} + b = -1$:
 
 $$
-\gamma = (\mathbf{x}_+ - \mathbf{x}_-)^T \frac{\mathbf{w}}{\|\mathbf{w}\|_2} = \frac{\mathbf{w}^T \mathbf{x}_+ - \mathbf{w}^T \mathbf{x}_-}{\|\mathbf{w}\|_2} = \frac{(1 - b) - (-1 - b)}{\|\mathbf{w}\|_2} = \boxed{\frac{2}{\|\mathbf{w}\|_2}}
+\gamma = d(O, H_+) - d(O, H_-) = \frac{(1 - b) - (-1 - b)}{\|\mathbf{w}\|_2} = \frac{2}{\|\mathbf{w}\|_2} \quad \blacksquare
 $$
+
+Maximizing margin $\gamma$ is mathematically equivalent to minimizing $\frac{1}{2}\|\mathbf{w}\|_2^2$.
 
 ---
 
-#### Task 4: Analytical Parameter Determination
-For support vectors $\mathbf{x}_1 = [1, 2]^T$ (class $+1$) and $\mathbf{x}_3 = [3, 1]^T$ (class $-1$):
-The vector connecting the support vectors is $\mathbf{v} = \mathbf{x}_1 - \mathbf{x}_3 = [1 - 3, 2 - 1]^T = [-2, 1]^T$.
-The normal vector $\mathbf{w}$ is oriented from $-1$ to $+1$, so $\mathbf{w} \propto \mathbf{x}_1 - \mathbf{x}_3 = [-2, 1]^T$.
-Let $\mathbf{w} = k [-2, 1]^T = [-2k, k]^T$.
-Setting up the canonical support vector constraint:
+#### 🔹 Task 4: Analytical Parameter Determination ($\mathbf{w}^*, b^*, \gamma$)
+Using active support vectors $\mathbf{x}_1 = [1, 2]^T$ ($+1$) and $\mathbf{x}_3 = [3, 1]^T$ ($-1$):
 
 $$
-\mathbf{w}^T \mathbf{x}_1 + b = 1 \implies -2k(1) + k(2) + b = 1 \implies 0 + b = 1 \implies b = 1
+w_1(1) + w_2(2) + b = 1 \implies w_1 + 2w_2 + b = 1
 $$
 
 $$
-\mathbf{w}^T \mathbf{x}_3 + b = -1 \implies -2k(3) + k(1) + 1 = -1 \implies -5k = -2 \implies k = \frac{2}{5} = 0.4
+w_1(3) + w_2(1) + b = -1 \implies 3w_1 + w_2 + b = -1
 $$
 
-Thus:
+Subtracting yields $-2w_1 + w_2 = 2 \implies w_2 = 2w_1 + 2$.
+The normal vector is parallel to $\mathbf{x}_1 - \mathbf{x}_3 = [-2, 1]^T$. Setting $\mathbf{w} = c [-2, 1]^T$:
 
 $$
-\mathbf{w}^* = \begin{bmatrix} -0.8 \\ 0.4 \end{bmatrix}, \qquad b^* = 1.0
+c = 2(-2c) + 2 \implies 5c = 2 \implies c = 0.4
 $$
 
-The norm of $\mathbf{w}^*$ is:
-
 $$
-\|\mathbf{w}^*\|_2 = \sqrt{(-0.8)^2 + (0.4)^2} = \sqrt{0.64 + 0.16} = \sqrt{0.80} \approx 0.8944
+\mathbf{w}^* = \begin{bmatrix} -0.8 \\ 0.4 \end{bmatrix}, \quad b^* = 1.0000
 $$
 
-The optimal margin is:
-
 $$
-\gamma = \frac{2}{\|\mathbf{w}^*\|_2} = \frac{2}{\sqrt{0.80}} = \frac{2}{0.8944} \approx 2.2361 = \sqrt{5}
+\|\mathbf{w}^*\|_2 = \sqrt{(-0.8)^2 + 0.4^2} = \sqrt{0.80} \approx 0.8944
 $$
 
-The decision boundary equation is:
+$$
+\gamma = \frac{2}{\sqrt{0.80}} = \sqrt{5} \approx 2.2361
+$$
 
-$$
--0.8 x_1 + 0.4 x_2 + 1.0 = 0 \implies x_2 = 2 x_1 - 2.5
-$$
+The decision boundary line is $-0.8 x_1 + 0.4 x_2 + 1.0 = 0 \iff x_2 = 2 x_1 - 2.5$.
+All four training points satisfy the canonical constraints $y_i(\mathbf{w}^T \mathbf{x}_i + b) \ge 1$.
+
+---
+
+### 2. Visual Analysis & Python Implementation
+
+![Case 2 SVM Maximum Margin Hyperplane](case2_svm_maximum_margin.png)
+
+```python
+import numpy as np
+
+w = np.array([-0.8, 0.4])
+b = 1.0
+w_norm = np.linalg.norm(w)
+margin = 2.0 / w_norm
+
+print(f"Optimal Weight Vector w* : {w}")
+print(f"Optimal Bias b*          : {b}")
+print(f"Norm ||w*||_2            : {w_norm:.4f}")
+print(f"Geometric Margin gamma   : {margin:.4f} (Exact: sqrt(5))")
+```
 
 ---
 
 # 📌 Solution to Case 3: Quantitative Finance Risk & Sensor PCA Eigendecomposition
 
-### 1. Mathematical Derivations & Proofs
-
-#### Task 1: Covariance Symmetry & Positive Semi-Definiteness
-Given $X_c \in \mathbb{R}^{N \times p}$, the sample covariance matrix is $\mathbf{\Sigma} = \frac{1}{N-1} X_c^T X_c$.
-1. **Symmetry:**
-   $$
-   \mathbf{\Sigma}^T = \left(\frac{1}{N-1} X_c^T X_c\right)^T = \frac{1}{N-1} (X_c)^T (X_c^T)^T = \frac{1}{N-1} X_c^T X_c = \mathbf{\Sigma}
-   $$
-2. **Positive Semi-Definiteness:** For any non-zero vector $\mathbf{v} \in \mathbb{R}^p$:
-   $$
-   \mathbf{v}^T \mathbf{\Sigma} \mathbf{v} = \mathbf{v}^T \left(\frac{1}{N-1} X_c^T X_c\right) \mathbf{v} = \frac{1}{N-1} (X_c \mathbf{v})^T (X_c \mathbf{v}) = \frac{1}{N-1} \|X_c \mathbf{v}\|_2^2 \ge 0
-   $$
-3. Since $\mathbf{\Sigma}$ is real symmetric, all eigenvalues are real. Since $\mathbf{v}^T \mathbf{\Sigma} \mathbf{v} \ge 0$, for any eigenvector $\mathbf{q}_i$ with eigenvalue $\lambda_i$:
-   $$
-   \mathbf{q}_i^T \mathbf{\Sigma} \mathbf{q}_i = \mathbf{q}_i^T (\lambda_i \mathbf{q}_i) = \lambda_i \|\mathbf{q}_i\|_2^2 \ge 0 \implies \lambda_i \ge 0 \quad \forall i
-   $$
-
----
-
-#### Task 2: Lagrange Multiplier Proof for Maximum Variance
-We wish to maximize $\mathcal{J}(\mathbf{q}) = \mathbf{q}^T \mathbf{\Sigma} \mathbf{q}$ subject to $\|\mathbf{q}\|_2^2 = \mathbf{q}^T \mathbf{q} = 1$.
-Construct the Lagrangian function:
-
-$$
-\mathcal{L}(\mathbf{q}, \lambda) = \mathbf{q}^T \mathbf{\Sigma} \mathbf{q} - \lambda (\mathbf{q}^T \mathbf{q} - 1)
-$$
-
-Take the gradient with respect to vector $\mathbf{q}$ and set to zero:
-
-$$
-\nabla_{\mathbf{q}} \mathcal{L} = 2 \mathbf{\Sigma} \mathbf{q} - 2 \lambda \mathbf{q} = \mathbf{0} \implies \mathbf{\Sigma} \mathbf{q} = \lambda \mathbf{q}
-$$
-
-This is the standard eigenvector equation!
-Substitute $\mathbf{\Sigma} \mathbf{q} = \lambda \mathbf{q}$ into the objective function:
-
-$$
-\mathcal{J}(\mathbf{q}) = \mathbf{q}^T \mathbf{\Sigma} \mathbf{q} = \mathbf{q}^T (\lambda \mathbf{q}) = \lambda \mathbf{q}^T \mathbf{q} = \lambda
-$$
-
-To maximize $\mathcal{J}(\mathbf{q})$, we must choose the maximum eigenvalue $\lambda_1$, and the optimal projection direction $\mathbf{q}^*$ is the principal eigenvector $\mathbf{q}_1$.
-
----
-
-#### Task 3: Eigendecomposition of the Financial Covariance Matrix
-For matrix:
+### 🎯 Problem Recap
+Given the empirical covariance matrix $\mathbf{\Sigma} \in \mathbb{R}^{4 \times 4}$:
 
 $$
 \mathbf{\Sigma} = \begin{bmatrix} 4.0 & 2.0 & 1.0 & 0.0 \\ 2.0 & 3.0 & 0.5 & 0.5 \\ 1.0 & 0.5 & 2.0 & 0.0 \\ 0.0 & 0.5 & 0.0 & 1.0 \end{bmatrix}
 $$
 
-Computing eigenvalues via characteristic polynomial $\det(\mathbf{\Sigma} - \lambda I) = 0$:
-1. $\lambda_1 \approx 5.8679$
-2. $\lambda_2 \approx 2.0000$
-3. $\lambda_3 \approx 1.2586$
-4. $\lambda_4 \approx 0.8735$
+---
 
-Total Portfolio Variance (Trace):
+### 1. Step-by-Step Mathematical Derivations & Calculations
 
-$$
-\text{Tr}(\mathbf{\Sigma}) = 4.0 + 3.0 + 2.0 + 1.0 = 10.0
-$$
-
-Sum of eigenvalues:
+#### 🔹 Task 1: Covariance Matrix Symmetry & Positive Semi-Definiteness (PSD)
+For centered matrix $X_c \in \mathbb{R}^{N \times p}$:
 
 $$
-\sum_{i=1}^4 \lambda_i = 5.8679 + 2.0000 + 1.2586 + 0.8735 = 10.0000 \quad (\text{Exact trace match!})
+\mathbf{\Sigma}^T = \left(\frac{1}{N - 1} X_c^T X_c\right)^T = \frac{1}{N - 1} X_c^T X_c = \mathbf{\Sigma} \quad \text{(Symmetric)}
 $$
 
-Proportion of Explained Variance ($\text{PEV}_k$):
-- Factor 1 ($\lambda_1$): $\frac{5.8679}{10.0} = 58.68\%$
-- Factor 2 ($\lambda_2$): $\frac{2.0000}{10.0} = 20.00\%$
-- Factor 3 ($\lambda_3$): $\frac{1.2586}{10.0} = 12.59\%$
-- Factor 4 ($\lambda_4$): $\frac{0.8735}{10.0} = 8.74\%$
+For any non-zero vector $\mathbf{v} \in \mathbb{R}^p$:
 
-Cumulative Explained Variance:
-- Top 1 Component: $58.68\%$
-- Top 2 Components: $58.68\% + 20.00\% = 78.68\%$
-- Top 3 Components: $78.68\% + 12.59\% = 91.27\%$
+$$
+\mathbf{v}^T \mathbf{\Sigma} \mathbf{v} = \frac{1}{N - 1} \mathbf{v}^T X_c^T X_c \mathbf{v} = \frac{1}{N - 1} \|X_c \mathbf{v}\|_2^2 \ge 0 \quad \text{(Positive Semi-Definite)}
+$$
+
+By the Spectral Theorem, all eigenvalues are real and non-negative ($\lambda_i \ge 0$). $\quad \blacksquare$
 
 ---
 
-#### Task 4: Dimension Reduction Criterion
-To achieve at least $80\%$ explained risk/variance:
-- 1 component achieves $58.68\% < 80\%$
-- 2 components achieve $78.68\% < 80\%$ (close, but strictly under threshold)
-- 3 components achieve $91.27\% \ge 80\%$
-Therefore, **$k = 3$ principal factors** are required to guarantee $>80\%$ risk coverage.
+#### 🔹 Task 2: Constrained Optimization via Lagrange Multipliers
+To maximize projection variance $\mathbf{q}_1^T \mathbf{\Sigma} \mathbf{q}_1$ subject to $\|\mathbf{q}_1\|_2 = 1$:
+
+$$
+\mathcal{L}(\mathbf{q}_1, \lambda) = \mathbf{q}_1^T \mathbf{\Sigma} \mathbf{q}_1 - \lambda (\mathbf{q}_1^T \mathbf{q}_1 - 1)
+$$
+
+Setting the gradient to zero:
+
+$$
+\nabla_{\mathbf{q}_1} \mathcal{L} = 2 \mathbf{\Sigma} \mathbf{q}_1 - 2 \lambda \mathbf{q}_1 = \mathbf{0} \implies \mathbf{\Sigma} \mathbf{q}_1 = \lambda \mathbf{q}_1
+$$
+
+Premultiplying by $\mathbf{q}_1^T$:
+
+$$
+\mathbf{q}_1^T \mathbf{\Sigma} \mathbf{q}_1 = \lambda (\mathbf{q}_1^T \mathbf{q}_1) = \lambda
+$$
+
+Thus, maximal variance is achieved by selecting the largest eigenvalue $\lambda_1 = \lambda_{\max}$. $\quad \blacksquare$
 
 ---
 
-#### Task 5: Rank-2 Reconstruction & Frobenius Error
-Using the top 2 eigenvectors $\mathbf{q}_1, \mathbf{q}_2$:
+#### 🔹 Task 3: Covariance Eigendecomposition & Variance Spectrum
+Solving the characteristic equation $\det(\mathbf{\Sigma} - \lambda I) = 0$ yields:
 
 $$
-\mathbf{\Sigma}_2 = \lambda_1 \mathbf{q}_1 \mathbf{q}_1^T + \lambda_2 \mathbf{q}_2 \mathbf{q}_2^T
+\lambda_1 \approx 5.8900, \quad \lambda_2 \approx 1.9059, \quad \lambda_3 \approx 1.4532, \quad \lambda_4 \approx 0.7509
 $$
 
-The residual matrix is:
+Total Variance:
 
 $$
-\mathbf{\Sigma} - \mathbf{\Sigma}_2 = \lambda_3 \mathbf{q}_3 \mathbf{q}_3^T + \lambda_4 \mathbf{q}_4 \mathbf{q}_4^T
+\text{Tr}(\mathbf{\Sigma}) = 4.0 + 3.0 + 2.0 + 1.0 = 10.0000 = \sum_{i=1}^4 \lambda_i
 $$
 
-Since eigenvectors are mutually orthonormal ($\mathbf{q}_i^T \mathbf{q}_j = \delta_{ij}$):
+##### Proportion of Explained Variance (PEV):
+
+| Factor $k$ | Eigenvalue $\lambda_k$ | Explained Variance ($\text{PEV}_k$) | Cumulative Variance |
+| :---: | :---: | :---: | :---: |
+| **PC 1** | $5.8900$ | $58.90\%$ | $58.90\%$ |
+| **PC 2** | $1.9059$ | $19.06\%$ | $77.96\%$ |
+| **PC 3** | $1.4532$ | $14.53\%$ | $92.49\%$ |
+| **PC 4** | $0.7509$ | $7.51\%$ | $100.00\%$ |
+
+---
+
+#### 🔹 Task 4: Dimension Reduction Criterion ($\ge 80\%$)
+- 1 component: $58.90\% < 80\%$
+- 2 components: $77.96\% < 80\%$
+- 3 components: $92.49\% \ge 80\%$
+
+**Requirement:** At least **$k = 3$ principal components** must be retained.
+
+---
+
+#### 🔹 Task 5: Low-Rank Approximation & Frobenius Reconstruction Error
+By the Eckart–Young–Mirsky theorem, the rank-2 reconstruction error is:
 
 $$
-\|\mathbf{\Sigma} - \mathbf{\Sigma}_2\|_F = \sqrt{\lambda_3^2 + \lambda_4^2} = \sqrt{(1.2586)^2 + (0.8735)^2} = \sqrt{1.5841 + 0.7630} = \sqrt{2.3471} \approx 1.5320
+\|\mathbf{\Sigma} - \mathbf{\Sigma}_2\|_F = \sqrt{\lambda_3^2 + \lambda_4^2} = \sqrt{(1.4532)^2 + (0.7509)^2} \approx \sqrt{2.1117 + 0.5639} \approx 1.6357
 $$
 
-The low-rank error matches the theoretical spectral lower bound established by the Eckart-Young-Mirsky Theorem.
+---
+
+### 2. Visual Analysis & Python Implementation
+
+![Case 3 Financial Covariance PCA Eigenvectors](case3_pca_covariance_eigenvectors.png)
+
+```python
+import numpy as np
+import scipy.linalg as la
+
+Sigma = np.array([
+    [4.0, 2.0, 1.0, 0.0],
+    [2.0, 3.0, 0.5, 0.5],
+    [1.0, 0.5, 2.0, 0.0],
+    [0.0, 0.5, 0.0, 1.0]
+])
+
+eigenvals, eigenvecs = la.eigh(Sigma)
+idx = np.argsort(eigenvals)[::-1]
+eigenvals = eigenvals[idx]
+eigenvecs = eigenvecs[:, idx]
+
+total_var = np.trace(Sigma)
+pev = (eigenvals / total_var) * 100.0
+cum_pev = np.cumsum(pev)
+
+Sigma_2 = (eigenvals[0] * np.outer(eigenvecs[:, 0], eigenvecs[:, 0]) +
+           eigenvals[1] * np.outer(eigenvecs[:, 1], eigenvecs[:, 1]))
+
+frob_err = np.linalg.norm(Sigma - Sigma_2, 'fro')
+
+print("Eigenvalues (Lambda):", np.round(eigenvals, 4))
+print("Total Variance (Trace):", total_var)
+print("PEV (%):", np.round(pev, 2))
+print("Cumulative PEV (%):", np.round(cum_pev, 2))
+print(f"Frobenius Error: {frob_err:.4f}")
+```
