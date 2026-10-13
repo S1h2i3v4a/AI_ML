@@ -22,16 +22,18 @@ Every problem is solved from first principles with full algebraic derivations, s
 # 📌 Solution to Case 1: Computer Vision 2D Affine Transformations & Homogeneous Coordinates
 
 ### 🎯 Problem Recap
+
 Given an initial polygon rectangle $V \in \mathbb{R}^{3 \times 4}$ captured by an autonomous robot camera:
 
 $$
 V = \begin{bmatrix} 0 & 2 & 2 & 0 \\ 0 & 0 & 3 & 3 \\ 1 & 1 & 1 & 1 \end{bmatrix}
 $$
 
-Apply:
-1. Rotation: Counter-clockwise by $\theta = 45^\circ = \frac{\pi}{4}$ around the origin.
-2. Horizontal Shear: Factor $k_x = 0.5$.
-3. Translation: Offset $\mathbf{t} = [3, -2]^T$.
+Apply three sequential geometric operations:
+
+$$
+\theta = 45^\circ = \frac{\pi}{4}, \qquad k_x = 0.5, \qquad \mathbf{t} = \begin{bmatrix} 3.0 \\ -2.0 \end{bmatrix}
+$$
 
 ---
 
@@ -40,7 +42,13 @@ Apply:
 #### 🔹 Task 1: Elementary Homogeneous Matrices Construction
 
 ##### (A) Rotation Matrix $R(\theta)$
-In 2D Cartesian space, rotation by angle $\theta$ maps $(x, y)$ to $(x\cos\theta - y\sin\theta, \; x\sin\theta + y\cos\theta)$. In homogeneous coordinates $\tilde{\mathbf{x}} = [x, y, 1]^T$:
+In 2D Cartesian space, rotation by angle $\theta$ maps $(x, y)$ to:
+
+$$
+x' = x\cos\theta - y\sin\theta, \qquad y' = x\sin\theta + y\cos\theta
+$$
+
+In homogeneous coordinates:
 
 $$
 R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}
@@ -53,29 +61,17 @@ R\left(\frac{\pi}{4}\right) = \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{
 $$
 
 ##### (B) Horizontal Shear Matrix $Sh(k_x)$
-Horizontal shear shifts $x$ proportional to $y$ ($x' = x + k_x y$) while leaving $y$ invariant ($y' = y$):
+Horizontal shear shifts $x$ proportional to $y$ while leaving $y$ invariant:
 
 $$
-Sh(k_x) = \begin{bmatrix} 1 & k_x & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}
-$$
-
-Substituting $k_x = 0.5$:
-
-$$
-Sh(0.5) = \begin{bmatrix} 1 & 0.5 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+Sh(k_x) = \begin{bmatrix} 1 & k_x & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \implies Sh(0.5) = \begin{bmatrix} 1 & 0.5 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}
 $$
 
 ##### (C) Translation Matrix $T(t_x, t_y)$
 Translation displaces coordinates by vector $\mathbf{t} = [t_x, t_y]^T$:
 
 $$
-T(t_x, t_y) = \begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}
-$$
-
-Substituting $t_x = 3.0, t_y = -2.0$:
-
-$$
-T(3, -2) = \begin{bmatrix} 1 & 0 & 3 \\ 0 & 1 & -2 \\ 0 & 0 & 1 \end{bmatrix}
+T(t_x, t_y) = \begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix} \implies T(3, -2) = \begin{bmatrix} 1 & 0 & 3 \\ 0 & 1 & -2 \\ 0 & 0 & 1 \end{bmatrix}
 $$
 
 ---
@@ -124,13 +120,11 @@ $$
 ##### Step 3: Non-Commutativity Proof & Geometric Insight
 Evidently, $M_1 \ne M_2$.
 In $M_1$, translation is applied last, shifting the object by $[3, -2]^T$.
-In $M_2$, translation occurs prior to rotation. The subsequent rotation $R$ rotates the translation displacement vector itself by $45^\circ$, converting $[3, -2]^T$ into:
+In $M_2$, translation occurs prior to rotation. The subsequent rotation $R$ rotates the translation displacement vector itself by $45^\circ$:
 
 $$
-R \begin{bmatrix} 3 \\ -2 \end{bmatrix} = \begin{bmatrix} \frac{5\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} \end{bmatrix} \approx \begin{bmatrix} 3.5355 \\ 0.7071 \end{bmatrix}
+R_{2 \times 2} \begin{bmatrix} 3 \\ -2 \end{bmatrix} = \begin{bmatrix} \frac{\sqrt{2}}{2}(3 - (-2)) \\ \frac{\sqrt{2}}{2}(3 + (-2)) \end{bmatrix} = \begin{bmatrix} \frac{5\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} \end{bmatrix} \approx \begin{bmatrix} 3.5355 \\ 0.7071 \end{bmatrix}
 $$
-
-This causes unintended displacement of bounding boxes and spatial masks in vision pipelines.
 
 ##### Step 4: Transformed Vertices $V' = M_1 V$
 Computing transformed coordinates for each column of $V$:
@@ -139,16 +133,20 @@ $$
 V' = M_1 V = \begin{bmatrix} 1.06066 & -0.35355 & 3.0 \\ 0.70711 & 0.70711 & -2.0 \\ 0 & 0 & 1.0 \end{bmatrix} \begin{bmatrix} 0 & 2 & 2 & 0 \\ 0 & 0 & 3 & 3 \\ 1 & 1 & 1 & 1 \end{bmatrix}
 $$
 
-- **Vertex 1: $(0, 0) \to (3.0000, -2.0000)$**
-- **Vertex 2: $(2, 0) \to (5.1213, -0.5858)$**
-- **Vertex 3: $(2, 3) \to (4.0607, 1.5355)$**
-- **Vertex 4: $(0, 3) \to (1.9393, 0.1213)$**
+$$
+V' \approx \begin{bmatrix} 3.0000 & 5.1213 & 4.0607 & 1.9393 \\ -2.0000 & -0.5858 & 1.5355 & 0.1213 \\ 1.0000 & 1.0000 & 1.0000 & 1.0000 \end{bmatrix}
+$$
 
 ---
 
 #### 🔹 Task 3: Determinant & Area Scaling Factor
 
-For any 2D affine transformation block $M = \begin{bmatrix} A & \mathbf{t} \\ \mathbf{0}^T & 1 \end{bmatrix}$, the determinant is given by $\det(M) = \det(A)$.
+For any 2D affine transformation block $M$:
+
+$$
+M = \begin{bmatrix} A & \mathbf{t} \\ \mathbf{0}^T & 1 \end{bmatrix} \implies \det(M) = \det(A)
+$$
+
 For $M_1$, the linear block is $A = Sh \cdot R$:
 
 $$
@@ -159,14 +157,13 @@ $$
 \det(A) = \left(\frac{3\sqrt{2}}{4}\right)\left(\frac{\sqrt{2}}{2}\right) - \left(-\frac{\sqrt{2}}{4}\right)\left(\frac{\sqrt{2}}{2}\right) = \frac{6}{8} + \frac{2}{8} = \frac{8}{8} = 1.0000
 $$
 
-The Area Scaling Factor is $|\det(A)| = 1.0$.
-Since rotation and shear preserve area ($\det(R)=1, \det(Sh)=1$) and translation does not compress/dilate space, the polygon's original area of $6.0$ square units remains exactly **$6.0$ square units**.
+The Area Scaling Factor is $|\det(A)| = 1.0$. The polygon's original area of $6.0$ square units remains exactly **$6.0$ square units**.
 
 ---
 
 #### 🔹 Task 4: Backward Warping & Inverse Matrix $M_1^{-1}$
 
-Forward warping $\mathbf{x}_{\text{dst}} = M_1 \mathbf{x}_{\text{src}}$ maps integer pixel coordinates to floating-point values. Rounding causes gaps (holes) and collisions.
+Forward warping $\tilde{\mathbf{x}}_{\text{dst}} = M_1 \tilde{\mathbf{x}}_{\text{src}}$ maps integer pixel coordinates to floating-point values. Rounding causes gaps (holes) and collisions.
 Backward warping scans every integer grid point in the destination image and queries its source coordinate via the analytical inverse:
 
 $$
@@ -230,9 +227,13 @@ print("Transformed Vertices:\n", np.round(V_trans[:2, :], 4))
 # 📌 Solution to Case 2: Support Vector Machine (SVM) Maximum-Margin Hyperplane & Vector Projections
 
 ### 🎯 Problem Recap
+
 Given 2D classification training points:
-- Class $+1$: $\mathbf{x}_1 = [1, 2]^T$, $\mathbf{x}_2 = [1, 3]^T$
-- Class $-1$: $\mathbf{x}_3 = [3, 1]^T$, $\mathbf{x}_4 = [4, 2]^T$
+
+$$
+\text{Class } (+1): \quad \mathbf{x}_1 = \begin{bmatrix} 1 \\ 2 \end{bmatrix}, \quad \mathbf{x}_2 = \begin{bmatrix} 1 \\ 3 \end{bmatrix}, \qquad
+\text{Class } (-1): \quad \mathbf{x}_3 = \begin{bmatrix} 3 \\ 1 \end{bmatrix}, \quad \mathbf{x}_4 = \begin{bmatrix} 4 \\ 2 \end{bmatrix}
+$$
 
 ---
 
@@ -242,7 +243,7 @@ Given 2D classification training points:
 For any two distinct points $\mathbf{x}_a, \mathbf{x}_b$ on the separating hyperplane $H = \{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{w}^T \mathbf{x} + b = 0\}$:
 
 $$
-\mathbf{w}^T \mathbf{x}_a + b = 0 \quad\text{and}\quad \mathbf{w}^T \mathbf{x}_b + b = 0
+\mathbf{w}^T \mathbf{x}_a + b = 0, \qquad \mathbf{w}^T \mathbf{x}_b + b = 0
 $$
 
 Subtracting both equations:
@@ -256,28 +257,28 @@ Because the displacement vector $(\mathbf{x}_a - \mathbf{x}_b)$ lies entirely wi
 ---
 
 #### 🔹 Task 2: Point-to-Hyperplane Distance Formula Derivation
-Let $\mathbf{x}_0$ be an arbitrary point, and $\mathbf{x}_p \in H$ be its orthogonal projection onto $H$. The displacement $(\mathbf{x}_0 - \mathbf{x}_p)$ is collinear with unit normal $\hat{\mathbf{w}} = \frac{\mathbf{w}}{\|\mathbf{w}\|_2}$:
+Let $\mathbf{x}_0$ be an arbitrary point, and $\mathbf{x}_p \in H$ be its orthogonal projection onto $H$. The displacement $(\mathbf{x}_0 - \mathbf{x}_p)$ is collinear with unit normal $\hat{\mathbf{w}} = \frac{\mathbf{w}}{\lVert \mathbf{w} \rVert_2}$:
 
 $$
-d(\mathbf{x}_0, H) = \hat{\mathbf{w}}^T (\mathbf{x}_0 - \mathbf{x}_p) = \frac{\mathbf{w}^T \mathbf{x}_0 - \mathbf{w}^T \mathbf{x}_p}{\|\mathbf{w}\|_2}
+d(\mathbf{x}_0, H) = \hat{\mathbf{w}}^T (\mathbf{x}_0 - \mathbf{x}_p) = \frac{\mathbf{w}^T \mathbf{x}_0 - \mathbf{w}^T \mathbf{x}_p}{\lVert \mathbf{w} \rVert_2}
 $$
 
 Since $\mathbf{x}_p \in H$, $\mathbf{w}^T \mathbf{x}_p + b = 0 \implies \mathbf{w}^T \mathbf{x}_p = -b$:
 
 $$
-d(\mathbf{x}_0, H) = \frac{\mathbf{w}^T \mathbf{x}_0 + b}{\|\mathbf{w}\|_2} \quad \blacksquare
+d(\mathbf{x}_0, H) = \frac{\mathbf{w}^T \mathbf{x}_0 + b}{\lVert \mathbf{w} \rVert_2} \quad \blacksquare
 $$
 
 ---
 
-#### 🔹 Task 3: Geometric Margin Formula $\gamma = \frac{2}{\|\mathbf{w}\|_2}$
+#### 🔹 Task 3: Total Geometric Margin Formula Derivation
 For canonical supporting hyperplanes $H_+: \mathbf{w}^T \mathbf{x} + b = +1$ and $H_-: \mathbf{w}^T \mathbf{x} + b = -1$:
 
 $$
-\gamma = d(O, H_+) - d(O, H_-) = \frac{(1 - b) - (-1 - b)}{\|\mathbf{w}\|_2} = \frac{2}{\|\mathbf{w}\|_2} \quad \blacksquare
+\gamma = d(O, H_+) - d(O, H_-) = \frac{(1 - b) - (-1 - b)}{\lVert \mathbf{w} \rVert_2} = \frac{2}{\lVert \mathbf{w} \rVert_2} \quad \blacksquare
 $$
 
-Maximizing margin $\gamma$ is mathematically equivalent to minimizing $\frac{1}{2}\|\mathbf{w}\|_2^2$.
+Maximizing margin $\gamma$ is mathematically equivalent to minimizing $\frac{1}{2}\lVert \mathbf{w} \rVert_2^2$.
 
 ---
 
@@ -300,18 +301,23 @@ c = 2(-2c) + 2 \implies 5c = 2 \implies c = 0.4
 $$
 
 $$
-\mathbf{w}^* = \begin{bmatrix} -0.8 \\ 0.4 \end{bmatrix}, \quad b^* = 1.0000
+\mathbf{w}^* = \begin{bmatrix} -0.8 \\ 0.4 \end{bmatrix}, \qquad b^* = 1.0000
 $$
 
 $$
-\|\mathbf{w}^*\|_2 = \sqrt{(-0.8)^2 + 0.4^2} = \sqrt{0.80} \approx 0.8944
+\lVert \mathbf{w}^* \rVert_2 = \sqrt{(-0.8)^2 + 0.4^2} = \sqrt{0.80} \approx 0.8944
 $$
 
 $$
 \gamma = \frac{2}{\sqrt{0.80}} = \sqrt{5} \approx 2.2361
 $$
 
-The decision boundary line is $-0.8 x_1 + 0.4 x_2 + 1.0 = 0 \iff x_2 = 2 x_1 - 2.5$.
+The decision boundary line is:
+
+$$
+-0.8 x_1 + 0.4 x_2 + 1.0 = 0 \iff x_2 = 2 x_1 - 2.5
+$$
+
 All four training points satisfy the canonical constraints $y_i(\mathbf{w}^T \mathbf{x}_i + b) \ge 1$.
 
 ---
@@ -339,6 +345,7 @@ print(f"Geometric Margin gamma   : {margin:.4f} (Exact: sqrt(5))")
 # 📌 Solution to Case 3: Quantitative Finance Risk & Sensor PCA Eigendecomposition
 
 ### 🎯 Problem Recap
+
 Given the empirical covariance matrix $\mathbf{\Sigma} \in \mathbb{R}^{4 \times 4}$:
 
 $$
@@ -359,7 +366,7 @@ $$
 For any non-zero vector $\mathbf{v} \in \mathbb{R}^p$:
 
 $$
-\mathbf{v}^T \mathbf{\Sigma} \mathbf{v} = \frac{1}{N - 1} \mathbf{v}^T X_c^T X_c \mathbf{v} = \frac{1}{N - 1} \|X_c \mathbf{v}\|_2^2 \ge 0 \quad \text{(Positive Semi-Definite)}
+\mathbf{v}^T \mathbf{\Sigma} \mathbf{v} = \frac{1}{N - 1} \mathbf{v}^T X_c^T X_c \mathbf{v} = \frac{1}{N - 1} \lVert X_c \mathbf{v} \rVert_2^2 \ge 0 \quad \text{(Positive Semi-Definite)}
 $$
 
 By the Spectral Theorem, all eigenvalues are real and non-negative ($\lambda_i \ge 0$). $\quad \blacksquare$
@@ -367,7 +374,7 @@ By the Spectral Theorem, all eigenvalues are real and non-negative ($\lambda_i \
 ---
 
 #### 🔹 Task 2: Constrained Optimization via Lagrange Multipliers
-To maximize projection variance $\mathbf{q}_1^T \mathbf{\Sigma} \mathbf{q}_1$ subject to $\|\mathbf{q}_1\|_2 = 1$:
+To maximize projection variance $\mathbf{q}_1^T \mathbf{\Sigma} \mathbf{q}_1$ subject to $\lVert \mathbf{q}_1 \rVert_2 = 1$:
 
 $$
 \mathcal{L}(\mathbf{q}_1, \lambda) = \mathbf{q}_1^T \mathbf{\Sigma} \mathbf{q}_1 - \lambda (\mathbf{q}_1^T \mathbf{q}_1 - 1)
@@ -393,7 +400,7 @@ Thus, maximal variance is achieved by selecting the largest eigenvalue $\lambda_
 Solving the characteristic equation $\det(\mathbf{\Sigma} - \lambda I) = 0$ yields:
 
 $$
-\lambda_1 \approx 5.8900, \quad \lambda_2 \approx 1.9059, \quad \lambda_3 \approx 1.4532, \quad \lambda_4 \approx 0.7509
+\lambda_1 \approx 5.8900, \qquad \lambda_2 \approx 1.9059, \qquad \lambda_3 \approx 1.4532, \qquad \lambda_4 \approx 0.7509
 $$
 
 Total Variance:
@@ -414,9 +421,10 @@ $$
 ---
 
 #### 🔹 Task 4: Dimension Reduction Criterion ($\ge 80\%$)
-- 1 component: $58.90\% < 80\%$
-- 2 components: $77.96\% < 80\%$
-- 3 components: $92.49\% \ge 80\%$
+
+$$
+\text{CEV}_1 = 58.90\% < 80\%, \qquad \text{CEV}_2 = 77.96\% < 80\%, \qquad \text{CEV}_3 = 92.49\% \ge 80\%
+$$
 
 **Requirement:** At least **$k = 3$ principal components** must be retained.
 
@@ -426,7 +434,7 @@ $$
 By the Eckart–Young–Mirsky theorem, the rank-2 reconstruction error is:
 
 $$
-\|\mathbf{\Sigma} - \mathbf{\Sigma}_2\|_F = \sqrt{\lambda_3^2 + \lambda_4^2} = \sqrt{(1.4532)^2 + (0.7509)^2} \approx \sqrt{2.1117 + 0.5639} \approx 1.6357
+\lVert \mathbf{\Sigma} - \mathbf{\Sigma}_2 \rVert_F = \sqrt{\lambda_3^2 + \lambda_4^2} = \sqrt{(1.4532)^2 + (0.7509)^2} \approx \sqrt{2.1117 + 0.5639} \approx 1.6357
 $$
 
 ---
