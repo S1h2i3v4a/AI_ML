@@ -36,7 +36,14 @@ AI-ML/
 │   └── Practice_Problems/        # 10 Assignment Problems + 3 Systems Case Studies
 │       ├── Questions/            # README.md, questions.pdf, questions.ipynb
 │       └── Solutions/            # README.md, solutions.pdf, solutions.ipynb, 300DPI plots
-├── lecture_03/ ... lecture_17/   # (Python Basics, Data Structures, OOP & NumPy)
+├── lecture_03/                   # (Conditional Statements & Loops - Upcoming / Inactive)
+├── lecture_04/                   # Python Fundamentals (Part 2 - Strings, Lists, Tuples, Dicts, Sets)
+│   ├── Notes_04.01/ to 04.14/    # Sub-topics with README.md, README_HINGLISH.md, notes.pdf, .ipynb
+│   ├── Practice_Problems/        # 10 Assignment Problems + 3 Systems Case Studies
+│   │   ├── Questions/            # README.md, questions.pdf, questions.ipynb
+│   │   └── Solutions/            # README.md, solutions.pdf, solutions.ipynb, 300DPI plots
+│   └── Python_Fundamentals_Assignment3.pdf # Official Assignment Sheet
+├── lecture_05/ ... lecture_17/   # (Functions, OOP, NumPy & Scientific Computing)
 ├── lecture_18/                   # Data Visualization (Part 1 - Matplotlib Fundamentals)
 │   ├── Notes_18.01/ to 18.18/    # Sub-topics with notes.md, notes.pdf, .ipynb
 │   ├── Practice_Problems/        # Case Studies & Challenges (Questions & Solutions)
@@ -112,6 +119,36 @@ Comprehensive foundational guide covering Python syntax, dynamic pointer memory 
 > - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_02/Practice_Problems/Solutions/README.md) \| [solutions.pdf](lecture_02/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_02/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
+
+---
+
+### 📦 Day 04: Python Data Structures (Strings, Lists, Tuples, Dictionaries, Sets & Assignment 3)
+*Module Guides:* [📖 English Guide](lecture_04/README.md) \| [हिंदी / Hinglish Guide](lecture_04/README_HINGLISH.md)
+
+Comprehensive deep-dive into Python's primary sequence, mapping, and set data structures: Unicode string immutability, slicing mechanics, dynamic array over-allocation in CPython lists, immutable structural packing of tuples, compact hash table architecture in dictionaries, set algebraic theory, and complete solutions to the 10 official Assignment 3 problems alongside 3 systems engineering case studies.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **04.01** | Strings in Python | Creation, Unicode UTF-8 representation, string immutability, zero-based indexing, `len()` invariant | [Notes](lecture_04/Notes_04.01/README.md) \| [PDF](lecture_04/Notes_04.01/notes.pdf) \| [Notebook](lecture_04/Notes_04.01/lecture_04_01.ipynb) |
+| **04.02** | Slicing in Strings | Step slicing (`[start:stop:step]`), negative indexing, step reversals (`[::-1]`), boundary defaults | [Notes](lecture_04/Notes_04.02/README.md) \| [PDF](lecture_04/Notes_04.02/notes.pdf) \| [Notebook](lecture_04/Notes_04.02/lecture_04_02.ipynb) |
+| **04.03** | String Formatting | Formatted string literals (f-strings), `str.format()`, `%` formatting, floating-point alignment & precision | [Notes](lecture_04/Notes_04.03/README.md) \| [PDF](lecture_04/Notes_04.03/notes.pdf) \| [Notebook](lecture_04/Notes_04.03/lecture_04_03.ipynb) |
+| **04.04** | Lists in Python | Dynamic arrays, array of pointer references, over-allocation growth geometry, mutability semantics | [Notes](lecture_04/Notes_04.04/README.md) \| [PDF](lecture_04/Notes_04.04/notes.pdf) \| [Notebook](lecture_04/Notes_04.04/lecture_04_04.ipynb) |
+| **04.05** | List Methods | Sequence mutation (`append`, `extend`, `insert`, `remove`, `pop`, `clear`), in-place Timsort (`sort`) | [Notes](lecture_04/Notes_04.05/README.md) \| [PDF](lecture_04/Notes_04.05/notes.pdf) \| [Notebook](lecture_04/Notes_04.05/lecture_04_05.ipynb) |
+| **04.06** | Loops with Lists | Iteration patterns (`for`, `while`), index tracking with `enumerate()`, parallel iteration (`zip()`), list comprehensions | [Notes](lecture_04/Notes_04.06/README.md) \| [PDF](lecture_04/Notes_04.06/notes.pdf) \| [Notebook](lecture_04/Notes_04.06/lecture_04_06.ipynb) |
+| **04.07** | Tuples in Python | Structural immutability, pointer safety, hashability, memory compaction over dynamic lists | [Notes](lecture_04/Notes_04.07/README.md) \| [PDF](lecture_04/Notes_04.07/notes.pdf) \| [Notebook](lecture_04/Notes_04.07/lecture_04_07.ipynb) |
+| **04.08** | Tuple Methods & Unpacking | `count()`, `index()`, sequence destructuring, extended starred unpacking (`*rest`), swap idiom | [Notes](lecture_04/Notes_04.08/README.md) \| [PDF](lecture_04/Notes_04.08/notes.pdf) \| [Notebook](lecture_04/Notes_04.08/lecture_04_08.ipynb) |
+| **04.09** | Dictionaries in Python | Hash table mappings, key uniqueness, hashability invariant, amortized $\mathcal{O}(1)$ CRUD operations | [Notes](lecture_04/Notes_04.09/README.md) \| [PDF](lecture_04/Notes_04.09/notes.pdf) \| [Notebook](lecture_04/Notes_04.09/lecture_04_09.ipynb) |
+| **04.10** | Dictionary Methods | View objects (`keys()`, `values()`, `items()`), defensive lookups (`get()`, `setdefault()`), bulk update (`update()`) | [Notes](lecture_04/Notes_04.10/README.md) \| [PDF](lecture_04/Notes_04.10/notes.pdf) \| [Notebook](lecture_04/Notes_04.10/lecture_04_10.ipynb) |
+| **04.11** | Sets in Python | Unordered unique collections, hash table lookup, membership testing ($x \in S$), mathematical set axioms | [Notes](lecture_04/Notes_04.11/README.md) \| [PDF](lecture_04/Notes_04.11/notes.pdf) \| [Notebook](lecture_04/Notes_04.11/lecture_04_11.ipynb) |
+| **04.12** | Set Methods & Operations | Set algebra (Union `|`, Intersection `&`, Difference `-`, Symmetric Difference `^`), disjoint testing | [Notes](lecture_04/Notes_04.12/README.md) \| [PDF](lecture_04/Notes_04.12/notes.pdf) \| [Notebook](lecture_04/Notes_04.12/lecture_04_12.ipynb) |
+| **04.13** | In-Class Practice (Part 1) | Common elements detection across sequences, tokenized word frequency counters | [Notes](lecture_04/Notes_04.13/README.md) \| [PDF](lecture_04/Notes_04.13/notes.pdf) \| [Notebook](lecture_04/Notes_04.13/lecture_04_013.ipynb) |
+| **04.14** | In-Class Practice (Part 2) | Dictionary inversion, multi-value collision grouping, bipartite relation mappings | [Notes](lecture_04/Notes_04.14/README.md) \| [PDF](lecture_04/Notes_04.14/notes.pdf) \| [Notebook](lecture_04/Notes_04.14/lecture_04_014.ipynb) |
+
+> [!TIP]
+> **💡 Day 04 Comprehensive Practice & Case Studies Suite:**  
+> *Module Guides:* [📖 English Guide](lecture_04/Practice_Problems/README.md) \| [हिंदी / Hinglish Guide](lecture_04/Practice_Problems/README_HINGLISH.md)  
+> - 📋 **Problem Statements (10 Assignment Problems + 3 Case Studies):** [Questions](lecture_04/Practice_Problems/Questions/README.md) \| [questions.pdf](lecture_04/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_04/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_04/Practice_Problems/Solutions/README.md) \| [solutions.pdf](lecture_04/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_04/Practice_Problems/Solutions/solutions.ipynb)
 
 ### 🎨 Day 18: Data Visualization (Part 1 — Matplotlib Mastery)
 *Module Guides:* [📖 English Guide](lecture_18/README.md) \| [हिंदी / Hinglish Guide](lecture_18/README_HINGLISH.md)
