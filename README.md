@@ -31,7 +31,12 @@ AI-ML/
 │   └── Practice_Problems/        # Systems Engineering Case Studies (Questions & Solutions)
 │       ├── Questions/            # README.md, questions.pdf, questions.ipynb
 │       └── Solutions/            # README.md, solutions.pdf, solutions.ipynb, 300DPI plots
-├── lecture_02/ ... lecture_17/   # (Python Basics, Data Structures, OOP & NumPy)
+├── lecture_02/                   # Python Fundamentals (Part 1 - Syntax, Operators, Types & Input)
+│   ├── Notes_02.01/ to 02.13/    # Sub-topics with README.md, README_HINGLISH.md, notes.pdf, .ipynb
+│   └── Practice_Problems/        # 10 Assignment Problems + 3 Systems Case Studies
+│       ├── Questions/            # README.md, questions.pdf, questions.ipynb
+│       └── Solutions/            # README.md, solutions.pdf, solutions.ipynb, 300DPI plots
+├── lecture_03/ ... lecture_17/   # (Python Basics, Data Structures, OOP & NumPy)
 ├── lecture_18/                   # Data Visualization (Part 1 - Matplotlib Fundamentals)
 │   ├── Notes_18.01/ to 18.18/    # Sub-topics with notes.md, notes.pdf, .ipynb
 │   ├── Practice_Problems/        # Case Studies & Challenges (Questions & Solutions)
@@ -76,6 +81,35 @@ Foundational orientation module introducing the Apna College AI/ML curriculum, t
 > *Module Guides:* [📖 English Guide](lecture_01/Practice_Problems/README.md) \| [हिंदी / Hinglish Guide](lecture_01/Practice_Problems/README_HINGLISH.md)  
 > - 📋 **Problem Statements:** [Questions](lecture_01/Practice_Problems/Questions/README.md) \| [questions.pdf](lecture_01/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_01/Practice_Problems/Questions/questions.ipynb)
 > - 💡 **Complete Solutions:** [Solutions](lecture_01/Practice_Problems/Solutions/README.md) \| [solutions.pdf](lecture_01/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_01/Practice_Problems/Solutions/solutions.ipynb)
+
+---
+
+### 🐍 Day 02: Python Fundamentals (Part 1 — Operators, Data Types & Input Pipeline)
+*Module Guides:* [📖 English Guide](lecture_02/README.md) \| [हिंदी / Hinglish Guide](lecture_02/README_HINGLISH.md)
+
+Comprehensive foundational guide covering Python syntax, dynamic pointer memory semantics, primitive and container data types, PEP 8 standards, binary and unary arithmetic operators, relational and assignment operators, Boolean logic, operator precedence, type casting invariants, user input parsing, and 10 official assignment problems.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **02.01** | Our First Program | Standard output stream, `print()` signature (`sep`, `end`, `flush`), Unicode UTF-8 character set | [Notes](lecture_02/Notes_02.01/README.md) \| [PDF](lecture_02/Notes_02.01/notes.pdf) \| [Notebook](lecture_02/Notes_02.01/lecture_02_01.ipynb) |
+| **02.02** | Variables in Python | Dynamic pointer references, namespace bindings, identifier rules, case-sensitivity | [Notes](lecture_02/Notes_02.02/README.md) \| [PDF](lecture_02/Notes_02.02/notes.pdf) \| [Notebook](lecture_02/Notes_02.02/lecture_02_02.ipynb) |
+| **02.03** | Data Types in Python | `int`, `float`, `str`, `bool`, `NoneType`, `complex`, runtime type introspection with `type()` | [Notes](lecture_02/Notes_02.03/README.md) \| [PDF](lecture_02/Notes_02.03/notes.pdf) \| [Notebook](lecture_02/Notes_02.03/lecture_02_03.ipynb) |
+| **02.04** | Keywords & Comments | CPython 35 reserved keywords, AST tokenizer rules, single-line `#`, docstrings (`__doc__`) | [Notes](lecture_02/Notes_02.04/README.md) \| [PDF](lecture_02/Notes_02.04/notes.pdf) \| [Notebook](lecture_02/Notes_02.04/lecture_02_04.ipynb) |
+| **02.05** | Style Guide & Best Practices | PEP 8 architectural standards, 4-space indentation, `snake_case` naming conventions | [Notes](lecture_02/Notes_02.05/README.md) \| [PDF](lecture_02/Notes_02.05/notes.pdf) \| [Notebook](lecture_02/Notes_02.05/lecture_02_05.ipynb) |
+| **02.06** | Arithmetic Operators | Binary/unary operators, true division (`/`), floor division (`//`), negative modulo invariants | [Notes](lecture_02/Notes_02.06/README.md) \| [PDF](lecture_02/Notes_02.06/notes.pdf) \| [Notebook](lecture_02/Notes_02.06/lecture_02_06.ipynb) |
+| **02.07** | Relational Operators | Boolean order evaluations (`==`, `!=`, `<`, `>`, `<=`, `>=`), chained comparisons | [Notes](lecture_02/Notes_02.07/README.md) \| [PDF](lecture_02/Notes_02.07/notes.pdf) \| [Notebook](lecture_02/Notes_02.07/lecture_02_07.ipynb) |
+| **02.08** | Assignment Operators | Simple vs compound assignment (`+=`, `-=`, etc.), in-place mutation, immutable rebinding | [Notes](lecture_02/Notes_02.08/README.md) \| [PDF](lecture_02/Notes_02.08/notes.pdf) \| [Notebook](lecture_02/Notes_02.08/lecture_02_08.ipynb) |
+| **02.09** | Logical Operators | Boolean lattice algebra (`and`, `or`, `not`), truth tables, short-circuit execution guarantees | [Notes](lecture_02/Notes_02.09/README.md) \| [PDF](lecture_02/Notes_02.09/notes.pdf) \| [Notebook](lecture_02/Notes_02.09/lecture_02_09.ipynb) |
+| **02.10** | Operator Precedence | Syntactic binding hierarchy, right-associativity of `**`, AST expression tree evaluation | [Notes](lecture_02/Notes_02.10/README.md) \| [PDF](lecture_02/Notes_02.10/notes.pdf) \| [Notebook](lecture_02/Notes_02.10/lecture_02_10.ipynb) |
+| **02.11** | Type Conversion & Casting | Implicit type widening/promotion vs explicit type constructors (`int()`, `float()`, `str()`) | [Notes](lecture_02/Notes_02.11/README.md) \| [PDF](lecture_02/Notes_02.11/notes.pdf) \| [Notebook](lecture_02/Notes_02.11/lecture_02_11.ipynb) |
+| **02.12** | Taking User Input | Standard input stream (`stdin`), `input()` contract, string return invariant, type parsing | [Notes](lecture_02/Notes_02.12/README.md) \| [PDF](lecture_02/Notes_02.12/notes.pdf) \| [Notebook](lecture_02/Notes_02.12/lecture_02_12.ipynb) |
+| **02.13** | Average of 2 Numbers & Synthesis | End-to-end algorithmic synthesis, numerical formula implementation, edge-case mitigation | [Notes](lecture_02/Notes_02.13/README.md) \| [PDF](lecture_02/Notes_02.13/notes.pdf) \| [Notebook](lecture_02/Notes_02.13/lecture_02_13.ipynb) |
+
+> [!TIP]
+> **💡 Day 02 Comprehensive Practice & Case Studies Suite:**  
+> *Module Guides:* [📖 English Guide](lecture_02/Practice_Problems/README.md) \| [हिंदी / Hinglish Guide](lecture_02/Practice_Problems/README_HINGLISH.md)  
+> - 📋 **Problem Statements (10 Assignment Problems + 3 Case Studies):** [Questions](lecture_02/Practice_Problems/Questions/README.md) \| [questions.pdf](lecture_02/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_02/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_02/Practice_Problems/Solutions/README.md) \| [solutions.pdf](lecture_02/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_02/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
 
