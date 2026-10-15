@@ -27,7 +27,12 @@ AI-ML/
 ├── README.md                     # English Documentation
 ├── README_HINGLISH.md            # Hinglish Documentation
 ├── lecture_00/                   # Course Orientation & Environment Setup
-├── lecture_01/ ... lecture_17/   # (Foundations, Python & Numerical Computing)
+├── lecture_01/                   # Orientation, Python Foundations, VS Code & Setup
+│   ├── Notes_01.01/ to 01.07/    # Sub-topics (README.md, README_HINGLISH.md, notes.pdf, .ipynb)
+│   └── Practice_Problems/        # Systems Engineering Case Studies (Questions & Solutions)
+│       ├── Questions/            # README_HINGLISH.md, questions.pdf, questions.ipynb
+│       └── Solutions/            # README_HINGLISH.md, solutions.pdf, solutions.ipynb, 300DPI plots
+├── lecture_02/ ... lecture_17/   # (Python Basics, Data Structures, OOP & NumPy)
 ├── lecture_18/                   # Data Visualization (Part 1 - Matplotlib Fundamentals)
 │   ├── Notes_18.01/ to 18.18/    # Sub-topics (notes.md, notes.pdf, .ipynb)
 │   ├── Practice_Problems/        # Case Studies & Challenges (Questions & Solutions)
@@ -51,6 +56,29 @@ AI-ML/
 ---
 
 ## 📊 Detailed Module Breakdown
+
+### 🚀 Day 01: Course Orientation, Python for AI/ML & VS Code Mastery
+*Module Guides:* [📖 Hinglish Guide](lecture_01/README_HINGLISH.md) \| [English Guide](lecture_01/README.md)
+
+Foundational orientation module jismein Apna College AI/ML curriculum ka vision, AI ke 5 core pillars, C++/Java ke comparison mein Python choose karne ke deep systems-level reasons, local hardware aur developer tooling setup, official installation guides, aur Visual Studio Code ki complete mastery cover ki gayi hai.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **01.01** | Course Objective & AI/ML Revolution | Vision, deterministic vs probabilistic paradigm shift, industry benchmarks | [Notes](lecture_01/Notes_01.01/README_HINGLISH.md) \| [PDF](lecture_01/Notes_01.01/notes.pdf) \| [Notebook](lecture_01/Notes_01.01/lecture_01_01.ipynb) |
+| **01.02** | Curriculum Architecture: 5 Pillars of AI/ML | Foundations, Data Analysis, Classical ML, Deep Learning, Generative AI & MLOps | [Notes](lecture_01/Notes_01.02/README_HINGLISH.md) \| [PDF](lecture_01/Notes_01.02/notes.pdf) \| [Notebook](lecture_01/Notes_01.02/lecture_01_02.ipynb) |
+| **01.03** | Course Schedule, Pedagogy & Roadmap | First-principles engineering pedagogy, project-driven learning, milestones | [Notes](lecture_01/Notes_01.03/README_HINGLISH.md) \| [PDF](lecture_01/Notes_01.03/notes.pdf) \| [Notebook](lecture_01/Notes_01.03/lecture_01_03.ipynb) |
+| **01.04** | Why Choose Python for AI & Machine Learning? | Two-Language Problem, CPython C-extensions, SIMD vectorization, developer velocity | [Notes](lecture_01/Notes_01.04/README_HINGLISH.md) \| [PDF](lecture_01/Notes_01.04/notes.pdf) \| [Notebook](lecture_01/Notes_01.04/lecture_01_04.ipynb) |
+| **01.05** | Core Development Tools & Ecosystem Setup | Python interpreter, PATH mechanics, package managers, virtual environments | [Notes](lecture_01/Notes_01.05/README_HINGLISH.md) \| [PDF](lecture_01/Notes_01.05/notes.pdf) \| [Notebook](lecture_01/Notes_01.05/lecture_01_05.ipynb) |
+| **01.06** | Official Installation & Configuration Guide | Step-by-step walkthrough, verification commands, shell configuration | [Notes](lecture_01/Notes_01.06/README_HINGLISH.md) \| [PDF](lecture_01/Notes_01.06/notes.pdf) \| [Notebook](lecture_01/Notes_01.06/lecture_01_06.ipynb) |
+| **01.07** | Mastering VS Code for AI/ML Engineering | Keybindings, multi-cursor editing, Jupyter integration, kernel management | [Notes](lecture_01/Notes_01.07/README_HINGLISH.md) \| [PDF](lecture_01/Notes_01.07/notes.pdf) \| [Notebook](lecture_01/Notes_01.07/lecture_01_07.ipynb) |
+
+> [!TIP]
+> **💡 Day 01 Comprehensive Systems & Performance Case Studies:**  
+> *Module Guides:* [📖 Hinglish Guide](lecture_01/Practice_Problems/README_HINGLISH.md) \| [English Guide](lecture_01/Practice_Problems/README.md)  
+> - 📋 **Problem Statements:** [Questions](lecture_01/Practice_Problems/Questions/README_HINGLISH.md) \| [questions.pdf](lecture_01/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_01/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions:** [Solutions](lecture_01/Practice_Problems/Solutions/README_HINGLISH.md) \| [solutions.pdf](lecture_01/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_01/Practice_Problems/Solutions/solutions.ipynb)
+
+---
 
 ### 🎨 Day 18: Data Visualization (Part 1 — Matplotlib Mastery)
 *Module Guides:* [📖 Hinglish Guide](lecture_18/README_HINGLISH.md) \| [English Guide](lecture_18/README.md)
