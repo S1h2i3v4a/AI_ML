@@ -50,7 +50,15 @@ AI-ML/
 │   │   ├── Questions/            # README.md, questions.pdf, questions.ipynb
 │   │   └── Solutions/            # README.md, solutions.pdf, solutions.ipynb, 300DPI plots
 │   └── Python_Fundamentals_Assignment3.pdf # Official Assignment Sheet
-├── lecture_05/ ... lecture_17/   # (Functions, OOP, NumPy & Scientific Computing)
+├── lecture_05/                   # Python Fundamentals (Part 4 - Object-Oriented Programming (OOP))
+│   ├── Notes_05.01/ to 05.16/    # Sub-topics with README.md, README_HINGLISH.md, notes.pdf, .ipynb
+│   ├── Practice_Problems/        # 10 Assignment Problems + 3 Systems Case Studies
+│   │   ├── Questions/            # README.md, questions.pdf, questions.ipynb
+│   │   └── Solutions/            # README.md, solutions.pdf, solutions.ipynb, 300DPI plots
+│   ├── Python_Fundamentals_Assignment4.pdf # Official Assignment Sheet
+│   ├── Python_Fundamentals_Part4.pdf       # Official Slide Deck
+│   └── Chat_System_Code.pdf               # Official Chat System Reference
+├── lecture_06/ ... lecture_17/   # (NumPy, Scientific Computing, Linear Algebra & Pandas)
 ├── lecture_18/                   # Data Visualization (Part 1 - Matplotlib Fundamentals)
 │   ├── Notes_18.01/ to 18.18/    # Sub-topics with notes.md, notes.pdf, .ipynb
 │   ├── Practice_Problems/        # Case Studies & Challenges (Questions & Solutions)
@@ -190,6 +198,37 @@ Comprehensive deep-dive into Python's primary sequence, mapping, and set data st
 > *Module Guides:* [📖 English Guide](lecture_04/Practice_Problems/README.md) \| [हिंदी / Hinglish Guide](lecture_04/Practice_Problems/README_HINGLISH.md)  
 > - 📋 **Problem Statements (10 Assignment Problems + 3 Case Studies):** [Questions](lecture_04/Practice_Problems/Questions/README.md) \| [questions.pdf](lecture_04/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_04/Practice_Problems/Questions/questions.ipynb)
 > - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_04/Practice_Problems/Solutions/README.md) \| [solutions.pdf](lecture_04/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_04/Practice_Problems/Solutions/solutions.ipynb)
+
+### 🏛️ Day 05: Python Fundamentals (Part 4 — Object-Oriented Programming (OOP))
+*Module Guides:* [📖 English Guide](lecture_05/README.md) | [हिंदी / Hinglish Guide](lecture_05/README_HINGLISH.md)
+
+Comprehensive production-grade guide to Object-Oriented Programming in Python: Class & instance namespaces, `__init__()` constructor mechanics, classmethods & staticmethods, information hiding & encapsulation via `@property` and name mangling, single/multiple/hierarchical inheritance with cooperative `super()`, diamond inheritance and C3 Linearization (MRO), Abstract Base Classes (`abc`), polymorphism, method overriding, duck typing, special dunder protocols, and full solutions to the 10 official Assignment 4 problems alongside 3 systems engineering case studies and the production Chat System project.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **05.01** | What is Object-Oriented Programming (OOP)? | Procedural vs OOP paradigms, state & behavior bundling, clean architecture | [Notes](lecture_05/Notes_05.01/README.md) \| [PDF](lecture_05/Notes_05.01/notes.pdf) \| [Notebook](lecture_05/Notes_05.01/lecture_05_01.ipynb) |
+| **05.02** | Classes & Objects in Python | `class` blueprint syntax, instance instantiation, object identities (`id()`), heap memory allocation | [Notes](lecture_05/Notes_05.02/README.md) \| [PDF](lecture_05/Notes_05.02/notes.pdf) \| [Notebook](lecture_05/Notes_05.02/lecture_05_02.ipynb) |
+| **05.03** | Attributes & Methods in Python | Instance namespace (`__dict__`), class namespace mapping, method dispatch | [Notes](lecture_05/Notes_05.03/README.md) \| [PDF](lecture_05/Notes_05.03/notes.pdf) \| [Notebook](lecture_05/Notes_05.03/lecture_05_03.ipynb) |
+| **05.04** | Constructor — The `__init__()` Method | Dual-phase creation protocol (`__new__` allocator vs `__init__` initializer), instance state binding | [Notes](lecture_05/Notes_05.04/README.md) \| [PDF](lecture_05/Notes_05.04/notes.pdf) \| [Notebook](lecture_05/Notes_05.04/lecture_05_04.ipynb) |
+| **05.05** | Types of Constructors & Overloading | Default vs parameterized constructors, method overloading emulation via defaults and `@classmethod` | [Notes](lecture_05/Notes_05.05/README.md) \| [PDF](lecture_05/Notes_05.05/notes.pdf) \| [Notebook](lecture_05/Notes_05.05/lecture_05_05.ipynb) |
+| **05.06** | Attributes — Class vs Instance Scope | Class variable shared memory, instance variable shadowing, mutable class attribute mutation traps | [Notes](lecture_05/Notes_05.06/README.md) \| [PDF](lecture_05/Notes_05.06/notes.pdf) \| [Notebook](lecture_05/Notes_05.06/lecture_05_06.ipynb) |
+| **05.07** | Instance Methods | Explicit `self` parameter binding, bound method objects, descriptor invocation protocol | [Notes](lecture_05/Notes_05.07/README.md) \| [PDF](lecture_05/Notes_05.07/notes.pdf) \| [Notebook](lecture_05/Notes_05.07/lecture_05_07.ipynb) |
+| **05.08** | Class Methods (`@classmethod`) | Class-level binding via `cls`, alternate constructors/factories, polymorphic instantiation | [Notes](lecture_05/Notes_05.08/README.md) \| [PDF](lecture_05/Notes_05.08/notes.pdf) \| [Notebook](lecture_05/Notes_05.08/lecture_05_08.ipynb) |
+| **05.09** | Static Methods (`@staticmethod`) | Isolated utility functions, decoupled namespaces, static helpers without `self` or `cls` | [Notes](lecture_05/Notes_05.09/README.md) \| [PDF](lecture_05/Notes_05.09/notes.pdf) \| [Notebook](lecture_05/Notes_05.09/lecture_05_09.ipynb) |
+| **05.10** | Practice Problem: In-Class Banking System | Transaction validation invariants, atomic state transitions, boundary condition safeguards | [Notes](lecture_05/Notes_05.10/README.md) \| [PDF](lecture_05/Notes_05.10/notes.pdf) \| [Notebook](lecture_05/Notes_05.10/lecture_05_10.ipynb) |
+| **05.11** | Encapsulation & Access Control | Public, protected (`_attr`), private (`__attr`), name mangling (`_Class__attr`), `@property` descriptors | [Notes](lecture_05/Notes_05.11/README.md) \| [PDF](lecture_05/Notes_05.11/notes.pdf) \| [Notebook](lecture_05/Notes_05.11/lecture_05_11.ipynb) |
+| **05.12** | Inheritance Mechanics & Super Proxy | Base and derived classes, code reuse, cooperative multiple inheritance with `super()` proxy | [Notes](lecture_05/Notes_05.12/README.md) \| [PDF](lecture_05/Notes_05.12/notes.pdf) \| [Notebook](lecture_05/Notes_05.12/lecture_05_12.ipynb) |
+| **05.13** | Taxonomy of Inheritance & C3 Linearization | Single, Multilevel, Multiple, Hierarchical & Hybrid inheritance, C3 MRO monotonic resolution | [Notes](lecture_05/Notes_05.13/README.md) \| [PDF](lecture_05/Notes_05.13/notes.pdf) \| [Notebook](lecture_05/Notes_05.13/lecture_05_13.ipynb) |
+| **05.14** | Abstraction & Abstract Base Classes (ABCs) | Formal interface contracts, `abc.ABC`, `@abstractmethod`, preventing partial class instantiations | [Notes](lecture_05/Notes_05.14/README.md) \| [PDF](lecture_05/Notes_05.14/notes.pdf) \| [Notebook](lecture_05/Notes_05.14/lecture_05_14.ipynb) |
+| **05.15** | Polymorphism — Method Overriding | Runtime dynamic method dispatch, polymorphic substitution, specialized subclass behavior | [Notes](lecture_05/Notes_05.15/README.md) \| [PDF](lecture_05/Notes_05.15/notes.pdf) \| [Notebook](lecture_05/Notes_05.15/lecture_05_15.ipynb) |
+| **05.16** | Polymorphism — Duck Typing & Dunder Protocols | Structural typing ("quacks like a duck"), Python protocols (`__len__`, `__getitem__`, `__str__`, `__repr__`) | [Notes](lecture_05/Notes_05.16/README.md) \| [PDF](lecture_05/Notes_05.16/notes.pdf) \| [Notebook](lecture_05/Notes_05.16/lecture_05_16.ipynb) |
+
+> [!TIP]
+> **💡 Day 05 Comprehensive Practice & Case Studies Suite:**  
+> *Module Guides:* [📖 English Guide](lecture_05/Practice_Problems/README.md) \| [हिंदी / Hinglish Guide](lecture_05/Practice_Problems/README_HINGLISH.md)  
+> - 📋 **Problem Statements (10 Assignment Problems + 3 Case Studies):** [Questions](lecture_05/Practice_Problems/Questions/README.md) \| [questions.pdf](lecture_05/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_05/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_05/Practice_Problems/Solutions/README.md) \| [solutions.pdf](lecture_05/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_05/Practice_Problems/Solutions/solutions.ipynb)
+
 
 ### 🎨 Day 18: Data Visualization (Part 1 — Matplotlib Mastery)
 *Module Guides:* [📖 English Guide](lecture_18/README.md) \| [हिंदी / Hinglish Guide](lecture_18/README_HINGLISH.md)
