@@ -37,8 +37,15 @@ AI-ML/
 │   └── Practice_Problems/        # 10 Assignment Problems + 3 Systems Case Studies
 │       ├── Questions/            # README_HINGLISH.md, questions.pdf, questions.ipynb
 │       └── Solutions/            # README_HINGLISH.md, solutions.pdf, solutions.ipynb, 300DPI plots
-├── lecture_03/                   # (Conditional Statements & Loops - Upcoming / Inactive)
-├── lecture_04/                   # Python Fundamentals (Part 2 - Strings, Lists, Tuples, Dicts, Sets)
+├── lecture_03/                   # Python Fundamentals (Part 2 - Conditionals, Loops & Functions)
+│   ├── Notes_03.01/ to 03.18/    # Sub-topics (README.md, README_HINGLISH.md, notes.pdf, .ipynb)
+│   ├── Practice_Problems/        # 10 Assignment Problems + 3 Systems Case Studies
+│   │   ├── Questions/            # README_HINGLISH.md, questions.pdf, questions.ipynb
+│   │   └── Solutions/            # README_HINGLISH.md, solutions.pdf, solutions.ipynb, 300DPI plots
+│   ├── Python_Fundamentals_Assignment2.pdf # Official Assignment Sheet
+│   ├── Python_Fundamentals_Part2.pdf       # Official Slide Deck
+│   └── Topic_List.jpg                     # Official Lecture Visual Index
+├── lecture_04/                   # Python Fundamentals (Part 3 - Strings, Lists, Tuples, Dicts, Sets)
 │   ├── Notes_04.01/ to 04.14/    # Sub-topics (README.md, README_HINGLISH.md, notes.pdf, .ipynb)
 │   ├── Practice_Problems/        # 10 Assignment Problems + 3 Systems Case Studies
 │   │   ├── Questions/            # README_HINGLISH.md, questions.pdf, questions.ipynb
@@ -122,6 +129,40 @@ Python syntax, dynamic pointer memory semantics, primitive aur container data ty
 ---
 
 ---
+
+---
+
+### 🔀 Day 03: Python Fundamentals (Part 2 — Conditional Statements, Loops & Functions)
+*Module Guides:* [📖 Hinglish Guide](lecture_03/README_HINGLISH.md) \| [English Guide](lecture_03/README.md)
+
+Python control flow branching (`if`, `elif`, `else`), decision trees, Python 3.10+ Structural Pattern Matching (`match ... case`), indefinite iteration (`while`), definite sequence traversal (`for`), iterator protocols, `range()` sequence types, modular function architecture (`def`, scope, `PyFrameObject`), lambda closures, recursion mechanics, aur official Assignment 2 ke 10 questions aur 3 systems engineering case studies ka complete breakdown.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **03.01** | Conditional Statements in Python | Control flow branching, if/elif/else syntax, truthiness rules, Boolean conditions | [Notes](lecture_03/Notes_03.01/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.01/notes.pdf) \| [Notebook](lecture_03/Notes_03.01/lecture_03_01.ipynb) |
+| **03.02** | Practice Examples (Conditionals) | Driving license check, grading scheme, tax bracket slabs calculation | [Notes](lecture_03/Notes_03.02/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.02/notes.pdf) \| [Notebook](lecture_03/Notes_03.02/lecture_03_02.ipynb) |
+| **03.03** | Odd or Even (Parity Checking) | Modulo $x \pmod 2$ vs hardware bitwise mask $x \mathbin{\&} 1$ speedup | [Notes](lecture_03/Notes_03.03/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.03/notes.pdf) \| [Notebook](lecture_03/Notes_03.03/lecture_03_03.ipynb) |
+| **03.04** | Nesting (Decision Trees) | Hierarchical if-else, cyclomatic complexity, guard clauses pattern | [Notes](lecture_03/Notes_03.04/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.04/notes.pdf) \| [Notebook](lecture_03/Notes_03.04/lecture_03_04.ipynb) |
+| **03.05** | Match Case in Python | Python 3.10+ Pattern Matching, wildcards (`_`), pattern guards (`if`) | [Notes](lecture_03/Notes_03.05/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.05/notes.pdf) \| [Notebook](lecture_03/Notes_03.05/lecture_03_05.ipynb) |
+| **03.06** | Loops Using While | While loop, loop invariants, state mutations, infinite loop prevention | [Notes](lecture_03/Notes_03.06/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.06/notes.pdf) \| [Notebook](lecture_03/Notes_03.06/lecture_03_06.ipynb) |
+| **03.07** | Practice Examples (Loops) | Counters, running accumulators, sentinel loops, digit extraction ($N \pmod{10}$, $N // 10$) | [Notes](lecture_03/Notes_03.07/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.07/notes.pdf) \| [Notebook](lecture_03/Notes_03.07/lecture_03_07.ipynb) |
+| **03.08** | Multiplication Table of N | Arithmetic progression $a_i = N \cdot i$, columnar f-string formatting | [Notes](lecture_03/Notes_03.08/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.08/notes.pdf) \| [Notebook](lecture_03/Notes_03.08/lecture_03_08.ipynb) |
+| **03.09** | Break & Continue Control Flow | `break`, `continue`, `pass`, aur Python ka unique loop `else` construct | [Notes](lecture_03/Notes_03.09/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.09/notes.pdf) \| [Notebook](lecture_03/Notes_03.09/lecture_03_09.ipynb) |
+| **03.10** | Loops Using For (Iterator Protocol) | Definite iteration, `iter()`, `next()`, `StopIteration` exception | [Notes](lecture_03/Notes_03.10/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.10/notes.pdf) \| [Notebook](lecture_03/Notes_03.10/lecture_03_10.ipynb) |
+| **03.11** | Vowel Count (Stream Filtering) | String character traversal, set membership testing in $\mathcal{O}(1)$ time | [Notes](lecture_03/Notes_03.11/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.11/notes.pdf) \| [Notebook](lecture_03/Notes_03.11/lecture_03_11.ipynb) |
+| **03.12** | The range() Function | Immutable sequence arithmetic progression, lazy evaluation, 48 bytes $\mathcal{O}(1)$ memory | [Notes](lecture_03/Notes_03.12/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.12/notes.pdf) \| [Notebook](lecture_03/Notes_03.12/lecture_03_12.ipynb) |
+| **03.13** | Sum of N Numbers | Loop sum $\mathcal{O}(N)$ vs Gauss closed formula $\frac{N(N+1)}{2}$ in $\mathcal{O}(1)$ | [Notes](lecture_03/Notes_03.13/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.13/notes.pdf) \| [Notebook](lecture_03/Notes_03.13/lecture_03_13.ipynb) |
+| **03.14** | Functions in Python | Function definition (`def`), arguments vs parameters, call stack activation frames | [Notes](lecture_03/Notes_03.14/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.14/notes.pdf) \| [Notebook](lecture_03/Notes_03.14/lecture_03_14.ipynb) |
+| **03.15** | Practice Examples (Functions) | Modular code, pure deterministic functions, elimination of side effects | [Notes](lecture_03/Notes_03.15/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.15/notes.pdf) \| [Notebook](lecture_03/Notes_03.15/lecture_03_15.ipynb) |
+| **03.16** | Types of Functions & Arguments | Built-in vs user-defined, positional/keyword args, default arguments mutable trap, `*args`, `**kwargs` | [Notes](lecture_03/Notes_03.16/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.16/notes.pdf) \| [Notebook](lecture_03/Notes_03.16/lecture_03_16.ipynb) |
+| **03.17** | Lambda Functions (Anonymous) | Single-expression anonymous closures, inline callbacks (`map`, `filter`, `sorted`) | [Notes](lecture_03/Notes_03.17/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.17/notes.pdf) \| [Notebook](lecture_03/Notes_03.17/lecture_03_17.ipynb) |
+| **03.18** | Factorial of N (Iterative vs Recursive) | Factorial $N!$, iterative loop $\mathcal{O}(1)$ memory vs recursion call stack $\mathcal{O}(N)$ limits | [Notes](lecture_03/Notes_03.18/README_HINGLISH.md) \| [PDF](lecture_03/Notes_03.18/notes.pdf) \| [Notebook](lecture_03/Notes_03.18/lecture_03_18.ipynb) |
+
+> [!TIP]
+> **💡 Day 03 Comprehensive Practice & Case Studies Suite:**  
+> *Module Guides:* [📖 Hinglish Guide](lecture_03/Practice_Problems/README_HINGLISH.md) \| [English Guide](lecture_03/Practice_Problems/README.md)  
+> - 📋 **Problem Statements (10 Assignment Problems + 3 Case Studies):** [Questions](lecture_03/Practice_Problems/Questions/README_HINGLISH.md) \| [questions.pdf](lecture_03/Practice_Problems/Questions/questions.pdf) \| [Starter Notebook](lecture_03/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_03/Practice_Problems/Solutions/README_HINGLISH.md) \| [solutions.pdf](lecture_03/Practice_Problems/Solutions/solutions.pdf) \| [Executed Notebook](lecture_03/Practice_Problems/Solutions/solutions.ipynb)
 
 ### 📦 Day 04: Python Data Structures (Strings, Lists, Tuples, Dictionaries, Sets & Assignment 3)
 *Module Guides:* [📖 Hinglish Guide](lecture_04/README_HINGLISH.md) \| [English Guide](lecture_04/README.md)
