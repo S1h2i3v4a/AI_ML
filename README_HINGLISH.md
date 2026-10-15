@@ -265,6 +265,35 @@ Machine Learning mein regularized models aur probabilistic classification ka dee
 > - 📝 **Problem Statements:** [Questions](lecture_24/Practice_Problems/Questions/README_HINGLISH.md) | [questions.pdf](lecture_24/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_24/Practice_Problems/Questions/lecture_24_questions.ipynb)
 > - 💡 **Complete Solutions:** [Solutions](lecture_24/Practice_Problems/Solutions/README_HINGLISH.md) | [solutions.pdf](lecture_24/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_24/Practice_Problems/Solutions/lecture_24_solutions.ipynb)
 
+### 🏷️ Day 25: Classification Fundamentals, Naive Bayes, kNN & Validation Pipelines
+*Module Guides:* [हिंदी / Hinglish Guide](lecture_25/README_HINGLISH.md) | [📖 English Guide](lecture_25/README.md)
+
+Machine Learning classification algorithms, metric geometry, aur validation engineering ke core concepts: Feature standardization vs normalization, data leakage prevention, Confusion Matrix mechanics, Precision, Recall, Specificity, F1-Score, Bayes' theorem in spam filtering, Gaussian vs Multinomial Naive Bayes, Laplace smoothing, k-Nearest Neighbors (kNN), high dimensions mein metric collapse, Train-Val-Test splits, Stratified K-Fold cross-validation, aur Scikit-Learn Pipelines.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **25.01** | Standardization & Normalization | Z-score scaling vs MinMax, distance distortion, mathematical definitions | [Notes](lecture_25/Notes_25.01/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.01/notes.pdf) \| [Notebook](lecture_25/Notes_25.01/lecture_25_01.ipynb) |
+| **25.02** | Using StandardScaler | Sklearn `StandardScaler`, `fit_transform` vs `transform`, data leakage prevention | [Notes](lecture_25/Notes_25.02/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.02/notes.pdf) \| [Notebook](lecture_25/Notes_25.02/lecture_25_02.ipynb) |
+| **25.03** | Understanding Confusion Matrix | True Positive (TP), True Negative (TN), False Positive (FP), False Negative (FN) | [Notes](lecture_25/Notes_25.03/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.03/notes.pdf) \| [Notebook](lecture_25/Notes_25.03/lecture_25_03.ipynb) |
+| **25.04** | Classification Evaluation Metrics | Accuracy, Precision, Recall, Specificity, F1-Score, Class Imbalance dilemma | [Notes](lecture_25/Notes_25.04/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.04/notes.pdf) \| [Notebook](lecture_25/Notes_25.04/lecture_25_04.ipynb) |
+| **25.05** | Naive Bayes (Intuition) | Bayes' Theorem, Prior $P(y)$, Likelihood, Conditional Independence assumption | [Notes](lecture_25/Notes_25.05/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.05/notes.pdf) \| [Notebook](lecture_25/Notes_25.05/lecture_25_05.ipynb) |
+| **25.06** | Naive Bayes (Example) | Step-by-step tabular probability calculation, Zero Frequency problem, Laplace Smoothing | [Notes](lecture_25/Notes_25.06/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.06/notes.pdf) \| [Notebook](lecture_25/Notes_25.06/lecture_25_06.ipynb) |
+| **25.07** | Types of Naive Bayes | GaussianNB (Continuous), MultinomialNB (Word counts), BernoulliNB (Binary) | [Notes](lecture_25/Notes_25.07/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.07/notes.pdf) \| [Notebook](lecture_25/Notes_25.07/lecture_25_07.ipynb) |
+| **25.08** | Naive Bayes (Code) | Sklearn implementation, Text classification, GaussianNB on `heart.csv` | [Notes](lecture_25/Notes_25.08/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.08/notes.pdf) \| [Notebook](lecture_25/Notes_25.08/lecture_25_08.ipynb) |
+| **25.09** | kNN - K Nearest Neighbours (Intuition) | Non-parametric lazy learner, Euclidean & Manhattan metrics, Majority voting | [Notes](lecture_25/Notes_25.09/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.09/notes.pdf) \| [Notebook](lecture_25/Notes_25.09/lecture_25_09.ipynb) |
+| **25.10** | kNN (Code) | Sklearn `KNeighborsClassifier`, feature scaling necessity, distance weights | [Notes](lecture_25/Notes_25.10/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.10/notes.pdf) \| [Notebook](lecture_25/Notes_25.10/lecture_25_10.ipynb) |
+| **25.11** | Limitations of kNN | Curse of Dimensionality, inference latency $\mathcal{O}(N \cdot d)$, memory footprint | [Notes](lecture_25/Notes_25.11/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.11/notes.pdf) \| [Notebook](lecture_25/Notes_25.11/lecture_25_11.ipynb) |
+| **25.12** | What is Validation Data? | Train-Validation-Test partitioning, testing data sanctity, overfitting tuning | [Notes](lecture_25/Notes_25.12/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.12/notes.pdf) \| [Notebook](lecture_25/Notes_25.12/lecture_25_12.ipynb) |
+| **25.13** | What is Cross Validation? | K-Fold, Stratified K-Fold for imbalanced data, variance reduction | [Notes](lecture_25/Notes_25.13/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.13/notes.pdf) \| [Notebook](lecture_25/Notes_25.13/lecture_25_13.ipynb) |
+| **25.14** | CV for Hyperparameter Tuning | `GridSearchCV`, tuning $K$ neighbors and distance weights, validation curve | [Notes](lecture_25/Notes_25.14/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.14/notes.pdf) \| [Notebook](lecture_25/Notes_25.14/lecture_25_14.ipynb) |
+| **25.15** | Pipeline in sklearn | Sklearn `Pipeline`, chained preprocessing & modeling, zero data leakage | [Notes](lecture_25/Notes_25.15/README_HINGLISH.md) \| [PDF](lecture_25/Notes_25.15/notes.pdf) \| [Notebook](lecture_25/Notes_25.15/lecture_25_15.ipynb) |
+
+> [!TIP]
+> **🧪 Day 25 Comprehensive Case Studies & Practice Problem Set:**  
+> *Module Guides:* [हिंदी / Hinglish Guide](lecture_25/Practice_Problems/README_HINGLISH.md) | [📖 English Guide](lecture_25/Practice_Problems/README.md)  
+> - 📝 **Problem Statements:** [Questions](lecture_25/Practice_Problems/Questions/README_HINGLISH.md) | [questions.pdf](lecture_25/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_25/Practice_Problems/Questions/questions.ipynb)
+> - 💡 **Complete Solutions:** [Solutions](lecture_25/Practice_Problems/Solutions/README_HINGLISH.md) | [solutions.pdf](lecture_25/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_25/Practice_Problems/Solutions/solutions.ipynb)
+
 ---
 
 ## 📐 Mathematical Formulations & Statistical Expressions (Textbook Reference)
