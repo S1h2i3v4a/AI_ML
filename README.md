@@ -100,8 +100,17 @@ AI-ML/
 │   │   └── Solutions/            # README.md, README_HINGLISH.md, solutions.pdf, solutions.ipynb, 300DPI plots
 │   ├── loan_approval_data.csv    # Official Historical Loan Dataset (1000x20)
 │   ├── credit_wise_original.ipynb # Original Reference Implementation Notebook
-│   └── assets/                   # Problem Statement & Schema Definition Screenshots
-└── lecture_28/ ... lecture_60/   # (Tree Ensembles, Clustering, Deep Learning & LLMs)
+├── lecture_28/                   # Supervised ML (Part 4 - Decision Trees & ShopSmart Project)
+│   ├── Notes_28.01/ to 28.14/    # Sub-topics (README.md, README_HINGLISH.md, notes.pdf, .ipynb)
+│   ├── Practice_Problems/        # 8 Core Implementations + 3 Systems Case Studies
+│   │   ├── Questions/            # README.md, README_HINGLISH.md, questions.pdf, questions.ipynb
+│   │   └── Solutions/            # README.md, README_HINGLISH.md, solutions.pdf, solutions.ipynb, 300DPI plots
+│   ├── shop_smart_ecommerce.csv  # Official Benchmark Dataset (12,330 sessions, 18 features)
+│   ├── shop_original.ipynb       # Official Starter Notebook
+│   ├── shop_solution_original.ipynb # Official Solution Reference Notebook
+│   ├── 00_Day_31_Contents.jpeg   # Verified Curriculum Syllabus
+│   └── assets/                   # Assignment Screenshots & Schematics
+└── lecture_29/ ... lecture_60/   # (Tree Ensembles, Random Forests, Clustering, Deep Learning & LLMs)
 ```
 
 ---
@@ -551,6 +560,36 @@ An enterprise-grade supervised machine learning minor project automating credit 
 > *Module Guides:* [📖 English Guide](lecture_27/Practice_Problems/README.md) | [हिंदी / Hinglish Guide](lecture_27/Practice_Problems/README_HINGLISH.md)  
 > - 📝 **Problem Statements (8 Domain Problems + 3 Systems Studies):** [Questions](lecture_27/Practice_Problems/Questions/README.md) | [questions.pdf](lecture_27/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_27/Practice_Problems/Questions/questions.ipynb)  
 > - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_27/Practice_Problems/Solutions/README.md) | [solutions.pdf](lecture_27/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_27/Practice_Problems/Solutions/solutions.ipynb)
+
+---
+
+### 🌲 Day 28: Supervised Machine Learning (Part 4 — Decision Trees & ShopSmart Project)
+*Module Guides:* [📖 English Guide](lecture_28/README.md) | [हिंदी / Hinglish Guide](lecture_28/README_HINGLISH.md)
+
+Exhaustive, mathematically rigorous masterclass on Decision Tree algorithms for classification and regression: Non-linear feature space partitioning, recursive binary splitting (Hunt's algorithm), Shannon Entropy and Information Gain, Gini Impurity and its connection to Gini-Simpson diversity, Information Gain Ratio (C4.5 penalty for multi-valued bias), pre-pruning regularization hyperparameters (`max_depth`, `min_samples_split`, `min_samples_leaf`, `max_features`), post-pruning via Minimal Cost-Complexity Pruning (weakest link pruning with $R_\alpha(T) = R(T) + \alpha |T|$ and effective alpha sequence), Decision Tree Regressors with Continuous Mean Squared Error partitioning and Variance Reduction, and an end-to-end e-commerce purchase intention prediction pipeline on 12,330 real-world customer sessions (`shop_smart_ecommerce.csv`). Accompanied by 8 core algorithmic problems, 3 systems engineering case studies with 300 DPI publication plots, fully executed notebooks, and printable vector PDFs.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **28.01** | Introduction to Decision Trees & Non-Linear Boundaries | Non-linear geometric partitioning, axis-aligned hyperplanes, interpretability vs parametric linearity | [Notes](lecture_28/Notes_28.01/README.md) \| [PDF](lecture_28/Notes_28.01/notes.pdf) \| [Notebook](lecture_28/Notes_28.01/lecture_28_01.ipynb) |
+| **28.02** | Decision Tree Classifier & Recursive Binary Splitting | Hunt's greedy algorithm, internal test nodes, terminal leaf assignments, computational complexity | [Notes](lecture_28/Notes_28.02/README.md) \| [PDF](lecture_28/Notes_28.02/notes.pdf) \| [Notebook](lecture_28/Notes_28.02/lecture_28_02.ipynb) |
+| **28.03** | Entropy as an Impurity Metric (Information Theory) | Shannon Entropy $H(S) = -\sum p_i \log_2(p_i)$, thermodynamic disorder, bits of surprise | [Notes](lecture_28/Notes_28.03/README.md) \| [PDF](lecture_28/Notes_28.03/notes.pdf) \| [Notebook](lecture_28/Notes_28.03/lecture_28_03.ipynb) |
+| **28.04** | Gini Impurity (Formulation & Misclassification) | Gini Impurity $I_G(S) = 1 - \sum p_i^2$, probability of incorrect random label assignment | [Notes](lecture_28/Notes_28.04/README.md) \| [PDF](lecture_28/Notes_28.04/notes.pdf) \| [Notebook](lecture_28/Notes_28.04/lecture_28_04.ipynb) |
+| **28.05** | Entropy vs Gini Impurity (Taylor Series & Trade-offs) | First-order Taylor approximation $\ln(x) \approx x - 1$, computational scaling, split consistency | [Notes](lecture_28/Notes_28.05/README.md) \| [PDF](lecture_28/Notes_28.05/notes.pdf) \| [Notebook](lecture_28/Notes_28.05/lecture_28_05.ipynb) |
+| **28.06** | Information Gain & Optimal Split Selection | Mutual information $IG(S, A) = H(S) - \sum \frac{|S_v|}{|S|} H(S_v)$, C4.5 Split Information & Gain Ratio | [Notes](lecture_28/Notes_28.06/README.md) \| [PDF](lecture_28/Notes_28.06/notes.pdf) \| [Notebook](lecture_28/Notes_28.06/lecture_28_06.ipynb) |
+| **28.07** | Pruning Decision Trees (The Overfitting Dilemma) | Memorization capacity, zero training error trap, Occam's razor, structural risk minimization | [Notes](lecture_28/Notes_28.07/README.md) \| [PDF](lecture_28/Notes_28.07/notes.pdf) \| [Notebook](lecture_28/Notes_28.07/lecture_28_07.ipynb) |
+| **28.08** | Common Pruning Rules & Hyperparameters | Early stopping thresholds (`max_depth`, `min_samples_split`, `min_samples_leaf`, `max_leaf_nodes`) | [Notes](lecture_28/Notes_28.08/README.md) \| [PDF](lecture_28/Notes_28.08/notes.pdf) \| [Notebook](lecture_28/Notes_28.08/lecture_28_08.ipynb) |
+| **28.09** | Decision Tree Classifier Implementation in Scikit-Learn | `DecisionTreeClassifier` API, feature importances (MDI), decision path extraction, tree visualization | [Notes](lecture_28/Notes_28.09/README.md) \| [PDF](lecture_28/Notes_28.09/notes.pdf) \| [Notebook](lecture_28/Notes_28.09/lecture_28_09.ipynb) |
+| **28.10** | Pre-Pruning Implementation & Regularization Dynamics | Hyperparameter tuning with `GridSearchCV`, 5-fold cross-validation, bias-variance tradeoff curves | [Notes](lecture_28/Notes_28.10/README.md) \| [PDF](lecture_28/Notes_28.10/notes.pdf) \| [Notebook](lecture_28/Notes_28.10/lecture_28_10.ipynb) |
+| **28.11** | Post-Pruning Implementation (Minimal Cost-Complexity) | Breiman's CART cost-complexity $R_\alpha(T)$, `cost_complexity_pruning_path`, optimal $\alpha_{\text{eff}}$ | [Notes](lecture_28/Notes_28.11/README.md) \| [PDF](lecture_28/Notes_28.11/notes.pdf) \| [Notebook](lecture_28/Notes_28.11/lecture_28_11.ipynb) |
+| **28.12** | Decision Tree Regressor (Continuous Partitioning) | Piecewise constant approximation, regional mean estimation $\hat{y}_{R_m} = \frac{1}{N_m} \sum y_i$ | [Notes](lecture_28/Notes_28.12/README.md) \| [PDF](lecture_28/Notes_28.12/notes.pdf) \| [Notebook](lecture_28/Notes_28.12/lecture_28_12.ipynb) |
+| **28.13** | Variance Reduction as Impurity Metric for Regressors | Total Sum of Squares decomposition, regional variance reduction $\Delta \sigma^2 = \text{Var}(S) - \sum \frac{|S_v|}{|S|} \text{Var}(S_v)$ | [Notes](lecture_28/Notes_28.13/README.md) \| [PDF](lecture_28/Notes_28.13/notes.pdf) \| [Notebook](lecture_28/Notes_28.13/lecture_28_13.ipynb) |
+| **28.14** | Decision Tree Regressor Implementation in Scikit-Learn | `DecisionTreeRegressor` API, MSE/MAE split criteria, residual analysis, non-linear regression | [Notes](lecture_28/Notes_28.14/README.md) \| [PDF](lecture_28/Notes_28.14/notes.pdf) \| [Notebook](lecture_28/Notes_28.14/lecture_28_14.ipynb) |
+
+> [!TIP]
+> **🧪 Day 28 Comprehensive Practice & Systems Engineering Suite:**  
+> *Module Guides:* [📖 English Guide](lecture_28/Practice_Problems/README.md) | [हिंदी / Hinglish Guide](lecture_28/Practice_Problems/README_HINGLISH.md)  
+> - 📝 **Problem Statements (8 Algorithmic Problems + 3 Systems Studies):** [Questions](lecture_28/Practice_Problems/Questions/README.md) | [questions.pdf](lecture_28/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_28/Practice_Problems/Questions/questions.ipynb)  
+> - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_28/Practice_Problems/Solutions/README.md) | [solutions.pdf](lecture_28/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_28/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
 
