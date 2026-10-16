@@ -76,7 +76,24 @@ AI-ML/
 ├── lecture_22/                   # Mathematics for AI (Part 3 - Calculus Mastery)
 │   ├── Notes_22.01/ to 22.09/    # Sub-topics with README.md, notes.pdf, .ipynb
 │   └── Practice_Problems/        # Industry Case Studies (Questions & Solutions)
-└── lecture_23/ ... lecture_60/   # (Machine Learning, Deep Learning, NLP & Deployment)
+├── lecture_23/                   # Machine Learning Foundations (Part 1 - Linear Regression)
+│   ├── Notes_23.01/ to 23.14/    # Sub-topics with README.md, notes.pdf, .ipynb
+│   └── Practice_Problems/        # Industry Case Studies (Questions & Solutions)
+├── lecture_24/                   # Advanced Regression, Regularization & Logistic Regression
+│   ├── Notes_24.01/ to 24.15/    # Sub-topics with README.md, notes.pdf, .ipynb
+│   └── Practice_Problems/        # Industry Case Studies (Questions & Solutions)
+├── lecture_25/                   # Classification Fundamentals, Naive Bayes, kNN & Pipelines
+│   ├── Notes_25.01/ to 25.15/    # Sub-topics with README.md, notes.pdf, .ipynb
+│   └── Practice_Problems/        # Industry Case Studies (Questions & Solutions)
+├── lecture_26/                   # Scratch Implementations of ML Algorithms [ADD-ON]
+│   ├── Notes_26.01/ to 26.12/    # Sub-topics with README.md, README_HINGLISH.md, notes.pdf, .ipynb
+│   ├── Practice_Problems/        # 8 Core Implementations + 3 Systems Case Studies
+│   │   ├── Questions/            # README.md, README_HINGLISH.md, questions.pdf, questions.ipynb
+│   │   └── Solutions/            # README.md, README_HINGLISH.md, solutions.pdf, solutions.ipynb, 300DPI plots
+│   ├── Section_Introduction.pdf  # Official Slide Deck
+│   ├── 00_Day_29_Contents.jpg    # Verified Curriculum Syllabus
+│   └── knn_scratch_original.ipynb # Original Reference Implementation
+└── lecture_27/ ... lecture_60/   # (Tree Ensembles, Clustering, Deep Learning & LLMs)
 ```
 
 ---
@@ -472,6 +489,34 @@ Foundational machine learning classification algorithms, metric geometry, and va
 > *Module Guides:* [📖 English Guide](lecture_25/Practice_Problems/README.md) | [हिंदी / Hinglish Guide](lecture_25/Practice_Problems/README_HINGLISH.md)  
 > - 📝 **Problem Statements:** [Questions](lecture_25/Practice_Problems/Questions/README.md) | [questions.pdf](lecture_25/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_25/Practice_Problems/Questions/questions.ipynb)
 > - 💡 **Complete Solutions:** [Solutions](lecture_25/Practice_Problems/Solutions/README.md) | [solutions.pdf](lecture_25/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_25/Practice_Problems/Solutions/solutions.ipynb)
+
+---
+
+### 🛠️ Day 26: Scratch Implementations of Machine Learning Algorithms [ADD-ON]
+*Module Guides:* [📖 English Guide](lecture_26/README.md) | [हिंदी / Hinglish Guide](lecture_26/README_HINGLISH.md)
+
+Rigorous first-principles engineering implementation of fundamental machine learning algorithms completely from scratch using pure NumPy and Python: Linear Regression with Gradient Descent (vectorized cost surface navigation, simultaneous parameter updates, learning rate dynamics), Linear Regression via Ordinary Least Squares (OLS / Normal Equation closed-form matrix projection, computational complexity analysis), Logistic Regression (vectorized Sigmoid activation, log-loss derivation, gradient updates, decision boundary hyperplanes), and K-Nearest Neighbors (KNN lazy learning, $L_1$/$L_2$/$L_\infty$ Minkowski distance metrics, vectorization, and plurality voting). Accompanied by the official course slides, original reference implementations, an 8-problem algorithmic suite, and 3 systems engineering case studies.
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **26.01** | Section Introduction & Engineering Philosophy | First-principles implementation, computational complexity, vectorized algebra | [Notes](lecture_26/Notes_26.01/README.md) \| [PDF](lecture_26/Notes_26.01/notes.pdf) \| [Notebook](lecture_26/Notes_26.01/lecture_26_01.ipynb) |
+| **26.02** | Linear Regression: Mathematical Formulation | Hypothesis $\hat{y} = \mathbf{w}^T \mathbf{x} + b$, residual vector $\mathbf{e}$, geometric hyperplane projection | [Notes](lecture_26/Notes_26.02/README.md) \| [PDF](lecture_26/Notes_26.02/notes.pdf) \| [Notebook](lecture_26/Notes_26.02/lecture_26_02.ipynb) |
+| **26.03** | Linear Regression with GD: Parameter Initialization | Matrix shapes $(m \times d)$, weight vector $\mathbf{w} \in \mathbb{R}^d$, bias $b \in \mathbb{R}$, zero vs random init | [Notes](lecture_26/Notes_26.03/README.md) \| [PDF](lecture_26/Notes_26.03/notes.pdf) \| [Notebook](lecture_26/Notes_26.03/lecture_26_03.ipynb) |
+| **26.04** | Linear Regression with GD: MSE Cost Function | Mean Squared Error $J = \frac{1}{2m} \|\mathbf{X}\mathbf{w} + b\mathbf{1} - \mathbf{y}\|_2^2$, convex loss geometry | [Notes](lecture_26/Notes_26.04/README.md) \| [PDF](lecture_26/Notes_26.04/notes.pdf) \| [Notebook](lecture_26/Notes_26.04/lecture_26_04.ipynb) |
+| **26.05** | Linear Regression with GD: Analytical Gradients | Matrix calculus derivations $\nabla_{\mathbf{w}} J = \frac{1}{m} \mathbf{X}^T (\hat{\mathbf{y}} - \mathbf{y})$, $\nabla_b J = \frac{1}{m} \sum (\hat{y}_i - y_i)$ | [Notes](lecture_26/Notes_26.05/README.md) \| [PDF](lecture_26/Notes_26.05/notes.pdf) \| [Notebook](lecture_26/Notes_26.05/lecture_26_05.ipynb) |
+| **26.06** | Linear Regression with GD: Parameter Updates & Code | Simultaneous updates $\mathbf{w} \leftarrow \mathbf{w} - \alpha \nabla_{\mathbf{w}} J$, learning rate $\alpha$, convergence | [Notes](lecture_26/Notes_26.06/README.md) \| [PDF](lecture_26/Notes_26.06/notes.pdf) \| [Notebook](lecture_26/Notes_26.06/lecture_26_06.ipynb) |
+| **26.07** | Linear Regression with OLS: Normal Equation | Closed-form analytical solution $\boldsymbol{\theta} = (\mathbf{X}_b^T \mathbf{X}_b)^{-1} \mathbf{X}_b^T \mathbf{y}$, Gram matrix invertibility | [Notes](lecture_26/Notes_26.07/README.md) \| [PDF](lecture_26/Notes_26.07/notes.pdf) \| [Notebook](lecture_26/Notes_26.07/lecture_26_07.ipynb) |
+| **26.08** | Linear Regression: GD vs OLS Trade-offs | Time complexity $\mathcal{O}(kmd)$ vs $\mathcal{O}(d^3 + md^2)$, memory scaling, rank deficiency handling | [Notes](lecture_26/Notes_26.08/README.md) \| [PDF](lecture_26/Notes_26.08/notes.pdf) \| [Notebook](lecture_26/Notes_26.08/lecture_26_08.ipynb) |
+| **26.09** | Logistic Regression: Sigmoid & Log-Loss | Bernoulli likelihood, Logit link $\sigma(z) = \frac{1}{1 + e^{-z}}$, Binary Cross-Entropy loss | [Notes](lecture_26/Notes_26.09/README.md) \| [PDF](lecture_26/Notes_26.09/notes.pdf) \| [Notebook](lecture_26/Notes_26.09/lecture_26_09.ipynb) |
+| **26.10** | Logistic Regression: Vectorized Code & Boundaries | Vectorized gradients, probability clipping, linear decision boundary $\mathbf{w}^T \mathbf{x} + b = 0$ | [Notes](lecture_26/Notes_26.10/README.md) \| [PDF](lecture_26/Notes_26.10/notes.pdf) \| [Notebook](lecture_26/Notes_26.10/lecture_26_10.ipynb) |
+| **26.11** | KNN from Scratch: Metric Space & Lazy Learning | Non-parametric instance-based model, $L_p$ Minkowski metrics, zero training latency $\mathcal{O}(1)$ | [Notes](lecture_26/Notes_26.11/README.md) \| [PDF](lecture_26/Notes_26.11/notes.pdf) \| [Notebook](lecture_26/Notes_26.11/lecture_26_11.ipynb) |
+| **26.12** | KNN from Scratch: Vectorized Implementation | Pairwise Euclidean distance broadcasting, `np.argpartition`, plurality voting, Scikit-Learn parity | [Notes](lecture_26/Notes_26.12/README.md) \| [PDF](lecture_26/Notes_26.12/notes.pdf) \| [Notebook](lecture_26/Notes_26.12/lecture_26_12.ipynb) |
+
+> [!TIP]
+> **🧪 Day 26 Comprehensive Practice & Systems Engineering Suite:**  
+> *Module Guides:* [📖 English Guide](lecture_26/Practice_Problems/README.md) | [हिंदी / Hinglish Guide](lecture_26/Practice_Problems/README_HINGLISH.md)  
+> - 📝 **Problem Statements (8 Algorithmic Problems + 3 Systems Studies):** [Questions](lecture_26/Practice_Problems/Questions/README.md) | [questions.pdf](lecture_26/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_26/Practice_Problems/Questions/questions.ipynb)  
+> - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_26/Practice_Problems/Solutions/README.md) | [solutions.pdf](lecture_26/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_26/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
 
