@@ -94,7 +94,15 @@ AI-ML/
 │   ├── Section_Introduction.pdf  # Official Slide Deck
 │   ├── 00_Day_29_Contents.jpg    # Verified Curriculum Syllabus
 │   └── knn_scratch_original.ipynb # Original Reference Implementation
-└── lecture_27/ ... lecture_60/   # (Tree Ensembles, Clustering, Deep Learning & LLMs)
+├── lecture_27/                   # CreditWise Loan System (Minor Project)
+│   ├── Notes_27.01/ to 27.10/    # Sub-topics (README.md, README_HINGLISH.md, notes.pdf, .ipynb)
+│   ├── Practice_Problems/        # 8 Domain Problems + 3 Systems Case Studies
+│   │   ├── Questions/            # README.md, README_HINGLISH.md, questions.pdf, questions.ipynb
+│   │   └── Solutions/            # README.md, README_HINGLISH.md, solutions.pdf, solutions.ipynb, 300DPI plots
+│   ├── loan_approval_data.csv    # Official Historical Loan Dataset (1000x20)
+│   ├── credit_wise_original.ipynb # Original Reference Implementation Notebook
+│   └── assets/                   # Problem Statement & Schema Definition Screenshots
+└── lecture_28/ ... lecture_60/   # (Tree Ensembles, Clustering, Deep Learning & LLMs)
 ```
 
 ---
@@ -517,6 +525,32 @@ Machine Learning algorithms ka first-principles scratch implementation bina kisi
 > *Module Guides:* [हिंदी / Hinglish Guide](lecture_26/Practice_Problems/README_HINGLISH.md) | [📖 English Guide](lecture_26/Practice_Problems/README.md)  
 > - 📝 **Problem Statements (8 Algorithmic Problems + 3 Systems Studies):** [Questions](lecture_26/Practice_Problems/Questions/README_HINGLISH.md) | [questions.pdf](lecture_26/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_26/Practice_Problems/Questions/questions.ipynb)  
 > - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_26/Practice_Problems/Solutions/README_HINGLISH.md) | [solutions.pdf](lecture_26/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_26/Practice_Problems/Solutions/solutions.ipynb)
+
+---
+
+### 💳 Day 27: CreditWise Loan Approval System (Minor Project)
+*Module Guides:* [हिंदी / Hinglish Guide](lecture_27/README_HINGLISH.md) | [📖 English Guide](lecture_27/README.md)
+
+SecureTrust Bank ke retail loan underwriting process ko automate karne wala enterprise-grade machine learning minor project: Loan dataset ingestion (`loan_approval_data.csv`, 1,000 applicants, 20 features), statistical imputation (numerical features ke liye mean aur categorical ke liye mode), exploratory data analysis (EDA) of target imbalance (68.6% No vs 31.4% Yes) aur right-skewed income distributions, Tukey IQR outlier fences, dummy variable trap-free encoding (OneHotEncoder `drop='first'`), leak-free feature scaling (StandardScaler), multi-model benchmarking (Logistic Regression, KNN $k=5$, Gaussian Naive Bayes), non-linear financial feature engineering ($DTI^2$, $Credit\_Score^2$, household total income, collateral coverage), aur asymmetric profit-utility threshold optimization ($\tau \approx 0.65 - 0.75$).
+
+| Lecture | Topic Title | Core Concepts | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **27.01** | Problem Statement aur Credit Risk Underwriting | SecureTrust Bank ka case study, default economics, Type I vs Type II errors, asymmetric loss matrix | [Notes](lecture_27/Notes_27.01/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.01/notes.pdf) \| [Notebook](lecture_27/Notes_27.01/lecture_27_01.ipynb) |
+| **27.02** | Project Architecture aur Dataset Ingestion | `loan_approval_data.csv` ka schema audit (1000x20), numerical vs categorical features, ML pipeline | [Notes](lecture_27/Notes_27.02/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.02/notes.pdf) \| [Notebook](lecture_27/Notes_27.02/lecture_27_02.ipynb) |
+| **27.03** | Missing Values ko Handle Karna — Imputation | MCAR vs MAR missingness, SimpleImputer se numerical (mean) aur categorical (mode) imputation | [Notes](lecture_27/Notes_27.03/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.03/notes.pdf) \| [Notebook](lecture_27/Notes_27.03/lecture_27_03.ipynb) |
+| **27.04** | Exploratory Data Analysis (EDA) — Skewness | Target class imbalance (68.6% vs 31.4%), right-skewed income histograms, Tukey IQR outlier fences | [Notes](lecture_27/Notes_27.04/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.04/notes.pdf) \| [Notebook](lecture_27/Notes_27.04/lecture_27_04.ipynb) |
+| **27.05** | Feature Encoding — Dummy Variable Traps | LabelEncoder target/ordinal ke liye, OneHotEncoder(drop='first') multicollinearity rokne ke liye | [Notes](lecture_27/Notes_27.05/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.05/notes.pdf) \| [Notebook](lecture_27/Notes_27.05/lecture_27_05.ipynb) |
+| **27.06** | Correlation Analysis aur Multicollinearity | Pearson correlation matrix, target `Loan_Approved` ke sath ranking, primary risk predictors | [Notes](lecture_27/Notes_27.06/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.06/notes.pdf) \| [Notebook](lecture_27/Notes_27.06/lecture_27_06.ipynb) |
+| **27.07** | Feature Scaling aur Data Leakage Prevention | StandardScaler Z-score scaling, 80/20 train-test partition, fit vs transform software invariant | [Notes](lecture_27/Notes_27.07/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.07/notes.pdf) \| [Notebook](lecture_27/Notes_27.07/lecture_27_07.ipynb) |
+| **27.08** | Multi-Model Training aur Baseline Classification | Logistic Regression, KNN (k=5), Gaussian Naive Bayes, Confusion Matrix, Precision comparison | [Notes](lecture_27/Notes_27.08/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.08/notes.pdf) \| [Notebook](lecture_27/Notes_27.08/lecture_27_08.ipynb) |
+| **27.09** | Advanced Feature Engineering — Transformations | Polynomial square features ($DTI^2$, $Credit^2$), total household income, collateral coverage ratios | [Notes](lecture_27/Notes_27.09/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.09/notes.pdf) \| [Notebook](lecture_27/Notes_27.09/lecture_27_09.ipynb) |
+| **27.10** | Productionizing Credit Risk Systems & Guardrails | Optimal decision threshold $\tau$ tuning, 3-tiered automated underwriting policy, model governance | [Notes](lecture_27/Notes_27.10/README_HINGLISH.md) \| [PDF](lecture_27/Notes_27.10/notes.pdf) \| [Notebook](lecture_27/Notes_27.10/lecture_27_10.ipynb) |
+
+> [!TIP]
+> **🧪 Day 27 Comprehensive Practice & Systems Engineering Suite:**  
+> *Module Guides:* [हिंदी / Hinglish Guide](lecture_27/Practice_Problems/README_HINGLISH.md) | [📖 English Guide](lecture_27/Practice_Problems/README.md)  
+> - 📝 **Problem Statements (8 Domain Problems + 3 Systems Studies):** [Questions](lecture_27/Practice_Problems/Questions/README_HINGLISH.md) | [questions.pdf](lecture_27/Practice_Problems/Questions/questions.pdf) | [Starter Notebook](lecture_27/Practice_Problems/Questions/questions.ipynb)  
+> - 💡 **Complete Solutions & Proofs:** [Solutions](lecture_27/Practice_Problems/Solutions/README_HINGLISH.md) | [solutions.pdf](lecture_27/Practice_Problems/Solutions/solutions.pdf) | [Executed Notebook](lecture_27/Practice_Problems/Solutions/solutions.ipynb)
 
 ---
 
