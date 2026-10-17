@@ -4,71 +4,109 @@
 [![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_18_04.ipynb)
 [![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
 
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 18 Module](../README.md)
+🌐 **Language / भाषा:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 18 Module](../README.md)
 
 ---
 
-## 1. Overview & Core Functions
-To turn raw lines into meaningful figures, Matplotlib provides essential helper methods that label, scale, and display the plot:
-
-| Method | Purpose |
-| :--- | :--- |
-| `plt.plot(x, y)` | Draws line plots and markers connecting coordinates |
-| `plt.title("...")` | Sets the main title centered above the plot |
-| `plt.xlabel("...")` | Sets descriptive label for the horizontal axis |
-| `plt.ylabel("...")` | Sets descriptive label for the vertical axis |
-| `plt.grid(True)` | Displays grid lines to facilitate reading exact values |
-| `plt.xlim(min, max)` | Sets manual boundaries for the X-axis |
-| `plt.ylim(min, max)` | Sets manual boundaries for the Y-axis |
-| `plt.show()` | Flushes and renders the figure to the screen / notebook |
+## 1. Overview & Conceptual Foundations
+Master the primary labeling, scaling, and annotation methods in Matplotlib: title, xlabel, ylabel, xlim, ylim, grid, xticks, and yticks. Proper labeling transforms abstract numbers into self-documenting analytical visualizations.
 
 ---
 
-## 2. Practical Case Study: Oscar Winner Revenues
+## 2. Visual Architecture & Workflow Diagram
 
-Tracking the box office revenue of Academy Award (Oscar) Best Picture winners:
-- 2008: *The Dark Knight* ($1005M)
-- 2009: *The Hurt Locker* ($170M)
-- 2010: *The King's Speech* ($427M)
-- 2011: *The Artist* ($133M)
-- 2012: *Argo* ($232M)
-
-```python
-import matplotlib.pyplot as plt
-
-oscar_years = [2008, 2009, 2010, 2011, 2012]
-oscar_revenue = [1005, 170, 427, 133, 232]  # in $M
-
-plt.figure(figsize=(8, 5))
-plt.plot(oscar_years, oscar_revenue)
-
-# Adding labels and title
-plt.title("Oscar Years vs Revenue (in $M)", fontsize=14, fontweight='bold')
-plt.xlabel("Years", fontsize=12)
-plt.ylabel("Revenue (in $M)", fontsize=12)
-plt.grid(True, linestyle=':', alpha=0.6)
-plt.show()
+```mermaid
+flowchart TD
+    A["Raw Plot: plt.plot(X, Y)"] --> B["Add Titles & Labels:<br/>plt.title(), xlabel(), ylabel()"]
+    B --> C["Configure Spacing & Limits:<br/>plt.xlim(), plt.ylim()"]
+    C --> D["Set Reference Guides:<br/>plt.grid(True)"]
+    D --> E["Map Tick Identifiers:<br/>plt.xticks(), plt.yticks()"]
+    E --> F["Finished Professional Plot Canvas"]
 ```
 
 ---
 
-## 3. Key Takeaways
-- Without `xlabel` and `ylabel`, a chart is uninterpretable to stakeholders. Always include units (e.g. `(in $M)` or `(in kg)`).
-- Calling `plt.show()` tells Matplotlib that figure definition is finished and ready for display.
+## 3. Mathematical & Theoretical Framework
 
+Axis limits define the rectangular viewport subset of $\mathbb{R}^2$:
+
+$$
+V = [x_{\min}, x_{\max}] \times [y_{\min}, y_{\max}]
+$$
+
+Any data coordinate $(x_i, y_i) \notin V$ is clipped by the rasterizer:
+
+$$
+\text{visible}(x_i, y_i) = \begin{cases} 1 & \text{if } x_{\min} \le x_i \le x_{\max} \land y_{\min} \le y_i \le y_{\max} \\ 0 & \text{otherwise} \end{cases}
+$$
 
 ---
 
-## 📐 Mathematical Piecewise Linear Spline & Path Length
+## 4. Structured Implementation & Execution
 
-A continuous line plot reconstructs a functional curve from ordered discrete observations $D = \{(x_0, y_0), (x_1, y_1), \dots, (x_{n-1}, y_{n-1})\}$ using piecewise linear interpolation:
+```python
+import matplotlib.pyplot as plt
 
-$$
-\boxed{\mathcal{L}(x) = y_i + \frac{y_{i+1} - y_i}{x_{i+1} - x_i}(x - x_i), \quad \forall x \in [x_i, x_{i+1}]}
-$$
+def create_fully_labeled_plot(years: list, revenue: list, movie_title: str) -> dict:
+    """
+    Builds a fully labeled, scaled, and gridded plot adhering to professional
+    data visualization standards.
+    
+    Parameters:
+    -----------
+    years : list of int
+        Chronological year indices.
+    revenue : list of float
+        Revenue generated in Millions USD.
+    movie_title : str
+        Name of the franchise or focus movie category.
+        
+    Returns:
+    --------
+    dict
+        Applied axis configuration properties.
+    """
+    fig, ax = plt.subplots(figsize=(7, 4.5))
+    
+    # Plot line with custom markers
+    ax.plot(years, revenue, marker='o', markersize=7, color='#7570b3', linewidth=2, label="Revenue")
+    
+    # 1. Labels and Titles
+    ax.set_title(f"{movie_title}: Annual Financial Performance", fontsize=13, fontweight='bold', pad=12)
+    ax.set_xlabel("Release Year", fontsize=11, fontweight='semibold')
+    ax.set_ylabel("Box Office Gross ($ Millions)", fontsize=11, fontweight='semibold')
+    
+    # 2. Axis limits with padding
+    y_padding = max(revenue) * 0.15
+    ax.set_ylim(0, max(revenue) + y_padding)
+    ax.set_xlim(min(years) - 0.5, max(years) + 0.5)
+    
+    # 3. Ticks and Grids
+    ax.set_xticks(years)
+    ax.grid(True, which='both', linestyle='--', linewidth=0.7, alpha=0.6)
+    ax.legend(loc="upper left")
+    
+    plt.tight_layout()
+    plt.show()
+    
+    return {
+        "x_ticks": years,
+        "y_limits": (0, max(revenue) + y_padding),
+        "total_revenue": sum(revenue)
+    }
 
-The total Euclidean path length $S$ of the plotted trajectory across the coordinate plane is:
+# Driver execution
+years_data = [2008, 2009, 2010, 2011, 2012]
+revenue_data = [1005, 170, 427, 133, 232]
 
-$$
-\boxed{S = \sum_{i=0}^{n-2} \sqrt{(x_{i+1} - x_i)^2 + (y_{i+1} - y_i)^2}}
-$$
+config_res = create_fully_labeled_plot(years_data, revenue_data, "Oscar Winners Franchise")
+print("Applied Plot Configuration:")
+for k, v in config_res.items():
+    print(f"  {k}: {v}")
+```
+
+---
+
+## 5. Summary & Key Takeaways
+- **Self-contained Functional Design**: Implementation is encapsulated into modular functions with explicit inputs, structured outputs, and type hints.
+- **Visual Accuracy**: Adheres strictly to Matplotlib's layout management, aesthetic guidelines, and production best practices.

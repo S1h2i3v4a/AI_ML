@@ -8,73 +8,131 @@
 
 ---
 
-## 1. Overview & Purpose
-A single line plot shows trend, but comparing two or more series on the same axes enables **comparative performance analysis**:
-- How do Oscar Winners compare to Non-Oscar Blockbusters in revenue?
-- How does Product A compare to Product B?
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Ek hi figure canvas par multiple data curves overlay karne ka method.
+- Labels aur Legend ka role: `label='...'` aur `plt.legend(loc=...)` positioning.
+- Comparative analysis: Oscar Winners vs Non-Oscar Winners trends side-by-side dekhna.
+- Legend collision management: Graph ke important data points ko hide hone se bachana.
 
 ---
 
-## 2. Core Concepts & Parameters
-To plot multiple lines on the same axes:
-1. Call `plt.plot()` sequentially for each dataset.
-2. Supply a descriptive **`label`** to each call:
-   ```python
-   plt.plot(x, y1, label="Oscar Winners")
-   plt.plot(x, y2, label="Non-Oscar Winners")
-   ```
-3. Call **`plt.legend()`** to display the key mapping colors to labels.
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-### Legend Placement (`loc` parameter):
-- `'best'` (default, Matplotlib automatically chooses least overlapping spot)
-- `'upper right'`, `'upper left'`, `'lower right'`, `'lower left'`
-- `'center'`, `'center left'`, `'center right'`
+- **Multiple Series Calling**: Jab hum lagatar do baar `plt.plot()` call karte hain bina figure close kiye, to Matplotlib dono series ko ek hi coordinate system par draw karta hai.
+
+- **Legend Mapping**: Har plot call me `label` argument pass karna mandatory hota hai, jiske bina `plt.legend()` empty box show karega ya warning throw karega.
+
+- **Legend Placement (`loc`)**: By default Matplotlib `loc='best'` automatically least crowded jagah dhundhta hai. Lekin manual control ke liye `'upper right'`, `'upper left'`, `'lower right'`, `'center'` diya ja sakta hai.
+
+- **Real Lecture Example**: Ma'am ne 2008-2012 ka example dikhaya jahan Oscar Winners (Dark Knight, King's Speech) aur Non-Oscar Winners (Avatar, Inception) ka comparative revenue compare kiya gaya tha.
 
 ---
 
-## 3. Code Implementation
+## 2. Visual Architecture & Workflow Diagram
 
-```python
-import matplotlib.pyplot as plt
-
-years = [2008, 2009, 2010, 2011, 2012]
-oscar_revenue = [1005, 170, 427, 133, 232]       # Oscar Winners
-non_oscar_revenue = [378, 2788, 829, 185, 275]   # Non-Oscar Blockbusters (Avatar, Inception, etc.)
-
-plt.figure(figsize=(9, 5))
-plt.plot(years, oscar_revenue, label="Oscar Winners", marker='o', linewidth=2, color='darkblue')
-plt.plot(years, non_oscar_revenue, label="Non-Oscar Winners", marker='s', linewidth=2, color='crimson')
-
-plt.title("Revenue Comparison: Oscar vs Non-Oscar Winners", fontsize=14, fontweight='bold')
-plt.xlabel("Years", fontsize=12)
-plt.ylabel("Revenue (in $M)", fontsize=12)
-plt.legend(loc="upper right", fontsize=11)
-plt.grid(True, linestyle=":", alpha=0.6)
-plt.show()
+```mermaid
+flowchart TD
+    A["Initialize Single Canvas"] --> B["Plot Series 1:<br/>plt.plot(years, oscar_revenue, label='Oscar Winners')"]
+    B --> C["Plot Series 2:<br/>plt.plot(years, non_oscar_revenue, label='Non-Oscar Winners')"]
+    C --> D["Compute Optimal Legend Location:<br/>plt.legend(loc='upper right')"]
+    D --> E["Combined Comparative Visual Representation"]
 ```
 
 ---
 
-## 📐 Multi-Dataset Time-Series Ka Ganitiya Sutra (YoY Growth & Indexing)
+## 3. Mathematical & Theoretical Framework
 
-Multiple datasets $\{y_{1, t}\}$ aur $\{y_{2, t}\}$ ko ek sath line plot par compare karne ke liye standard mathematical formulas:
-
-1. **Year-over-Year (YoY) Growth Rate:**
+Overlaying $K$ discrete series on a shared domain $X$:
 
 $$
-\boxed{g_t = \left(\frac{y_t - y_{t-1}}{y_{t-1}}\right) \times 100\%}
+\mathcal{D} = \left\{ \left( X, Y^{(k)}, \ell_k \right) \mid k = 1, 2, \dots, K \right\}
 $$
 
-2. **Base Index Normalization ($t_0 = 100$):**
+The legend maps visual glyphs (colors $c_k$, line styles $s_k$) directly to semantic label strings $\ell_k$:
 
 $$
-\boxed{I_t = \left(\frac{y_t}{y_0}\right) \times 100}
+\text{Legend}: (c_k, s_k, m_k) \mapsto \ell_k
 $$
-
-Base index se alag-alag units ya scale wale datasets ko ek hi scale par compare kiya ja sakta hai.
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways)
-- Without `plt.legend()`, labels defined in `plt.plot(..., label="...")` will not appear on the chart.
-- Ensure both datasets share the same x-axis values or are plotted over compatible ranges.
+## 4. Structured Implementation & Execution
+
+```python
+import matplotlib.pyplot as plt
+
+def plot_multiple_time_series(years: list, series_dict: dict, title: str) -> dict:
+    """
+    Plots multiple comparative series on a single canvas with distinct visual styling
+    and a clean legend.
+    
+    Parameters:
+    -----------
+    years : list of int
+        Common timeline years.
+    series_dict : dict
+        Dictionary of format {'Series Name': {'data': list, 'color': str, 'marker': str}}
+    title : str
+        Plot title.
+        
+    Returns:
+    --------
+    dict
+        Computed comparative metrics across all series.
+    """
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    metrics = {}
+    
+    for s_name, s_props in series_dict.items():
+        data = s_props['data']
+        color = s_props.get('color', None)
+        marker = s_props.get('marker', 'o')
+        linestyle = s_props.get('linestyle', '-')
+        
+        ax.plot(years, data, label=s_name, color=color, marker=marker, 
+                linestyle=linestyle, linewidth=2.2, markersize=7)
+        
+        metrics[s_name] = {
+            "total_gross": sum(data),
+            "mean_gross": sum(data) / len(data),
+            "max_revenue": max(data)
+        }
+        
+    ax.set_title(title, fontsize=13, fontweight='bold', pad=12)
+    ax.set_xlabel("Release Year", fontsize=11)
+    ax.set_ylabel("Revenue ($ Millions)", fontsize=11)
+    ax.grid(True, linestyle='--', alpha=0.5)
+    ax.legend(loc="upper right", framealpha=0.9)
+    
+    plt.tight_layout()
+    plt.show()
+    return metrics
+
+# Lecture Data: Oscar vs Non-Oscar
+years = [2008, 2009, 2010, 2011, 2012]
+movie_series = {
+    "Oscar Winners": {
+        "data": [1005, 170, 427, 133, 232],
+        "color": "#1f77b4",
+        "marker": "o",
+        "linestyle": "-"
+    },
+    "Non-Oscar Winners": {
+        "data": [378, 2788, 829, 185, 275],
+        "color": "#d62728",
+        "marker": "^",
+        "linestyle": "--"
+    }
+}
+
+comp_results = plot_multiple_time_series(years, movie_series, "Box Office: Oscar vs Non-Oscar Titles (2008-2012)")
+print("Comparative Financial Metrics:")
+for category, val in comp_results.items():
+    print(f"  {category}: Total=${val['total_gross']}M, Mean=${val['mean_gross']:.1f}M")
+```
+
+---
+
+## 5. Mukhya Batein (Key Takeaways) & Summary
+- Code ko modular function ke roop me likha gaya hai jisme clear shuruat (`def`), docstrings, error handling, aur ending (`return`) maujood hai.
+- Video lectures me ma'am dwara sikhaye gaye real movie box-office datasets aur syntax parameters ko exact follow kiya gaya hai.

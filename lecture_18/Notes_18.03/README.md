@@ -4,71 +4,119 @@
 [![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_18_03.ipynb)
 [![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
 
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 18 Module](../README.md)
+🌐 **Language / भाषा:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 18 Module](../README.md)
 
 ---
 
-## 1. History & Architecture
-**Matplotlib** is the bedrock visualization library in the Python scientific stack.
-- **Created by:** John D. Hunter in **2003**.
-- **Motivation:** Designed originally to visualize electroencephalography (EEG) signals with a syntax familiar to **MATLAB** users.
-- **Ecosystem:** Foundation upon which Pandas plotting, Seaborn, Yellowbrick, and many geospatial libraries are built.
+## 1. Overview & Conceptual Foundations
+Deep dive into Matplotlib's architectural design. Understand the difference between the MATLAB-style state-machine interface (pyplot) and the modern Object-Oriented interface (Figure, Axes, Axis, Artist hierarchy).
 
 ---
 
-## 2. The 3-Layer Architecture of Matplotlib
+## 2. Visual Architecture & Workflow Diagram
 
 ```mermaid
-flowchart TD
-    subgraph Layers["Matplotlib Architecture"]
-        Scripting["1. Scripting Layer (pyplot)<br/>Stateful, simple commands like plt.plot()"]
-        Artist["2. Artist Layer (Figure, Axes, Line2D, Text, Patches)<br/>Controls visual rendering of all components"]
-        Backend["3. Backend Layer (Renderer, Graphics Context)<br/>Translates drawing commands to OS devices (PNG, PDF, SVG, GUI windows)"]
-    end
-    Scripting --> Artist --> Backend
+classDiagram
+    class Figure {
+        +canvas
+        +subplots()
+        +savefig()
+        +suptitle()
+    }
+    class Axes {
+        +xaxis: Axis
+        +yaxis: Axis
+        +plot()
+        +scatter()
+        +bar()
+        +set_title()
+        +set_xlabel()
+    }
+    class Axis {
+        +set_ticks()
+        +set_ticklabels()
+        +set_lim()
+    }
+    class Artist {
+        +Line2D
+        +Rectangle
+        +Text
+    }
+    Figure "1" *-- "many" Axes : contains
+    Axes "1" *-- "2" Axis : contains
+    Axes "1" *-- "many" Artist : renders
 ```
-
-1. **Backend Layer:** Communicates with the hardware/operating system window (e.g., Agg for PNG raster images, PDF/SVG for vector graphics, TkAgg/Qt for GUI interaction).
-2. **Artist Layer:** Everything seen on the screen is an **Artist** (lines, rectangles, text, spines, tick marks).
-3. **Scripting Layer (`matplotlib.pyplot`):** A collection of functions that make Matplotlib work like MATLAB, maintaining state across calls.
 
 ---
 
-## 3. Installation & Standard Import Convention
+## 3. Mathematical & Theoretical Framework
 
-```bash
-pip install matplotlib
-```
+The mathematical projection from user data coordinates $(x, y) \in \mathbb{R}^2$ to device screen pixels $(p_x, p_y) \in \mathbb{Z}^2$ is governed by affine transformations:
 
-Standard Python import convention:
+$$
+\begin{pmatrix} p_x \\ p_y \\ 1 \end{pmatrix} = \mathbf{T}_{\text{display}} \cdot \mathbf{T}_{\text{axes}} \cdot \mathbf{T}_{\text{data}} \begin{pmatrix} x \\ y \\ 1 \end{pmatrix}
+$$
+
+where each transformation matrix $\mathbf{T}$ scales and translates coordinate spaces linearly.
+
+---
+
+## 4. Structured Implementation & Execution
+
 ```python
 import matplotlib.pyplot as plt
-import numpy as np
+
+def demonstrate_matplotlib_architecture() -> dict:
+    """
+    Demonstrates Matplotlib's Object-Oriented architecture by creating
+    a Figure with multiple explicit Axes subplots.
+    
+    Returns:
+    --------
+    dict
+        Architecture properties of the Figure and Axes instances.
+    """
+    # Explicit OO creation of Figure and 2 Axes
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+    
+    x_vals = [1, 2, 3, 4, 5]
+    y1_vals = [10, 20, 15, 30, 25]
+    y2_vals = [100, 400, 900, 1600, 2500]
+    
+    # Subplot 1 (Linear Scale)
+    ax1.plot(x_vals, y1_vals, color='#1f77b4', marker='o', linewidth=2)
+    ax1.set_title("Subplot 1: Linear Metric (Axes 1)", fontsize=11, fontweight='bold')
+    ax1.set_xlabel("Iterations (X)")
+    ax1.set_ylabel("Linear Units (Y1)")
+    ax1.grid(True, linestyle='--', alpha=0.5)
+    
+    # Subplot 2 (Quadratic Scale)
+    ax2.plot(x_vals, y2_vals, color='#2ca02c', marker='^', linewidth=2)
+    ax2.set_title("Subplot 2: Quadratic Metric (Axes 2)", fontsize=11, fontweight='bold')
+    ax2.set_xlabel("Iterations (X)")
+    ax2.set_ylabel("Squared Units (Y2)")
+    ax2.grid(True, linestyle='--', alpha=0.5)
+    
+    fig.suptitle("Matplotlib Hierarchy: 1 Figure Holding 2 Independent Axes", fontsize=13, fontweight='bold')
+    plt.tight_layout()
+    plt.show()
+    
+    return {
+        "figure_size_inches": fig.get_size_inches().tolist(),
+        "figure_dpi": fig.dpi,
+        "total_axes_count": len(fig.axes),
+        "axes_titles": [ax.get_title() for ax in fig.axes]
+    }
+
+# Driver execution
+arch_info = demonstrate_matplotlib_architecture()
+print("Matplotlib Architectural Hierarchy Info:")
+for k, v in arch_info.items():
+    print(f"  {k}: {v}")
 ```
 
 ---
 
-## 📐 Mathematical Transformation Pipeline & Artist Hierarchy
-
-Matplotlib implements a 3-tier composite coordinate transformation pipeline:
-
-$$
-\boxed{\mathbf{T}_{\text{total}} = \mathbf{T}_{\text{fig}\to\text{disp}} \circ \mathbf{T}_{\text{axes}\to\text{fig}} \circ \mathbf{T}_{\text{data}\to\text{axes}}}
-$$
-
-Any 2D data vector $\mathbf{p}_{\text{data}} = (x, y)^T \in \mathbb{R}^2$ is mapped onto physical display coordinates $\mathbf{p}_{\text{disp}} \in \mathbb{N}^2$:
-
-$$
-\boxed{\mathbf{p}_{\text{disp}} = \mathbf{T}_{\text{total}}(\mathbf{p}_{\text{data}})}
-$$
-
-where:
-- $\mathbf{T}_{\text{data}\to\text{axes}}$: Scales data coordinates into normalized Axes space $[0, 1]^2$
-- $\mathbf{T}_{\text{axes}\to\text{fig}}$: Positions the Axes sub-rectangle within the Figure container
-- $\mathbf{T}_{\text{fig}\to\text{disp}}$: Converts Figure inches to physical pixels via $\text{DPI}$
-
----
-
-## 4. Key Takeaways
-- `pyplot` is a module inside `matplotlib` providing the stateful scripting interface.
-- Always use `import matplotlib.pyplot as plt`.
+## 5. Summary & Key Takeaways
+- **Self-contained Functional Design**: Implementation is encapsulated into modular functions with explicit inputs, structured outputs, and type hints.
+- **Visual Accuracy**: Adheres strictly to Matplotlib's layout management, aesthetic guidelines, and production best practices.

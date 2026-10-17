@@ -4,78 +4,105 @@
 [![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_18_12.ipynb)
 [![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
 
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 18 Module](../README.md)
+🌐 **Language / भाषा:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 18 Module](../README.md)
 
 ---
 
-## 1. Overview & When to Use Horizontal Bars
-When category names are long (e.g. movie titles like *"The Hurt Locker"*, *"Slumdog Millionaire"*), vertical bar charts force labels to collide, overlap, or require severe 90° rotation that strains human neck reading.
-
-**Horizontal Bar Charts (`plt.barh`)** solve this by placing categories on the **Y-axis** and numerical values on the **X-axis**, giving unlimited horizontal room for lengthy labels.
+## 1. Overview & Conceptual Foundations
+Explore horizontal bar charts using plt.barh(). Discover why horizontal orientation is superior when category names are long or numerous, preventing label overlapping and facilitating ranked ordinal comparisons.
 
 ---
 
-## 2. Syntax & Inversion of Axes
+## 2. Visual Architecture & Workflow Diagram
 
-```python
-plt.barh(
-    y,                      # Categorical labels on vertical axis
-    width,                  # Length of horizontal bars (the numeric values)
-    height=0.8,             # Vertical thickness of bars
-    color='steelblue',      # Color
-    edgecolor='black'       # Border outline
-)
+```mermaid
+flowchart LR
+    A["Input Data:<br/>Movies (Long Text Strings)<br/>Revenue (Numeric Quantities)"] --> B["Sort in Ascending Order<br/>(Top Performer on Top)"]
+    B --> C["Render Horizontal Bars:<br/>plt.barh(movies, revenue, color='#41b6c4')"]
+    C --> D["Configure Inverted Axes:<br/>X = Revenue Magnitude ($M)<br/>Y = Categorical Movie Titles"]
+    D --> E["Clean Non-overlapping Horizontal Bar Chart"]
 ```
 
-> [!NOTE]
-> In `plt.bar()`, the numerical values go into `height=`.
-> In `plt.barh()`, the numerical values go into `width=`, because bars extend horizontally!
+---
+
+## 3. Mathematical & Theoretical Framework
+
+A horizontal bar for item $i$ defines a rectangle aligned along the horizontal x-axis:
+
+$$
+R_i^{\text{horiz}} = [0, w_i] \times \left[ y_i - \frac{h}{2}, \; y_i + \frac{h}{2} \right]
+$$
+
+where $w_i$ represents the quantitative box office value and $h$ is the bar thickness (default $h = 0.8$).
 
 ---
 
-## 3. Code Implementation
+## 4. Structured Implementation & Execution
 
 ```python
 import matplotlib.pyplot as plt
 
-oscar_movies = [
-    "The Dark Knight", 
-    "The Hurt Locker", 
-    "The King's Speech", 
-    "The Artist", 
-    "Argo"
-]
-oscar_revenue = [1005, 170, 427, 133, 232]  # in $M
+def render_horizontal_bar_chart(categories: list, values: list, bar_color: str = "#41b6c4") -> dict:
+    """
+    Builds an uncluttered horizontal bar chart ideal for long string labels and rankings.
+    
+    Parameters:
+    -----------
+    categories : list of str
+        Category names (e.g. movie titles).
+    values : list of float
+        Numerical values mapped to bar length.
+    bar_color : str
+        Hex color code for bars.
+        
+    Returns:
+    --------
+    dict
+        Ranking metadata from top to bottom performer.
+    """
+    # Sort data ascending so top performer renders at the top
+    sorted_pairs = sorted(zip(categories, values), key=lambda pair: pair[1])
+    sorted_categories = [p[0] for p in sorted_pairs]
+    sorted_values = [p[1] for p in sorted_pairs]
+    
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    bars = ax.barh(sorted_categories, sorted_values, color=bar_color, height=0.6, edgecolor='black', linewidth=0.7)
+    
+    ax.set_title("Movie Revenue Comparison (Horizontal Bar Chart)", fontsize=13, fontweight='bold', pad=12)
+    ax.set_xlabel("Box Office Gross ($ Millions)", fontsize=11)
+    ax.set_ylabel("Movie Titles", fontsize=11)
+    
+    # Add value labels at end of each bar
+    for bar in bars:
+        width = bar.get_width()
+        ax.text(width + 15, bar.get_y() + bar.get_height()/2, f"${int(width)}M", 
+                va='center', fontsize=9.5, fontweight='bold', color='#333333')
+        
+    ax.set_xlim(0, max(sorted_values) * 1.15)
+    ax.grid(axis='x', linestyle='--', alpha=0.5)
+    plt.tight_layout()
+    plt.show()
+    
+    return {
+        "top_movie": sorted_categories[-1],
+        "top_revenue": sorted_values[-1],
+        "lowest_movie": sorted_categories[0],
+        "lowest_revenue": sorted_values[0],
+        "count": len(categories)
+    }
 
-plt.figure(figsize=(9, 5))
-plt.barh(oscar_movies, oscar_revenue, color="teal", edgecolor="black", height=0.6)
+# Lecture Data
+oscar_movies = ["The Dark Knight", "The Hurt Locker", "The King's Speech", "The Artist", "Argo"]
+oscar_revenue = [1005, 170, 427, 133, 232]
 
-plt.title("Box Office Revenue for Oscar Best Picture Winners", fontsize=14, fontweight="bold")
-plt.xlabel("Revenue (in $ Millions)", fontsize=12)
-plt.ylabel("Movie Title", fontsize=12)
-plt.grid(axis='x', linestyle=':', alpha=0.6)
-plt.tight_layout()
-plt.show()
+horiz_res = render_horizontal_bar_chart(oscar_movies, oscar_revenue)
+print("Horizontal Bar Chart Ranking Summary:")
+for k, v in horiz_res.items():
+    print(f"  {k}: {v}")
 ```
 
 ---
 
-## 📐 Horizontal & Stacked Bar Chart Geometry
-
-For horizontal bar charts, the coordinate axes transpose roles. The bounding box for category $i$ with length $x_i$ and bar thickness $h$ is:
-
-$$
-\boxed{\mathcal{R}_i = [0, \; x_i] \times \left[ y_i - \frac{h}{2}, \; y_i + \frac{h}{2} \right]}
-$$
-
-For stacked bar charts with $K$ components, each segment rests on the cumulative sum of preceding layers:
-
-$$
-\boxed{y_{k, i}^{(\text{bottom})} = \sum_{j=1}^{k-1} h_{j, i} \qquad\text{and}\qquad y_{k, i}^{(\text{top})} = \sum_{j=1}^k h_{j, i}}
-$$
-
----
-
-## 4. Key Takeaways
-- Use `plt.barh` whenever you have $\ge 7$ categories or when category strings exceed 10 characters.
-- Invert the y-axis if desired (`plt.gca().invert_yaxis()`) to display the highest ranked category at the very top.
+## 5. Summary & Key Takeaways
+- **Self-contained Functional Design**: Implementation is encapsulated into modular functions with explicit inputs, structured outputs, and type hints.
+- **Visual Accuracy**: Adheres strictly to Matplotlib's layout management, aesthetic guidelines, and production best practices.

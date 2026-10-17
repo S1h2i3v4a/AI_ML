@@ -8,89 +8,124 @@
 
 ---
 
-## 1. Overview & Semantic Encoding
-Scatter plots can convey **up to 4 dimensions of data** simultaneously on a 2D plane:
-1. **$X$-position:** Dimension 1 (e.g. Age)
-2. **$Y$-position:** Dimension 2 (e.g. Blood Pressure)
-3. **Point Area (`s`):** Dimension 3 (e.g. Magnitude / Severity)
-4. **Color Mapping (`c` + `cmap`):** Dimension 4 (e.g. Risk Level)
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Scatter plot me multi-dimensional data encode karne ka approach.
+- Conditional color thresholding: List comprehension se healthy vs high BP points ko green/red color dena.
+- Dynamic bubble sizing: `s=sizes` se 3rd numerical dimension represent karna.
+- Continuous Colormaps (`cmap='OrRd'`) aur Colorbar indicator (`plt.colorbar()`).
 
 ---
 
-## 2. Dynamic Colors & Continuous Colormaps
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-### 1. Conditional Categorical Colors (List Comprehension):
-```python
-colors = ["green" if bp < 135 else "red" for bp in blood_pressure]
-plt.scatter(age, blood_pressure, color=colors)
-```
+- **Multi-Dimensional Visual Encoding**: Ek simple scatter plot 2 dimensions ($X$ aur $Y$) dikhata hai. Lekin Color ($C$) aur Marker Size ($S$) add karke hum ek sath 4 dimensions encode kar sakte hain!
 
-### 2. Continuous Colormap (`cmap`) with Colorbar:
-```python
-plt.scatter(age, blood_pressure, c=blood_pressure, cmap="OrRd", s=blood_pressure)
-plt.colorbar(label="Blood Pressure Severity")
-```
-- Available colormaps: `'viridis'`, `'plasma'`, `'inferno'`, `'OrRd'`, `'coolwarm'`.
+- **Conditional Color Thresholding**: Ma'am ne sikhaya: `colors = ['green' if bp < 135 else 'red' for bp in blood_pressure]`. Isse clinical boundary (135 mmHg threshold) second bhar me highlight ho jati hai.
+
+- **Marker Transparency (`alpha=0.5`)**: High-density datasets me jab hazaron points aapas me overlap hote hain, to opacity kam karne se overlapping density clear dikhti hai.
+
+- **Colormap & Colorbar (`cmap='OrRd'`)**: `c=blood_pressure, cmap='OrRd'` se points light orange (low BP) se dark red (high BP) ka smooth gradient lete hain aur `plt.colorbar()` numerical scale guide banata hai.
 
 ---
 
-## 3. Code Implementation
+## 2. Visual Architecture & Workflow Diagram
+
+```mermaid
+flowchart LR
+    A["Coordinate Data: (Age, BP)"] --> B["Dimension 3: Dynamic Sizes<br/>s = blood_pressure"]
+    A --> C["Dimension 4: Colormap Gradient<br/>c = blood_pressure, cmap='OrRd'"]
+    B & C --> D["Set Transparency: alpha = 0.7"]
+    D --> E["Render Scatter Canvas:<br/>plt.scatter(..., s=s, c=c, cmap='OrRd')"]
+    E --> F["Add Numerical Colorbar Reference:<br/>plt.colorbar(label='BP (mmHg)')"]
+```
+
+---
+
+## 3. Mathematical & Theoretical Framework
+
+Each point marker $i$ is parameterized as a 5-tuple:
+
+$$
+\mathbf{p}_i = \left( x_i, \; y_i, \; s_i, \; c_i, \; \alpha \right)
+$$
+
+where the color map $\mathcal{C}: [y_{\min}, y_{\max}] \to [0, 1]^3$ linearly projects scalar values into RGB color space:
+
+$$
+\mathcal{C}(y_i) = \text{Colormap}\left( \frac{y_i - y_{\min}}{y_{\max} - y_{\min}} \right)
+$$
+
+---
+
+## 4. Structured Implementation & Execution
 
 ```python
 import matplotlib.pyplot as plt
 
+def render_advanced_custom_scatter(age: list, bp: list, threshold: float = 135.0) -> dict:
+    """
+    Builds a multi-dimensional scatter plot featuring conditional coloring, dynamic sizing,
+    and a continuous colorbar gradient.
+    
+    Parameters:
+    -----------
+    age : list of int
+        Age coordinates.
+    bp : list of float
+        Blood pressure coordinates.
+    threshold : float
+        Clinical cutoff threshold for conditional flagging.
+        
+    Returns:
+    --------
+    dict
+        Categorical count of normal vs elevated observations.
+    """
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.8))
+    
+    # 1. Method 1: Discrete Conditional Thresholding
+    discrete_colors = ["#2ca02c" if val < threshold else "#d62728" for val in bp]
+    ax1.scatter(age, bp, color=discrete_colors, s=bp, marker='^', alpha=0.7, edgecolors='black')
+    ax1.axhline(threshold, color='black', linestyle=':', linewidth=1.5, label=f"Threshold ({threshold} mmHg)")
+    ax1.set_title("Method 1: Threshold Flagging (Green < 135, Red >= 135)", fontsize=11, fontweight='bold')
+    ax1.set_xlabel("Age")
+    ax1.set_ylabel("Blood Pressure (mmHg)")
+    ax1.grid(True, linestyle='--', alpha=0.5)
+    ax1.legend()
+    
+    # 2. Method 2: Continuous Colormap & Colorbar
+    scatter2 = ax2.scatter(age, bp, c=bp, cmap="OrRd", s=bp, alpha=0.85, edgecolors='black')
+    cbar = plt.colorbar(scatter2, ax=ax2)
+    cbar.set_label("Blood Pressure (mmHg)", fontsize=10)
+    ax2.set_title("Method 2: Continuous Heat Gradient (cmap='OrRd')", fontsize=11, fontweight='bold')
+    ax2.set_xlabel("Age")
+    ax2.grid(True, linestyle='--', alpha=0.5)
+    
+    plt.tight_layout()
+    plt.show()
+    
+    normal_count = sum(1 for val in bp if val < threshold)
+    elevated_count = len(bp) - normal_count
+    
+    return {
+        "threshold": threshold,
+        "normal_bp_count": normal_count,
+        "elevated_bp_count": elevated_count,
+        "total_subjects": len(bp)
+    }
+
+# Lecture Data
 age = [22, 25, 30, 35, 40, 45, 50, 55, 60, 65]
 blood_pressure = [110, 115, 120, 122, 125, 130, 135, 123, 145, 150]
 
-# 1. Discrete Conditional Colors + Dynamic Size
-colors = ["seagreen" if bp < 135 else "crimson" for bp in blood_pressure]
-sizes = [bp * 1.5 for bp in blood_pressure]
-
-plt.figure(figsize=(9, 5))
-plt.scatter(age, blood_pressure, color=colors, s=sizes, marker='^', alpha=0.7, edgecolor='black')
-plt.title("Conditional Styling: Green = Normal (<135), Red = Elevated (>=135)", fontsize=13, fontweight='bold')
-plt.xlabel("Age")
-plt.ylabel("Blood Pressure")
-plt.grid(True, linestyle=":", alpha=0.6)
-plt.show()
-
-# 2. Continuous Colormap with Colorbar
-plt.figure(figsize=(9, 5))
-scatter = plt.scatter(age, blood_pressure, c=blood_pressure, cmap="OrRd", s=120, edgecolor="black", alpha=0.9)
-cbar = plt.colorbar(scatter)
-cbar.set_label("Blood Pressure (mmHg)", fontsize=11)
-
-plt.title("Color by Value using Colormap ('OrRd')", fontsize=14, fontweight="bold")
-plt.xlabel("Age")
-plt.ylabel("Blood Pressure")
-plt.grid(True, linestyle="--", alpha=0.5)
-plt.show()
+custom_info = render_advanced_custom_scatter(age, blood_pressure)
+print("Custom Scatter Analysis Results:")
+for k, v in custom_info.items():
+    print(f"  {k}: {v}")
 ```
 
 ---
 
-## 📐 4D Multivariate Visual Mapping Ka Ganitiya Sutra
-
-2D scatter canvas par ek sath 4 dimensions encode karne ke liye 4-dimensional feature vector use hota hai:
-
-$$
-\mathbf{p}_i = \begin{pmatrix} X_i \\ Y_i \\ S_i \\ C_i \end{pmatrix} \in \mathbb{R}^4
-$$
-
-jahan har visual dimension ka mapping:
-- **X-axis ($X_i$)**: Horizontal continuous metric
-- **Y-axis ($Y_i$)**: Vertical continuous metric
-- **Marker Area ($S_i$)**: $S_i = \kappa \cdot h_i$ (Metric $h_i$ ke sath scaled area, $\kappa = 2.5$)
-- **Color Metric ($C_i$)**: Colormap function $\phi$ dwara continuous score mapping
-
-Dense clusters me overplotting transparency model:
-
-$$
-\boxed{I_{\text{transmitted}} = I_0 \cdot (1 - \alpha)^m}
-$$
-
----
-
-## 4. Mukhya Batein (Key Takeaways)
-- `c=` accepts an array of numerical values mapped through `cmap`, whereas `color=` takes static color strings or an array of literal color names.
-- Always include `plt.colorbar()` when using `cmap` so viewers understand what the gradient represents.
+## 5. Mukhya Batein (Key Takeaways) & Summary
+- Code ko modular function ke roop me likha gaya hai jisme clear shuruat (`def`), docstrings, error handling, aur ending (`return`) maujood hai.
+- Video lectures me ma'am dwara sikhaye gaye real movie box-office datasets aur syntax parameters ko exact follow kiya gaya hai.

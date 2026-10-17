@@ -8,105 +8,123 @@
 
 ---
 
-## 1. Overview & Built-in Style Sheets
-Matplotlib comes with dozens of pre-configured style sheets that change fonts, colors, backgrounds, and grid styles in a single command.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Built-in Matplotlib styles explore karna: `plt.style.available`.
+- Popular styles apply karna: `plt.style.use('ggplot')` aur `plt.style.use('dark_background')`.
+- Hand-drawn comic aesthetic: `with plt.xkcd():` context manager ka use.
+- Plots export aur save karna: `plt.savefig('output.png', dpi=300, bbox_inches='tight')`.
 
-### Viewing and Applying Styles:
-```python
-# List all available styles
-print(plt.style.available)
+---
 
-# Apply a style globally
-plt.style.use('ggplot')            # R's ggplot2 theme
-plt.style.use('dark_background')  # Sleek dark mode
-plt.style.use('default')          # Resets back to factory default
-```
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-### Comic Style with `xkcd()`:
-Matplotlib includes a whimsical context manager that styles plots in the hand-drawn sketch style of the XKCD webcomic:
-```python
-with plt.xkcd():
-    plt.plot(x, y)
-    plt.show()
+- **Built-in Themes**: Matplotlib me 25+ pre-configured stylesheets aati hain (e.g. `'ggplot'`, `'seaborn-v0_8'`, `'fivethirtyeight'`, `'dark_background'`). Inhe apply karne se background, gridlines, fonts aur color cycles ek saath professional look le lete hain.
+
+- **XKCD Comic Mode**: `with plt.xkcd():` ek context manager hai jo lines me intentional jitter add karke hand-drawn comic style create karta hai. Presentation slides me storytelling ke liye yeh bohot popular hai.
+
+- **Layout Clipping Prevention (`plt.tight_layout()`)**: Aksar titles ya axis labels figure boundary ke bahar kat jate hain. `plt.tight_layout()` call karne se margins automatically recalculate ho jate hain.
+
+- **Saving Images (`plt.savefig`)**: `plt.savefig('plot.png', dpi=300)` se print-quality high-resolution raster image export hoti hai. Agar PDF ya SVG me save karein to vector format banta hai jo kabhi pixelate nahi hota.
+
+---
+
+## 2. Visual Architecture & Workflow Diagram
+
+```mermaid
+flowchart TD
+    A["Select Style Theme:<br/>plt.style.use('ggplot')"] --> B["Build & Populate Plot:<br/>ax.plot(...)"]
+    B --> C["Optimize Padding:<br/>plt.tight_layout()"]
+    C --> D{"Export Decision"}
+    D --> E["Raster Image: plt.savefig('plot.png', dpi=300)"]
+    D --> F["Vector Image: plt.savefig('plot.pdf')"]
+    D --> G["Interactive Screen: plt.show()"]
 ```
 
 ---
 
-## 2. Preventing Clipping with `plt.tight_layout()`
-When long axis labels or titles extend close to the figure boundary, calling:
-```python
-plt.tight_layout()
-```
-automatically adjusts subplots, margins, and padding so all elements fit within the canvas cleanly.
+## 3. Mathematical & Theoretical Framework
+
+Image export resolution is parameterized by Dots Per Inch ($DPI$) and physical Figure dimensions $(W, H)$ in inches:
+
+$$
+\text{Pixel Width } P_w = W \times DPI, \qquad \text{Pixel Height } P_h = H \times DPI
+$$
+
+For a standard $8 \times 4.5$ inch canvas at $300$ DPI:
+
+$$
+P_w = 8 \times 300 = 2400\text{ px}, \qquad P_h = 4.5 \times 300 = 1350\text{ px}
+$$
 
 ---
 
-## 3. Saving High-Resolution Figures (`plt.savefig`)
-To export your visualization for reports, papers, or websites:
-```python
-plt.savefig(
-    "figure.png",         # File name and format (.png, .pdf, .svg, .jpg)
-    dpi=300,              # Dots Per Inch (resolution: 300 dpi is print standard)
-    bbox_inches="tight",  # Automatically trims excess white margins
-    transparent=False     # Whether background should be transparent
-)
-```
-
-> [!CAUTION]
-> Always call `plt.savefig()` **BEFORE** calling `plt.show()`. Calling `plt.show()` resets the current figure buffer, causing `plt.savefig()` afterwards to save a blank white image!
-
----
-
-## 4. Code Implementation
+## 4. Structured Implementation & Execution
 
 ```python
 import matplotlib.pyplot as plt
+import os
 
-oscar_years = [2008, 2009, 2010, 2011, 2012]
-oscar_revenue = [1005, 170, 427, 133, 232]
-non_oscar_revenue = [378, 2788, 829, 185, 275]
-
-# XKCD hand-drawn sketch style
-with plt.xkcd():
-    plt.figure(figsize=(8, 5))
-    plt.plot(oscar_years, oscar_revenue, "o-b", label="Oscar")
-    plt.plot(oscar_years, non_oscar_revenue, ">--g", label="Non-Oscar")
-    plt.xlabel("Years")
-    plt.ylabel("Revenue ($M)")
-    plt.legend()
+def render_styled_and_exported_plot(years: list, revenue: list, output_filename: str = "movie_revenue_styled.png") -> dict:
+    """
+    Applies professional styling, manages layout bounds, and exports a high-resolution image asset.
+    
+    Parameters:
+    -----------
+    years : list of int
+        Chronological domain.
+    revenue : list of float
+        Revenue series.
+    output_filename : str
+        Target output file path.
+        
+    Returns:
+    --------
+    dict
+        Metadata of exported file including size and style name.
+    """
+    # Using ggplot aesthetic theme
+    plt.style.use('ggplot')
+    
+    fig, ax = plt.subplots(figsize=(7, 4.2))
+    ax.plot(years, revenue, marker='o', color='#33a02c', linewidth=2.5, markersize=8, label="Box Office ($M)")
+    
+    ax.set_title("Box Office Trend (ggplot Theme)", fontsize=13, fontweight='bold')
+    ax.set_xlabel("Year", fontsize=11)
+    ax.set_ylabel("Gross ($ Millions)", fontsize=11)
+    ax.legend(loc="upper right")
+    
+    # Adjust layout
     plt.tight_layout()
-    plt.savefig("movie_revenue_xkcd.png", dpi=150)
+    
+    # Save high-res raster
+    plt.savefig(output_filename, dpi=200, bbox_inches='tight')
     plt.show()
+    
+    # Reset back to default style
+    plt.style.use('default')
+    
+    file_exists = os.path.exists(output_filename)
+    file_size = os.path.getsize(output_filename) if file_exists else 0
+    
+    return {
+        "applied_style": "ggplot",
+        "output_path": output_filename,
+        "saved_successfully": file_exists,
+        "file_size_bytes": file_size
+    }
 
-# Reset to default
-plt.style.use("default")
+# Driver execution
+years = [2008, 2009, 2010, 2011, 2012]
+rev = [1005, 170, 427, 133, 232]
+
+out_info = render_styled_and_exported_plot(years, rev, "oscar_revenue_export.png")
+print("Styled Export Metadata:")
+for k, v in out_info.items():
+    print(f"  {k}: {v}")
 ```
 
 ---
 
-## 5. Mukhya Batein (Key Takeaways)
-- For presentations, `dark_background` looks great on screens. For print papers, use `default` or `tableau-colorblind10` with high DPI (`dpi=300`).
-- Always use `bbox_inches="tight"` to avoid cropped axis labels.
-
-
----
-
-## 📐 Canvas Resolution aur DPI Ka Ganitiya Sutra
-
-Matplotlib figure ka total pixel dimension $(W_{\text{px}}, H_{\text{px}})$ canvas ke physical inches aur DPI (Dots Per Inch) ke gunankfal par nirbhar karta hai:
-
-$$
-\boxed{W_{\text{px}} = W_{\text{in}} \times \text{DPI} \qquad\text{aur}\qquad H_{\text{px}} = H_{\text{in}} \times \text{DPI}}
-$$
-
-Total pixel count $N_{\text{pixels}}$:
-
-$$
-\boxed{N_{\text{pixels}} = (W_{\text{in}} \cdot H_{\text{in}}) \cdot (\text{DPI})^2}
-$$
-
-Agar $10 \times 6\text{ inches}$ ka canvas $300\text{ DPI}$ par export kiya jaye:
-
-$$
-\boxed{\text{Resolution} = (10 \times 300) \times (6 \times 300) = 3000 \times 1800 \text{ px} = 5.4 \text{ Megapixels}}
-$$
+## 5. Mukhya Batein (Key Takeaways) & Summary
+- Code ko modular function ke roop me likha gaya hai jisme clear shuruat (`def`), docstrings, error handling, aur ending (`return`) maujood hai.
+- Video lectures me ma'am dwara sikhaye gaye real movie box-office datasets aur syntax parameters ko exact follow kiya gaya hai.

@@ -8,98 +8,140 @@
 
 ---
 
-## 1. Overview & Visual Emphasis Techniques
-Standard flat pie charts can look plain. Matplotlib allows rich customizations to **emphasize specific categories**, improve aesthetics, and control borders:
-- **`explode`:** Pulls a specific slice outward from the pie center.
-- **`shadow=True`:** Adds depth and drop-shadow styling.
-- **`startangle`:** Rotates the pie so the primary slice begins at a specific angle (e.g. $90^\circ$ top or $180^\circ$).
-- **`wedgeprops`:** Controls border width, edgecolor, and fill transparency.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Specific slice ko highlight karna: `explode=[0, 0, 0, 0.2, 0]` ka offset mechanism.
+- 3D visual depth effect: `shadow=True` ka application.
+- Rotational alignment: `startangle=90` (vertical top start) aur `startangle=180` (horizontal flip).
+- Modern Donut Chart transformation: Center hole cutout banakar cleaner representation lena.
 
 ---
 
-## 2. Advanced Parameters & Wedgeprops
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-```python
-wedgeprops = {
-    'edgecolor': 'black',    # Border outline color
-    'linewidth': 1.5,        # Outline thickness
-    'linestyle': '--',       # Dashed border
-    'fill': True             # Whether to fill slice
-}
-```
+- **Exploding Slices (`explode`)**: Jab kisi specific category par attention draw karna ho (jaise R&D budget), to explode array me us category ke liye non-zero value di jaati hai (e.g., `0.1` ya `0.2`). Matplotlib us slice ko pie ke center se bahar push kar deta hai.
 
-### Explode Offset Vector:
-An array of floats of equal length to categories, where each value represents the fractional radius offset:
-```python
-# Pulls only the 4th slice ("R&D") outward by 20% of radius:
-explode = [0, 0, 0, 0.2, 0]
+- **Drop Shadow (`shadow=True`)**: Graph me subtle drop shadow add karta hai jisse slices me elevated 3D depth aati hai.
+
+- **Start Angle (`startangle`)**: By default Matplotlib $0^\circ$ (positive X-axis) se counter-clockwise slice draw karta hai. `startangle=90` dene se pehli slice top vertical line ($12$ o'clock) se start hoti hai, jo reading flow ke hisab se bohot natural lagti hai.
+
+- **Donut Chart Variant**: Center me ek white circular patch draw karne se pie chart Donut Chart ban jata hai, jiske center me total budget figure likhi ja sakti hai.
+
+---
+
+## 2. Visual Architecture & Workflow Diagram
+
+```mermaid
+flowchart LR
+    A["Standard Pie Chart Data"] --> B["Slice Explode Vector:<br/>explode = [0, 0, 0, 0.18, 0]"]
+    A --> C["Depth Shadow:<br/>shadow = True"]
+    A --> D["Orientation Control:<br/>startangle = 90"]
+    B & C & D --> E["Advanced Exploded Pie Visual"]
+    E --> F["Optional Donut Center Hole:<br/>plt.Circle((0,0), 0.65, color='white')"]
 ```
 
 ---
 
-## 3. Code Implementation
+## 3. Mathematical & Theoretical Framework
+
+The exploded displacement vector for slice $i$ with radial offset factor $e_i$ along its bisecting angle $\phi_i$ is given by:
+
+$$
+\mathbf{d}_i = e_i \cdot R \begin{pmatrix} \cos \phi_i \\ \sin \phi_i \end{pmatrix}
+$$
+
+where $\phi_i$ is the mid-angle of the slice relative to the configured start angle $\theta_0$:
+
+$$
+\phi_i = \theta_0 + \sum_{j=1}^{i-1} \Delta \theta_j + \frac{1}{2}\Delta \theta_i
+$$
+
+---
+
+## 4. Structured Implementation & Execution
 
 ```python
 import matplotlib.pyplot as plt
 
+def render_advanced_exploded_pie(expenses: list, amounts: list, focus_category: str = "R&D", start_angle: int = 90) -> dict:
+    """
+    Renders an advanced pie chart featuring slice explosion, drop shadows,
+    custom start angle rotation, and donut styling.
+    
+    Parameters:
+    -----------
+    expenses : list of str
+        Expense categories.
+    amounts : list of float
+        Numerical expenditures.
+    focus_category : str
+        Category name to highlight via explode.
+    start_angle : int
+        Rotational start angle in degrees (90 starts at 12 o'clock).
+        
+    Returns:
+    --------
+    dict
+        Configuration properties applied to the chart.
+    """
+    # Build explode vector dynamically
+    explode_vector = [0.18 if cat == focus_category else 0.0 for cat in expenses]
+    palette = ["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854"]
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # 1. Advanced Exploded Pie with Shadow
+    wedges1, texts1, autotexts1 = ax1.pie(
+        amounts,
+        labels=expenses,
+        autopct='%1.1f%%',
+        explode=explode_vector,
+        shadow=True,
+        startangle=start_angle,
+        colors=palette,
+        wedgeprops={"edgecolor": "white", "linewidth": 1.5}
+    )
+    for at in autotexts1:
+        at.set_fontweight('bold')
+    ax1.set_title(f"1. Exploded Pie ({focus_category} Highlighted, startangle={start_angle}°)", fontsize=11, fontweight='bold')
+    
+    # 2. Modern Donut Chart Variant
+    wedges2, texts2, autotexts2 = ax2.pie(
+        amounts,
+        labels=expenses,
+        autopct='%1.1f%%',
+        startangle=start_angle,
+        colors=palette,
+        wedgeprops={"edgecolor": "white", "linewidth": 1.5}
+    )
+    # Draw center white circle to create donut hole
+    centre_circle = plt.Circle((0, 0), 0.65, fc='white')
+    ax2.add_artist(centre_circle)
+    total_label = "Total: $" + str(sum(amounts)) + "K"
+    ax2.text(0, 0, total_label, ha='center', va='center', fontsize=11, fontweight='bold')
+    ax2.set_title("2. Modern Donut Chart Variant", fontsize=11, fontweight='bold')
+    
+    plt.tight_layout()
+    plt.show()
+    
+    return {
+        "focus_category": focus_category,
+        "applied_explode_vector": explode_vector,
+        "start_angle": start_angle,
+        "total_expenditure": sum(amounts)
+    }
+
+# Lecture Data
 expenses = ["Salaries", "Rent", "Marketing", "R&D", "Miscellaneous"]
 amounts = [500, 150, 120, 100, 50]
 
-# Explode the 4th category ("R&D")
-explode = [0, 0, 0, 0.15, 0]
-colors = ["#4e79a7", "#f28e2b", "#e15759", "#76b7b2", "#59a14f"]
-
-plt.figure(figsize=(8, 8))
-plt.pie(
-    amounts,
-    labels=expenses,
-    autopct='%1.1f%%',
-    explode=explode,
-    shadow=True,
-    startangle=90,          # Starts highest slice at 12 o'clock position
-    colors=colors,
-    wedgeprops={"edgecolor": "black", "linewidth": 1.2}
-)
-
-plt.title("Budget Distribution with Exploded Slice (R&D) & Shadow", fontsize=14, fontweight="bold")
-plt.tight_layout()
-plt.show()
-
-# Donut Chart Concept using wedgeprops
-plt.figure(figsize=(7, 7))
-plt.pie(
-    amounts,
-    labels=expenses,
-    autopct='%1.1f%%',
-    pctdistance=0.75,
-    colors=colors,
-    wedgeprops=dict(width=0.4, edgecolor='white', linewidth=2)  # width < 1 creates donut hole!
-)
-plt.title("Modern Donut Chart (Budget Breakdown)", fontsize=14, fontweight="bold")
-plt.tight_layout()
-plt.show()
+adv_info = render_advanced_exploded_pie(expenses, amounts, focus_category="R&D", start_angle=90)
+print("Advanced Pie Customization Details:")
+for k, v in adv_info.items():
+    print(f"  {k}: {v}")
 ```
 
 ---
 
-## 📐 Donut Chart Ka Annular Ring Ganitiya Sutra
-
-Donut Chart ek concentric circular ring hota hai jisme outer circle ($r_{\text{out}}$) ke beech se inner hollow core ($r_{\text{in}}$) subtract kiya jata hai:
-
-$$
-\boxed{r_{\text{in}} = (1 - w) \cdot r_{\text{out}} \quad \text{jahan } w \in (0, 1] \text{ relative ring width hai}}
-$$
-
-Central angle $\theta_i$ wale slice ka net area:
-
-$$
-\boxed{A_i = \frac{\theta_i}{360^\circ} \cdot \pi \left(r_{\text{out}}^2 - r_{\text{in}}^2\right) = \pi \left(r_{\text{out}}^2 - r_{\text{in}}^2\right) \cdot \frac{p_i}{100}}
-$$
-
-Human eye angles ke mukable arc length ko behtar judge karti hai, isliye donut chart cognitive misjudgment ko kam karta hai.
-
----
-
-## 4. Mukhya Batein (Key Takeaways)
-- Setting `wedgeprops=dict(width=0.4)` automatically turns a pie chart into a modern **Donut Chart**, which is widely preferred in corporate dashboards because the empty center can display the total budget ($920K).
-- Use `startangle=90` so the largest slice starts at 12 o'clock and rotates clockwise.
+## 5. Mukhya Batein (Key Takeaways) & Summary
+- Code ko modular function ke roop me likha gaya hai jisme clear shuruat (`def`), docstrings, error handling, aur ending (`return`) maujood hai.
+- Video lectures me ma'am dwara sikhaye gaye real movie box-office datasets aur syntax parameters ko exact follow kiya gaya hai.

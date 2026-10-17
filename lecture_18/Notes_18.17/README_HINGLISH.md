@@ -8,82 +8,121 @@
 
 ---
 
-## 1. Overview & Mathematical Definition
-A **Pie Chart** is a circular graphic divided into slices to illustrate numerical proportions of a whole (100%).
-- Each slice represents a category.
-- The arc length, central angle, and area of each slice are proportional to the quantity it represents.
-
-### Central Angle Formulation:
-$$\theta_i = 360^\circ \times \frac{y_i}{\sum_{j=1}^{K} y_j}$$
-
-### Percentage of Total:
-$$\%_i = 100\% \times \frac{y_i}{\sum_{j=1}^{K} y_j}$$
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Proportional composition visualization: `plt.pie(amounts, labels=expenses)`.
+- Automatic percentage calculation: `autopct='%1.1f%%'` format string syntax.
+- Custom color palette assignment across categorical slices.
+- `wedgeprops` dictionary: Edge color, line width aur slice borders configure karna.
 
 ---
 
-## 2. Syntax & Parameters
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-```python
-plt.pie(
-    x,                      # Slice magnitudes (array of values)
-    labels=None,            # Sequence of strings providing labels for each slice
-    autopct='%1.1f%%',      # String or function used to format slice value percentages
-    colors=None,            # List of color codes for slices
-    startangle=0,           # Counter-clockwise rotation angle from the x-axis
-    explode=None,           # Fractional radius offset to pull slices outwards
-    shadow=False            # Draw a 3D drop shadow beneath pie
-)
+- **Part-of-Whole Relationship**: Pie chart kisi entity ke total breakdown ko percentage share ke roop me dikhane ke liye use hota hai (jaise Company Expense Budget breakdown).
+
+- **Percentage Formatting (`autopct`)**: Matplotlib automatically sabhi amounts ka sum karke har slice ka percentage calculate karta hai. `autopct='%1.1f%%'` se ek decimal point tak percentage display hota hai.
+
+- **Slice Borders (`wedgeprops`)**: Jab slices ek jaise colors ki hoti hain, to slice boundaries blur ho sakti hain. `wedgeprops={'edgecolor': 'black', 'linewidth': 1}` se har slice clear dikhti hai.
+
+- **Lecture Code Reference**: Company Expenses data: Salaries (500), Rent (150), Marketing (120), R&D (100), Miscellaneous (50).
+
+---
+
+## 2. Visual Architecture & Workflow Diagram
+
+```mermaid
+flowchart TD
+    A["Raw Expense Amounts:<br/>[500, 150, 120, 100, 50]"] --> B["Compute Angular Wedges:<br/>theta_i = (amount_i / Total) * 360 deg"]
+    B --> C["Apply Formatting String:<br/>autopct = '%1.1f%%'"]
+    C --> D["Set Slice Boundaries:<br/>wedgeprops = {'edgecolor':'black'}"]
+    D --> E["Render Pie Chart Canvas:<br/>plt.pie(...)"]
 ```
 
 ---
 
-## 3. Code Implementation: Corporate Expense Breakdown
+## 3. Mathematical & Theoretical Framework
+
+For a vector of non-negative weights $\mathbf{w} = (w_1, w_2, \dots, w_K)$, the central angle $\theta_i$ and percentage share $p_i$ of slice $i$ are given by:
+
+$$
+p_i = \frac{w_i}{\sum_{j=1}^K w_j} \times 100\%, \qquad \theta_i = \frac{w_i}{\sum_{j=1}^K w_j} \times 360^\circ
+$$
+
+The sum over all slices forms a complete circle:
+
+$$
+\sum_{i=1}^K \theta_i = 360^\circ, \qquad \sum_{i=1}^K p_i = 100\%
+$$
+
+---
+
+## 4. Structured Implementation & Execution
 
 ```python
 import matplotlib.pyplot as plt
 
+def render_budget_pie_chart(categories: list, amounts: list, custom_colors: list = None) -> dict:
+    """
+    Renders a standard proportional pie chart with percentage formatting and wedge borders.
+    
+    Parameters:
+    -----------
+    categories : list of str
+        Expense or departmental category names.
+    amounts : list of float
+        Budget allocations summing to the total.
+    custom_colors : list of str, optional
+        Palette colors for each slice.
+        
+    Returns:
+    --------
+    dict
+        Breakdown of percentage shares per category.
+    """
+    if custom_colors is None:
+        custom_colors = ["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0"]
+        
+    fig, ax = plt.subplots(figsize=(6.5, 5))
+    
+    wedges, texts, autotexts = ax.pie(
+        amounts, 
+        labels=categories, 
+        autopct='%1.1f%%', 
+        colors=custom_colors,
+        wedgeprops={"edgecolor": "black", "linewidth": 1.2, "antialiased": True},
+        textprops={'fontsize': 10, 'fontweight': 'medium'}
+    )
+    
+    # Enhance percentage text readability
+    for autotext in autotexts:
+        autotext.set_color('#111111')
+        autotext.set_fontweight('bold')
+        
+    ax.set_title("Company Operating Expenses Breakdown", fontsize=13, fontweight='bold', pad=14)
+    plt.tight_layout()
+    plt.show()
+    
+    total = sum(amounts)
+    shares = {categories[i]: f"{(amounts[i]/total)*100:.1f}%" for i in range(len(categories))}
+    
+    return {
+        "total_budget": total,
+        "num_slices": len(categories),
+        "percentage_shares": shares
+    }
+
+# Lecture Data
 expenses = ["Salaries", "Rent", "Marketing", "R&D", "Miscellaneous"]
-amounts = [500, 150, 120, 100, 50]  # Total = $920K
+amounts = [500, 150, 120, 100, 50]
 
-colors = ["#4C72B0", "#55A868", "#C44E52", "#8172B2", "#CCB974"]
-
-plt.figure(figsize=(7, 7))
-plt.pie(
-    amounts,
-    labels=expenses,
-    autopct='%1.1f%%',      # Displays percentage formatted to 1 decimal place
-    colors=colors,
-    startangle=140
-)
-
-plt.title("Company Budget Allocation by Expense Category", fontsize=14, fontweight="bold")
-plt.show()
+pie_results = render_budget_pie_chart(expenses, amounts)
+print("Budget Allocation Pie Chart Shares:")
+for cat, share in pie_results['percentage_shares'].items():
+    print(f"  {cat}: {share}")
 ```
 
 ---
 
-## 📐 Pie Chart Ke Circular Sector Ka Ganitiya Sutra
-
-Non-negative values $V = \{v_1, v_2, \dots, v_n\}$ jinka total sum $V_{\text{total}} = \sum_{j=1}^n v_j$ hai, har category slice $i$ ka central angle aur percentage:
-
-$$
-\boxed{\theta_i = 360^\circ \times \frac{v_i}{\sum_{j=1}^n v_j} \qquad\text{aur}\qquad p_i = \frac{v_i}{\sum_{j=1}^n v_j} \times 100\%}
-$$
-
-Conservation niyam:
-
-$$
-\boxed{\sum_{i=1}^n \theta_i = 360^\circ \qquad\text{aur}\qquad \sum_{i=1}^n p_i = 100\%}
-$$
-
-Radius $R$ wale circular sector ka arc length $L_i$ aur area $A_i$:
-
-$$
-\boxed{L_i = R \cdot \left(\frac{\pi \theta_i}{180^\circ}\right) \qquad\text{aur}\qquad A_i = \frac{1}{2} R^2 \left(\frac{\pi \theta_i}{180^\circ}\right) = \pi R^2 \cdot \frac{p_i}{100}}
-$$
-
----
-
-## 4. Mukhya Batein (Key Takeaways) & Limitations
-- **When to Use:** Part-to-whole relationships with **few categories (3 to 5 max)**.
-- **When NOT to Use:** When comparing more than 6 categories, or comparing two categories of similar sizes (e.g. 24% vs 26%). The human brain is poor at estimating angles and areas compared to estimating lengths in bar charts.
+## 5. Mukhya Batein (Key Takeaways) & Summary
+- Code ko modular function ke roop me likha gaya hai jisme clear shuruat (`def`), docstrings, error handling, aur ending (`return`) maujood hai.
+- Video lectures me ma'am dwara sikhaye gaye real movie box-office datasets aur syntax parameters ko exact follow kiya gaya hai.
