@@ -1,71 +1,108 @@
-# Day 20 - Lecture 20.15: Mean, Median aur Mode [Hinglish]
+# Notes_20.15: Mean, Median Aur Mode [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_15.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Central Tendency ke measures** (Mean, Median, Mode) samjhaye hain: Expected Value $E[X]$ kaise nikaalte hain aur bade outliers aane par Mean kyu bhatak jata hai jabki Median shant rehta hai.
 
 ---
 
-## 1. Overview & Central Tendency
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Mean (Average / Expected Value $E[X]$) ka formula.
+- Median (Beech ka number) aur Mode (Sabse baar aane waala number).
+- Outliers ka asar: Salary example mein mean $45$ kaise ho gaya jabki sabki salary $30$ thi?
+- Skewness: Right-skewed vs Symmetric distribution.
 
-Central Tendency ka matlab hota hai kisi data distribution ka ek representative center point nikalna.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Mean (Expected Value $E[X]$):
+Discrete probability mein mean ko **Expected Value** kehte hain:
+
+$$
+E[X] = \sum x_i \cdot P(X = x_i)
+$$
+
+Ek fair 6-sided dice par expected value:
+
+$$
+E[X] = \frac{1 + 2 + 3 + 4 + 5 + 6}{6} = \frac{21}{6} = 3.5
+$$
+
+#### 2. Mean vs Median Ka Jhagda (Outlier Effect):
+Maan lijiye ek company mein 9 logon ki salary 30k hai aur 1 CEO ki salary 150k hai.
+- **Mean:** Sabko jod kar 10 se divide kiya $\to \approx 48\text{k}$. (Yeh jhooth bol raha hai, kisi aam employee ki salary 48k nahi hai!).
+- **Median:** Data ko sort karke beech ka banda dekha $\to 32\text{k}$. (Yeh asli sachai dikha raha hai!).
+
+Isliye real-world Machine Learning mein jab data skewed ho, toh hum **Median** ko trust karte hain.
+
+---
+
+### 📊 Blackboard Diagram: Outlier Ka Khinchav
 
 ```mermaid
 flowchart LR
-    A["Central Tendency"] --> B["Mean (Expected Value E[X])"]
-    A --> C["Median (Bich ka 50% point)"]
-    A --> D["Mode (Sabse zyada aane wali value)"]
+    A["Normal Data: 25k, 28k, 30k, 32k..."] --> B["Median = 32k (Robust)"]
+    A --> C["CEO Outlier = 150k"]
+    C --> D["Mean = 48k (Khinch gaya right mein!)"]
 ```
 
 ---
 
-## 2. Ganitiya Sutra
-
-### Expected Value (Mean $\mu$):
-Probability-weighted average:
-
-$$
-\boxed{\mathbb{E}[X] = \mu = \sum x \cdot p(x) \quad \text{(Discrete)}}
-$$
-
-$$
-\boxed{\mathbb{E}[X] = \mu = \int_{-\infty}^\infty x \cdot f(x) \, dx \quad \text{(Continuous)}}
-$$
-
-### Linearity of Expectation:
-Chahe variables independent ho ya na ho, yeh hamesha sach hota hai:
-
-$$
-\boxed{\mathbb{E}[aX + bY + c] = a\mathbb{E}[X] + b\mathbb{E}[Y] + c}
-$$
-
-### Skewness ka Asar:
-- **Symmetric Distribution:** $\text{Mean} = \text{Median} = \text{Mode}$
-- **Right Skewed (Positively Skewed):** $\text{Mode} < \text{Median} < \text{Mean}$
-- **Left Skewed (Negatively Skewed):** $\text{Mean} < \text{Median} < \text{Mode}$
-
----
-
-## 3. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
 import numpy as np
 from scipy import stats
 
-data = np.random.lognormal(mean=2.0, sigma=0.8, size=10000)
+def compute_central_tendencies(data=None):
+    """
+    Computes measures of central tendency:
+    - Mean (Arithmetic Average / Expected Value E[X])
+    - Median (50th Percentile)
+    - Mode (Most Frequent Value)
+    Evaluates skewness based on relative positioning.
+    
+    Parameters:
+        data (list or np.ndarray): 1D continuous dataset.
+        
+    Returns:
+        dict: Mean, median, mode, and skewness classification.
+    """
+    if data is None:
+        # Skewed salary dataset with high earner outlier
+        data = [25, 28, 30, 32, 32, 35, 40, 42, 45, 150]
+        
+    arr = np.array(data)
+    mean_val = float(np.mean(arr))
+    median_val = float(np.median(arr))
+    mode_res = stats.mode(arr, keepdims=True)
+    mode_val = float(mode_res.mode[0])
+    
+    if np.isclose(mean_val, median_val, atol=1.0):
+        skew_type = "Symmetric (Normal)"
+    elif mean_val > median_val:
+        skew_type = "Positively Skewed (Right-Tailed: Pulled by Outlier)"
+    else:
+        skew_type = "Negatively Skewed (Left-Tailed)"
+        
+    return {
+        "mean": mean_val,
+        "median": median_val,
+        "mode": mode_val,
+        "skewness_classification": skew_type
+    }
 
-mean_v = np.mean(data)
-med_v = np.median(data)
-mode_v = stats.mode(np.round(data, 1), keepdims=True).mode[0]
+# --- Execution & Verification ---
+res = compute_central_tendencies()
+print(f"Mean   : {res['mean']:.2f}")
+print(f"Median : {res['median']:.2f}")
+print(f"Mode   : {res['mode']:.2f}")
+print(f"Shape  : {res['skewness_classification']}")
 
-print(f"Mode:   {mode_v:.2f}")
-print(f"Median: {med_v:.2f}")
-print(f"Mean:   {mean_v:.2f}")
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **Linearity:** $\mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y]$ independent hone ki shart nahi mangta.
-- **Outlier Immunity:** Outliers Mean ko distort kar dete hain, isliye financial aur latency data me Median prefer kiya jata hai.
+### 🎯 Key Takeaways:
+1. Normal/symmetric data mein: $\text{Mean} = \text{Median} = \text{Mode}$.
+2. Outlier hone par: $\text{Mean} > \text{Median}$ (Right skewed).

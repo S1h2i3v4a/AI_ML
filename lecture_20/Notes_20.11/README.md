@@ -1,106 +1,97 @@
-# Day 20 - Lecture 20.11: The Law of Total Probability
+# Lecture 20.11: Law of Total Probability
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_11.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the **Law of Total Probability**, demonstrating how to calculate the overall probability of a target event $B$ by partitioning the universal sample space into mutually exclusive and exhaustive causes $A_1, A_2, \dots, A_n$, using the factory manufacturing problem (Machine A vs Machine B).
 
 ---
 
-## 1. Overview & Partition Architecture
-
-The **Law of Total Probability** (LTP) provides the mathematical technique of **marginalization**: computing the unconditional probability of an event $A$ by summing over its intersections across an exhaustive set of mutually exclusive scenarios (a partition of the sample space).
+## 🏛️ Sample Space Partition Architecture
 
 ```mermaid
 flowchart TD
-    S["Entire Sample Space S"] --> B1["Partition B1"]
-    S --> B2["Partition B2"]
-    S --> B3["Partition B3"]
-    B1 --> A["Event A = Sum of (A cap Bi)"]
-    B2 --> A
-    B3 --> A
+    S["Universal Sample Space S (All Factory Production)"] --> PartA["Partition A1: Machine A (60% Production)"]
+    S --> PartB["Partition A2: Machine B (40% Production)"]
+    
+    PartA --> DefA["P(Defect | A1) = 2% ==> Joint P(D ∩ A1) = 0.60 * 0.02 = 0.012"]
+    PartB --> DefB["P(Defect | A2) = 5% ==> Joint P(D ∩ A2) = 0.40 * 0.05 = 0.020"]
+    
+    DefA & DefB --> Total["P(Defect) = 0.012 + 0.020 = 0.032 (3.2% Total Defect Rate)"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-Let $\{B_1, B_2, \dots, B_k\}$ be a partition of the sample space $\mathcal{S}$ such that:
+Let $A_1, A_2, \dots, A_n$ form a partition of sample space $S$ such that:
+1. $A_i \cap A_j = \emptyset$ for all $i \neq j$ (Mutually Exclusive)
+2. $\bigcup_{i=1}^n A_i = S$ (Exhaustive)
 
-$$
-\boxed{B_i \cap B_j = \emptyset \quad \forall i \ne j \qquad\text{and}\qquad \bigcup_{i=1}^k B_i = \mathcal{S}}
-$$
-
-For any arbitrary event $A \subseteq \mathcal{S}$:
+For any arbitrary event $B \subseteq S$:
 
 $$
-\boxed{A = \bigcup_{i=1}^k (A \cap B_i)}
+P(B) = \sum_{i=1}^n P(B \cap A_i) = \sum_{i=1}^n P(B \mid A_i) \cdot P(A_i)
 $$
 
-Because all $(A \cap B_i)$ are pairwise disjoint, applying Kolmogorov's third axiom and the multiplication rule yields:
+### Blackboard Example: Factory Defective Rate
+- Machine A: Share $= 60\%$ ($P(A) = 0.60$), Defect rate $= 2\%$ ($P(D \mid A) = 0.02$)
+- Machine B: Share $= 40\%$ ($P(B) = 0.40$), Defect rate $= 5\%$ ($P(D \mid B) = 0.05$)
 
 $$
-\boxed{P(A) = \sum_{i=1}^k P(A \cap B_i) = \sum_{i=1}^k P(A \mid B_i) \cdot P(B_i)}
+P(D) = P(D \mid A)P(A) + P(D \mid B)P(B) = (0.02 \times 0.60) + (0.05 \times 0.40) = 0.012 + 0.020 = 0.032
 $$
 
-### Continuous Generalization (Marginal Density in Machine Learning):
-For continuous joint distributions $p(x, y)$, marginalization integrates out the nuisance latent variable $y$:
-
-$$
-\boxed{p(x) = \int_{-\infty}^\infty p(x, y) \, dy = \int_{-\infty}^\infty p(x \mid y) \, p(y) \, dy}
-$$
+The overall probability that a randomly chosen product is defective is **$3.2\%$**.
 
 ---
 
-## 3. Real-World Demonstrative Example
-
-An e-commerce company manufactures smart speakers across 3 distinct factories:
-- Factory 1 ($B_1$): Produces 50% of units ($P(B_1) = 0.50$), with defect rate $P(D \mid B_1) = 0.01$
-- Factory 2 ($B_2$): Produces 30% of units ($P(B_2) = 0.30$), with defect rate $P(D \mid B_2) = 0.02$
-- Factory 3 ($B_3$): Produces 20% of units ($P(B_3) = 0.20$), with defect rate $P(D \mid B_3) = 0.05$
-
-What is the overall probability that a randomly purchased speaker is defective ($D$)?
-
-$$
-\begin{aligned}
-P(D) &= P(D \mid B_1)P(B_1) + P(D \mid B_2)P(B_2) + P(D \mid B_3)P(B_3) \\
-     &= (0.01 \cdot 0.50) + (0.02 \cdot 0.30) + (0.05 \cdot 0.20) \\
-     &= 0.005 + 0.006 + 0.010 = 0.021 \quad (2.1\%)
-\end{aligned}
-$$
-
-$$
-\boxed{P(D) = 0.021 \quad (2.1\%)}
-$$
-
----
-
-## 4. Python Implementation
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def compute_total_probability_factory(prod_a=0.60, defect_a=0.02, prod_b=0.40, defect_b=0.05):
+    """
+    Computes total defect probability using the Law of Total Probability.
+    Sample space S is partitioned into Machine A and Machine B.
+    
+    Parameters:
+        prod_a (float): Production share of Machine A, P(A).
+        defect_a (float): Defect rate of Machine A, P(D|A).
+        prod_b (float): Production share of Machine B, P(B).
+        defect_b (float): Defect rate of Machine B, P(D|B).
+        
+    Returns:
+        dict: Intermediate joint probabilities and total defect rate P(D).
+    """
+    if not (0.999 <= (prod_a + prod_b) <= 1.001):
+        raise ValueError("Production shares must sum to 1.0 (Exhaustive partition).")
+        
+    # Joint probabilities: P(D ∩ A) = P(D|A) * P(A)
+    p_defect_and_a = defect_a * prod_a
+    p_defect_and_b = defect_b * prod_b
+    
+    # Law of Total Probability: P(D) = P(D ∩ A) + P(D ∩ B)
+    p_total_defect = p_defect_and_a + p_defect_and_b
+    
+    return {
+        "P(A)": prod_a,
+        "P(D|A)": defect_a,
+        "P(D ∩ A)": p_defect_and_a,
+        "P(B)": prod_b,
+        "P(D|B)": defect_b,
+        "P(D ∩ B)": p_defect_and_b,
+        "P(Total Defect)": p_total_defect
+    }
 
-# Factory production probabilities (Partition weights)
-p_factories = np.array([0.50, 0.30, 0.20])
-# Conditional defect rates
-p_defects_given_factory = np.array([0.01, 0.02, 0.05])
+# --- Execution & Verification ---
+res = compute_total_probability_factory(prod_a=0.60, defect_a=0.02, prod_b=0.40, defect_b=0.05)
+print(f"Machine A Contribution: P(D ∩ A) = 0.02 * 0.60 = {res['P(D ∩ A)']:.4f}")
+print(f"Machine B Contribution: P(D ∩ B) = 0.05 * 0.40 = {res['P(D ∩ B)']:.4f}")
+print(f"Total Defective Rate  : P(D)     = {res['P(Total Defect)']:.4f} (3.2%)")
 
-# Law of Total Probability via vector dot product
-p_total_defect = np.dot(p_factories, p_defects_given_factory)
-
-print(f"Total Defect Rate P(D): {p_total_defect:.4f} ({p_total_defect * 100:.2f}%)")
-
-# Monte Carlo Verification (5,000,000 units)
-n_units = 5_000_000
-factory_choices = np.random.choice([0, 1, 2], size=n_units, p=p_factories)
-defect_probs = p_defects_given_factory[factory_choices]
-defects = np.random.rand(n_units) < defect_probs
-
-print(f"Monte Carlo Simulated Defect Rate: {np.mean(defects):.4f}")
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-- **Marginalization in ML:** In Variational Autoencoders (VAEs) and Bayesian Neural Networks, calculating data likelihood $p(x)$ requires integrating over latent variables $z$ via the Law of Total Probability: $p(x) = \int p(x|z)p(z)dz$.
-- **Denominator of Bayes' Rule:** The Law of Total Probability constitutes the exact denominator (marginal evidence) in Bayes' Theorem.
+## 🔑 Key Takeaways
+1. The Law of Total Probability decomposes complex global probabilities into weighted sums of conditional probabilities.
+2. The partition subsets must be strictly mutually exclusive and exhaustive ($\sum P(A_i) = 1$).
+3. This formula serves as the essential denominator (marginal evidence) in Bayes' Theorem.

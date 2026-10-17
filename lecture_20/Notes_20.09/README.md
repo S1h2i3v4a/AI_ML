@@ -1,91 +1,96 @@
-# Day 20 - Lecture 20.9: Solving Probability Rules Practice Problems
+# Lecture 20.09: Solving Practice Problems (Rules of Probability)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_09.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am leads an intensive **problem-solving workshop**, combining the Addition Rule, Multiplication Rule, and Complementary principles on realistic multi-event scenarios (such as student examination pass rates and circuit reliability).
 
 ---
 
-## 1. Complex Compound Systems: Series vs. Parallel Reliability
-
-In cloud infrastructure and distributed AI training systems, failure modeling relies on compound combinations of addition and multiplication rules.
+## 🏛️ Compound Event Venn Decomposition
 
 ```mermaid
 flowchart TD
-    subgraph Series["Series System (All must work)"]
-        S1["Component A"] --> S2["Component B"]
-    end
-    subgraph Parallel["Parallel System (At least one must work)"]
-        P1["Component A"]
-        P2["Component B"]
+    Universe["All Students: P(S) = 1.0 (100%)"] --> Union["Pass at least one: P(M ∪ P) = 0.70 + 0.60 - 0.45 = 0.85 (85%)"]
+    Universe --> Neither["Fail both exams: P((M ∪ P)') = 1 - 0.85 = 0.15 (15%)"]
+    
+    subgraph Partitions["Mutually Exclusive Disjoint Slices"]
+        MOnly["Math Only: 0.70 - 0.45 = 0.25 (25%)"]
+        Both["Both Math & Physics: 0.45 (45%)"]
+        POnly["Physics Only: 0.60 - 0.45 = 0.15 (15%)"]
     end
 ```
 
 ---
 
-## 2. Mathematical Formalism & Problem Deconstructions
+## 📐 Mathematical Formulation
 
-### Problem 1: Series Reliability (Zero Fault Tolerance)
-For a system to operate, Component $A$ AND Component $B$ must function simultaneously. If components operate independently with reliabilities $R_A = 0.95$ and $R_B = 0.90$:
+Given $P(M) = 0.70$, $P(P) = 0.60$, and $P(M \cap P) = 0.45$:
 
-$$
-\boxed{R_{\text{series}} = P(A \cap B) = P(A) \cdot P(B) = 0.95 \cdot 0.90 = 0.855 \quad (85.5\%)}
-$$
-
-### Problem 2: Parallel Redundant Reliability (Fault Tolerant)
-The system operates if Component $A$ OR Component $B$ functions. By the Complementary Rule:
+1. **Probability of passing Math OR Physics:**
 
 $$
-\boxed{R_{\text{parallel}} = 1 - P(A' \cap B') = 1 - (1 - R_A)(1 - R_B)}
+P(M \cup P) = P(M) + P(P) - P(M \cap P) = 0.70 + 0.60 - 0.45 = 0.85
 $$
 
-$$
-\boxed{R_{\text{parallel}} = 1 - (0.05)(0.10) = 1 - 0.005 = 0.995 \quad (99.5\%)}
-$$
-
-### Problem 3: Two-Stage Sequential Transition Probability
-A user enters a sales funnel:
-- Probability of clicking Ad: $P(\text{Ad}) = 0.08$
-- Probability of converting given Ad click: $P(\text{Buy} \mid \text{Ad}) = 0.25$
-- Probability of converting via organic search (no Ad): $P(\text{Buy} \mid \text{No Ad}) = 0.02$
-
-Joint probability of clicking ad and converting:
+2. **Probability of failing both exams:**
 
 $$
-\boxed{P(\text{Ad} \cap \text{Buy}) = P(\text{Ad}) \cdot P(\text{Buy} \mid \text{Ad}) = 0.08 \cdot 0.25 = 0.02 \quad (2.0\%)}
+P(\text{Fail Both}) = P((M \cup P)') = 1 - P(M \cup P) = 1 - 0.85 = 0.15
 $$
+
+3. **Probability of passing Math ONLY:**
+
+$$
+P(M \cap P') = P(M) - P(M \cap P) = 0.70 - 0.45 = 0.25
+$$
+
+Summing all partitions: $0.25 + 0.45 + 0.15 + 0.15 = 1.00$.
 
 ---
 
-## 3. Python Implementation & Monte Carlo Verification
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def solve_student_exam_problem(p_math=0.7, p_physics=0.6, p_both=0.45):
+    """
+    Solves compound probability problems combining Addition and Multiplication rules:
+    - P(Pass Math OR Physics)
+    - P(Pass Neither)
+    - P(Pass Math but Fail Physics)
+    
+    Parameters:
+        p_math (float): P(Pass Math)
+        p_physics (float): P(Pass Physics)
+        p_both (float): P(Pass Both)
+        
+    Returns:
+        dict: Computed probabilities.
+    """
+    # 1. P(Pass Math or Physics)
+    p_or = p_math + p_physics - p_both
+    
+    # 2. P(Pass Neither) = 1 - P(Pass at least one)
+    p_neither = 1.0 - p_or
+    
+    # 3. P(Pass Math only) = P(Math) - P(Both)
+    p_math_only = p_math - p_both
+    
+    return {
+        "P(Math OR Physics)": p_or,
+        "P(Pass Neither)": p_neither,
+        "P(Math Only)": p_math_only
+    }
 
-# Component reliabilities
-r_a = 0.95
-r_b = 0.90
-n_sims = 1_000_000
+# --- Execution & Verification ---
+sol = solve_student_exam_problem(p_math=0.7, p_physics=0.6, p_both=0.45)
+print(f"P(Pass at least one exam) = {sol['P(Math OR Physics)']:.2f} (85%)")
+print(f"P(Fail both exams)        = {sol['P(Pass Neither)']:.2f} (15%)")
+print(f"P(Pass Math ONLY)         = {sol['P(Math Only)']:.2f} (25%)")
 
-# Monte Carlo simulation of independent component operation
-sim_a = np.random.binomial(1, r_a, size=n_sims)
-sim_b = np.random.binomial(1, r_b, size=n_sims)
-
-# Series System: Both must work
-series_success = sim_a & sim_b
-p_series_sim = np.mean(series_success)
-
-# Parallel System: At least one works
-parallel_success = sim_a | sim_b
-p_parallel_sim = np.mean(parallel_success)
-
-print(f"Series System:   Analytical = {r_a * r_b:.4f} | Simulated = {p_series_sim:.4f}")
-print(f"Parallel System: Analytical = {1 - (1-r_a)*(1-r_b):.4f} | Simulated = {p_parallel_sim:.4f}")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Redundancy Principle:** Series systems degrade reliability ($R_{\text{sys}} \le \min(R_i)$); parallel redundant architectures drastically boost reliability ($R_{\text{sys}} \ge \max(R_i)$).
-- **Decomposition:** Always break compound multi-stage problems into orthogonal intersections and unions before computing probabilities.
+## 🔑 Key Takeaways
+1. Venn diagrams allow compound event scenarios to be partitioned into disjoint subsets that sum to 1.0.
+2. "Math only" requires removing the intersection from the marginal event ($P(M) - P(M \cap P)$).
+3. "Neither" is the direct complement of the union ($1 - P(A \cup B)$).

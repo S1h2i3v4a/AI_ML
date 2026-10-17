@@ -1,101 +1,96 @@
-# Day 20 - Lecture 20.6: The Complementary Rule (Poorak Niyam) [Hinglish]
+# Notes_20.06: Complementary Rule [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_06.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Complementary Rule** ka magical shortcut sikhaya hai: "Kam se kam ek (At least one)" waale mushkil sawalon ko seedha solve karne ke bajaye $1 - P(\text{None})$ se kitni asani se solve kiya jata hai.
 
 ---
 
-## 1. Overview & Concept
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Complementary Event ($E'$) kya hota hai?
+- Formula: $P(E') = 1 - P(E)$ kyu hamesha true hota hai.
+- "At least one" problems ko solve karne ka shortcut.
+- 4 baar dice fekne par kam se kam ek baar 6 aane ki probability.
 
-**Complementary Rule** probability calculus ka sabse bada time-saver hai. Kisi bhi event $A$ ke liye, uska complement $A'$ (ya $A^c$) un sabhi outcomes ka set hota hai jo sample space $\mathcal{S}$ me hain par $A$ me nahi hain.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Complementary Rule Kya Hai?
+Kisi bhi event ke hone ki probability $P(E)$ aur na hone ki probability $P(E')$ ka jod hamesha $1.0$ hota hai:
+
+$$
+P(E) + P(E') = 1 \implies P(E) = 1 - P(E')
+$$
+
+#### 2. "At Least One" Ka Shortcut:
+Maan lijiye aap 4 baar dice fekte hain aur sawal hai: "Kam se kam ek baar 6 aane ki probability kya hai?"
+Agar aap direct solve karenge toh aapko 1 chhakka, 2 chhakke, 3 chhakke, 4 chhakke sabka alag alag jod nikalna padega (bohot lamba math!).
+
+**Shortcut:**
+1. Ek baar bhi 6 na aane ki probability:
+
+$$
+P(\text{No 6}) = \left(\frac{5}{6}\right)^4 \approx 0.4823
+$$
+
+2. Kam se kam ek 6 aane ki probability:
+
+$$
+P(\text{At least one 6}) = 1 - 0.4823 = 0.5177 \quad (51.77\%)
+$$
+
+---
+
+### 📊 Blackboard Diagram: Sample Space Partition
 
 ```mermaid
 flowchart LR
-    S["Sample Space S (P = 1.0)"] --> A["Event A: P(A)"]
-    S --> A_prime["Complement A': 1 - P(A)"]
+    S["Poora Sample Space S (Area = 1.0)"] --> In["Event E: Kam se kam ek success"]
+    S --> Out["Event E': Ek bhi success nahi (None)"]
+    In & Out --> Sum["P(E) = 1 - P(None)"]
 ```
 
-### Machine Learning me Use:
-Jab kisi complex event ko directly calculate karna lamba aur kathin ho, toh uske ulte (complement) ko calculate karke 1 me se minus kar dena sabse aasan hota hai:
-
-$$
-oxed{P(	ext{Kam se kam ek success}) = 1 - P(	ext{Zero success})}
-$$
-
 ---
 
-## 2. Ganitiya Sutra
-
-Kyunki $A$ aur $A'$ aapas me mutually exclusive aur exhaustive hote hain:
-
-$$
-oxed{A \cap A' = \emptyset \qquad	ext{aur}\qquad A \cup A' = \mathcal{S}}
-$$
-
-Kolmogorov ke axioms se:
-
-$$
-oxed{P(A) + P(A') = 1.0}
-$$
-
-Jisse mukhya **Complement Rule** milta hai:
-
-$$
-oxed{P(A') = 1 - P(A) \iff P(A) = 1 - P(A')}
-$$
-
-### De Morgan's Laws:
-
-$$
-oxed{P(A \cup B) = 1 - P(A' \cap B')}
-$$
-
----
-
-## 3. Real-World Case Study: "Kam Se Kam Ek" Failure
-
-Ek AI cluster me 10 GPUs independent chal rahe hain. Har GPU ke crash hone ki probability $p = 0.05$ (5%) hai. Kya probability hai ki aaj **kam se kam ek** GPU crash ho jaye?
-
-- Direct tareeqa: 1 crash + 2 crash + ... + 10 crash (10 combinations jodna).
-- Complement tareeqa:
-  Let $A = 	ext{"Kam se kam 1 crash"}$.
-  Ulta event $A' = 	ext{"Koi bhi GPU crash na ho"}$.
-
-$$
-oxed{P(A') = (0.95)^{10} pprox 0.5987}
-$$
-
-$$
-oxed{P(A) = 1 - 0.5987 = 0.4013 \quad (40.13\%)}
-$$
-
----
-
-## 4. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
-import numpy as np
+def compute_at_least_one_success(p_single_failure=0.8, n_trials=5):
+    """
+    Computes probability of 'at least one success' across n independent trials
+    using the Complementary Rule: P(at least 1) = 1 - P(none).
+    
+    Parameters:
+        p_single_failure (float): Probability of failing on a single trial.
+        n_trials (int): Number of independent attempts.
+        
+    Returns:
+        dict: Failure and success probabilities.
+    """
+    # P(no success in n trials) = (p_single_failure)^n
+    p_all_failures = p_single_failure ** n_trials
+    
+    # Complementary Rule
+    p_at_least_one = 1.0 - p_all_failures
+    
+    return {
+        "n_trials": n_trials,
+        "P_single_failure": p_single_failure,
+        "P_all_failures": p_all_failures,
+        "P_at_least_one_success": p_at_least_one
+    }
 
-n_gpus = 10
-p_fail = 0.05
-p_safe = 1 - p_fail
+# --- Execution & Verification ---
+# Rolling a 6 on a die: P(not rolling 6) = 5/6 ≈ 0.8333. Rolling 4 times:
+res = compute_at_least_one_success(p_single_failure=5/6, n_trials=4)
+print(f"Trials: {res['n_trials']}")
+print(f"P(No 6 in 4 rolls) = {res['P_all_failures']:.4f}")
+print(f"P(At least one 6 in 4 rolls) = 1 - P(none) = {res['P_at_least_one_success']:.4f} (51.77%)")
 
-p_zero_fails = p_safe ** n_gpus
-p_at_least_one = 1.0 - p_zero_fails
-
-print(f"P(Zero Failures):    {p_zero_fails:.4f}")
-print(f"P(At Least 1 Fail):  {p_at_least_one:.4f} ({p_at_least_one * 100:.2f}%)")
-
-# Monte Carlo Simulation
-sims = np.random.binomial(n=n_gpus, p=p_fail, size=1_000_000)
-print(f"Simulation Result:   {np.mean(sims >= 1):.4f}")
 ```
 
 ---
 
-## 5. Mukhya Batein (Key Takeaways) & Interview Points
-- **"At Least One" Rule:** Jab bhi sawal me "at least one" dikhe, 99% cases me seedhe $1 - P(	ext{None})$ lagana chahiye.
-- **Complexity Reduction:** Yeh rule 10-15 steps ke calculation ko 1 step me badal deta hai.
+### 🎯 Key Takeaways:
+1. Jab bhi exam ya interview mein "At least one" dikhe, hamesha $1 - P(\text{None})$ use karein.
+2. Server reliability aur cloud uptime calculations mein yeh rule sabse zaroori hota hai.

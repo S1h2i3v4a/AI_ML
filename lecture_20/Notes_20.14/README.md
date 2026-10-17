@@ -1,86 +1,103 @@
-# Day 20 - Lecture 20.14: Random Variables
+# Lecture 20.14: Random Variables (Discrete vs Continuous)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_14.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Random Variables**, demystifying the terminology by showing that a random variable is mathematically a **function** that maps qualitative experimental outcomes into numerical real values ($X: S \to \mathbb{R}$).
 
 ---
 
-## 1. Formal Mathematical Definition
-
-A **Random Variable** is not a traditional algebraic variable; it is a **mathematical function** that maps outcomes from an abstract sample space $\mathcal{S}$ to real numerical values on the real number line $\mathbb{R}$:
-
-$$
-\boxed{X: \mathcal{S} \to \mathbb{R}}
-$$
+## 🏛️ Mapping Sample Space Outcomes to Real Numbers
 
 ```mermaid
 flowchart LR
-    S["Sample Space S: {HH, HT, TH, TT}"] -->|Mapping Function X(w)| R["Real Line R: {0, 1, 2}"]
+    subgraph SampleSpace["Qualitative Sample Space S (2 Coins)"]
+        TT["TT (No Heads)"]
+        HT["HT (One Head)"]
+        TH["TH (One Head)"]
+        HH["HH (Two Heads)"]
+    end
+    
+    subgraph RealLine["Random Variable X: Number of Heads"]
+        X0["X = 0 : P(X=0) = 1/4 = 0.25"]
+        X1["X = 1 : P(X=1) = 2/4 = 0.50"]
+        X2["X = 2 : P(X=2) = 1/4 = 0.25"]
+    end
+    
+    TT --> X0
+    HT --> X1
+    TH --> X1
+    HH --> X2
 ```
 
 ---
 
-## 2. Taxonomy: Discrete vs. Continuous Random Variables
+## 📐 Mathematical Formulation: Discrete vs Continuous Random Variables
 
-| Property | Discrete Random Variable | Continuous Random Variable |
-| :--- | :--- | :--- |
-| **Possible Values** | Countable set $\{x_1, x_2, \dots\}$ | Continuous uncountably infinite interval $[a, b] \subseteq \mathbb{R}$ |
-| **Probability Function** | Probability Mass Function (PMF) $p(x)$ | Probability Density Function (PDF) $f(x)$ |
-| **Single-Point Probability** | $P(X = x) \ge 0$ | $P(X = x) \equiv 0$ |
-| **Normalization Law** | $\sum_{x} p(x) = 1.0$ | $\int_{-\infty}^\infty f(x) \, dx = 1.0$ |
-| **Interval Probability** | $P(a \le X \le b) = \sum_{x=a}^b p(x)$ | $P(a \le X \le b) = \int_a^b f(x) \, dx$ |
+### 1. Discrete Random Variable:
+Takes countable values $\{x_1, x_2, \dots\}$. Governed by a **Probability Mass Function (PMF)**:
+
+$$
+p(x) = P(X = x), \qquad \text{where } p(x) \ge 0 \quad \text{and} \quad \sum_{i} p(x_i) = 1
+$$
+
+### 2. Continuous Random Variable:
+Takes uncountably infinite values along continuous intervals. Governed by a **Probability Density Function (PDF)** $f(x)$:
+
+$$
+P(a \le X \le b) = \int_a^b f(x) \, dx, \qquad \text{where } \int_{-\infty}^{\infty} f(x) \, dx = 1
+$$
+
+> **Crucial Rule:** For continuous random variables, the probability of obtaining any exact singular real number is zero ($P(X = c) = 0$); probability only exists over non-zero intervals $[a, b]$.
 
 ---
 
-## 3. The Cumulative Distribution Function (CDF)
-
-The **CDF** $F(x)$ represents the probability that random variable $X$ takes a value less than or equal to $x$, universally defined for both discrete and continuous variables:
-
-$$
-\boxed{F(x) = P(X \le x)}
-$$
-
-### Fundamental Properties of CDF:
-1. **Monotonic Non-Decreasing:** $x_1 < x_2 \implies F(x_1) \le F(x_2)$
-2. **Boundary Limits:**
-
-$$
-\boxed{\lim_{x \to -\infty} F(x) = 0.0 \qquad\text{and}\qquad \lim_{x \to \infty} F(x) = 1.0}
-$$
-
-3. **Relationship to Continuous PDF:**
-
-$$
-\boxed{F(x) = \int_{-\infty}^x f(t) \, dt \iff f(x) = \frac{d}{dx} F(x)}
-$$
-
----
-
-## 4. Python Implementation
+## 💻 Python Implementation
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
+def simulate_coin_toss_random_variable():
+    """
+    Simulates a discrete random variable X defined as:
+    X = Number of Heads observed when tossing 2 fair coins.
+    Sample space S = {TT, HT, TH, HH}.
+    Maps outcomes to {0, 1, 2} and builds the Probability Mass Function (PMF).
+    
+    Returns:
+        dict: Outcome mappings, PMF, and verification that sum(P) = 1.
+    """
+    sample_space = ["TT", "HT", "TH", "HH"]
+    
+    # Mapping function X: S -> Real Numbers
+    mapping = {
+        "TT": 0,
+        "HT": 1,
+        "TH": 1,
+        "HH": 2
+    }
+    
+    # Probability Mass Function P(X = x)
+    pmf = {0: 1/4, 1: 2/4, 2: 1/4}
+    
+    sum_pmf = sum(pmf.values())
+    
+    return {
+        "sample_space": sample_space,
+        "random_variable_mapping": mapping,
+        "PMF_P(X=x)": pmf,
+        "sum_of_probabilities": sum_pmf
+    }
 
-# 1. Discrete Random Variable: Number of Heads in 3 Coin Flips
-flips_3 = [0, 1, 2, 3]
-pmf_discrete = [1/8, 3/8, 3/8, 1/8]
-cdf_discrete = np.cumsum(pmf_discrete)
+# --- Execution & Verification ---
+rv = simulate_coin_toss_random_variable()
+print("Sample Space S:", rv["sample_space"])
+print("X(Outcome) Mapping:", rv["random_variable_mapping"])
+for k, v in rv["PMF_P(X=x)"].items():
+    print(f"P(X = {k}) = {v:.2f}")
+print(f"PMF Axiom Check: Sum = {rv['sum_of_probabilities']:.1f}")
 
-print("Discrete Variable X = Number of Heads:")
-for k, p, c in zip(flips_3, pmf_discrete, cdf_discrete):
-    print(f"  k = {k}: PMF P(X={k}) = {p:.3f} | CDF F({k}) = {c:.3f}")
-
-# 2. Continuous Random Variable Simulation
-samples = np.random.normal(loc=0, scale=1, size=100_000)
-p_between = np.mean((samples >= -1.0) & (samples <= 1.0))
-print(f"\nContinuous Variable Z ~ N(0, 1): P(-1 <= Z <= 1) = {p_between:.4f} (Exact: 68.27%)")
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-- **Point Probability of Continuous RV is Zero:** For a continuous random variable, $P(X = 3.500000...) = 0$. Probability exists only over finite intervals $[a, b]$.
-- **CDF is Universal:** Whether discrete, continuous, or mixed, every random variable has a well-defined CDF bounded in $[0, 1]$.
+## 🔑 Key Takeaways
+1. A random variable is neither "random" nor a "variable"; it is a deterministic mathematical function mapping experimental outcomes to numbers.
+2. Discrete variables use PMF (probabilities at specific points); continuous variables use PDF (probabilities over intervals).
+3. In machine learning, features and target labels ($y$) are treated as random variables.

@@ -1,99 +1,101 @@
-# Day 21 - Lecture 21.7: Vectors (Geometric & Algebraic Foundations)
+# Lecture 21.07: Vectors (Magnitude & Direction)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_07.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Vectors**, establishing that a vector is a mathematical quantity possessing both **magnitude (length)** and **direction**, showing the component basis notation $\vec{v} = v_1\hat{i} + v_2\hat{j} + v_3\hat{k}$ and deriving the Euclidean norm and unit vector.
 
 ---
 
-## 1. Dual Interpretations: Physics vs. Computer Science
-
-A **vector** bridges physical geometry and abstract high-dimensional data representation:
-1. **Geometric View (Physics):** A directed line segment characterized by a **magnitude (length)** and a **direction** in space.
-2. **Algebraic View (Computer Science / AI):** An ordered tuple of real numbers representing an observation's feature values: $\mathbf{x} = [x_1, x_2, \dots, x_n]^T \in \mathbb{R}^n$.
+## 🏛️ Vector Decomposition & Basis Coordinates
 
 ```mermaid
-flowchart LR
-    A["Vector v"] --> B["Geometric: Arrow from Origin to (v1, v2)"]
-    A --> C["Algebraic: Array of Features in R^n"]
-    B --> D["Length = ||v||, Angle = theta"]
-    C --> D
+flowchart TD
+    Vec["Vector v = (2, 1, 3) in ℝ³"] --> Basis["Decomposition into Standard Unit Basis: v = 2î + 1ĵ + 3k̂"]
+    Basis --> Mag["Euclidean Magnitude ||v|| = √(2² + 1² + 3²) = √14 ≈ 3.7417"]
+    Basis --> Dir["Normalized Unit Vector v̂ = v / ||v|| (Pure Direction, Length = 1)"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-### Column Vector Convention:
-In linear algebra, vectors are universally assumed to be vertical column vectors:
-
-$$
-\boxed{\mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix} \in \mathbb{R}^{n \times 1}, \qquad \mathbf{v}^T = \begin{bmatrix} v_1 & v_2 & \dots & v_n \end{bmatrix} \in \mathbb{R}^{1 \times n}}
-$$
-
-### Vector Norms (Magnitude Measurements):
-
-#### 1. Euclidean Norm ($L_2$ Norm):
-The physical straight-line length from the origin:
+1. **Vector Notation:**
+A vector originating at the origin $(0, 0, 0)$ terminating at point $(v_1, v_2, v_3)$ is written as:
 
 $$
-\boxed{\|\mathbf{v}\|_2 = \sqrt{\mathbf{v}^T \mathbf{v}} = \sqrt{\sum_{i=1}^n v_i^2}}
+\vec{v} = v_1 \hat{i} + v_2 \hat{j} + v_3 \hat{k}
 $$
 
-#### 2. Manhattan Norm ($L_1$ Norm):
-Used for Lasso regularization to induce feature sparsity:
+where $\hat{i}, \hat{j}, \hat{k}$ are orthogonal unit basis vectors along the $x, y, z$ axes.
+
+2. **Magnitude (Euclidean Norm / Length):**
 
 $$
-\boxed{\|\mathbf{v}\|_1 = \sum_{i=1}^n |v_i|}
+\|\vec{v}\| = \sqrt{v_1^2 + v_2^2 + v_3^2}
 $$
 
-#### 3. Maximum Norm ($L_\infty$ Norm):
+For $\vec{A} = (2, 1, 3)$:
 
 $$
-\boxed{\|\mathbf{v}\|_\infty = \max_{i} |v_i|}
+\|\vec{A}\| = \sqrt{2^2 + 1^2 + 3^2} = \sqrt{4 + 1 + 9} = \sqrt{14} \approx 3.7417
 $$
 
-### Unit Vectors & Normalization:
-A vector with unit length ($\|\hat{\mathbf{v}}\| = 1.0$) preserving pure direction:
+3. **Unit Vector ($\hat{v}$):**
+A dimensionless vector pointing in the identical direction with length strictly equal to 1:
 
 $$
-\boxed{\hat{\mathbf{v}} = \frac{\mathbf{v}}{\|\mathbf{v}\|_2}}
+\hat{v} = \frac{\vec{v}}{\|\vec{v}\|} = \frac{1}{\sqrt{14}} (2\hat{i} + \hat{j} + 3\hat{k})
 $$
 
 ---
 
-## 3. Python Implementation
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-# 3D Feature vector
-v = np.array([3.0, -4.0, 12.0])
+def analyze_vector_properties(v=(2, 1, 3)):
+    """
+    Analyzes mathematical properties of a vector v:
+    - Component form: v1*i + v2*j + v3*k
+    - Euclidean magnitude (L2 Norm): ||v|| = sqrt(v1^2 + v2^2 + v3^2)
+    - Unit vector: v_hat = v / ||v||
+    
+    Parameters:
+        v (tuple or list): Vector components.
+        
+    Returns:
+        dict: Components, magnitude, and unit vector components.
+    """
+    v_arr = np.array(v, dtype=float)
+    
+    # Euclidean magnitude (norm)
+    magnitude = float(np.linalg.norm(v_arr))
+    
+    # Unit vector (normalized direction)
+    unit_v = (v_arr / magnitude).tolist()
+    
+    return {
+        "components": list(v),
+        "notation_str": f"{v[0]}i + {v[1]}j + {v[2]}k",
+        "magnitude_||v||": magnitude,
+        "unit_vector_v_hat": unit_v,
+        "unit_vector_norm_check": float(np.linalg.norm(unit_v))
+    }
 
-# L2 Norm (Magnitude)
-norm_l2 = np.linalg.norm(v, ord=2)
+# --- Execution & Verification ---
+# Shraddha ma'am's chalkboard vector A = (2, 1, 3)
+res = analyze_vector_properties(v=(2, 1, 3))
+print(f"Vector Components : {res['components']}")
+print(f"Component Notation: {res['notation_str']}")
+print(f"Magnitude ||v||   : sqrt(2² + 1² + 3²) = sqrt(4 + 1 + 9) = sqrt(14) ≈ {res['magnitude_||v||']:.4f}")
+print(f"Unit Vector v_hat : {[round(x, 4) for x in res['unit_vector_v_hat']]}")
+print(f"Unit Vector Norm  : {res['unit_vector_norm_check']:.1f}")
 
-# L1 Norm
-norm_l1 = np.linalg.norm(v, ord=1)
-
-# L_inf Norm
-norm_linf = np.linalg.norm(v, ord=np.inf)
-
-# Unit Vector
-v_unit = v / norm_l2
-
-print(f"Vector v:       {v}")
-print(f"L2 Norm (||v||): {norm_l2:.4f} (Exact: sqrt(9 + 16 + 144) = sqrt(169) = 13)")
-print(f"L1 Norm:        {norm_l1:.4f} (Exact: 3 + 4 + 12 = 19)")
-print(f"L_inf Norm:     {norm_linf:.4f} (Exact: 12)")
-print(f"Unit Vector:    {v_unit}")
-print(f"Unit Norm:      {np.linalg.norm(v_unit):.4f} (Must be 1.0)")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Normalization in NLP:** Word embeddings and transformer vectors are normalized to unit length so that dot product equals cosine similarity ($\mathbf{u} \cdot \mathbf{v} = \cos\theta$).
-- **Regularization Connection:** Ridge regression applies an $L_2$ penalty $\|\mathbf{w}\|_2^2$; Lasso regression applies an $L_1$ penalty $\|\mathbf{w}\|_1$.
+## 🔑 Key Takeaways
+1. A vector has both magnitude (how much) and direction (which way); a scalar only has magnitude.
+2. In machine learning, feature representations are vectors where each dimension represents an observed attribute.
+3. Normalizing vectors into unit vectors ($\|\hat{v}\| = 1$) is standard practice in text embeddings (e.g. Word2Vec, BERT) to compare cosine similarity without length bias.

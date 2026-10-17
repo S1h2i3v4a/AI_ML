@@ -1,101 +1,112 @@
-# Day 20 - Lecture 20.15: Mean, Median & Mode
+# Lecture 20.15: Mean, Median & Mode (Central Tendency)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_15.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the **Measures of Central Tendency**: Expected Value / Mean ($\mu = E[X]$), Median, and Mode, explaining how extreme outliers pull the mean while the median remains robust.
 
 ---
 
-## 1. Overview & Measures of Central Tendency
-
-Central tendency identifies the single central point or typical representative value within a probability distribution or dataset.
-
-```mermaid
-flowchart LR
-    A["Central Tendency"] --> B["Expected Value / Mean (E[X])"]
-    A --> C["Median (50th Percentile)"]
-    A --> D["Mode (Maximum Density Point)"]
-```
-
----
-
-## 2. Mathematical Formalism
-
-### Expected Value (Mean $\mu$):
-The probability-weighted average of all possible values.
-
-#### Discrete Random Variable:
-
-$$
-\boxed{\mathbb{E}[X] = \mu = \sum_{x \in \mathcal{X}} x \cdot p(x)}
-$$
-
-#### Continuous Random Variable:
-
-$$
-\boxed{\mathbb{E}[X] = \mu = \int_{-\infty}^\infty x \cdot f(x) \, dx}
-$$
-
-### Linearity of Expectation (Crucial Machine Learning Property):
-For any random variables $X$ and $Y$ and constants $a, b, c \in \mathbb{R}$, **regardless of statistical independence**:
-
-$$
-\boxed{\mathbb{E}[aX + bY + c] = a\mathbb{E}[X] + b\mathbb{E}[Y] + c}
-$$
-
-### Median ($m$):
-The value that splits the probability mass into two equal halves:
-
-$$
-\boxed{P(X \le m) \ge 0.5 \qquad\text{and}\qquad P(X \ge m) \ge 0.5}
-$$
-
-### Mode:
-The value at which the probability function attains its absolute peak:
-
-$$
-\boxed{\text{Mode}(X) = \arg\max_x p(x) \quad \text{or} \quad \arg\max_x f(x)}
-$$
-
----
-
-## 3. Impact of Distribution Skewness
+## 🏛️ Skewness and Central Tendency Ordering
 
 ```mermaid
 flowchart TD
-    A["Distribution Skewness"] --> B["Symmetric (Normal): Mean = Median = Mode"]
-    A --> C["Right-Skewed (Positive): Mode < Median < Mean"]
-    A --> D["Left-Skewed (Negative): Mean < Median < Mode"]
+    subgraph PosSkew["Positively Skewed (Right-Tailed)"]
+        Mode1["Mode < Median < Mean (Mean pulled to right by outlier)"]
+    end
+    subgraph Symm["Symmetric (Bell Curve)"]
+        SymmEq["Mean = Median = Mode"]
+    end
+    subgraph NegSkew["Negatively Skewed (Left-Tailed)"]
+        Mode2["Mean < Median < Mode (Mean pulled to left)"]
+    end
 ```
-
-In right-skewed data (e.g., household incomes, transaction values, web latency), extreme outlier values pull the Mean upward, making the **Median** a more robust metric for central tendency.
 
 ---
 
-## 4. Python Implementation
+## 📐 Mathematical Formulation: Expected Value
+
+1. **Discrete Expected Value (Mean):**
+
+$$
+E[X] = \mu = \sum_{i=1}^n x_i \cdot P(X = x_i)
+$$
+
+For sample data with equal weights:
+
+$$
+\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i
+$$
+
+2. **Median ($M$):**
+The value dividing the sorted distribution into two equal 50% halves:
+
+$$
+M = \begin{cases} X_{\left(\frac{n+1}{2}\right)} & \text{if } n \text{ is odd} \\ \frac{1}{2}\left( X_{\left(\frac{n}{2}\right)} + X_{\left(\frac{n}{2}+1\right)} \right) & \text{if } n \text{ is even} \end{cases}
+$$
+
+3. **Expected Value of a Fair Die:**
+
+$$
+E[X] = 1\left(\frac{1}{6}\right) + 2\left(\frac{1}{6}\right) + 3\left(\frac{1}{6}\right) + 4\left(\frac{1}{6}\right) + 5\left(\frac{1}{6}\right) + 6\left(\frac{1}{6}\right) = \frac{21}{6} = 3.5
+$$
+
+---
+
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 from scipy import stats
 
-# Generate right-skewed lognormal data (e.g., web server response times)
-np.random.seed(42)
-latencies = np.random.lognormal(mean=2.0, sigma=0.8, size=100_000)
+def compute_central_tendencies(data=None):
+    """
+    Computes measures of central tendency:
+    - Mean (Arithmetic Average / Expected Value E[X])
+    - Median (50th Percentile)
+    - Mode (Most Frequent Value)
+    Evaluates skewness based on relative positioning.
+    
+    Parameters:
+        data (list or np.ndarray): 1D continuous dataset.
+        
+    Returns:
+        dict: Mean, median, mode, and skewness classification.
+    """
+    if data is None:
+        # Skewed salary dataset with high earner outlier
+        data = [25, 28, 30, 32, 32, 35, 40, 42, 45, 150]
+        
+    arr = np.array(data)
+    mean_val = float(np.mean(arr))
+    median_val = float(np.median(arr))
+    mode_res = stats.mode(arr, keepdims=True)
+    mode_val = float(mode_res.mode[0])
+    
+    if np.isclose(mean_val, median_val, atol=1.0):
+        skew_type = "Symmetric (Normal)"
+    elif mean_val > median_val:
+        skew_type = "Positively Skewed (Right-Tailed: Pulled by Outlier)"
+    else:
+        skew_type = "Negatively Skewed (Left-Tailed)"
+        
+    return {
+        "mean": mean_val,
+        "median": median_val,
+        "mode": mode_val,
+        "skewness_classification": skew_type
+    }
 
-mean_val = np.mean(latencies)
-median_val = np.median(latencies)
-mode_val = stats.mode(np.round(latencies, 1), keepdims=True).mode[0]
+# --- Execution & Verification ---
+res = compute_central_tendencies()
+print(f"Mean   : {res['mean']:.2f}")
+print(f"Median : {res['median']:.2f}")
+print(f"Mode   : {res['mode']:.2f}")
+print(f"Shape  : {res['skewness_classification']}")
 
-print(f"Server Latency Metrics (Right-Skewed):")
-print(f"  Mode:   {mode_val:.2f} ms")
-print(f"  Median: {median_val:.2f} ms")
-print(f"  Mean:   {mean_val:.2f} ms")
-print(f"Ordering Holds (Mode < Median < Mean): {mode_val < median_val < mean_val}")
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-- **Linearity of Expectation Holds Universally:** $\mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y]$ requires **zero** assumptions about independence.
-- **Robustness in Production:** Mean is sensitive to outliers; Median is immune to extreme values below the 50th percentile.
+## 🔑 Key Takeaways
+1. The **Mean** is mathematically convenient but hypersensitive to extreme values and outliers.
+2. The **Median** is non-parametric and resistant to outliers, making it the preferred metric for skewed distributions (e.g. household income, house prices).
+3. When $\text{Mean} > \text{Median}$, the distribution is positively skewed (long tail extending right).

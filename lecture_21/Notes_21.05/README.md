@@ -1,88 +1,96 @@
-# Day 21 - Lecture 21.5: Distance Between Parallel Lines & Point-to-Line Distance
+# Lecture 21.05: Distance between Parallel Lines
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_05.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the mathematical derivation and formula for the **perpendicular distance between two parallel lines**, explaining its geometric importance and direct application in establishing the **Maximum Margin Classifier in Support Vector Machines (SVM)**.
 
 ---
 
-## 1. Overview & Support Vector Machine (SVM) Foundation
-
-The perpendicular distance from a data point to a hyperplane is the exact mathematical foundation of the **Support Vector Machine (SVM)** margin. The optimal hard-margin SVM seeks to maximize the distance between parallel boundary margins that flank the decision hyperplane.
+## 🏛️ SVM Margin Band Geometry
 
 ```mermaid
 flowchart TD
-    A["Hyperplane w^T * x + b = 0"] --> B["Positive Margin: w^T * x + b = +1"]
-    A --> C["Negative Margin: w^T * x + b = -1"]
-    B --> D["Total Margin Width M = 2 / ||w||"]
-    C --> D
+    L1["Upper Supporting Hyperplane: w^T x + b = +1"] --- Sep["Perpendicular Margin Width: 2 / ||w||"]
+    L2["Lower Supporting Hyperplane: w^T x + b = -1"] --- Sep
+    Sep --> Bound["Central Optimal Decision Boundary: w^T x + b = 0"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-### 1. Perpendicular Distance from Point $(x_0, y_0)$ to Line $ax + by + c = 0$:
-
-$$
-\boxed{d = \frac{|a x_0 + b y_0 + c|}{\sqrt{a^2 + b^2}}}
-$$
-
-In $n$-dimensional hyperplane vector notation $\mathbf{w}^T \mathbf{x} + b = 0$:
+### 1. Slope-Intercept Form:
+For two parallel lines $L_1: y = mx + c_1$ and $L_2: y = mx + c_2$:
 
 $$
-\boxed{d(\mathbf{x}_0) = \frac{|\mathbf{w}^T \mathbf{x}_0 + b|}{\|\mathbf{w}\|_2}}
+d = \frac{|c_1 - c_2|}{\sqrt{1 + m^2}}
 $$
 
-### 2. Distance Between Two Parallel Lines:
-For parallel lines $L_1: ax + by + c_1 = 0$ and $L_2: ax + by + c_2 = 0$:
+### 2. General Cartesian Form:
+For two parallel lines $Ax + By + C_1 = 0$ and $Ax + By + C_2 = 0$:
 
 $$
-\boxed{d = \frac{|c_1 - c_2|}{\sqrt{a^2 + b^2}}}
+d = \frac{|C_1 - C_2|}{\sqrt{A^2 + B^2}}
 $$
 
-### 3. The SVM Margin Formula:
-In SVM classification, the positive and negative support vector hyperplanes are given by:
-- $L_+: \mathbf{w}^T \mathbf{x} + b = +1 \implies \mathbf{w}^T \mathbf{x} + (b - 1) = 0$
-- $L_-: \mathbf{w}^T \mathbf{x} + b = -1 \implies \mathbf{w}^T \mathbf{x} + (b + 1) = 0$
-
-The distance between these parallel hyperplanes (the margin width $M$) is:
+### Connection to SVM (Support Vector Machines):
+In SVM classification, the data points closest to the decision boundary lie on the parallel planes $\mathbf{w}^T \mathbf{x} + b = 1$ and $\mathbf{w}^T \mathbf{x} + b = -1$.
+The total perpendicular distance (margin width) between these two parallel hyperplanes is:
 
 $$
-\boxed{M = \frac{|(b - 1) - (b + 1)|}{\|\mathbf{w}\|_2} = \frac{2}{\|\mathbf{w}\|_2}}
+\text{Margin Width } M = \frac{|1 - (-1)|}{\|\mathbf{w}\|} = \frac{2}{\|\mathbf{w}\|}
 $$
 
-Thus, **maximizing the margin $M$** is mathematically equivalent to **minimizing $\frac{1}{2}\|\mathbf{w}\|^2$**, which is the canonical SVM quadratic optimization objective!
+Maximizing this margin is equivalent to minimizing $\frac{1}{2} \|\mathbf{w}\|^2$!
 
 ---
 
-## 3. Python Implementation
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-# Point-to-Line Distance: Point P(2, 3), Line 3x + 4y - 6 = 0
-x0, y0 = 2.0, 3.0
-a, b_line, c = 3.0, 4.0, -6.0
+def compute_distance_between_parallel_lines(m=2.0, c1=5.0, c2=1.0):
+    """
+    Computes perpendicular distance between two parallel lines:
+    L1: y = mx + c1
+    L2: y = mx + c2
+    Formula: d = |c1 - c2| / sqrt(1 + m^2)
+    
+    Parameters:
+        m (float): Shared slope.
+        c1 (float): Y-intercept of line 1.
+        c2 (float): Y-intercept of line 2.
+        
+    Returns:
+        dict: Intercept difference, denominator factor, and perpendicular distance.
+    """
+    numerator = abs(c1 - c2)
+    denominator = np.sqrt(1.0 + m**2)
+    distance = numerator / denominator
+    
+    return {
+        "slope_m": m,
+        "c1": c1,
+        "c2": c2,
+        "numerator_|c1-c2|": numerator,
+        "denominator_sqrt(1+m²)": float(denominator),
+        "perpendicular_distance": float(distance)
+    }
 
-d_point = abs(a * x0 + b_line * y0 + c) / np.sqrt(a**2 + b_line**2)
-print(f"Point-to-Line Distance: {d_point:.4f} (Exact: |6 + 12 - 6| / 5 = 12/5 = 2.4)")
+# --- Execution & Verification ---
+# L1: y = 2x + 5, L2: y = 2x + 1 -> |5 - 1| / sqrt(1 + 4) = 4 / sqrt(5) ≈ 1.7889
+res = compute_distance_between_parallel_lines(m=2.0, c1=5.0, c2=1.0)
+print(f"L1: y = {res['slope_m']}x + {res['c1']}")
+print(f"L2: y = {res['slope_m']}x + {res['c2']}")
+print(f"Numerator |c1 - c2|       = {res['numerator_|c1-c2|']}")
+print(f"Denominator sqrt(1 + m²) = {res['denominator_sqrt(1+m²)']:.4f}")
+print(f"Perpendicular Distance d = {res['perpendicular_distance']:.4f}")
 
-# Distance between parallel lines: 3x + 4y - 6 = 0 and 3x + 4y + 9 = 0
-c1, c2 = -6.0, 9.0
-d_parallel = abs(c1 - c2) / np.sqrt(a**2 + b_line**2)
-print(f"Distance between Parallel Lines: {d_parallel:.4f} (Exact: 15/5 = 3.0)")
-
-# SVM Margin Width for weight vector w = [3, 4]
-w = np.array([3.0, 4.0])
-margin_width = 2.0 / np.linalg.norm(w)
-print(f"SVM Margin Width M = 2 / ||w||: {margin_width:.4f} (Exact: 2/5 = 0.4)")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Origin of SVM Optimization:** SVM minimizes $\frac{1}{2}\|\mathbf{w}\|^2$ because the physical margin between parallel separating planes is $M = \frac{2}{\|\mathbf{w}\|}$.
-- **Denominator is the Normal Norm:** The denominator $\sqrt{a^2 + b^2} = \|\mathbf{w}\|$ normalizes the line equation into a unit-length normal projection.
+## 🔑 Key Takeaways
+1. The distance between parallel lines is constant everywhere along their length.
+2. The formula divides the vertical intercept separation $|c_1 - c_2|$ by $\sqrt{1 + m^2}$ to project onto the perpendicular normal vector.
+3. In SVM, maximizing the distance between parallel boundary planes maximizes generalization and prevents overfitting.

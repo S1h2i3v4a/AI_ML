@@ -1,103 +1,119 @@
-# Day 21 - Lecture 21.15: Eigenvalues & Eigenvectors
+# Lecture 21.15: Eigenvectors & Eigenvalues
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_15.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers **Eigenvectors and Eigenvalues**, defining that an eigenvector of a matrix is a non-zero vector that, when transformed by the matrix, does not change its spatial direction but is merely scaled by factor $\lambda$ ($A\mathbf{v} = \lambda \mathbf{v}$). She details the characteristic equation $\det(A - \lambda I) = 0$ and explains its foundational role in Principal Component Analysis (PCA).
 
 ---
 
-## 1. Overview & Invariant Transformation Axes
-
-When a square matrix $\mathbf{A}$ acts on an arbitrary vector $\mathbf{x}$, it typically changes both the vector's length and its direction. However, certain special vectors **only experience scaling without changing their directional orientation**. These invariant axes are the **Eigenvectors**, and the corresponding scaling factors are the **Eigenvalues**.
+## 🏛️ Invariant Direction Transformation Geometry
 
 ```mermaid
 flowchart LR
-    A["Transformation Matrix A"] --> B["Arbitrary Vector x: Rotates and Scales"]
-    A --> C["Eigenvector v: NO Rotation! Stays on same span"]
-    C --> D["A * v = lambda * v (Only scaled by eigenvalue lambda)"]
+    Vector["Original Non-Zero Vector v"] --> Transform["Matrix Transformation: A * v"]
+    Transform --> Direction["Direction is UNCHANGED! Vector stays on the exact same line"]
+    Transform --> Scale["Length is Scaled by Eigenvalue: λ * v"]
+    
+    subgraph FundamentalEquation["Eigen Equation"]
+        Eq["A v = λ v"]
+    end
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-### 1. Fundamental Definition:
-For square matrix $\mathbf{A} \in \mathbb{R}^{n \times n}$, a non-zero vector $\mathbf{v} \ne \mathbf{0}$ is an eigenvector with eigenvalue $\lambda \in \mathbb{C}$ if:
+### 1. The Fundamental Eigen Equation:
 
 $$
-\boxed{\mathbf{A} \mathbf{v} = \lambda \mathbf{v}}
+\mathbf{A}\mathbf{v} = \lambda \mathbf{v}
 $$
 
-### 2. Characteristic Equation:
-Rewriting the equation:
+where:
+- $\mathbf{A} \in \mathbb{R}^{n \times n}$: Square matrix
+- $\mathbf{v} \neq \mathbf{0}$: Eigenvector (invariant direction)
+- $\lambda \in \mathbb{R}$: Eigenvalue (scalar scaling factor)
+
+### 2. The Characteristic Equation:
+Rearranging the equation:
 
 $$
 \mathbf{A}\mathbf{v} - \lambda \mathbf{I}\mathbf{v} = \mathbf{0} \implies (\mathbf{A} - \lambda \mathbf{I})\mathbf{v} = \mathbf{0}
 $$
 
-For non-trivial solutions ($\mathbf{v} \ne \mathbf{0}$), the matrix $(\mathbf{A} - \lambda\mathbf{I})$ must be singular:
+For a non-trivial solution ($\mathbf{v} \neq \mathbf{0}$) to exist, the matrix $(\mathbf{A} - \lambda \mathbf{I})$ must be singular:
 
 $$
-\boxed{\det(\mathbf{A} - \lambda \mathbf{I}) = 0}
+\det(\mathbf{A} - \lambda \mathbf{I}) = 0
 $$
 
-Solving this $n$-th degree polynomial yields the $n$ eigenvalues $\lambda_1, \dots, \lambda_n$.
+Solving this polynomial yields the eigenvalues $\lambda_1, \lambda_2, \dots, \lambda_n$.
 
-### 3. Spectral Decomposition (Symmetric Matrices):
-For any real symmetric matrix $\mathbf{A} = \mathbf{A}^T$ (e.g., Covariance Matrix):
-- All eigenvalues are strictly real: $\lambda_i \in \mathbb{R}$.
-- Eigenvectors corresponding to distinct eigenvalues are strictly orthogonal: $\mathbf{v}_i \perp \mathbf{v}_j$.
-
-$$
-\boxed{\mathbf{A} = \mathbf{Q} \mathbf{\Lambda} \mathbf{Q}^T}
-$$
-
-where $\mathbf{Q}$ is an orthogonal matrix of eigenvectors and $\mathbf{\Lambda} = \text{diag}(\lambda_1, \dots, \lambda_n)$.
-
-### 4. Principal Component Analysis (PCA) Connection:
-In PCA, the principal component axes are the **eigenvectors of the covariance matrix $\mathbf{\Sigma}$**, sorted in descending order of their eigenvalues. The eigenvalue $\lambda_i$ represents the variance captured along component $i$.
+### Machine Learning Connection: PCA (Principal Component Analysis)
+In unsupervised dimensionality reduction:
+1. Compute the data covariance matrix $\mathbf{\Sigma} = \frac{1}{n} \mathbf{X}^T \mathbf{X}$.
+2. Perform Eigen-decomposition on $\mathbf{\Sigma}$.
+3. The **eigenvectors** with the largest **eigenvalues** point along the directions of maximum feature variance (Principal Components)!
 
 ---
 
-## 3. Python Implementation
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-# Covariance matrix
-A = np.array([
-    [4.0, 2.0],
-    [2.0, 3.0]
-])
+def compute_eigen_decomposition(A=None):
+    """
+    Computes Eigenvalues and Eigenvectors of a square matrix A:
+    A * v = lambda * v
+    Demonstrates that eigenvector v maintains its direction under transformation A,
+    merely getting scaled by eigenvalue lambda.
+    
+    Parameters:
+        A (np.ndarray): Square matrix (2x2).
+        
+    Returns:
+        dict: Eigenvalues, Eigenvectors, and verification of A*v == lambda*v.
+    """
+    if A is None:
+        # Standard symmetric matrix
+        A = np.array([
+            [4.0, 1.0],
+            [1.0, 4.0]
+        ])
+        
+    # Compute eigenvalues and right eigenvectors
+    eigenvalues, eigenvectors = np.linalg.eig(A)
+    
+    # Verification for first eigenpair
+    lam0 = eigenvalues[0]
+    v0 = eigenvectors[:, 0]
+    
+    lhs = np.dot(A, v0)
+    rhs = lam0 * v0
+    
+    is_verified = bool(np.allclose(lhs, rhs))
+    
+    return {
+        "matrix_A": A.tolist(),
+        "eigenvalues": eigenvalues.tolist(),
+        "eigenvector_0": v0.tolist(),
+        "eigenvalue_0": float(lam0),
+        "is_Av_equal_lambdav": is_verified
+    }
 
-# Eigendecomposition
-eigenvalues, eigenvectors = np.linalg.eigh(A)
+# --- Execution & Verification ---
+res = compute_eigen_decomposition()
+print("Matrix A:")
+print(np.array(res["matrix_A"]))
+print(f"Eigenvalues (lambda): {[round(x, 4) for x in res['eigenvalues']]}")
+print(f"Eigenvector v0      : {[round(x, 4) for x in res['eigenvector_0']]}")
+print(f"Verification A*v == lambda*v? {res['is_Av_equal_lambdav']}")
 
-# Sort in descending order
-idx = np.argsort(eigenvalues)[::-1]
-eigenvalues = eigenvalues[idx]
-eigenvectors = eigenvectors[:, idx]
-
-print("Eigenvalues (Variance along axes):\n", eigenvalues)
-print("\nEigenvectors (Principal Axes):\n", eigenvectors)
-
-# Verification: A @ v == lambda * v
-v0 = eigenvectors[:, 0]
-lambda0 = eigenvalues[0]
-
-Av0 = np.dot(A, v0)
-lambda_v0 = lambda0 * v0
-
-print(f"\nA @ v0:        {Av0}")
-print(f"lambda0 * v0:  {lambda_v0}")
-print("A @ v == lambda * v:", np.allclose(Av0, lambda_v0))
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Geometric Invariance:** Eigenvectors are the vectors whose directions do not rotate under the matrix transformation.
-- **PCA Dimensionality Reduction:** The first principal component is the eigenvector with the largest eigenvalue, maximizing explained variance.
-- **Trace and Determinant Identities:** $\sum \lambda_i = \text{Tr}(\mathbf{A})$ and $\prod \lambda_i = \det(\mathbf{A})$.
+## 🔑 Key Takeaways
+1. Most vectors change direction when multiplied by a matrix; eigenvectors are the rare vectors that only stretch or shrink.
+2. The eigenvalue $\lambda$ specifies how much the eigenvector stretches ($\lambda > 1$), shrinks ($0 < \lambda < 1$), or reverses ($\lambda < 0$).
+3. Principal Component Analysis (PCA) uses eigenvectors of the covariance matrix to compress high-dimensional data while retaining maximum information.

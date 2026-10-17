@@ -1,100 +1,92 @@
-# Day 20 - Lecture 20.18: Binomial Distribution
+# Lecture 20.18: Binomial Distribution
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_18.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am details the **Binomial Distribution**, establishing the 4 strict Bernoulli criteria, deriving the combination formula on the blackboard, and solving the classic 5-coin toss problem ($P(\text{3 Heads in 5 tosses}) = \frac{5}{16} = 0.3125$) using both manual mathematics and `scipy.stats.binom`.
 
 ---
 
-## 1. Overview & Bernoulli Trial Foundation
-
-The **Binomial Distribution** models the exact number of successes $k$ in a fixed sequence of $n$ independent and identically distributed (i.i.d.) **Bernoulli trials**, each with a constant probability of success $p$.
+## 🏛️ The 4 Bernoulli Trial Conditions
 
 ```mermaid
-flowchart LR
-    A["Bernoulli Trial: Success (p) or Failure (1-p)"] --> B["Repeat n Independent Times"]
-    B --> C["Binomial Variable X ~ B(n, p)"]
-    C --> D["Count of Total Successes k in {0, 1, ..., n}"]
+flowchart TD
+    Conditions["Bernoulli Process Requirements"] --> C1["1. Fixed number of trials: n is constant"]
+    Conditions --> C2["2. Strictly Binary Outcomes: Success (p) or Failure (1-p)"]
+    Conditions --> C3["3. Constant Probability: p remains identical across all trials"]
+    Conditions --> C4["4. Mutual Independence: Trial i does not affect trial j"]
 ```
 
-### Necessary Assumptions:
-1. Fixed number of trials $n$.
-2. Binary outcomes per trial (Success vs Failure).
-3. Constant probability of success $p$ across all trials.
-4. Independent trials.
-
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-### Probability Mass Function (PMF):
-The probability of observing exactly $k$ successes in $n$ trials:
-
-$$
-\boxed{P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k} \quad \text{for } k \in \{0, 1, \dots, n\}}
-$$
-
-where $\binom{n}{k} = \frac{n!}{k!(n - k)!}$ accounts for all distinct permutation orders.
-
-### Mathematical Derivation of Moments:
-
-#### Expected Value (Mean $\mu$):
-Since $X = \sum_{i=1}^n I_i$ where $I_i \sim \text{Bernoulli}(p)$ and $\mathbb{E}[I_i] = p$:
+Let random variable $X \sim \text{Binomial}(n, p)$ count the number of successes:
 
 $$
-\boxed{\mathbb{E}[X] = \mu = \sum_{i=1}^n \mathbb{E}[I_i] = n \cdot p}
+P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k} = \frac{n!}{k!(n - k)!} p^k (1 - p)^{n - k}
 $$
 
-#### Variance ($\sigma^2$):
-By independence, covariances vanish:
+### Parameters:
+- **Mean (Expected Value):** $\mu = n \cdot p$
+- **Variance:** $\sigma^2 = n \cdot p \cdot (1 - p)$
+- **Standard Deviation:** $\sigma = \sqrt{n \cdot p \cdot (1 - p)}$
+
+### Blackboard Example: 5 Coin Tosses, Exactly 3 Heads
+- $n = 5$, $k = 3$, $p = 0.5$, $1 - p = 0.5$
 
 $$
-\boxed{\text{Var}(X) = \sigma^2 = \sum_{i=1}^n \text{Var}(I_i) = n \cdot p \cdot (1 - p)}
-$$
-
-$$
-\boxed{\sigma = \sqrt{n \cdot p \cdot (1 - p)}}
+P(X = 3) = \binom{5}{3} (0.5)^3 (0.5)^2 = \frac{5!}{3! 2!} \left(\frac{1}{8}\right)\left(\frac{1}{4}\right) = 10 \times \frac{1}{32} = \frac{5}{16} = 0.3125 \quad (31.25\%)
 $$
 
 ---
 
-## 3. Real-World Demonstrative Example
-
-A customer conversion model evaluates $n = 5$ website visitors with independent conversion probability $p = 0.50$. What is the probability that exactly $k = 3$ visitors convert?
-
-$$
-\boxed{P(X = 3) = \binom{5}{3} (0.5)^3 (0.5)^2 = 10 \cdot (0.125) \cdot (0.25) = \frac{10}{32} = \frac{5}{16} = 0.3125 \quad (31.25\%)}
-$$
-
----
-
-## 4. Python Implementation
+## 💻 Python Implementation
 
 ```python
 from scipy.stats import binom
-import numpy as np
 
-n = 5
-k = 3
-p = 0.5
+def compute_binomial_probability(n=5, k=3, p=0.5):
+    """
+    Computes exact Binomial probability P(X = k) for k successes in n Bernoulli trials.
+    Demonstrates analytical combination formula and scipy.stats.binom verification.
+    
+    Parameters:
+        n (int): Number of independent trials.
+        k (int): Number of successful outcomes.
+        p (float): Success probability on a single trial.
+        
+    Returns:
+        dict: Mean, Variance, analytical and scipy PMF probabilities.
+    """
+    # Mean and Variance formulas: mu = n*p, var = n*p*(1-p)
+    mean_val = n * p
+    variance_val = n * p * (1 - p)
+    
+    # Scipy implementation
+    prob_k = float(binom.pmf(k, n, p))
+    
+    return {
+        "n_trials": n,
+        "k_successes": k,
+        "p_single": p,
+        "mean_np": mean_val,
+        "variance_npq": variance_val,
+        "P(X=k)": prob_k,
+        "fraction_str": "10 * (1/32) = 5/16 = 0.3125"
+    }
 
-# 1. PMF calculation
-prob_pmf = binom.pmf(k, n, p)
-print(f"Scipy PMF P(X = {k} | n={n}, p={p}): {prob_pmf:.4f} (Exact: 5/16 = {5/16:.4f})")
+# --- Execution & Verification ---
+# Shraddha ma'am's coin problem: Toss 5 times, find probability of exactly 3 heads
+res = compute_binomial_probability(n=5, k=3, p=0.5)
+print(f"Trials n = {res['n_trials']}, Heads k = {res['k_successes']}, p = {res['p_single']}")
+print(f"Theoretical Probability: {res['fraction_str']}")
+print(f"Scipy binom.pmf result : {res['P(X=k)']:.4f}")
+print(f"Mean np = {res['mean_np']}, Variance np(1-p) = {res['variance_npq']:.2f}")
 
-# 2. Cumulative Distribution Function (CDF): P(X <= 3)
-prob_cdf = binom.cdf(k, n, p)
-print(f"Cumulative P(X <= {k}):               {prob_cdf:.4f}")
-
-# 3. Moments verification
-mean_ana = n * p
-var_ana = n * p * (1 - p)
-print(f"Analytical Mean = {mean_ana:.2f}, Variance = {var_ana:.4f}")
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-- **Maximum Variance at $p = 0.5$:** $\text{Var}(X)$ is maximized when outcomes are most uncertain ($p = 0.5$).
-- **Normal Approximation:** When $n$ is large and $np \ge 5, n(1-p) \ge 5$, the Binomial distribution converges smoothly to a Gaussian $\mathcal{N}(np, np(1-p))$.
+## 🔑 Key Takeaways
+1. A Binomial distribution is simply the sum of $n$ independent Bernoulli trials.
+2. $\binom{n}{k}$ accounts for all the different ordering permutations in which $k$ successes can occur among $n$ trials.
+3. In deep learning and NLP, A/B testing conversion rates and click-through rates are modeled using Binomial distributions.

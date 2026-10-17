@@ -1,100 +1,96 @@
-# Day 20 - Lecture 20.8: The Multiplication Rule of Probability
+# Lecture 20.08: Multiplication Rule in Probability
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_08.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the **Multiplication Rule of Probability** ($P(A \cap B)$), detailing how joint probabilities are computed for sequential processes both with replacement (independent events) and without replacement (dependent events).
 
 ---
 
-## 1. Overview & Joint Event Dynamics
-
-The **Multiplication Rule** (or Product Rule) determines the probability of the simultaneous joint intersection of multiple events ($A \cap B$). It accounts for sequential dependencies and time-ordered causality.
+## 🏛️ Sequential Event Tree Architecture
 
 ```mermaid
-flowchart LR
-    A["Joint Probability P(A cap B)"] --> B["Dependent Events"]
-    A --> C["Independent Events"]
-    B --> D["P(A cap B) = P(A) * P(B|A)"]
-    C --> E["P(A cap B) = P(A) * P(B)"]
+flowchart TD
+    Start["Stage 1: Event A Occurs with P(A)"] --> Branch{Is Stage 2 Independent?}
+    Branch -->|Yes: With Replacement| Ind["P(A ∩ B) = P(A) * P(B)"]
+    Branch -->|No: Without Replacement| Dep["P(A ∩ B) = P(A) * P(B | A)"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation: The General Chain Rule
 
-### General Multiplication Rule (Dependent Events):
-For any two events $A$ and $B$ where $P(A) > 0$:
-
-$$
-\boxed{P(A \cap B) = P(A) \cdot P(B \mid A) = P(B) \cdot P(A \mid B)}
-$$
-
-### Independent Events:
-If $A$ and $B$ are statistically independent, then $P(B \mid A) = P(B)$:
+1. **General Multiplication Rule (Dependent Events):**
 
 $$
-\boxed{P(A \cap B) = P(A) \cdot P(B)}
+P(A \cap B) = P(A) \cdot P(B \mid A)
 $$
 
-### General Chain Rule of Probability ($n$ Events):
-The foundational backbone of autoregressive language models (such as GPT and Transformers):
+where $P(B \mid A)$ denotes the conditional probability of $B$ given that $A$ has occurred.
+
+2. **Independent Events Simplification:**
+If $B$ is independent of $A$, then $P(B \mid A) = P(B)$:
 
 $$
-\boxed{P(A_1 \cap A_2 \cap \dots \cap A_n) = P(A_1) \cdot P(A_2 \mid A_1) \cdot P(A_3 \mid A_1 \cap A_2) \dots P(A_n \mid A_1 \cap \dots \cap A_{n-1})}
+P(A \cap B) = P(A) \cdot P(B)
 $$
 
-In Large Language Models, text sequence likelihood is decomposed via this exact chain rule:
+### Drawing Two Kings Without Replacement:
+- First draw: 4 Kings out of 52 cards $\implies P(K_1) = \frac{4}{52}$
+- Second draw: 3 Kings remaining out of 51 total cards $\implies P(K_2 \mid K_1) = \frac{3}{51}$
 
 $$
-\boxed{P(w_1, w_2, \dots, w_T) = \prod_{t=1}^T P(w_t \mid w_1, \dots, w_{t-1})}
+P(K_1 \cap K_2) = \frac{4}{52} \times \frac{3}{51} = \frac{12}{2652} = \frac{1}{221} \approx 0.00452 \quad (0.45\%)
 $$
 
 ---
 
-## 3. Real-World Demonstrative Example
-
-Consider an urn containing 5 Red balls and 3 Green balls (Total = 8 balls). Draw 2 balls sequentially **without replacement**. What is the probability that both balls are Red?
-- Event $A$: First ball is Red $\implies P(A) = \frac{5}{8}$.
-- Event $B \mid A$: Second ball is Red given first was Red $\implies P(B \mid A) = \frac{4}{7}$.
-
-$$
-\boxed{P(A \cap B) = P(A) \cdot P(B \mid A) = \frac{5}{8} \cdot \frac{4}{7} = \frac{20}{56} = \frac{5}{14} \approx 0.3571}
-$$
-
-If drawn **with replacement** (Independent events):
-
-$$
-\boxed{P(A \cap B) = \frac{5}{8} \cdot \frac{5}{8} = \frac{25}{64} \approx 0.3906}
-$$
-
----
-
-## 4. Python Implementation
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def compute_multiplication_rule(p_a, p_b_given_a=None, independent=True, p_b=None):
+    """
+    Computes joint probability P(A ∩ B) using the Multiplication Rule.
+    Handles both independent events (P(A)*P(B)) and dependent events (P(A)*P(B|A)).
+    
+    Parameters:
+        p_a (float): P(A)
+        p_b_given_a (float): P(B|A) for dependent events.
+        independent (bool): True if events are independent.
+        p_b (float): P(B) for independent events.
+        
+    Returns:
+        dict: Joint probability and conditional details.
+    """
+    if independent:
+        if p_b is None:
+            raise ValueError("p_b must be supplied for independent events.")
+        joint_prob = p_a * p_b
+    else:
+        if p_b_given_a is None:
+            raise ValueError("p_b_given_a must be supplied for dependent events.")
+        joint_prob = p_a * p_b_given_a
+        
+    return {
+        "is_independent": independent,
+        "P(A)": p_a,
+        "P(A ∩ B)": joint_prob
+    }
 
-# Urn simulation: 1 = Red (5), 0 = Green (3)
-urn = np.array([1, 1, 1, 1, 1, 0, 0, 0])
-n_simulations = 1_000_000
+# --- Execution & Verification ---
+# Dependent Case: Drawing 2 Kings consecutively WITHOUT replacement
+# P(1st King) = 4/52, P(2nd King | 1st King) = 3/51
+res_dep = compute_multiplication_rule(p_a=4/52, p_b_given_a=3/51, independent=False)
+print(f"Two Kings without replacement: P(K1 ∩ K2) = (4/52) * (3/51) = {res_dep['P(A ∩ B)']:.6f} ≈ {res_dep['P(A ∩ B)'] * 100:.3f}%")
 
-# Draw 2 balls WITHOUT replacement
-draws_without = np.array([np.random.choice(urn, size=2, replace=False) for _ in range(n_simulations)])
-both_red_without = np.mean((draws_without[:, 0] == 1) & (draws_without[:, 1] == 1))
+# Independent Case: Tossing 2 Heads on 2 coins
+# P(H1) = 0.5, P(H2) = 0.5
+res_ind = compute_multiplication_rule(p_a=0.5, p_b=0.5, independent=True)
+print(f"Two Heads on independent coins: P(H1 ∩ H2) = 0.5 * 0.5 = {res_ind['P(A ∩ B)']:.4f}")
 
-# Analytical values
-p_without_analytical = (5 / 8) * (4 / 7)
-p_with_analytical = (5 / 8) * (5 / 8)
-
-print(f"Without Replacement Analytical: {p_without_analytical:.4f} (5/14)")
-print(f"Without Replacement Empirical:  {both_red_without:.4f}")
-print(f"With Replacement Analytical:    {p_with_analytical:.4f} (25/64)")
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-- **Autoregressive AI Foundation:** The probabilistic foundation of modern LLMs is the Chain Rule of Probability, factorizing the joint sequence into conditional next-token probabilities.
-- **Replacement Dictates Independence:** Sampling with replacement implies independence; sampling without replacement induces statistical dependence.
+## 🔑 Key Takeaways
+1. The word **"AND"** in probability problems signals the Multiplication Rule ($A \cap B$).
+2. Sampling "without replacement" creates statistical dependence because earlier draws modify the sample space.
+3. This rule forms the foundational premise for Naive Bayes machine learning classifiers.

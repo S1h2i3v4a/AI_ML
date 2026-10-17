@@ -1,75 +1,117 @@
-# Day 21 - Lecture 21.11: The Cross Product
+# Lecture 21.11: Cross Product (Vector Product)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_11.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the **Cross Product (Vector Product)**, contrasting it with the dot product: **"cross $\to$ vector"** (the result is a vector pointing perpendicular to both inputs according to the Right-Hand Rule). She calculates $\vec{A} \times \vec{B}$ via the $3 \times 3$ determinant expansion.
 
 ---
 
-## 1. Overview & 3D Spatial Geometry
-
-While the dot product yields a scalar, the **Cross Product** of two 3D vectors $\mathbf{u}, \mathbf{v} \in \mathbb{R}^3$ yields a new **vector** that is strictly perpendicular to both input vectors simultaneously. In Robotics, Computer Vision, and 3D Generative AI (NeRFs, Gaussian Splatting), cross products calculate surface normals, rotational torque, and plane orientations.
+## 🏛️ Orthogonal Normal Vector & Right-Hand Rule
 
 ```mermaid
 flowchart TD
-    A["Vectors u and v in R^3"] --> B["Cross Product u x v"]
-    B --> C["Result is a Vector perpendicular to both u and v"]
-    B --> D["Direction: Right-Hand Rule"]
-    B --> E["Magnitude: Area of Parallelogram = ||u||*||v||*sin(theta)"]
+    Plane["2D Plane containing Vectors Ā and B̄"] --> Cross["Cross Product: C̄ = Ā x B̄"]
+    Cross --> Norm["Vector C̄ sticks out at 90° strictly perpendicular to the plane"]
+    
+    subgraph Rule["Blackboard Rule"]
+        CrossRule["cross  ===>  VECTOR (Points along Normal Unit Vector n̂)"]
+    end
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-### 1. Determinant Expansion Definition:
-For vectors $\mathbf{u} = [u_1, u_2, u_3]^T$ and $\mathbf{v} = [v_1, v_2, v_3]^T$:
-
-$$
-\boxed{\mathbf{u} \times \mathbf{v} = \det \begin{bmatrix} \hat{\mathbf{i}} & \hat{\mathbf{j}} & \hat{\mathbf{k}} \\ u_1 & u_2 & u_3 \\ v_1 & v_2 & v_3 \end{bmatrix} = \begin{bmatrix} u_2 v_3 - u_3 v_2 \\ u_3 v_1 - u_1 v_3 \\ u_1 v_2 - u_2 v_1 \end{bmatrix}}
-$$
-
-### 2. Geometric Magnitude & Direction:
+### 1. Determinant Form:
 
 $$
-\boxed{\|\mathbf{u} \times \mathbf{v}\| = \|\mathbf{u}\|_2 \|\mathbf{v}\|_2 \sin(\theta)}
+\vec{A} \times \vec{B} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ a_1 & b_1 & c_1 \\ a_2 & b_2 & c_2 \end{vmatrix} = \hat{i}(b_1 c_2 - c_1 b_2) - \hat{j}(a_1 c_2 - c_1 a_2) + \hat{k}(a_1 b_2 - b_1 a_2)
 $$
 
-where $\|\mathbf{u} \times \mathbf{v}\|$ equals the exact **area of the parallelogram** spanned by $\mathbf{u}$ and $\mathbf{v}$.
+### 2. Geometric Form:
 
-### 3. Key Algebraic Properties:
-- **Anti-commutative:** $\mathbf{u} \times \mathbf{v} = -(\mathbf{v} \times \mathbf{u})$
-- **Self Cross-Product:** $\mathbf{u} \times \mathbf{u} = \mathbf{0}$
-- **Parallelism Test:** $\mathbf{u} \parallel \mathbf{v} \iff \mathbf{u} \times \mathbf{v} = \mathbf{0}$
+$$
+\vec{A} \times \vec{B} = (\|\vec{A}\| \|\vec{B}\| \sin\theta) \, \hat{n}
+$$
+
+where $\hat{n}$ is the unit normal vector determined by the right-hand grip rule.
+
+### Blackboard Calculation:
+For $\vec{A} = (2, 1, 3)$ and $\vec{B} = (4, 5, 2)$:
+
+$$
+\vec{C} = \hat{i}(1 \cdot 2 - 3 \cdot 5) - \hat{j}(2 \cdot 2 - 3 \cdot 4) + \hat{k}(2 \cdot 5 - 1 \cdot 4)
+$$
+
+$$
+\vec{C} = \hat{i}(2 - 15) - \hat{j}(4 - 12) + \hat{k}(10 - 4) = -13\hat{i} + 8\hat{j} + 6\hat{k}
+$$
+
+Verification of mutual orthogonality:
+- $\vec{C} \cdot \vec{A} = -13(2) + 8(1) + 6(3) = -26 + 8 + 18 = 0$
+- $\vec{C} \cdot \vec{B} = -13(4) + 8(5) + 6(2) = -52 + 40 + 12 = 0$
+
+Both dot products are exactly zero!
 
 ---
 
-## 3. Python Implementation
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-u = np.array([1.0, 0.0, 0.0])  # Unit vector along X
-v = np.array([0.0, 1.0, 0.0])  # Unit vector along Y
+def compute_cross_product(a=(2, 1, 3), b=(4, 5, 2)):
+    """
+    Computes Cross Product (Vector Product) between 3D vectors a and b:
+    C = a x b = det([i, j, k; a1, a2, a3; b1, b2, b3])
+    Result is a VECTOR strictly orthogonal (perpendicular) to both a and b.
+    
+    Parameters:
+        a (tuple): Vector A.
+        b (tuple): Vector B.
+        
+    Returns:
+        dict: Resultant vector C, magnitude, and orthogonality verification.
+    """
+    a_arr = np.array(a, dtype=float)
+    b_arr = np.array(b, dtype=float)
+    
+    # 1. NumPy cross product (yields 3D VECTOR)
+    c_arr = np.cross(a_arr, b_arr)
+    
+    # 2. Magnitude represents area of parallelogram formed by A and B
+    mag_c = float(np.linalg.norm(c_arr))
+    
+    # 3. Orthogonality check: C . A == 0 and C . B == 0
+    dot_c_a = float(np.dot(c_arr, a_arr))
+    dot_c_b = float(np.dot(c_arr, b_arr))
+    
+    return {
+        "vector_A": list(a),
+        "vector_B": list(b),
+        "cross_product_vector_C": list(c_arr),
+        "notation_str": f"{int(c_arr[0])}i + {int(c_arr[1])}j + {int(c_arr[2])}k",
+        "magnitude_||C||": mag_c,
+        "is_perpendicular_to_A": bool(np.isclose(dot_c_a, 0.0)),
+        "is_perpendicular_to_B": bool(np.isclose(dot_c_b, 0.0))
+    }
 
-# Cross Product
-w = np.cross(u, v)
+# --- Execution & Verification ---
+# Blackboard example: A = (2, 1, 3), B = (4, 5, 2)
+# C = (1*2 - 3*5)i - (2*2 - 3*4)j + (2*5 - 1*4)k
+#   = (2 - 15)i - (4 - 12)j + (10 - 4)k = -13i + 8j + 6k
+res = compute_cross_product(a=(2, 1, 3), b=(4, 5, 2))
+print("Vector A:", res["vector_A"])
+print("Vector B:", res["vector_B"])
+print(f"Cross Product Vector C = A x B: {res['cross_product_vector_C']}")
+print(f"Component Form: {res['notation_str']}")
+print(f"Perpendicular to A? {res['is_perpendicular_to_A']} (C . A = 0)")
+print(f"Perpendicular to B? {res['is_perpendicular_to_B']} (C . B = 0)")
 
-print(f"u:       {u}")
-print(f"v:       {v}")
-print(f"u x v:   {w} (Expected: [0, 0, 1] along Z)")
-print(f"Orthogonal to u: {np.dot(w, u) == 0}")
-print(f"Orthogonal to v: {np.dot(w, v) == 0}")
-
-# Parallelogram Area
-area = np.linalg.norm(w)
-print(f"Parallelogram Area: {area:.2f}")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Strictly in 3D:** Cross product is uniquely defined for vectors in $\mathbb{R}^3$ (and algebraically in $\mathbb{R}^7$).
-- **Computer Vision Surface Normals:** Estimating surface mesh orientations requires computing cross products between adjacent triangle edge vectors.
+## 🔑 Key Takeaways
+1. Cross product produces a **vector**, unlike dot product which produces a scalar.
+2. The cross product vector is always strictly perpendicular ($90^\circ$) to both input vectors.
+3. If two vectors are parallel ($\theta = 0^\circ$), their cross product is zero ($\vec{A} \times \vec{B} = \vec{0}$).

@@ -1,107 +1,100 @@
-# Day 20 - Lecture 20.5: Types of Events
+# Lecture 20.05: Types of Events in Probability
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_05.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am classifies the **fundamental taxonomy of events in Probability Theory**: Mutually Exclusive (Disjoint) events, Independent events, Dependent events, and Exhaustive events, illustrating their differences using Venn diagrams.
 
 ---
 
-## 1. Taxonomic Classification of Events
-
-In probability theory, events are classified based on their logical relationships, intersection characteristics, and probabilistic dependencies.
+## 🏛️ Event Classification Taxonomy
 
 ```mermaid
 flowchart TD
-    A["Event Taxonomy"] --> B["Disjoint (Mutually Exclusive)"]
-    A --> C["Non-Disjoint (Overlapping)"]
-    A --> D["Independent Events"]
-    A --> E["Dependent Events"]
-    A --> F["Exhaustive Events"]
-    B --> G["A cap B = empty -> P(A cap B) = 0"]
-    C --> H["A cap B != empty -> P(A cap B) > 0"]
-    D --> I["P(A cap B) = P(A) * P(B)"]
-    E --> J["P(A cap B) = P(A) * P(B|A)"]
-    F --> K["Union of all Ei = S -> Sum P(Ei) = 1"]
+    Events["Event Relationships"] --> ME["Mutually Exclusive (Disjoint)<br/>A ∩ B = ∅<br/>Cannot occur together"]
+    Events --> Ind["Independent Events<br/>P(A ∩ B) = P(A) * P(B)<br/>One does not affect the other"]
+    Events --> Dep["Dependent Events<br/>P(B | A) ≠ P(B)<br/>Knowledge of A alters B"]
+    Events --> Exh["Exhaustive Events<br/>A ∪ B = S<br/>At least one must occur"]
 ```
 
 ---
 
-## 2. Mathematical Formalism & Theorems
+## 📐 Mathematical Formalism: Key Conditions
 
-### 1. Mutually Exclusive (Disjoint) Events
-Two events $A$ and $B$ cannot occur simultaneously:
-
-$$
-oxed{A \cap B = \emptyset \implies P(A \cap B) = 0}
-$$
-
-### 2. Independent Events
-The occurrence of event $A$ provides zero information regarding the likelihood of event $B$:
+1. **Mutually Exclusive (Disjoint):**
 
 $$
-oxed{P(A \cap B) = P(A) \cdot P(B) \iff P(A \mid B) = P(A)}
+A \cap B = \emptyset \implies P(A \cap B) = 0
 $$
 
-> [!WARNING]
-> **Common Trap:** Mutually exclusive events are **NOT** independent! In fact, if $P(A) > 0$ and $P(B) > 0$ and $A, B$ are mutually exclusive, then $P(A \cap B) = 0 
-e P(A)P(B)$. Thus, mutually exclusive events with positive probabilities are strictly **dependent**!
-
-### 3. Exhaustive Events
-A collection of events $\{E_1, E_2, \dots, E_k\}$ whose union completely spans the entire sample space:
+2. **Independent Events:**
 
 $$
-oxed{igcup_{i=1}^k E_i = \mathcal{S} \implies P\left(igcup_{i=1}^k E_iight) = 1.0}
+P(A \cap B) = P(A) \cdot P(B) \iff P(A \mid B) = P(A)
 $$
 
-### 4. Partition of Sample Space
-A collection $\{B_1, \dots, B_k\}$ that is simultaneously **mutually exclusive** and **collectively exhaustive**:
+3. **Exhaustive Events:**
 
 $$
-oxed{B_i \cap B_j = \emptyset \quad orall i 
-e j \qquad	ext{and}\qquad igcup_{i=1}^k B_i = \mathcal{S}}
+\bigcup_{i=1}^k A_i = S \implies P\left(\bigcup_{i=1}^k A_i\right) = 1
 $$
+
+> **Critical Distinction:** Mutually exclusive events with positive probabilities can **never** be independent, because if $A$ occurs, $B$ is guaranteed *not* to occur ($P(B \mid A) = 0 \neq P(B)$)!
 
 ---
 
-## 3. Python Implementation: Verifying Independence vs. Disjointness
+## 💻 Python Implementation
 
 ```python
+def test_event_types(sample_space, event_a, event_b):
+    """
+    Classifies the mathematical relationship between two events A and B:
+    1. Mutually Exclusive (Disjoint): A ∩ B = ∅
+    2. Exhaustive: A ∪ B = S
+    3. Independent: P(A ∩ B) = P(A) * P(B)
+    
+    Parameters:
+        sample_space (set): Universal outcomes.
+        event_a (set): Event A outcomes.
+        event_b (set): Event B outcomes.
+        
+    Returns:
+        dict: Classification results.
+    """
+    n_s = len(sample_space)
+    intersection = event_a.intersection(event_b)
+    union = event_a.union(event_b)
+    
+    p_a = len(event_a) / n_s
+    p_b = len(event_b) / n_s
+    p_intersection = len(intersection) / n_s
+    
+    is_mutually_exclusive = (len(intersection) == 0)
+    is_exhaustive = (union == sample_space)
+    is_independent = np.isclose(p_intersection, p_a * p_b)
+    
+    return {
+        "P(A)": p_a,
+        "P(B)": p_b,
+        "P(A ∩ B)": p_intersection,
+        "is_mutually_exclusive": is_mutually_exclusive,
+        "is_exhaustive": is_exhaustive,
+        "is_independent": bool(is_independent)
+    }
+
+# --- Execution & Verification ---
 import numpy as np
+S = {1, 2, 3, 4, 5, 6}
+# A = Even {2, 4, 6}, B = Odd {1, 3, 5}
+res = test_event_types(S, {2, 4, 6}, {1, 3, 5})
+print("Even vs Odd Die Rolls:")
+print(f"Mutually Exclusive (Disjoint)? {res['is_mutually_exclusive']}")
+print(f"Exhaustive (Cover S)? {res['is_exhaustive']}")
+print(f"Independent? {res['is_independent']}")
 
-# Sample Space: Fair 6-sided die rolls (1 to 6)
-die_space = {1, 2, 3, 4, 5, 6}
-p_unit = 1 / 6
-
-# Event definitions
-A = {2, 4, 6}         # Even roll: P(A) = 3/6 = 0.5
-B = {1, 3, 5}         # Odd roll: P(B) = 3/6 = 0.5
-C = {1, 2, 3, 4}      # Roll <= 4: P(C) = 4/6 = 2/3
-
-def prob(e): return len(e) / len(die_space)
-
-# Test 1: A and B are Mutually Exclusive
-p_a_cap_b = prob(A.intersection(B))
-print(f"Events A and B: A cap B = {A.intersection(B)}")
-print(f"P(A cap B) = {p_a_cap_b} -> Mutually Exclusive: {p_a_cap_b == 0}")
-
-# Test 2: Are A and B Independent?
-print(f"P(A)*P(B) = {prob(A)*prob(B):.4f} vs P(A cap B) = {p_a_cap_b:.4f}")
-print(f"Independent? {np.isclose(prob(A)*prob(B), p_a_cap_b)}")
-
-# Test 3: Events A and C (Overlapping)
-p_a_cap_c = prob(A.intersection(C))
-p_a_times_c = prob(A) * prob(C)
-print(f"
-Events A and C: A cap C = {A.intersection(C)}")
-print(f"P(A cap C) = {p_a_cap_c:.4f}, P(A)*P(C) = {p_a_times_c:.4f}")
-print(f"Independent? {np.isclose(p_a_cap_c, p_a_times_c)}")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Mutually Exclusive $
-e$ Independent:** Mutually exclusive means they cannot happen together ($P(A \cap B) = 0$). Independent means one happening doesn't alter the odds of the other ($P(A \cap B) = P(A)P(B)$).
-- **Partition:** A set of events that splits the universe without overlap and without gaps; the bedrock foundation of the Law of Total Probability.
+## 🔑 Key Takeaways
+1. Mutually exclusive means events cannot happen simultaneously (non-overlapping Venn circles).
+2. Independent means the occurrence of one event gives zero information about the other.
+3. Exhaustive means the combined events cover the entire sample space $S$.

@@ -1,118 +1,92 @@
-# Day 19 - Lecture 19.15: Relational & Matrix Plots - Heatmaps
+# Lecture 19.15: Relational Plots in Seaborn - Heatmaps
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_15.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 19 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Heatmaps (`sns.heatmap()`)**, demonstrating how to visualize 2D matrix relationships (such as airline passengers across months and years) using color intensity gradients, pandas pivot tables, and formatted numeric annotations (`annot=True, fmt='d'`).
 
 ---
 
-## 1. Overview & Purpose
-A **Heatmap** represents 2D tabular or matrix data where individual values are encoded as **color variations**.
-Primary use cases in Machine Learning and Data Science:
-1. **Correlation Matrix:** Detecting multi-collinearity and linear relationships between feature columns.
-2. **Pivot Tables & Cross-Tabulations:** Analyzing interactions between two categorical dimensions (e.g., Passengers across Years and Months).
-3. **Confusion Matrices:** Evaluating classification model performance.
+## 🏛️ Tabular DataFrame to Heatmap Matrix Pipeline
 
----
-
-## 2. Pivot Tables & Matrix Transformation
-
-Raw time-series data often comes in "long form":
-| year | month | passengers |
-| :--- | :--- | :--- |
-| 1949 | Jan | 112 |
-| 1949 | Feb | 118 |
-
-To plot a heatmap, we must reshape it into "wide/matrix form" using Pandas **`.pivot()`**:
-```python
-flights_pivot = flights.pivot(index="month", columns="year", values="passengers")
-```
-$$\begin{matrix} & 1949 & 1950 & \dots & 1960 \\ \text{Jan} & 112 & 115 & \dots & 417 \\ \text{Feb} & 118 & 126 & \dots & 391 \end{matrix}$$
-
----
-
-## 3. Key Parameters of `sns.heatmap()`
-
-```python
-sns.heatmap(
-    data,                # 2D rectangular dataset (DataFrame or 2D array)
-    annot=True,          # If True, prints numerical values inside each cell
-    fmt="d",             # Format string: "d" for integer, ".2f" for 2 decimals
-    cmap="coolwarm",     # Colormap ('viridis', 'coolwarm', 'YlGnBu', 'magma')
-    linewidths=0.5,      # Width of lines separating each cell
-    cbar=True            # Show colorbar legend
-)
+```mermaid
+flowchart TD
+    TDF["Tabular DataFrame: (year, month, passengers)"] --> Pivot["flights.pivot(index='month', columns='year', values='passengers')"]
+    Pivot --> Matrix["2D Matrix: Rows = 12 Months, Columns = 12 Years"]
+    Matrix --> Heatmap["sns.heatmap(matrix, cmap='coolwarm', annot=True)"]
+    Heatmap --> Insight["Color Intensity immediately highlights peak summer travel (July/August)"]
 ```
 
 ---
 
-## 4. Code Implementation
+## 📐 Mathematical Formulation: Matrix Color Normalization
+
+Given a 2D matrix $\mathbf{M} \in \mathbb{R}^{R \times C}$, each cell $M_{i, j}$ is mapped to a normalized color scalar $c_{i, j} \in [0, 1]$ via min-max scaling:
+
+$$
+c_{i, j} = \frac{M_{i, j} - \min(\mathbf{M})}{\max(\mathbf{M}) - \min(\mathbf{M})}
+$$
+
+The colormap function $\mathcal{C}: [0, 1] \to \text{RGB}$ maps $c_{i, j}$ to a color along the spectrum (e.g., cool blue for low passenger volume, warm red for peak volume).
+
+---
+
+## 💻 Python Implementation
 
 ```python
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# 1. Pivot Table Heatmap: Flight Passengers
-flights = sns.load_dataset("flights")
-flights_pivot = flights.pivot(index="month", columns="year", values="passengers")
+def generate_flight_passenger_heatmap(cmap="coolwarm", show_plot=True):
+    """
+    Generates a 2D matrix heatmap showing airline passenger volume across
+    months and years. Demonstrates pandas pivot tables, colormaps, and
+    numeric cell annotations.
+    
+    Parameters:
+        cmap (str): Matplotlib/Seaborn colormap name.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Peak month-year combination and passenger count.
+    """
+    sns.set_theme(style="white")
+    flights = sns.load_dataset("flights")
+    
+    # 1. Pivot tabular data into 2D matrix (Index=Month, Columns=Year)
+    flights_pivot = flights.pivot(index="month", columns="year", values="passengers")
+    
+    plt.figure(figsize=(10, 6))
+    
+    # 2. Draw Heatmap with integer annotations
+    sns.heatmap(
+        flights_pivot,
+        cmap=cmap,
+        annot=True,
+        fmt="d",
+        linewidths=0.5
+    )
+    plt.title("Airline Passenger Traffic (1949 - 1960) Heatmap", fontweight="bold", pad=12)
+    plt.tight_layout()
+    
+    if show_plot:
+        plt.show()
+        
+    max_val = int(flights_pivot.values.max())
+    return {
+        "max_passengers": max_val,
+        "years_covered": list(flights_pivot.columns),
+        "months": list(flights_pivot.index)
+    }
 
-plt.figure(figsize=(11, 7))
-sns.heatmap(
-    flights_pivot,
-    cmap="YlGnBu",
-    annot=True,
-    fmt="d",
-    linewidths=0.5
-)
-plt.title("Monthly Airline Passengers from 1949 to 1960", fontsize=15, fontweight="bold")
-plt.xlabel("Year", fontsize=12)
-plt.ylabel("Month", fontsize=12)
-plt.tight_layout()
-plt.show()
+# --- Execution & Verification ---
+res = generate_flight_passenger_heatmap(show_plot=False)
+print(f"Maximum Monthly Passengers: {res['max_passengers']}")
+print(f"Years Tracked: {res['years_covered'][0]} to {res['years_covered'][-1]}")
 
-# 2. Correlation Matrix Heatmap: Tips Dataset
-tips = sns.load_dataset("tips")
-# Select only numeric columns for correlation
-numeric_tips = tips.select_dtypes(include=['float64', 'int64'])
-corr_matrix = numeric_tips.corr()
-
-plt.figure(figsize=(7, 5))
-sns.heatmap(
-    corr_matrix,
-    cmap="coolwarm",
-    annot=True,
-    fmt=".2f",
-    vmin=-1, vmax=1,
-    center=0,
-    square=True
-)
-plt.title("Correlation Matrix (Tips Dataset)", fontsize=14, fontweight="bold")
-plt.tight_layout()
-plt.show()
 ```
 
 ---
 
-## 5. Key Takeaways
-- **Diverging vs. Sequential Colormaps:**
-  - For **Correlations** (ranging from $-1$ to $+1$), use a **diverging colormap** like `coolwarm` with `center=0`.
-  - For **Magnitudes / Counts** (ranging from $0$ to large values), use a **sequential colormap** like `YlGnBu` or `viridis`.
-- Always set `fmt="d"` for integers and `fmt=".2f"` for floats; otherwise, scientific notation will clutter cells.
-
-
----
-
-## 📐 Mathematical Correlation Matrix Formulation
-
-For an observation matrix $\mathbf{X} \in \mathbb{R}^{n \times p}$ with $p$ quantitative variables, the pairwise linear correlation matrix $\mathbf{R} \in \mathbb{R}^{p \times p}$ is defined by:
-
-$$
-\boxed{r_{jk} = \frac{\sum_{i=1}^n (x_{ij} - \bar{x}_j)(x_{ik} - \bar{x}_k)}{\sqrt{\sum_{i=1}^n (x_{ij} - \bar{x}_j)^2} \sqrt{\sum_{i=1}^n (x_{ik} - \bar{x}_k)^2}} \in [-1, +1]}
-$$
-
-Properties of the Correlation Matrix:
-1. **Symmetry**: $\mathbf{R} = \mathbf{R}^T$ since $r_{jk} = r_{kj}$.
-2. **Unit Diagonal**: $r_{jj} = 1.0$ for all $j \in \{1, 2, \dots, p\}$.
-3. **Positive Semi-Definite**: $\mathbf{z}^T \mathbf{R} \mathbf{z} \ge 0$ for all non-zero vectors $\mathbf{z} \in \mathbb{R}^p$.
+## 🔑 Key Takeaways
+1. Heatmaps require 2D matrix inputs; always restructure tidy tabular data using `df.pivot()` or `df.corr()`.
+2. Use `annot=True` and `fmt='d'` (for integers) or `fmt='.2f'` (for floats) to display cell values directly.
+3. Diverging colormaps like `'coolwarm'` or `'vlag'` are ideal for correlation matrices or deviations around a midpoint.

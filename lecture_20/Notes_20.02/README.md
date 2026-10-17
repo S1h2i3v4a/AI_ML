@@ -1,119 +1,92 @@
-# Day 20 - Lecture 20.2: Core Foundations of Probability
+# Lecture 20.02: Understanding Probability
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_02.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the **foundational axioms and definitions of Probability Theory**, establishing the concepts of Random Experiments, Sample Spaces ($S$), Events ($E \subseteq S$), and the classical Laplacian definition of probability.
 
 ---
 
-## 1. Random Experiments, Sample Space, and Events
-
-A **random experiment** is an observational process whose outcome cannot be predicted with absolute certainty prior to execution, but whose set of all possible outcomes is known in advance.
+## 🏛️ Sample Space and Event Subsets
 
 ```mermaid
-flowchart LR
-    A["Random Experiment"] --> B["Sample Space S"]
-    B --> C["Event A (Subset of S)"]
-    C --> D["Probability Measure P(A) in [0, 1]"]
+flowchart TD
+    Exp["Random Experiment (e.g. Rolling a Fair 6-Sided Die)"] --> S["Universal Sample Space S = {1, 2, 3, 4, 5, 6}"]
+    S --> E["Event Subset E = {2, 4, 6} (Even Numbers)"]
+    S --> Ec["Complement Event E' = {1, 3, 5} (Odd Numbers)"]
+    
+    E --> Calc["Classical Probability P(E) = n(E) / n(S) = 3 / 6 = 0.5"]
 ```
 
-### Core Definitions:
-1. **Sample Space ($\mathcal{S}$ or $\Omega$):** The set containing all mutually exclusive, exhaustive primitive outcomes $\omega$ of a random experiment.
-   - Example (Fair 6-sided die): $\mathcal{S} = \{1, 2, 3, 4, 5, 6\}$.
-   - Example (Two successive coin tosses): $\mathcal{S} = \{HH, HT, TH, TT\}$.
-2. **Event ($\mathcal{E}$ or $A$):** Any subset of the sample space ($A \subseteq \mathcal{S}$).
-   - Example: An even roll on a die: $A = \{2, 4, 6\} \subseteq \mathcal{S}$.
-3. **Null Event ($\emptyset$):** The empty set representing an impossible outcome ($P(\emptyset) = 0$).
-4. **Certain Event ($\mathcal{S}$):** The entire sample space representing an inevitable outcome ($P(\mathcal{S}) = 1$).
-
 ---
 
-## 2. Kolmogorov's Axioms of Probability
+## 📐 Mathematical Formulation: Kolmogorov Axioms
 
-Modern probability theory rests upon three fundamental axioms established by Andrey Kolmogorov in 1933. Let $\mathcal{S}$ be the sample space and $\mathcal{F}$ be the event space ($\sigma$-algebra of subsets):
+Let $(\Omega, \mathcal{F}, P)$ be a probability space where $\Omega$ is the sample space and $\mathcal{F}$ is the event space:
 
-### Axiom 1: Non-Negativity
-For every event $A \subseteq \mathcal{S}$, the assigned probability is non-negative:
-
-$$
-oxed{P(A) \ge 0}
-$$
-
-### Axiom 2: Unit Measure (Normalization)
-The probability of the entire sample space is equal to unity:
+1. **Non-negativity (Axiom 1):** For any event $E \in \mathcal{F}$:
 
 $$
-oxed{P(\mathcal{S}) = 1.0}
+0 \le P(E) \le 1
 $$
 
-### Axiom 3: Countable Additivity (Disjoint Events)
-If $A_1, A_2, A_3, \dots$ is a countable sequence of pairwise mutually exclusive (disjoint) events such that $A_i \cap A_j = \emptyset$ for all $i 
-e j$, then:
+2. **Certainty (Axiom 2):** The probability of the universal sample space is unity:
 
 $$
-oxed{P\left(igcup_{i=1}^\infty A_iight) = \sum_{i=1}^\infty P(A_i)}
+P(\Omega) = 1, \qquad P(\emptyset) = 0
+$$
+
+3. **Classical Probability Definition:** When all elemental outcomes in finite space $S$ are equally likely:
+
+$$
+P(E) = \frac{n(E)}{n(S)} = \frac{\text{Number of favorable outcomes}}{\text{Total number of possible outcomes}}
 $$
 
 ---
 
-## 3. Fundamental Derivative Properties
-
-From Kolmogorov's axioms, standard probability calculus theorems are derived:
-
-$$
-oxed{P(\emptyset) = 0.0}
-$$
-
-$$
-oxed{0 \le P(A) \le 1.0 \quad orall A \subseteq \mathcal{S}}
-$$
-
-$$
-oxed{A \subseteq B \implies P(A) \le P(B) \quad 	ext{(Monotonicity)}}
-$$
-
----
-
-## 4. Python Implementation: Verifying Kolmogorov's Axioms
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def compute_classical_probability(favorable_outcomes, total_outcomes):
+    """
+    Computes theoretical classical probability P(E) = n(E) / n(S)
+    and verifies Kolmogorov's first two probability axioms.
+    
+    Parameters:
+        favorable_outcomes (int or set): Event favorable outcomes.
+        total_outcomes (int or set): Universal sample space outcomes.
+        
+    Returns:
+        dict: Calculated probability and axiom compliance checks.
+    """
+    n_e = len(favorable_outcomes) if isinstance(favorable_outcomes, (set, list)) else favorable_outcomes
+    n_s = len(total_outcomes) if isinstance(total_outcomes, (set, list)) else total_outcomes
+    
+    if n_s <= 0:
+        raise ValueError("Sample space size must be strictly positive.")
+        
+    prob = n_e / n_s
+    
+    is_valid_range = (0.0 <= prob <= 1.0)
+    
+    return {
+        "event_count_nE": n_e,
+        "sample_space_nS": n_s,
+        "probability_PE": prob,
+        "axiom_valid_range": is_valid_range
+    }
 
-# Sample space for a standard 6-sided fair die
-sample_space = {1, 2, 3, 4, 5, 6}
-n_s = len(sample_space)
+# --- Execution & Verification ---
+# Rolling an even number on a 6-sided die: E = {2, 4, 6}, S = {1, 2, 3, 4, 5, 6}
+res = compute_classical_probability(favorable_outcomes={2, 4, 6}, total_outcomes={1, 2, 3, 4, 5, 6})
+print(f"Favorable Outcomes: {res['event_count_nE']}")
+print(f"Total Outcomes: {res['sample_space_nS']}")
+print(f"Theoretical Probability: P(E) = {res['probability_PE']:.4f}")
+print(f"Axiom 0 <= P(E) <= 1 satisfied? {res['axiom_valid_range']}")
 
-# Define events
-event_even = {2, 4, 6}
-event_prime = {2, 3, 5}
-event_odd = {1, 3, 5}
-
-# Probability measure for uniform discrete sample space
-def prob(event, s=sample_space):
-    return len(event.intersection(s)) / len(s)
-
-# Axiom 1: Non-negativity
-print(f"P(Even) = {prob(event_even)} >= 0: {prob(event_even) >= 0}")
-
-# Axiom 2: Normalization
-print(f"P(S) = {prob(sample_space)} == 1.0: {prob(sample_space) == 1.0}")
-
-# Axiom 3: Additivity of disjoint events (Even and Odd are disjoint)
-is_disjoint = len(event_even.intersection(event_odd)) == 0
-union_event = event_even.union(event_odd)
-p_union = prob(union_event)
-p_sum = prob(event_even) + prob(event_odd)
-
-print(f"Events Disjoint: {is_disjoint}")
-print(f"P(Even U Odd) = {p_union:.4f}, P(Even) + P(Odd) = {p_sum:.4f}")
-print(f"Additivity holds: {np.isclose(p_union, p_sum)}")
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-- **Probability is a Measure:** Probability maps subsets of sample space to the closed interval $[0, 1]$.
-- **Kolmogorov Foundation:** All advanced machine learning probability theorems (Bayes, CLT, Markov chains) are derived directly from Kolmogorov's three axioms.
-- **Event vs Outcome:** An outcome is an elementary point $\omega \in \mathcal{S}$; an event is a set of outcomes $A \subseteq \mathcal{S}$.
+## 🔑 Key Takeaways
+1. A random experiment has well-defined outcomes that cannot be predicted with certainty in advance.
+2. The sample space $S$ represents the exhaustive set of all possible outcomes.
+3. Probability $P(E)$ is strictly bounded in $[0, 1]$; $0$ indicates impossibility, $1$ indicates absolute certainty.

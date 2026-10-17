@@ -1,84 +1,90 @@
-# Day 20 - Lecture 20.7: The Addition Rule (Yog Niyam) [Hinglish]
+# Notes_20.07: Addition Rule (Jod Ka Niyam) [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_07.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Probability ka Addition Rule** samjhaya hai: jab sawal mein "YA (OR)" poocha jaye ($P(A \cup B)$), toh formula $P(A) + P(B) - P(A \cap B)$ kyu lagaya jata hai aur common hisse ko minus kyu karte hain.
 
 ---
 
-## 1. Overview & Concept
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Addition Rule ka formula aur double counting ka logic.
+- Taash ke 52 patton mein se King ya Spade aane ki probability.
+- Mutually Exclusive events mein formula $P(A) + P(B)$ kyu ban jata hai.
+- Venn diagram se union aur intersection ko visualize karna.
 
-**Addition Rule** do events ke union ($A \cup B$) ki probability calculate karne ka rule hai, yaani event $A$ ho, ya event $B$ ho, ya **dono** ho jayein.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Double Counting Ka Problem:
+Maan lijiye aap 52 cards mein se ek card nikalte hain.
+- Event A: Card **King** ho ($4$ Kings: Spade, Heart, Diamond, Club) $\implies P(A) = \frac{4}{52}$
+- Event B: Card **Spade** ho ($13$ Spades) $\implies P(B) = \frac{13}{52}$
+
+Agar hum seedha $4 + 13 = 17$ jod dein, toh galati ho jayegi!
+Kyunki ek patta aisa hai jo **King bhi hai aur Spade bhi** (**King of Spades**). Woh dono groups mein do baar count ho gaya!
+Isliye us common intersection ko ek baar ghatana (minus karna) padta hai:
+
+$$
+P(A \cup B) = P(A) + P(B) - P(A \cap B)
+$$
+
+Calculation:
+
+$$
+P(\text{King or Spade}) = \frac{4}{52} + \frac{13}{52} - \frac{1}{52} = \frac{16}{52} = \frac{4}{13} \approx 0.3077
+$$
+
+---
+
+### 📊 Blackboard Diagram: King Aur Spade Ka Overlap
 
 ```mermaid
-flowchart TD
-    A["Addition Rule P(A U B)"] --> B["Disjoint Events"]
-    A --> C["Overlapping Events"]
-    B --> D["P(A U B) = P(A) + P(B)"]
-    C --> E["P(A U B) = P(A) + P(B) - P(A cap B)"]
+flowchart LR
+    A["Event A: Kings (4)"] --- I["Overlap: King of Spades (1)"] --- B["Event B: Spades (13)"]
+    I --> C["Subtract 1 so it is counted only once!"]
 ```
 
-### Double Counting ko Hatana:
-Jab hum $P(A) + P(B)$ jodte hain, toh jo beech ka hissa ($A \cap B$) hota hai, woh do baar count ho jata hai. Isliye $P(A \cap B)$ ko ek baar ghatana (subtract karna) zaroori hota hai.
-
 ---
 
-## 2. Ganitiya Sutra
-
-### General Addition Rule:
-
-$$
-oxed{P(A \cup B) = P(A) + P(B) - P(A \cap B)}
-$$
-
-### Mutually Exclusive (Disjoint) Case:
-Agar $A \cap B = \emptyset$ ho:
-
-$$
-oxed{P(A \cup B) = P(A) + P(B)}
-$$
-
-### 3 Events ke liye (Inclusion-Exclusion Principle):
-
-$$
-oxed{P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(A \cap C) - P(B \cap C) + P(A \cap B \cap C)}
-$$
-
----
-
-## 3. Real-World Example
-
-E-commerce user browsing:
-- Mobile Phone dekhne ki probability: $P(A) = 0.40$
-- Laptop dekhne ki probability: $P(B) = 0.30$
-- Dono dekhne ki probability: $P(A \cap B) = 0.15$
-
-Kam se kam ek category browse karne ki probability:
-
-$$
-oxed{P(A \cup B) = 0.40 + 0.30 - 0.15 = 0.55 \quad (55\%)}
-$$
-
----
-
-## 4. Python Code
+### 💻 Python Code Implementation
 
 ```python
-import numpy as np
+def compute_addition_rule(p_a=0.4, p_b=0.5, p_intersection=0.2):
+    """
+    Computes the probability of the union of two events P(A ∪ B)
+    using the General Addition Rule, subtracting the double-counted intersection.
+    
+    Parameters:
+        p_a (float): P(A)
+        p_b (float): P(B)
+        p_intersection (float): P(A ∩ B)
+        
+    Returns:
+        dict: Union probability and verification.
+    """
+    p_union = p_a + p_b - p_intersection
+    
+    return {
+        "P(A)": p_a,
+        "P(B)": p_b,
+        "P(A ∩ B)": p_intersection,
+        "P(A ∪ B)": p_union,
+        "is_disjoint": (p_intersection == 0.0)
+    }
 
-p_a = 0.40
-p_b = 0.30
-p_cap = 0.15
+# --- Execution & Verification ---
+# Drawing a King or a Spade from 52 cards:
+# P(King) = 4/52, P(Spade) = 13/52, P(King and Spade) = 1/52 (King of Spades)
+res = compute_addition_rule(p_a=4/52, p_b=13/52, p_intersection=1/52)
+print(f"P(King) = {res['P(A)']:.4f} (4/52)")
+print(f"P(Spade) = {res['P(B)']:.4f} (13/52)")
+print(f"P(King ∩ Spade) = {res['P(A ∩ B)']:.4f} (1/52)")
+print(f"P(King ∪ Spade) = {res['P(A ∪ B)']:.4f} (16/52 = 4/13 ≈ {16/52:.4f})")
 
-p_union = p_a + p_b - p_cap
-print(f"P(Mobile U Laptop) = {p_union:.2f} ({p_union*100:.0f}%)")
-print(f"P(Neither)         = {1 - p_union:.2f} ({(1 - p_union)*100:.0f}%)")
 ```
 
 ---
 
-## 5. Mukhya Batein (Key Takeaways) & Interview Points
-- **Double Counting Rule:** Overlap ko subtract karna kabhi mat bhoolo, varna probability 1.0 se upar nikal jayegi jo mathematically galat hai.
-- **Boole's Inequality (Union Bound):** $P(A \cup B) \le P(A) + P(B)$. Yeh machine learning error bound analysis me bohot use hoti hai.
+### 🎯 Key Takeaways:
+1. Jab bhi question mein **"OR"** ya **"At least one of them"** aaye, Addition Rule lagayein.
+2. Agar events aapas mein overlap nahi karte ($A \cap B = \emptyset$), tab $P(A \cup B) = P(A) + P(B)$.

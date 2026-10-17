@@ -1,85 +1,112 @@
-# Day 19 - Lecture 19.6: Stack Plots (Area Charts) [Hinglish]
+# Notes_19.06: Matplotlib Mein Stack Plots [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_06.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 19 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Stack Plot** ka concept samjhaya hai: time ke sath badalte hue cumulative part-to-whole relationships ko kaise plot karte hain, jaise website traffic ke alag-alag sources (Direct, Organic, Social).
 
 ---
 
-## 1. Overview & Purpose
-A **Stack Plot** (also called a Stacked Area Chart) displays multiple data series stacked on top of each other along a continuous or sequential x-axis (such as time, days, or months).
-
-### Why use a Stack Plot?
-- **Part-to-Whole over Time:** While a **Pie Chart** shows part-to-whole for a single static point in time, a **Stack Plot** shows how both the individual parts and the cumulative total evolve over time.
-- **Contribution Analysis:** Easily observe which sub-category is growing or shrinking in proportion to the total.
-- **Total Magnitude:** The topmost line shows the cumulative total across all series.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Stack Plot kya hota hai aur kab use karna chahiye?
+- Single day pie chart vs multi-day stack plot ka comparison.
+- `plt.stackplot()` syntax, `labels`, aur color styling.
+- Total traffic aur individual channels ka trend ek sath dekhna.
 
 ---
 
-## 2. Syntax & Parameters
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-```python
-plt.stackplot(
-    x,                      # Sequential x-axis (e.g., days, years)
-    y1, y2, y3, ...,        # Multiple 1D arrays of equal length representing layers
-    labels=['L1', 'L2'],    # Labels for each category
-    colors=['c1', 'c2'],    # Fill colors for each layer
-    alpha=0.8,              # Transparency
-    baseline='zero'         # 'zero' (standard), 'sym' (streamgraph), or 'wiggle'
-)
+#### 1. Stack Plot Kya Hai?
+Agar aapko sirf ek din ka traffic dekhna ho, toh aap **Pie Chart** bana sakte hain (jaise Monday ko 50% Direct, 30% Organic, 20% Social).
+Lekin agar aapko poore hafte (Monday se Sunday) tak dekhna ho ki total traffic kaise badha aur har channel ka hissa kitna tha, toh Pie Chart fail ho jata hai. Wahan hum **Stack Plot** banate hain!
+
+#### 2. Stack Plot Kaise Kaam Karta Hai?
+Har source ki values ek ke upar ek stack (chadh) hoti jaati hain:
+- Bottom layer: Direct traffic
+- Middle layer: Direct + Organic
+- Top layer: Direct + Organic + Social = Total Traffic
+
+Formula:
+
+$$
+Y(t) = \sum_{k=1}^K y_k(t)
+$$
+
+---
+
+### 📊 Blackboard Diagram: Pie Chart Se Stack Plot
+
+```mermaid
+flowchart LR
+    A["Monday Traffic<br/>Pie Chart (Snapshot)"] --> B["Multi-Day Tracking<br/>(Mon se Sun)"]
+    B --> C["Stack Plot Canvas<br/>Direct (Neela) + Organic (Hara) + Social (Laal)"]
+    C --> D["Top Line = Total Website Traffic"]
 ```
 
 ---
 
-## 3. Real-World Case Study: Website Traffic Channels
-
-Tracking visitor traffic across days of the week:
-- **Direct Traffic:** Users typing the URL directly.
-- **Organic Traffic:** Users arriving via search engines (Google, Bing).
-- **Social Traffic:** Users arriving from LinkedIn, Twitter, YouTube.
+### 💻 Python Code Implementation
 
 ```python
 import matplotlib.pyplot as plt
 
-days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-direct = [50, 60, 70, 80, 90, 100, 110]
-organic = [30, 40, 50, 55, 60, 70, 80]
-social = [20, 25, 30, 35, 40, 50, 60]
+def plot_traffic_stackplot(days=None, direct=None, organic=None, social=None, show_plot=True):
+    """
+    Plots a multi-series Stack Plot showing website traffic source composition
+    over the days of a week.
+    
+    Parameters:
+        days (list): Day names (Mon-Sun).
+        direct (list): Daily direct visitors.
+        organic (list): Daily organic search visitors.
+        social (list): Daily social media visitors.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Total traffic per day and percentage composition.
+    """
+    if days is None:
+        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    if direct is None:
+        direct = [50, 60, 70, 80, 90, 100, 110]
+    if organic is None:
+        organic = [30, 40, 50, 55, 60, 70, 80]
+    if social is None:
+        social = [20, 25, 30, 35, 40, 50, 60]
+        
+    plt.figure(figsize=(9, 5))
+    
+    plt.stackplot(
+        days,
+        direct,
+        organic,
+        social,
+        labels=["Direct", "Organic", "Social"],
+        colors=["#4c72b0", "#55a868", "#c44e52"],
+        alpha=0.85
+    )
+    
+    plt.title("Website Traffic Breakdown Over a Week (Stack Plot)")
+    plt.xlabel("Days of Week")
+    plt.ylabel("Number of Visitors")
+    plt.legend(loc="upper left")
+    plt.grid(True, linestyle=":", alpha=0.5)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    total_traffic = [d + o + s for d, o, s in zip(direct, organic, social)]
+    return {"days": days, "total_traffic": total_traffic}
 
-plt.figure(figsize=(9, 6))
-plt.stackplot(days, direct, organic, social, labels=['Direct Traffic', 'Organic Search', 'Social Media'],
-              colors=['#4C72B0', '#55A868', '#C44E52'], alpha=0.85)
+# --- Execution & Verification ---
+res = plot_traffic_stackplot(show_plot=False)
+for d, tot in zip(res["days"], res["total_traffic"]):
+    print(f"{d}: Total Traffic = {tot}")
 
-plt.title("Website Traffic Channels Over a Week", fontsize=14, fontweight="bold")
-plt.xlabel("Day of the Week", fontsize=12)
-plt.ylabel("Number of Visitors", fontsize=12)
-plt.legend(loc='upper left', fontsize=11)
-plt.grid(True, linestyle=":", alpha=0.5)
-plt.show()
 ```
 
 ---
 
-## 📐 Stack Plot (Area Chart) Ka Ganitiya Sutra
-
-Stack plot cumulative curve ke total area ko $K$ alag-alag components $\{y_1(t), y_2(t), \dots, y_K(t)\}$ me divide karta hai:
-
-Cumulative boundary curves:
-
-$$
-\boxed{S_k(t) = \sum_{j=1}^k y_j(t), \quad\text{with } S_0(t) \equiv 0}
-$$
-
-Har category ka total net area definite integral ke barabar hota hai:
-
-$$
-\boxed{\mathcal{A}_k = \int_{t_0}^{t_1} y_k(t) \, dt = \int_{t_0}^{t_1} [S_k(t) - S_{k-1}(t)] \, dt}
-$$
-
----
-
-## 4. Mukhya Batein (Key Takeaways) & Limitations
-- **Readability Caution:** Because layers are stacked on top of each other, only the bottom-most layer has a flat baseline. Higher layers have curved baselines, making it harder to judge exact numerical values of upper layers.
-- Limit the number of categories to 3–5. Beyond that, the chart becomes cluttered and hard to interpret.
+### 🎯 Key Takeaways:
+1. `plt.stackplot(x, y1, y2, y3, labels=[...])` se time-series composition asaani se visualize hoti hai.
+2. Top border poore system ka total volume represent karta hai.

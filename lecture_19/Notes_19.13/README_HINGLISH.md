@@ -1,87 +1,101 @@
-# Day 19 - Lecture 19.13: Categorical Plots in Seaborn (`barplot`, `boxplot`, `catplot`) [Hinglish]
+# Notes_19.13: Seaborn barplot Aur boxplot [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_13.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 19 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Categorical Plots** sikhaye hain: `sns.barplot()` aur `sns.boxplot()` ka use karke alag-alag categories (jaise Days: Thurs, Fri, Sat, Sun aur Gender: Male, Female) ke beech ka difference kaise dekha jata hai.
 
 ---
 
-## 1. Overview & Purpose
-**Categorical Plots** are used when one variable is **categorical (discrete groups)** and the other is **numerical (continuous measurement)**.
-Common questions answered:
-- *Which day of the week generates the highest average total bill?*
-- *Do men and women have different spending distributions across days?*
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Matplotlib `plt.bar()` vs Seaborn `sns.barplot()` ka mukhya farq.
+- Bar plot mein vertical black error bar ka matlab kya hota hai?
+- Categories ke cross-distribution dekhne ke liye `sns.boxplot()` ka use.
+- `hue="sex"` se grouped/clustered bar chart banana.
 
 ---
 
-## 2. Core Categorical Plot Types
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. `sns.barplot()` Ki Khasiyat:
+Matplotlib mein agar aapko bar chart banana hota tha, toh pehle aapko khud Python mein average calculate karni padti thi.
+Seaborn mein aapko kuch calculate nahi karna! Bas likhiye:
+`sns.barplot(data=tips, x="day", y="total_bill", hue="sex")`
+Seaborn khud har din aur har gender ka **Average (Mean)** nikalega aur bar ki height bana dega.
+
+#### 2. Bar Plot Ka Error Bar:
+Har bar ke top par ek kaali line (whisker) dikhti hai. Yeh **Confidence Interval / Standard Error** hota hai jo batata hai ki us category ka data kitna reliable hai.
+
+#### 3. `sns.boxplot()`:
+Bar plot sirf average dikhata hai. Lekin agar aapko dekhna ho ki Saturday ko sabse ameer customer ne kitna bill bhara aur median bill kya tha, toh **Boxplot** middle 50% data aur outliers saaf dikha deta hai.
+
+---
+
+### 📊 Blackboard Diagram: Grouped Bar Plot vs Category Box Plot
 
 ```mermaid
-flowchart TD
-    A["Categorical Plots (sns.catplot)"] --> B["sns.barplot(): Shows Mean + Confidence Interval"]
-    A --> C["sns.countplot(): Shows Raw Observation Count per Category"]
-    A --> D["sns.boxplot(): Shows Five-Number Summary & Outliers"]
-    A --> E["sns.violinplot(): Combines Box Plot with KDE Density Shape"]
+flowchart LR
+    A["Raw Tips Data"] --> B["sns.barplot()<br/>Average bill per day + Gender split (hue)"]
+    A --> C["sns.boxplot()<br/>Spread, median, and extreme outliers per day"]
 ```
-
-### Critical Distinction: `barplot` vs `countplot`
-- **`sns.barplot(data, x='day', y='total_bill')`:** Aggregates numerical values (calculates the **mean** by default) and draws error bars.
-- **`sns.countplot(data, x='day')`:** Simply counts how many rows exist for each category (frequency count).
 
 ---
 
-## 3. Code Implementation
+### 💻 Python Code Implementation
 
 ```python
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-tips = sns.load_dataset("tips")
+def plot_categorical_analyses(show_plot=True):
+    """
+    Demonstrates categorical plots in Seaborn:
+    1. sns.barplot() with automatic mean aggregation and error bars.
+    2. sns.boxplot() displaying 5-number distributions across discrete categories.
+    
+    Returns:
+        dict: Mean total bill per day.
+    """
+    sns.set_theme(style="whitegrid")
+    tips = sns.load_dataset("tips")
+    
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # 1. Bar Plot: Average Total Bill by Day and Sex
+    sns.barplot(
+        data=tips,
+        x="day",
+        y="total_bill",
+        hue="sex",
+        palette="muted",
+        ax=axes[0]
+    )
+    axes[0].set_title("Bar Plot: Mean Total Bill by Day & Sex (with Error Bars)", fontweight="bold")
+    
+    # 2. Box Plot: Distribution of Total Bill across Days
+    sns.boxplot(
+        data=tips,
+        x="day",
+        y="total_bill",
+        palette="pastel",
+        ax=axes[1]
+    )
+    axes[1].set_title("Box Plot: Total Bill Distribution by Day", fontweight="bold")
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    day_means = tips.groupby("day")["total_bill"].mean().to_dict()
+    return day_means
 
-# 1. Bar Plot: Average Total Bill by Day and Sex
-plt.figure(figsize=(8, 5))
-sns.barplot(data=tips, x="day", y="total_bill", hue="sex", palette="Blues", errorbar=None)
-plt.title("Average Total Bill by Day and Sex (barplot)", fontsize=13, fontweight="bold")
-plt.xlabel("Day of Week")
-plt.ylabel("Mean Total Bill ($)")
-plt.show()
+# --- Execution & Verification ---
+means_dict = plot_categorical_analyses(show_plot=False)
+for day, avg in means_dict.items():
+    print(f"{day}: Mean Bill = ${avg:.2f}")
 
-# 2. Box Plot: Distribution of Total Bill by Day
-plt.figure(figsize=(8, 5))
-sns.boxplot(data=tips, x="day", y="total_bill", palette="Set3")
-plt.title("Spread & Outliers of Total Bill Across Days (boxplot)", fontsize=13, fontweight="bold")
-plt.xlabel("Day of Week")
-plt.ylabel("Total Bill ($)")
-plt.show()
-
-# 3. Grouped Box Plot with hue
-plt.figure(figsize=(9, 5))
-sns.boxplot(data=tips, x="day", y="total_bill", hue="sex", palette="Pastel1")
-plt.title("Box Plot Grouped by Day and Sex", fontsize=13, fontweight="bold")
-plt.legend(title="Sex", loc="upper left")
-plt.show()
 ```
 
 ---
 
-## 📐 Categorical Estimator aur Bootstrap CI Ka Ganitiya Sutra
-
-Seaborn categorical plots (`sns.barplot`) me error bars sample mean $\bar{x}$ ke around confidence interval show karte hain:
-
-$$
-\boxed{\text{SE}(\bar{x}) = \frac{s}{\sqrt{n}} = \sqrt{\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n(n - 1)}}}
-$$
-
-95% Confidence Interval error bar ka sutra:
-
-$$
-\boxed{\text{CI}_{95\%} = \bar{x} \pm t_{n-1, \; 0.025} \cdot \text{SE}(\bar{x})}
-$$
-
----
-
-## 4. Mukhya Batein (Key Takeaways)
-- Seaborn's `barplot` calculates statistical aggregates (**mean**) automatically—do not confuse it with a Matplotlib bar chart which plots raw values passed to it.
-- Adding `hue="sex"` automatically groups and dodges the bars or boxes side by side.
+### 🎯 Key Takeaways:
+1. Average values compare karne ke liye `barplot` best hai.
+2. Outliers aur spread samajhne ke liye `boxplot` best hai.

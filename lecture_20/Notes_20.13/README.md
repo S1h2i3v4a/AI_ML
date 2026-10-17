@@ -1,87 +1,95 @@
-# Day 20 - Lecture 20.13: Solving Bayes' Theorem Practice Problems
+# Lecture 20.13: Solving Practice Problem (Bayes' Theorem)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_13.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am works through a complete **end-to-end numerical problem** on Bayes' Theorem: given that a randomly inspected product was found to be defective, what is the probability that it originated from Machine A versus Machine B?
 
 ---
 
-## 1. The Medical Testing Paradox (Base Rate Fallacy)
-
-One of the most famous counter-intuitive applications of Bayes' Theorem is the **False Positive Paradox** in medical diagnosis and rare event fraud detection.
+## 🏛️ Bayesian Diagnostic Decision Tree
 
 ```mermaid
 flowchart TD
-    Pop["100,000 Total Population"] --> Disease["100 Sick (0.1% Base Rate)"]
-    Pop --> Healthy["99,900 Healthy (99.9%)"]
-    Disease --> TP["99 True Positives (99% Sensitivity)"]
-    Disease --> FN["1 False Negative"]
-    Healthy --> FP["4,995 False Positives (5% False Pos Rate)"]
-    Healthy --> TN["94,905 True Negatives"]
+    Inspect["Defective Product Found (Evidence D)"] --> Question["Which machine caused the defect?"]
+    Question --> MachineA["P(Machine A | Defect) = 0.012 / 0.032 = 37.5%"]
+    Question --> MachineB["P(Machine B | Defect) = 0.020 / 0.032 = 62.5%"]
+    
+    subgraph Insight["Key Managerial Insight"]
+        Comp["Even though Machine A manufactured 60% of all goods,<br/>Machine B is responsible for 62.5% of all defects due to its higher failure rate!"]
+    end
 ```
 
 ---
 
-## 2. Mathematical Formalism & Problem Formulation
+## 📐 Mathematical Formulation
 
-### Clinical Parameters:
-- **Prevalence (Base Rate):** $P(D) = 0.001$ (0.1% of population has the rare disease)
-- **Sensitivity (True Positive Rate):** $P(+ \mid D) = 0.99$
-- **False Positive Rate:** $P(+ \mid D') = 0.05$ (Specificity is 95%)
+### Given Parameters:
+- Production Shares: $P(A) = 0.60$, $P(B) = 0.40$
+- Defect Rates: $P(D \mid A) = 0.02$, $P(D \mid B) = 0.05$
 
-A patient tests positive ($+$). What is the actual probability that they have the disease ($P(D \mid +)$)?
-
-Applying Bayes' Theorem:
+### Step 1: Marginal Probability of Defect $P(D)$
+Using the Law of Total Probability:
 
 $$
-\boxed{P(D \mid +) = \frac{P(+ \mid D) P(D)}{P(+ \mid D) P(D) + P(+ \mid D') P(D')}}
+P(D) = P(D \mid A)P(A) + P(D \mid B)P(B) = (0.02)(0.60) + (0.05)(0.40) = 0.012 + 0.020 = 0.032
 $$
 
-Substituting values:
+### Step 2: Posterior Attribution via Bayes' Theorem
+For Machine A:
 
 $$
-\boxed{P(D \mid +) = \frac{0.99 \cdot 0.001}{(0.99 \cdot 0.001) + (0.05 \cdot 0.999)} = \frac{0.00099}{0.00099 + 0.04995} = \frac{0.00099}{0.05094} \approx 0.01943 \quad (1.94\%)}
+P(A \mid D) = \frac{P(D \mid A)P(A)}{P(D)} = \frac{0.012}{0.032} = \frac{12}{32} = \frac{3}{8} = 0.375 \quad (37.5\%)
 $$
 
-### The Counter-Intuitive Truth:
-Even with a 99% accurate test, a positive test result only means a **~1.94% chance** of actually having the disease! Why? Because the overwhelming volume of healthy individuals ($99.9\%$) generates far more false positives ($4,995$) than true sick patients ($99$).
+For Machine B:
+
+$$
+P(B \mid D) = \frac{P(D \mid B)P(B)}{P(D)} = \frac{0.020}{0.032} = \frac{20}{32} = \frac{5}{8} = 0.625 \quad (62.5\%)
+$$
+
+Notice that $37.5\% + 62.5\% = 100\%$.
 
 ---
 
-## 3. Python Implementation: Simulating the Base Rate Paradox
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def solve_factory_defect_bayes(p_a=0.60, d_given_a=0.02, p_b=0.40, d_given_b=0.05):
+    """
+    Solves the complete 2-step factory defective problem using Bayes' Theorem:
+    Step 1: Compute total defect probability P(D) via Law of Total Probability.
+    Step 2: Invert to find P(Machine A | Defective) and P(Machine B | Defective).
+    
+    Returns:
+        dict: Step-by-step probabilities and final machine attribution percentages.
+    """
+    # Step 1: Total Defect Rate P(D)
+    num_a = d_given_a * p_a  # 0.012
+    num_b = d_given_b * p_b  # 0.020
+    p_total_defect = num_a + num_b  # 0.032
+    
+    # Step 2: Bayes Theorem Inversion
+    p_a_given_d = num_a / p_total_defect  # 0.012 / 0.032 = 0.375
+    p_b_given_d = num_b / p_total_defect  # 0.020 / 0.032 = 0.625
+    
+    return {
+        "P(D) Total Defect": p_total_defect,
+        "P(Machine A | Defective)": p_a_given_d,
+        "P(Machine B | Defective)": p_b_given_d,
+        "Check Sum": p_a_given_d + p_b_given_d
+    }
 
-# Medical test parameters
-p_disease = 0.001
-p_pos_given_disease = 0.99
-p_pos_given_healthy = 0.05
+# --- Execution & Verification ---
+res = solve_factory_defect_bayes()
+print(f"Total Defective Rate P(D) = {res['P(D) Total Defect']:.4f} (3.2%)")
+print(f"If defective, chance it came from Machine A = {res['P(Machine A | Defective)'] * 100:.2f}% (37.5%)")
+print(f"If defective, chance it came from Machine B = {res['P(Machine B | Defective)'] * 100:.2f}% (62.5%)")
+print(f"Sum of machine attributions = {res['Check Sum']:.1f}")
 
-# Analytical Bayesian computation
-numerator = p_pos_given_disease * p_disease
-denominator = numerator + p_pos_given_healthy * (1 - p_disease)
-p_disease_given_pos = numerator / denominator
-
-print(f"Analytical P(Disease | Positive): {p_disease_given_pos:.4f} ({p_disease_given_pos * 100:.2f}%)")
-
-# Monte Carlo Population Simulation (10,000,000 individuals)
-n_pop = 10_000_000
-has_disease = np.random.binomial(1, p_disease, size=n_pop)
-
-test_pos = np.where(
-    has_disease == 1,
-    np.random.binomial(1, p_pos_given_disease, size=n_pop),
-    np.random.binomial(1, p_pos_given_healthy, size=n_pop)
-)
-
-empirical_p = np.sum((has_disease == 1) & (test_pos == 1)) / np.sum(test_pos == 1)
-print(f"Empirical P(Disease | Positive):  {empirical_p:.4f} ({empirical_p * 100:.2f}%)")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Base Rate Fallacy:** Human intuition ignores the prior base rate $P(D)$, focusing only on the test accuracy.
-- **FinTech Fraud Parallel:** In credit card transactions, fraud occurs in $<0.01\%$ of cases. An ML model with 99% accuracy will still suffer high false alarm rates unless properly calibrated for the prior.
+## 🔑 Key Takeaways
+1. Even though Machine A produced 60% of the total output, an observed defective item is far more likely (62.5%) to have come from Machine B.
+2. The denominator $P(D)$ scales the relative joint likelihoods so that posterior probabilities sum to 1.0.
+3. This exact calculation is used in root-cause analysis, anomaly tracing, and medical diagnostics.

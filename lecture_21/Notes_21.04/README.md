@@ -1,92 +1,102 @@
-# Day 21 - Lecture 21.4: Parallel & Perpendicular Lines
+# Lecture 21.04: Parallel & Perpendicular Lines
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_04.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the geometric conditions for **Parallel and Perpendicular Lines**, showing how slope relationships govern spatial parallelism ($m_1 = m_2$) and orthogonality ($m_1 \cdot m_2 = -1$).
 
 ---
 
-## 1. Overview & Geometric Orientation
-
-Understanding the conditions for **parallelism** and **orthogonality (perpendicularity)** is essential for coordinate geometry, gradient ascent/descent, normal vector calculations, and Support Vector Machine margin construction.
+## 🏛️ Slope Conditions for Spatial Alignment
 
 ```mermaid
 flowchart TD
-    A["Line Relationships"] --> B["Parallel Lines: Equal Slopes, Identical Orientation"]
-    A --> C["Perpendicular Lines: Orthogonal, Slopes are Negative Reciprocals"]
-    B --> D["m1 = m2, Normal vectors collinear"]
-    C --> E["m1 * m2 = -1, Normal vectors orthogonal: w1^T * w2 = 0"]
+    Lines["Line Alignment Conditions"] --> Par["Parallel Lines<br/>Same Tilt / Angle: θ1 = θ2<br/>m1 = m2  and  c1 ≠ c2"]
+    Lines --> Perp["Perpendicular (Orthogonal) Lines<br/>Intersect at 90°: θ2 = θ1 + 90°<br/>m1 * m2 = -1  ===>  m2 = -1 / m1"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formalism
 
 ### 1. Parallel Lines:
-Two non-vertical lines $L_1: y = m_1 x + c_1$ and $L_2: y = m_2 x + c_2$ are parallel if and only if their slopes are strictly equal:
+Two lines $L_1: y = m_1 x + c_1$ and $L_2: y = m_2 x + c_2$ are parallel if and only if they have identical slopes and distinct intercepts:
 
 $$
-\boxed{m_1 = m_2 \qquad (c_1 \ne c_2)}
+m_1 = m_2 \qquad \text{and} \qquad c_1 \neq c_2
 $$
 
-In general form $a_1 x + b_1 y + c_1 = 0$ and $a_2 x + b_2 y + c_2 = 0$:
-
-$$
-\boxed{\frac{a_1}{a_2} = \frac{b_1}{b_2} \ne \frac{c_1}{c_2}}
-$$
+Parallel lines never intersect in the 2D Euclidean plane.
 
 ### 2. Perpendicular (Orthogonal) Lines:
-Two non-vertical lines $L_1$ and $L_2$ are mutually perpendicular if and only if the product of their slopes equals $-1$:
+Two lines are perpendicular (meeting at an angle of $90^\circ$) if and only if the product of their slopes equals $-1$:
 
 $$
-\boxed{m_1 \cdot m_2 = -1 \iff m_2 = -\frac{1}{m_1}}
+m_1 \cdot m_2 = -1 \iff m_2 = -\frac{1}{m_1}
 $$
 
-In general form:
-
-$$
-\left(-\frac{a_1}{b_1}\right) \cdot \left(-\frac{a_2}{b_2}\right) = -1 \implies a_1 a_2 + b_1 b_2 = 0
-$$
-
-Notice that this is the **vector dot product** of their normal vectors $\mathbf{w}_1 = [a_1, b_1]^T$ and $\mathbf{w}_2 = [a_2, b_2]^T$:
-
-$$
-\boxed{\mathbf{w}_1^T \mathbf{w}_2 = 0 \iff L_1 \perp L_2}
-$$
+The slope of the second line is the negative reciprocal of the first line.
 
 ---
 
-## 3. Python Implementation
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-# Line 1: 3x - 4y + 5 = 0 -> m1 = 3/4 = 0.75
-a1, b1, c1 = 3.0, -4.0, 5.0
-m1 = -a1 / b1
+def analyze_line_relationships(line1=(2.0, 3.0), line2=(2.0, -1.0), line3=(-0.5, 4.0)):
+    """
+    Analyzes mathematical relationships between pairs of lines given in (m, c) form.
+    - Parallel lines: m1 == m2 and c1 != c2
+    - Identical lines: m1 == m2 and c1 == c2
+    - Perpendicular lines: m1 * m2 == -1
+    
+    Parameters:
+        line1 (tuple): (m1, c1)
+        line2 (tuple): (m2, c2)
+        line3 (tuple): (m3, c3)
+        
+    Returns:
+        dict: Relationship classifications for (line1, line2) and (line1, line3).
+    """
+    m1, c1 = line1
+    m2, c2 = line2
+    m3, c3 = line3
+    
+    # Pair 1: Line 1 vs Line 2
+    is_parallel_1_2 = np.isclose(m1, m2) and not np.isclose(c1, c2)
+    is_perpendicular_1_2 = np.isclose(m1 * m2, -1.0)
+    
+    # Pair 2: Line 1 vs Line 3
+    is_parallel_1_3 = np.isclose(m1, m3)
+    is_perpendicular_1_3 = np.isclose(m1 * m3, -1.0)
+    
+    return {
+        "line1": f"y = {m1}x + {c1}",
+        "line2": f"y = {m2}x + {c2}",
+        "line3": f"y = {m3}x + {c3}",
+        "line1_vs_line2": {
+            "m1_m2_equal": bool(np.isclose(m1, m2)),
+            "parallel": bool(is_parallel_1_2),
+            "perpendicular": bool(is_perpendicular_1_2)
+        },
+        "line1_vs_line3": {
+            "product_slopes": float(m1 * m3),
+            "perpendicular": bool(is_perpendicular_1_3)
+        }
+    }
 
-# Parallel Line 2: 3x - 4y - 10 = 0 -> m2 = 3/4 = 0.75
-a2, b2, c2 = 3.0, -4.0, -10.0
-m2 = -a2 / b2
+# --- Execution & Verification ---
+rel = analyze_line_relationships(line1=(2.0, 3.0), line2=(2.0, -1.0), line3=(-0.5, 4.0))
+print(f"Line 1: {rel['line1']}")
+print(f"Line 2: {rel['line2']}")
+print(f"Line 3: {rel['line3']}")
+print("Line 1 vs Line 2:", "PARALLEL" if rel['line1_vs_line2']['parallel'] else "NOT PARALLEL")
+print("Line 1 vs Line 3:", "PERPENDICULAR (90°)" if rel['line1_vs_line3']['perpendicular'] else "NOT PERPENDICULAR")
 
-# Perpendicular Line 3: 4x + 3y + 2 = 0 -> m3 = -4/3 = -1.333
-a3, b3, c3 = 4.0, 3.0, 2.0
-m3 = -a3 / b3
-
-print(f"Slope m1: {m1:.4f}, Slope m2: {m2:.4f}, Slope m3: {m3:.4f}")
-print(f"L1 and L2 Parallel:      {np.isclose(m1, m2)}")
-print(f"L1 and L3 Perpendicular: {np.isclose(m1 * m3, -1.0)}")
-
-# Vector dot product orthogonality check
-w1 = np.array([a1, b1])
-w3 = np.array([a3, b3])
-print(f"Dot product w1 . w3:    {np.dot(w1, w3):.1f} (Must be 0)")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Dot Product Rule:** Two lines (or hyperplanes) are perpendicular if and only if the dot product of their normal weight vectors equals zero ($\mathbf{w}_1^T \mathbf{w}_2 = 0$).
-- **Support Vector Machines:** The decision boundary and the margin planes are strictly parallel hyperplanes separated by bias offsets.
+## 🔑 Key Takeaways
+1. Parallel lines have identical slopes $m_1 = m_2$; they share the same directional vector.
+2. Perpendicular lines have negative reciprocal slopes $m_2 = -1/m_1$; their normal vectors are orthogonal.
+3. In Support Vector Machines (SVM), the margin boundaries are strictly parallel to the central decision hyperplane.

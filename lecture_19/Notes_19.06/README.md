@@ -1,85 +1,106 @@
-# Day 19 - Lecture 19.6: Stack Plots (Area Charts)
+# Lecture 19.06: Stack Plots in Matplotlib
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_06.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 19 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Stack Plots (Area Charts)**, explaining how to visualize cumulative part-to-whole relationships across time or sequential stages using the website traffic example (Direct, Organic, and Social channels).
 
 ---
 
-## 1. Overview & Purpose
-A **Stack Plot** (also called a Stacked Area Chart) displays multiple data series stacked on top of each other along a continuous or sequential x-axis (such as time, days, or months).
+## 🏛️ Single Day Pie Chart vs Multi-Day Stack Plot
 
-### Why use a Stack Plot?
-- **Part-to-Whole over Time:** While a **Pie Chart** shows part-to-whole for a single static point in time, a **Stack Plot** shows how both the individual parts and the cumulative total evolve over time.
-- **Contribution Analysis:** Easily observe which sub-category is growing or shrinking in proportion to the total.
-- **Total Magnitude:** The topmost line shows the cumulative total across all series.
-
----
-
-## 2. Syntax & Parameters
-
-```python
-plt.stackplot(
-    x,                      # Sequential x-axis (e.g., days, years)
-    y1, y2, y3, ...,        # Multiple 1D arrays of equal length representing layers
-    labels=['L1', 'L2'],    # Labels for each category
-    colors=['c1', 'c2'],    # Fill colors for each layer
-    alpha=0.8,              # Transparency
-    baseline='zero'         # 'zero' (standard), 'sym' (streamgraph), or 'wiggle'
-)
+```mermaid
+flowchart TD
+    Pie["Single Day Composition: Pie Chart (Static snapshot)"]
+    Stack["Multi-Day Cumulative Trend: Stack Plot (Time series)"]
+    
+    subgraph Transition["Why Stack Plots?"]
+        Pie -->|Extend across 7 days| Stack
+    end
 ```
 
 ---
 
-## 3. Real-World Case Study: Website Traffic Channels
+## 📐 Mathematical Formulation: Cumulative Accumulation
 
-Tracking visitor traffic across days of the week:
-- **Direct Traffic:** Users typing the URL directly.
-- **Organic Traffic:** Users arriving via search engines (Google, Bing).
-- **Social Traffic:** Users arriving from LinkedIn, Twitter, YouTube.
+At each discrete time index $t_i$, the total metric $Y(t_i)$ is the sum of $K$ constituent components:
+
+$$
+Y(t_i) = \sum_{k=1}^K y_k(t_i)
+$$
+
+The upper boundary of the $m$-th stack layer corresponds to:
+
+$$
+S_m(t_i) = \sum_{k=1}^m y_k(t_i), \quad 1 \le m \le K
+$$
+
+The vertical height between $S_{m-1}(t_i)$ and $S_m(t_i)$ reflects the magnitude of source $m$.
+
+---
+
+## 💻 Python Implementation
 
 ```python
 import matplotlib.pyplot as plt
 
-days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-direct = [50, 60, 70, 80, 90, 100, 110]
-organic = [30, 40, 50, 55, 60, 70, 80]
-social = [20, 25, 30, 35, 40, 50, 60]
+def plot_traffic_stackplot(days=None, direct=None, organic=None, social=None, show_plot=True):
+    """
+    Plots a multi-series Stack Plot showing website traffic source composition
+    over the days of a week.
+    
+    Parameters:
+        days (list): Day names (Mon-Sun).
+        direct (list): Daily direct visitors.
+        organic (list): Daily organic search visitors.
+        social (list): Daily social media visitors.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Total traffic per day and percentage composition.
+    """
+    if days is None:
+        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    if direct is None:
+        direct = [50, 60, 70, 80, 90, 100, 110]
+    if organic is None:
+        organic = [30, 40, 50, 55, 60, 70, 80]
+    if social is None:
+        social = [20, 25, 30, 35, 40, 50, 60]
+        
+    plt.figure(figsize=(9, 5))
+    
+    plt.stackplot(
+        days,
+        direct,
+        organic,
+        social,
+        labels=["Direct", "Organic", "Social"],
+        colors=["#4c72b0", "#55a868", "#c44e52"],
+        alpha=0.85
+    )
+    
+    plt.title("Website Traffic Breakdown Over a Week (Stack Plot)")
+    plt.xlabel("Days of Week")
+    plt.ylabel("Number of Visitors")
+    plt.legend(loc="upper left")
+    plt.grid(True, linestyle=":", alpha=0.5)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    total_traffic = [d + o + s for d, o, s in zip(direct, organic, social)]
+    return {"days": days, "total_traffic": total_traffic}
 
-plt.figure(figsize=(9, 6))
-plt.stackplot(days, direct, organic, social, labels=['Direct Traffic', 'Organic Search', 'Social Media'],
-              colors=['#4C72B0', '#55A868', '#C44E52'], alpha=0.85)
+# --- Execution & Verification ---
+res = plot_traffic_stackplot(show_plot=False)
+for d, tot in zip(res["days"], res["total_traffic"]):
+    print(f"{d}: Total Traffic = {tot}")
 
-plt.title("Website Traffic Channels Over a Week", fontsize=14, fontweight="bold")
-plt.xlabel("Day of the Week", fontsize=12)
-plt.ylabel("Number of Visitors", fontsize=12)
-plt.legend(loc='upper left', fontsize=11)
-plt.grid(True, linestyle=":", alpha=0.5)
-plt.show()
 ```
 
 ---
 
-## 📐 Mathematical Formulation of Stack Plots (Area Charts)
-
-A stack plot partitions the total area beneath a cumulative curve into $K$ constituent components $\{y_1(t), y_2(t), \dots, y_K(t)\}$ across sequence $t \in [t_0, t_1]$.
-
-The cumulative baseline functions $S_k(t)$ are defined recursively:
-
-$$
-\boxed{S_k(t) = \sum_{j=1}^k y_j(t), \quad\text{with } S_0(t) \equiv 0}
-$$
-
-The net area contribution $\mathcal{A}_k$ of each individual category corresponds to the definite integral:
-
-$$
-\boxed{\mathcal{A}_k = \int_{t_0}^{t_1} y_k(t) \, dt = \int_{t_0}^{t_1} [S_k(t) - S_{k-1}(t)] \, dt}
-$$
-
----
-
-## 4. Key Takeaways & Limitations
-- **Readability Caution:** Because layers are stacked on top of each other, only the bottom-most layer has a flat baseline. Higher layers have curved baselines, making it harder to judge exact numerical values of upper layers.
-- Limit the number of categories to 3–5. Beyond that, the chart becomes cluttered and hard to interpret.
+## 🔑 Key Takeaways
+1. A Pie chart is only suitable for a single snapshot of data; Stack plots generalize this concept across time series.
+2. The topmost line represents total aggregate traffic, while each colored slice shows component contribution.
+3. Avoid stack plots when series fluctuate erratically, as intermediate layer baselines become warped.

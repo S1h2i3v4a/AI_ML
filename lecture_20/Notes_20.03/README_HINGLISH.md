@@ -1,84 +1,98 @@
-# Day 20 - Lecture 20.3: Classical vs. Empirical Probability [Hinglish]
+# Notes_20.03: Probability Ke Real Examples [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_03.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Probability ke real-life textbook examples** blackboard par solve karwaye hain: Coins, do Dice ko ek sath fekna ($6 \times 6 = 36$ outcomes), aur 52 Taash ke patton (Playing Cards) ka structure.
 
 ---
 
-## 1. Probability ke Do Mukhya Raste: Classical aur Empirical
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Do dice fekne par sample space $36$ kaise banta hai?
+- Dice par sum $= 7$ aane ki probability sabse zyada kyu hoti hai?
+- Taash ke 52 patton ka classification (Suits, Colors, Face cards).
+- Systematic counting se outcomes nikalne ka tarika.
 
-Data science aur machine learning me probability calculate karne ke do mukhya tareeqe hote hain: **Classical (Theoretical)** aur **Empirical (Frequentist)**.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Do Dice Ka Example:
+Jab aap 2 dice ek sath roll karte hain:
+Total outcomes: $6 \times 6 = 36$.
+Agar humein chahiye **Sum = 7**, toh kaun-kaun se pairs ban sakte hain?
+$\{(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)\} \implies 6 \text{ pairs}$.
+
+Formula:
+
+$$
+P(\text{Sum} = 7) = \frac{6}{36} = \frac{1}{6} \approx 0.1667
+$$
+
+#### 2. 52 Playing Cards Ka Structure:
+- Total Cards $= 52$
+- 2 Colors: Red ($26$), Black ($26$)
+- 4 Suits: Spades ($13$), Hearts ($13$), Diamonds ($13$), Clubs ($13$)
+- 12 Face Cards: 4 Kings, 4 Queens, 4 Jacks
+- 4 Aces (Ikka)
+
+---
+
+### 📊 Blackboard Diagram: 2 Dice Ka Sum Distribution
 
 ```mermaid
-flowchart TD
-    A["Probability Formulations"] --> B["Classical (Theoretical)"]
-    A --> C["Empirical (Experimental)"]
-    B --> D["Equally likely outcomes ka assumption"]
-    C --> E["Experiment karke frequency count"]
-    D --> F["Law of Large Numbers: N badhne par Empirical -> Classical"]
-    E --> F
+flowchart LR
+    A["Die 1 (1 to 6)"] & B["Die 2 (1 to 6)"] --> C["Total 36 Combinations"]
+    C --> D["Sum = 2: 1 pair (1/36)"]
+    C --> E["Sum = 7: 6 pairs (6/36 = 16.7%)"]
+    C --> F["Sum = 12: 1 pair (1/36)"]
 ```
 
-### Tulna (Comparison):
-| Mudda | Classical Probability | Empirical Probability |
-| :--- | :--- | :--- |
-| **Adhaar** | Theoretical logic (experiment se pehle) | Actual experiment ke data records |
-| **Symmetry** | Sabhi outcomes barabar likely maane jate hain | Data se frequency calculate hoti hai |
-| **Formula** | $P(A) = rac{n(A)}{n(\mathcal{S})}$ | $P(A) = rac{	ext{Count of } A}{N 	ext{ total trials}}$ |
-| **Real Use** | Fair dice, coin, cards | Machine Learning model training datasets |
-
 ---
 
-## 2. Ganitiya Niyam
-
-### Classical Probability:
-Equally likely sample space $\mathcal{S}$ ke liye:
-
-$$
-oxed{P(A) = rac{|A|}{|\mathcal{S}|} = rac{	ext{Favorable Outcomes ki Sankhya}}{	ext{Total Possible Outcomes}}}
-$$
-
-### Empirical Probability:
-Jab experiment ko $N$ baar repeat kiya jaye aur event $A$ kul $n_N(A)$ baar aaye:
-
-$$
-oxed{\hat{P}_N(A) = rac{n_N(A)}{N}}
-$$
-
-### Law of Large Numbers (LLN Theorem):
-Jaise-jaise sample size $N 	o \infty$ badhta hai, empirical relative frequency theoretical probability ke bilkul barabar ho jati hai:
-
-$$
-oxed{\lim_{N 	o \infty} \hat{P}_N(A) = P(A)}
-$$
-
----
-
-## 3. Python Simulation: Law of Large Numbers
+### 💻 Python Code Implementation
 
 ```python
-import numpy as np
+import itertools
 
-np.random.seed(42)
-n_flips = 10000
+def analyze_dice_sum_distribution(target_sum=7):
+    """
+    Simulates the classical two-dice experiment.
+    Constructs the 6x6 sample space (36 elementary outcomes)
+    and computes the exact theoretical probability of obtaining a specific sum.
+    
+    Parameters:
+        target_sum (int): Desired sum of two dice faces (e.g. 7).
+        
+    Returns:
+        dict: Sample space size, favorable outcome pairs, and probability.
+    """
+    die_faces = [1, 2, 3, 4, 5, 6]
+    sample_space = list(itertools.product(die_faces, die_faces))
+    total_outcomes = len(sample_space)  # 36
+    
+    favorable_pairs = [pair for pair in sample_space if sum(pair) == target_sum]
+    n_favorable = len(favorable_pairs)
+    
+    theoretical_prob = n_favorable / total_outcomes
+    
+    return {
+        "target_sum": target_sum,
+        "sample_space_size": total_outcomes,
+        "favorable_pairs": favorable_pairs,
+        "count_favorable": n_favorable,
+        "probability": theoretical_prob
+    }
 
-tosses = np.random.binomial(1, 0.5, size=n_flips)
-cumulative_heads = np.cumsum(tosses)
-trial_numbers = np.arange(1, n_flips + 1)
-empirical_probabilities = cumulative_heads / trial_numbers
+# --- Execution & Verification ---
+res = analyze_dice_sum_distribution(target_sum=7)
+print(f"Target Sum: {res['target_sum']}")
+print(f"Total Outcomes n(S): {res['sample_space_size']}")
+print(f"Favorable Pairs: {res['favorable_pairs']}")
+print(f"Probability: {res['count_favorable']}/36 = {res['probability']:.4f}")
 
-print(f"10 flips ke baad:    P_hat(H) = {empirical_probabilities[9]:.4f}")
-print(f"100 flips ke baad:   P_hat(H) = {empirical_probabilities[99]:.4f}")
-print(f"1,000 flips ke baad: P_hat(H) = {empirical_probabilities[999]:.4f}")
-print(f"10,000 flips ke baad: P_hat(H) = {empirical_probabilities[-1]:.4f}")
-print("Theoretical Target:  P(H)    = 0.5000")
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **ML is Data-Driven:** Machine Learning hamesha empirical probabilities par kaam karta hai kyunki hum real-world data observe karte hain.
-- **Data Size Matters:** Chote dataset me variance zyada hota hai; bada dataset Law of Large Numbers ki wajah se reliable estimates deta hai.
+### 🎯 Key Takeaways:
+1. Do dice fekne par 7 aane ke sabse zyada chances hote hain kyunki iske 6 combinations bante hain.
+2. Combinatorics counting principle se sample space size directly multiply hota hai ($n_1 \times n_2$).

@@ -1,75 +1,121 @@
-# Day 20 - Lecture 20.20: Normal (Gaussian) Distribution [Hinglish]
+# Notes_20.20: Normal Distribution Aur Empirical Rule [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_20.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Normal (Gaussian) Distribution** ka concept samjhaya hai: Bell curve ka shape, mean $\mu$ aur standard deviation $\sigma$ ka role, aur famous **68-95-99.7 Empirical Rule** ko visualize kiya hai.
 
 ---
 
-## 1. Overview & AI me Mahatva
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Normal Distribution kya hai aur kyu yeh AI/ML ka sabse important distribution hai?
+- Bell Curve ki shape: Peak par $\mu$ aur dono taraf symmetric dhalan.
+- 68-95-99.7 Rule: 1, 2, aur 3 standard deviations ke andar kitna data hota hai.
+- Z-Score standardization: $Z = \frac{x - \mu}{\sigma}$.
 
-**Normal (Gaussian) Distribution** $\mathcal{N}(\mu, \sigma^2)$ machine learning aur statistics ka sabse mukhya pillar hai. **Central Limit Theorem (CLT)** ke anusar, chahe initial data kaisa bhi ho, independent variables ka sum hamesha Normal distribution ki taraf jata hai.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Normal Distribution Kya Hai?
+Duniya mein zyada tar natural cheezein (jaise logon ki height, blood pressure, exam scores, model ke prediction errors) ek symmetric ghanti jaise curve (**Bell Curve**) ko follow karti hain.
+Is curve ke center mein sabse zyada log hote hain, aur extreme ends (bohot chhote ya bohot bade) par bohot kam log hote hain.
+
+Formula:
+
+$$
+f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x - \mu)^2}{2\sigma^2}}
+$$
+
+#### 2. The 68-95-99.7 Rule:
+- **$\mu \pm 1\sigma$:** Center ke $68.27\%$ log is range mein aate hain.
+- **$\mu \pm 2\sigma$:** $95.45\%$ log is range mein aate hain.
+- **$\mu \pm 3\sigma$:** $99.73\%$ log is range mein aate hain.
+
+Agar koi point $\pm 3\sigma$ ke bhi bahar chala jaye, toh use pakka **Outlier / Anomaly** mana jata hai!
+
+---
+
+### 📊 Blackboard Diagram: Bell Curve Aur Standard Deviations
 
 ```mermaid
 flowchart TD
-    A["Normal Distribution N(mu, sigma^2)"] --> B["Bell Curve (Ghanti ka Akaar)"]
-    A --> C["68 - 95 - 99.7 Empirical Rule"]
-    A --> D["Standard Normal Z-Score: Z = (X - mu) / sigma"]
+    subgraph BellCurve["Symmetric Bell Curve N(μ, σ²)"]
+        M["Center Peak: Mean μ"]
+        S1["μ ± 1σ: 68% Data"]
+        S2["μ ± 2σ: 95% Data"]
+        S3["μ ± 3σ: 99.7% Data"]
+    end
 ```
 
 ---
 
-## 2. Ganitiya Sutra
-
-### Probability Density Function (PDF):
-
-$$
-\boxed{f(x) = \frac{1}{\sigma \sqrt{2\pi}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)}
-$$
-
-### 68 - 95 - 99.7% Empirical Rule:
-
-$$
-\boxed{P(\mu - \sigma \le X \le \mu + \sigma) \approx 68.27\%}
-$$
-
-$$
-\boxed{P(\mu - 2\sigma \le X \le \mu + 2\sigma) \approx 95.45\%}
-$$
-
-$$
-\boxed{P(\mu - 3\sigma \le X \le \mu + 3\sigma) \approx 99.73\%}
-$$
-
-### Z-Score Standardization:
-
-$$
-\boxed{Z = \frac{X - \mu}{\sigma}}
-$$
-
----
-
-## 3. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.stats import norm
 
-mu = 70
-sigma = 10
+def plot_normal_distribution_empirical_rule(mean=0.0, std=1.0, show_plot=True):
+    """
+    Plots the Gaussian Normal Distribution curve and visualizes the
+    Empirical Rule (68-95-99.7% rule) within 1, 2, and 3 standard deviations.
+    
+    Parameters:
+        mean (float): Distribution mean mu.
+        std (float): Distribution standard deviation sigma.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Empirical rule coverage percentages.
+    """
+    x = np.linspace(mean - 4 * std, mean + 4 * std, 1000)
+    pdf = norm.pdf(x, loc=mean, scale=std)
+    
+    plt.figure(figsize=(10, 5))
+    plt.plot(x, pdf, "b-", linewidth=2.5, label=f"N({mean}, {std}²)")
+    
+    # 68% band (mu ± 1 sigma)
+    x1 = np.linspace(mean - std, mean + std, 300)
+    plt.fill_between(x1, norm.pdf(x1, mean, std), color="blue", alpha=0.3, label="68.27% (μ ± 1σ)")
+    
+    # 95% band (mu ± 2 sigma)
+    x2_left = np.linspace(mean - 2 * std, mean - std, 150)
+    x2_right = np.linspace(mean + std, mean + 2 * std, 150)
+    plt.fill_between(x2_left, norm.pdf(x2_left, mean, std), color="orange", alpha=0.25)
+    plt.fill_between(x2_right, norm.pdf(x2_right, mean, std), color="orange", alpha=0.25, label="95.45% (μ ± 2σ)")
+    
+    plt.axvline(x=mean, color="black", linestyle="--", linewidth=1.5, label=f"Mean μ = {mean}")
+    plt.title("Normal (Gaussian) Distribution & The Empirical 68-95-99.7 Rule", fontweight="bold")
+    plt.xlabel("Z-Score / Values")
+    plt.ylabel("Probability Density")
+    plt.legend(loc="upper right")
+    plt.grid(True, linestyle=":", alpha=0.5)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    # Exact CDF coverage calculations
+    cov_1sigma = norm.cdf(mean + std, mean, std) - norm.cdf(mean - std, mean, std)
+    cov_2sigma = norm.cdf(mean + 2 * std, mean, std) - norm.cdf(mean - 2 * std, mean, std)
+    cov_3sigma = norm.cdf(mean + 3 * std, mean, std) - norm.cdf(mean - 3 * std, mean, std)
+    
+    return {
+        "coverage_1_sigma": float(cov_1sigma),
+        "coverage_2_sigma": float(cov_2sigma),
+        "coverage_3_sigma": float(cov_3sigma)
+    }
 
-p1 = norm.cdf(mu + sigma, mu, sigma) - norm.cdf(mu - sigma, mu, sigma)
-p2 = norm.cdf(mu + 2*sigma, mu, sigma) - norm.cdf(mu - 2*sigma, mu, sigma)
-p3 = norm.cdf(mu + 3*sigma, mu, sigma) - norm.cdf(mu - 3*sigma, mu, sigma)
+# --- Execution & Verification ---
+cov = plot_normal_distribution_empirical_rule(mean=0.0, std=1.0, show_plot=False)
+print(f"Coverage within ±1σ: {cov['coverage_1_sigma'] * 100:.2f}% (≈ 68%)")
+print(f"Coverage within ±2σ: {cov['coverage_2_sigma'] * 100:.2f}% (≈ 95%)")
+print(f"Coverage within ±3σ: {cov['coverage_3_sigma'] * 100:.2f}% (≈ 99.7%)")
 
-print(f"68% Rule: {p1*100:.2f}%")
-print(f"95% Rule: {p2*100:.2f}%")
-print(f"99.7% Rule: {p3*100:.2f}%")
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **StandardScaler:** Machine learning me features ko scale karne ke liye StandardScaler isi $Z = \frac{X - \mu}{\sigma}$ formula ka use karta hai.
-- **Bell Curve:** $\mu$ par center hota hai aur $\mu \pm \sigma$ par curve apna inflection point badalta hai.
+### 🎯 Key Takeaways:
+1. Normal distribution mein $\text{Mean} = \text{Median} = \text{Mode}$ teeno ek hi jagah center par hote hain.
+2. Z-Score ($Z = \frac{x - \mu}{\sigma}$) se kisi bhi data point ko Standard Normal Distribution ($\mu=0, \sigma=1$) mein badla ja sakta hai.

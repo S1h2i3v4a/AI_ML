@@ -1,86 +1,93 @@
-# Day 20 - Lecture 20.17: Probability Distributions & its Types
+# Lecture 20.17: Probability Distributions & its Types
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_17.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am provides a comprehensive **Taxonomy of Probability Distributions in Machine Learning**, contrasting Discrete distributions (PMF) with Continuous distributions (PDF) and defining the Cumulative Distribution Function (CDF).
 
 ---
 
-## 1. Overview & Distribution Taxonomy
-
-A **Probability Distribution** is a mathematical function that models the probability of occurrence of different possible outcomes in an experiment. It specifies the full probabilistic profile of a random variable.
+## 🏛️ Machine Learning Distribution Taxonomy
 
 ```mermaid
 flowchart TD
-    A["Probability Distributions"] --> B["Discrete Distributions"]
-    A --> C["Continuous Distributions"]
-    B --> D["Bernoulli / Binomial"]
-    B --> E["Poisson Distribution"]
-    B --> F["Discrete Uniform"]
-    C --> G["Continuous Uniform"]
-    C --> H["Normal / Gaussian"]
-    C --> I["Exponential Distribution"]
+    Dist["Probability Distributions in AI/ML"] --> Disc["Discrete Distributions<br/>Probability Mass Function (PMF)"]
+    Dist --> Cont["Continuous Distributions<br/>Probability Density Function (PDF)"]
+    
+    Disc --> Bern["Bernoulli (Binary 0/1 trial)"]
+    Disc --> Binom["Binomial (k successes in n trials)"]
+    Disc --> Pois["Poisson (Count of events per time interval)"]
+    
+    Cont --> Unif["Uniform (Equal density over [a, b])"]
+    Cont --> Norm["Normal / Gaussian (Bell curve, Central Limit Theorem)"]
+    Cont --> Exp["Exponential (Time elapsed between events)"]
 ```
 
 ---
 
-## 2. Mathematical Formalism: PMF vs. PDF Requirements
+## 📐 Mathematical Formulation: PMF, PDF, and CDF
 
-### 1. Discrete Distributions (Probability Mass Function $p(x)$):
-1. **Non-negativity:** $p(x) \ge 0 \quad \forall x \in \mathcal{X}$
-2. **Total Mass Normalization:**
-
-$$
-\boxed{\sum_{x \in \mathcal{X}} p(x) = 1.0}
-$$
-
-### 2. Continuous Distributions (Probability Density Function $f(x)$):
-1. **Non-negativity:** $f(x) \ge 0 \quad \forall x \in \mathbb{R}$
-2. **Total Density Normalization:**
+### 1. Cumulative Distribution Function (CDF):
+Defined identically for both discrete and continuous random variables as:
 
 $$
-\boxed{\int_{-\infty}^\infty f(x) \, dx = 1.0}
+F(x) = P(X \le x)
 $$
 
-> [!NOTE]
-> For continuous distributions, $f(x)$ can exceed $1.0$ at local points; it is the **integral (area)** over an interval that cannot exceed $1.0$.
+### 2. Fundamental Properties Comparison:
 
----
-
-## 3. Real-World AI Mapping Matrix
-
-| Distribution Family | Parameters | Typical AI / Machine Learning Use Case |
+| Feature | Discrete Distribution | Continuous Distribution |
 | :--- | :--- | :--- |
-| **Bernoulli** | $p$ | Binary classification output (Logistic Regression sigmoid) |
-| **Categorical / Multinomial** | $\mathbf{p} \in \Delta^{K-1}$ | Multi-class classification output (Softmax layer) |
-| **Binomial** | $n, p$ | A/B testing conversion rates, ensemble voting margins |
-| **Poisson** | $\lambda$ | Request arrival rates to API endpoints, traffic modeling |
-| **Uniform** | $a, b$ | Weight initialization in neural networks (Xavier Uniform) |
-| **Gaussian (Normal)** | $\mu, \sigma^2$ | Residual error modeling, Latent space in VAEs, Diffusion models |
+| **Density Metric** | PMF: $p(x) = P(X = x)$ | PDF: $f(x) = \frac{dF(x)}{dx}$ |
+| **Point Evaluation** | $P(X = x) \ge 0$ | $P(X = x) = 0$ |
+| **Interval Probability** | $P(a \le X \le b) = \sum_{x=a}^b p(x)$ | $P(a \le X \le b) = \int_a^b f(x) \, dx$ |
+| **Total Normalization** | $\sum_{x} p(x) = 1$ | $\int_{-\infty}^{\infty} f(x) \, dx = 1$ |
 
 ---
 
-## 4. Python Implementation
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def classify_distribution_type(variable_type="discrete", name="Binomial"):
+    """
+    Returns taxonomy specifications for discrete vs continuous distributions.
+    
+    Parameters:
+        variable_type (str): 'discrete' or 'continuous'
+        name (str): Distribution name
+        
+    Returns:
+        dict: Mathematical properties (PMF/PDF, integration/summation, CDF).
+    """
+    taxonomies = {
+        "discrete": {
+            "function_type": "Probability Mass Function (PMF) P(X = x)",
+            "support": "Countable distinct integers",
+            "axiom_sum": "Sum of all P(X=x) == 1.0",
+            "point_probability": "Can be strictly positive P(X=x) > 0",
+            "examples": ["Bernoulli", "Binomial", "Poisson", "Geometric"]
+        },
+        "continuous": {
+            "function_type": "Probability Density Function (PDF) f(x)",
+            "support": "Uncountable real intervals (-inf, +inf) or [a, b]",
+            "axiom_sum": "Integral from -inf to +inf f(x) dx == 1.0",
+            "point_probability": "Always exactly zero at a point P(X=c) == 0",
+            "examples": ["Uniform", "Normal (Gaussian)", "Exponential", "Beta"]
+        }
+    }
+    
+    props = taxonomies.get(variable_type.lower(), {})
+    return {"name": name, "type": variable_type, "properties": props}
 
-# Verify Discrete PMF normalization
-discrete_x = np.array([1, 2, 3, 4, 5, 6])
-pmf_fair_die = np.full(6, 1/6)
-print(f"Discrete PMF Sum: {np.sum(pmf_fair_die):.4f} (Must equal 1.0)")
+# --- Execution & Verification ---
+disc_info = classify_distribution_type("discrete", "Binomial")
+cont_info = classify_distribution_type("continuous", "Normal")
+print(f"Discrete Distribution ({disc_info['name']}): {disc_info['properties']['function_type']}")
+print(f"Continuous Distribution ({cont_info['name']}): {cont_info['properties']['function_type']}")
 
-# Verify Continuous PDF normalization via numerical trapezoidal integration
-from scipy.stats import norm
-x_grid = np.linspace(-5, 5, 1000)
-pdf_vals = norm.pdf(x_grid, loc=0, scale=1)
-integral_approx = np.trapezoid(pdf_vals, x_grid)
-print(f"Continuous Gaussian PDF Integral: {integral_approx:.6f} (Must approach 1.0)")
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-- **PMF vs PDF:** PMF values are probabilities ($P(X=x) \le 1$). PDF values are densities ($f(x)$ can exceed 1, but area integrates to 1).
-- **Core Modeling Assumption:** Every supervised learning loss function implies a specific probability distribution on the target variable.
+## 🔑 Key Takeaways
+1. A PMF gives the probability of exact values; a PDF gives the height of a curve where area under the curve gives probability.
+2. The CDF $F(x) = P(X \le x)$ is monotonically non-decreasing, bounded between 0 and 1.
+3. Supervised classification targets follow discrete categorical/Bernoulli distributions; continuous regression targets assume Gaussian error residuals.

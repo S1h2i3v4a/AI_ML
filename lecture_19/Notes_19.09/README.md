@@ -1,102 +1,101 @@
-# Day 19 - Lecture 19.9: Practice Task (Weekly Temperature Analysis)
+# Lecture 19.09: Practice Task (Weekly Temperature)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_09.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 19 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am walks through a complete **Practice Task**, synthesizing subplots, OOP layout management, automated iteration via `axes.flatten()`, and shared figure labels (`fig.supxlabel()` and `fig.supylabel()`) to visualize weekly temperature trends across 4 global cities (New York, London, Delhi, Tokyo).
 
 ---
 
-## 1. Project Overview & Objective
-In this project, we analyze and visualize the weekly temperature trends across four major global cities: **New York**, **London**, **Delhi**, and **Tokyo** across weekdays (Monday through Friday).
+## 🏛️ Automated Subplot Iteration Architecture
 
-### Key Learning Objectives:
-- Applying the **Object-Oriented Subplots** workflow in a practical scenario.
-- Mastering **`axes.flatten()`** to iterate over multi-dimensional subplot grids cleanly in a single `for` loop.
-- Using shared figure-level labels (`fig.suptitle`, `fig.supxlabel`, `fig.supylabel`).
-- Implementing nested loop alternative approaches and understanding their trade-offs.
-
----
-
-## 2. Grid Architecture & Array Flattening
-
-When creating a $2 \times 2$ grid:
-```python
-fig, axes = plt.subplots(2, 2)
-```
-The returned `axes` is a 2D NumPy array of shape `(2, 2)`:
-$$\begin{bmatrix} \text{ax}_{0,0} & \text{ax}_{0,1} \\ \text{ax}_{1,0} & \text{ax}_{1,1} \end{bmatrix}$$
-
-### Why `axes.flatten()`?
-A nested loop requires:
-```python
-count = 0
-for i in range(2):
-    for j in range(2):
-        axes[i, j].plot(...)
-        count += 1
-```
-By calling `axes = axes.flatten()`, the 2D array is transformed into a 1D array of 4 elements:
-$$[\text{ax}_0, \text{ax}_1, \text{ax}_2, \text{ax}_3]$$
-This allows a much cleaner and Pythonic loop using `enumerate()`:
-```python
-for i, ax in enumerate(axes.flatten()):
-    ax.plot(...)
+```mermaid
+flowchart TD
+    Data["City Temperatures Data<br/>(4 Cities x 5 Days)"] --> Grid["fig, axes = plt.subplots(2, 2)"]
+    Grid --> Flatten["axes.flatten(): Convert 2x2 matrix into 1D iterable [ax0, ax1, ax2, ax3]"]
+    Flatten --> Loop["for i, ax in enumerate(axes.flatten()): ax.plot(...)"]
+    Loop --> Sup["Shared Labels: fig.supxlabel() & fig.supylabel()"]
 ```
 
 ---
 
-## 3. Implementation Code
+## 📐 Mathematical Formulation: Central Tendency across Cities
+
+For each city $c \in \{1, 2, 3, 4\}$, the weekly average temperature $\bar{T}_c$ across $D = 5$ days is given by:
+
+$$
+\bar{T}_c = \frac{1}{D} \sum_{d=1}^D T_{c, d}
+$$
+
+The standard deviation measuring atmospheric temperature volatility is:
+
+$$
+s_c = \sqrt{\frac{1}{D-1} \sum_{d=1}^D (T_{c, d} - \bar{T}_c)^2}
+$$
+
+---
+
+## 💻 Python Implementation
 
 ```python
 import matplotlib.pyplot as plt
 
-days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-cities = ["New York", "London", "Delhi", "Tokyo"]
+def plot_weekly_city_temperatures(days=None, cities=None, temperatures=None, show_plot=True):
+    """
+    Plots weekly temperature trends for 4 global cities on a 2x2 subplot grid
+    using axes.flatten() and shared figure labels (fig.supxlabel, fig.supylabel).
+    
+    Parameters:
+        days (list): List of weekday names.
+        cities (list): City names.
+        temperatures (list of lists): 2D temperature array.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Mean temperature per city.
+    """
+    if days is None:
+        days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+    if cities is None:
+        cities = ["New York", "London", "Delhi", "Tokyo"]
+    if temperatures is None:
+        temperatures = [
+            [22, 23, 21, 24, 25],   # New York
+            [18, 19, 17, 20, 21],   # London
+            [30, 32, 31, 33, 34],   # Delhi
+            [25, 26, 24, 27, 28]    # Tokyo
+        ]
+        
+    fig, axes = plt.subplots(2, 2, figsize=(9, 7))
+    axes_flat = axes.flatten()
+    
+    colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
+    city_means = {}
+    
+    for i, ax in enumerate(axes_flat):
+        ax.plot(days, temperatures[i], marker="o", color=colors[i], linewidth=2.0)
+        ax.set_title(cities[i], fontweight="bold")
+        ax.grid(True, linestyle=":", alpha=0.6)
+        city_means[cities[i]] = sum(temperatures[i]) / len(temperatures[i])
+        
+    fig.suptitle("Weekly Temperature by City (Practice Task)", fontsize=14, fontweight="bold")
+    fig.supxlabel("Day of the Week", fontsize=11)
+    fig.supylabel("Temperature (°C)", fontsize=11)
+    fig.tight_layout()
+    
+    if show_plot:
+        plt.show()
+        
+    return city_means
 
-temperatures = [
-    [22, 23, 21, 24, 25],   # New York
-    [18, 19, 17, 20, 21],   # London
-    [30, 32, 31, 33, 34],   # Delhi
-    [25, 26, 24, 27, 28]    # Tokyo
-]
+# --- Execution & Verification ---
+means = plot_weekly_city_temperatures(show_plot=False)
+for city, avg in means.items():
+    print(f"{city}: Average Temp = {avg:.1f} °C")
 
-# Approach 1: Modern Pythonic loop with axes.flatten()
-fig, axes = plt.subplots(2, 2, figsize=(10, 8), sharey=False)
-axes_flat = axes.flatten()
-
-colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
-
-for i, ax in enumerate(axes_flat):
-    ax.plot(days, temperatures[i], marker='o', linewidth=2, color=colors[i], label=cities[i])
-    ax.set_title(cities[i], fontsize=13, fontweight='bold')
-    ax.grid(True, linestyle='--', alpha=0.6)
-    ax.set_ylim(15, 38) # Common scale for fair visual comparison
-
-# Figure-level global labels
-fig.suptitle("Weekly Temperature Trends Across Global Cities", fontsize=16, fontweight="bold")
-fig.supylabel("Temperature (°C)", fontsize=13)
-fig.supxlabel("Day of the Week", fontsize=13)
-
-fig.tight_layout()
-plt.show()
 ```
 
 ---
 
-## 📐 Shared Axes Domain Synchronization Mathematics
-
-When synchronizing scales across $M$ subplots (`sharex=True`, `sharey=True`), the global viewing domain $\mathcal{D}_X$ is computed as the union interval:
-
-$$
-\boxed{\mathcal{D}_X = \left[ \min_{1 \le m \le M} x_{\min}^{(m)}, \; \max_{1 \le m \le M} x_{\max}^{(m)} \right]}
-$$
-
-This guarantees uniform linear metric scaling across all comparative panes, eliminating visual scale distortion.
-
----
-
-## 4. Key Takeaways
-1. **`fig.supxlabel()` and `fig.supylabel()`:** Replaces repetitive axis labels on every individual subplot, giving a cleaner, publication-grade appearance.
-2. **Unified Axis Scales:** Notice that setting `ax.set_ylim(15, 38)` across all panels allows immediate visual comparison of absolute temperatures (e.g. noticing Delhi is significantly hotter than London).
+## 🔑 Key Takeaways
+1. `axes.flatten()` simplifies 2D grid loops: instead of writing nested `for i in range(2): for j in range(2):`, you can iterate cleanly with `enumerate(axes.flatten())`.
+2. Use `fig.supxlabel()` and `fig.supylabel()` for global labels rather than repeating identical axis labels across all 4 subplots.
+3. Looping keeps code DRY (Don't Repeat Yourself) when working with homogeneous subplots.

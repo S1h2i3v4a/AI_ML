@@ -1,81 +1,108 @@
-# Day 20 - Lecture 20.16: Variance aur Standard Deviation [Hinglish]
+# Notes_20.16: Variance Aur Standard Deviation [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_16.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Data ke phelaav (Dispersion)** ko naapne ke do sabse zaroori tools sikhaye hain: **Variance ($\sigma^2$)** aur **Standard Deviation ($\sigma$)**, aur yeh samjhaya hai ki sirf Mean pata hone se poori kahani kyu nahi pata chalti.
 
 ---
 
-## 1. Overview & Concept
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Do datasets ka Mean barabar hone par bhi unka spread alag kyu ho sakta hai?
+- Deviations ko square kyu kiya jata hai? ($(x_i - \mu)^2$).
+- Variance ($\sigma^2$) vs Standard Deviation ($\sigma$) ka farq.
+- Sample variance mein $n-1$ (Bessel's correction) se divide kyu karte hain?
 
-Mean hume data ka center batata hai, jabki **Variance** aur **Standard Deviation** hume yeh batate hain ki data apne mean se kitna **faila hua (spread out)** hai.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Mean Akela Kafi Kyu Nahi Hai?
+Sochiye do patients ka body temperature:
+- Patient 1: Teen din temperature tha: $[98.6, 98.6, 98.6] \implies \text{Mean} = 98.6^\circ\text{F}$ (Ekdum healthy!)
+- Patient 2: Teen din temperature tha: $[90.0, 98.6, 107.2] \implies \text{Mean} = 98.6^\circ\text{F}$ (Bohot serious!)
+
+Dono ka mean $98.6$ hai, lekin Patient 2 ke data mein bohot zyada **fluktuation/spread** hai! Is spread ko naapne ke liye hum **Variance** nikaalte hain.
+
+#### 2. Formula:
+1. Har number ka mean se doori nikaalo: $(x_i - \bar{x})$
+2. Doori ko square karo taaki negative signs cancel na hon: $(x_i - \bar{x})^2$
+3. Unka average lo:
+
+$$
+s^2 = \frac{1}{n - 1} \sum_{i=1}^n (x_i - \bar{x})^2
+$$
+
+Standard deviation square root lekar wapas original units ($^\circ\text{F}$) mein le aata hai:
+
+$$
+s = \sqrt{s^2}
+$$
+
+---
+
+### 📊 Blackboard Diagram: Spread Around Mean
 
 ```mermaid
-flowchart LR
-    A["Distribution"] --> B["Mean mu: Center"]
-    A --> C["Variance: Squared Spread"]
-    C --> D["Standard Deviation sigma: Real Units"]
+flowchart TD
+    M["Mean μ (Center Point)"] --> L["-1σ (Baayein phelaav)"]
+    M --> R["+1σ (Daayein phelaav)"]
+    L & R --> W["Standard Deviation σ data ka average spread batata hai"]
 ```
 
 ---
 
-## 2. Ganitiya Sutra
-
-### Variance ($\sigma^2$):
-
-$$
-\boxed{\text{Var}(X) = \sigma^2 = \mathbb{E}\left[ (X - \mu)^2 \right]}
-$$
-
-Calculation shortcut:
-
-$$
-\boxed{\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2}
-$$
-
-### Standard Deviation ($\sigma$):
-
-$$
-\boxed{\sigma = \sqrt{\text{Var}(X)}}
-$$
-
-### Scaling Properties:
-Constants $a, b$ ke liye:
-
-$$
-\boxed{\text{Var}(aX + b) = a^2 \text{Var}(X)}
-$$
-
-$$
-\boxed{\text{SD}(aX + b) = |a| \text{SD}(X)}
-$$
-
-Independent variables ke liye:
-
-$$
-\boxed{\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)}
-$$
-
----
-
-## 3. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
 import numpy as np
 
-x = np.array([10, 12, 14, 16, 18, 20])
-mu = np.mean(x)
-var_val = np.mean((x - mu)**2)
-std_val = np.sqrt(var_val)
+def compute_variance_and_standard_deviation(data=None, is_sample=True):
+    """
+    Computes sample or population Variance and Standard Deviation.
+    Demonstrates Bessel's correction (ddof=1) for unbiased sample variance.
+    
+    Parameters:
+        data (list or np.ndarray): Numerical observations.
+        is_sample (bool): True for sample (ddof=1), False for population (ddof=0).
+        
+    Returns:
+        dict: Mean, Variance, Standard Deviation, and step-by-step deviations.
+    """
+    if data is None:
+        data = [10, 12, 23, 23, 16, 23, 21, 16]
+        
+    arr = np.array(data, dtype=float)
+    n = len(arr)
+    mean_val = np.mean(arr)
+    
+    # Deviations from mean
+    deviations = arr - mean_val
+    squared_deviations = deviations ** 2
+    
+    # Degrees of freedom: n - 1 for sample, n for population
+    ddof = 1 if is_sample else 0
+    variance = np.sum(squared_deviations) / (n - ddof)
+    std_dev = np.sqrt(variance)
+    
+    return {
+        "n": n,
+        "mean": float(mean_val),
+        "ddof": ddof,
+        "sum_squared_deviations": float(np.sum(squared_deviations)),
+        "variance": float(variance),
+        "standard_deviation": float(std_dev)
+    }
 
-print(f"Mean:     {mu:.2f}")
-print(f"Variance: {var_val:.2f}")
-print(f"Std Dev:  {std_val:.2f}")
+# --- Execution & Verification ---
+stats = compute_variance_and_standard_deviation(is_sample=True)
+print(f"Sample Size n: {stats['n']}")
+print(f"Mean (mu)    : {stats['mean']:.2f}")
+print(f"Variance (s²): {stats['variance']:.4f}")
+print(f"Std Dev (s)  : {stats['standard_deviation']:.4f}")
+
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **Constant Addition:** Data me koi constant jodne ya ghatane se variance nahi badalta ($\text{Var}(X + 5) = \text{Var}(X)$).
-- **Constant Multiplication:** Constant multiply karne par variance $a^2$ guna ho jata hai.
+### 🎯 Key Takeaways:
+1. Variance squared units mein hoti hai, jabki Standard Deviation original units mein hoti hai.
+2. Machine Learning mein high variance ka matlab hota hai **Overfitting** (model train data par overreact kar raha hai).

@@ -1,95 +1,94 @@
-# Day 19 - Lecture 19.14: Distribution Plots in Seaborn (`displot`, `histplot`, `kdeplot`)
+# Lecture 19.14: Distribution Plots in Seaborn (`histplot` & KDE)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_14.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 19 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers modern distribution plotting in Seaborn using **`sns.histplot()`**, demonstrating how to examine continuous variables (such as penguin body mass) and overlay smooth probability density curves via **Kernel Density Estimation (`kde=True`)**.
 
 ---
 
-## 1. Overview & Purpose
-**Distribution Plots** allow us to inspect the shape, spread, modality, and skewness of continuous variables.
-Modern Seaborn (v0.11+) provides:
-- **`sns.histplot()`:** Modern, powerful replacement for `plt.hist()`.
-- **`sns.kdeplot()`:** Kernel Density Estimation (smooth probability density curve).
-- **`sns.displot()`:** Figure-level function providing access to histograms, KDEs, and ECDFs with automated subplot faceting.
+## 🏛️ Discrete Bins to Continuous KDE
+
+```mermaid
+flowchart TD
+    Raw["Raw Observations: {x1, x2, ..., xn}"] --> Bins["Discrete Bins (Histplot Bars)"]
+    Raw --> Kernels["Place Gaussian Kernel K(u) at each data point"]
+    Kernels --> Smooth["Sum Kernels: Continuous Smooth Curve (KDE)"]
+    Bins --- Smooth
+```
 
 ---
 
-## 2. Kernel Density Estimation (KDE) Theory
+## 📐 Mathematical Formulation: Kernel Density Estimation (KDE)
 
-A histogram's appearance depends heavily on arbitrary bin boundaries. 
-**KDE** replaces discrete bins with a smooth, continuous estimate of the probability density function $f(x)$:
-$$\hat{f}_h(x) = \frac{1}{n h} \sum_{i=1}^{n} K\left( \frac{x - x_i}{h} \right)$$
-where $K(\cdot)$ is a Gaussian kernel function and $h$ is the smoothing **bandwidth**.
-- In `sns.histplot()`, setting **`kde=True`** overlays this smooth mathematical density over the discrete bins.
+The continuous probability density estimate $\hat{f}(x)$ at point $x$ is computed as the sum of Gaussian kernel functions centered at each sample $x_i$:
+
+$$
+\hat{f}(x) = \frac{1}{n h} \sum_{i=1}^n K\left( \frac{x - x_i}{h} \right)
+$$
+
+where $K(u) = \frac{1}{\sqrt{2\pi}} e^{-u^2 / 2}$ is the standard normal kernel, and $h$ is the smoothing parameter (**bandwidth**).
 
 ---
 
-## 3. Code Implementation: The Penguins Dataset
+## 💻 Python Implementation
 
 ```python
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-penguins = sns.load_dataset("penguins")
-print("Penguins Dataset Preview:")
-print(penguins.head())
+def plot_penguin_distribution(bins=30, kde=True, show_plot=True):
+    """
+    Plots the statistical distribution of continuous features using sns.histplot().
+    Demonstrates binning, frequency histograms, and Kernel Density Estimation (KDE)
+    on the penguins dataset.
+    
+    Parameters:
+        bins (int): Number of histogram intervals.
+        kde (bool): Whether to overlay smooth kernel density estimate.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Mean and standard deviation of penguin body mass.
+    """
+    sns.set_theme(style="whitegrid")
+    penguins = sns.load_dataset("penguins")
+    
+    plt.figure(figsize=(9, 5))
+    
+    # Distribution plot with KDE overlay
+    sns.histplot(
+        data=penguins,
+        x="body_mass_g",
+        bins=bins,
+        kde=kde,
+        color="teal",
+        edgecolor="black"
+    )
+    
+    plt.title("Distribution of Penguin Body Mass (g) with KDE Curve", fontweight="bold")
+    plt.xlabel("Body Mass (grams)")
+    plt.ylabel("Count")
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    clean_mass = penguins["body_mass_g"].dropna()
+    return {
+        "mean_mass": float(clean_mass.mean()),
+        "std_mass": float(clean_mass.std()),
+        "total_records": len(clean_mass)
+    }
 
-# 1. Distribution of Body Mass (30 bins with KDE overlay)
-plt.figure(figsize=(9, 5))
-sns.histplot(
-    data=penguins,
-    x="body_mass_g",
-    bins=30,
-    kde=True,
-    color="teal"
-)
-plt.title("Penguin Body Mass Distribution with KDE Overlay", fontsize=14, fontweight="bold")
-plt.xlabel("Body Mass (grams)", fontsize=12)
-plt.ylabel("Count", fontsize=12)
-plt.grid(axis='y', linestyle='--', alpha=0.6)
-plt.show()
+# --- Execution & Verification ---
+stats = plot_penguin_distribution(show_plot=False)
+print(f"Penguin Body Mass Mean: {stats['mean_mass']:.1f} g")
+print(f"Standard Deviation: {stats['std_mass']:.1f} g")
 
-# 2. Multi-class distribution with hue
-plt.figure(figsize=(9, 5))
-sns.histplot(
-    data=penguins,
-    x="body_mass_g",
-    hue="species",
-    element="step",  # 'bars', 'step', or 'poly'
-    kde=True
-)
-plt.title("Body Mass Distribution Across Penguin Species", fontsize=14, fontweight="bold")
-plt.xlabel("Body Mass (grams)")
-plt.show()
 ```
 
 ---
 
-## 📐 Mathematical Kernel Density Estimation (KDE) Formulation
-
-Kernel Density Estimation is a non-parametric method to estimate the probability density function $f(x)$ of a continuous random variable from sample points $x_1, x_2, \dots, x_n$:
-
-$$
-\boxed{\hat{f}_h(x) = \frac{1}{n h} \sum_{i=1}^n K\left(\frac{x - x_i}{h}\right)}
-$$
-
-where $K(u)$ is the standard Gaussian kernel function:
-
-$$
-\boxed{K(u) = \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}u^2}}
-$$
-
-and $h > 0$ is the smoothing bandwidth parameter, optimized by **Silverman's Rule of Thumb**:
-
-$$
-\boxed{h_{\text{opt}} = 0.9 \cdot \min\left(s, \; \frac{\text{IQR}}{1.34}\right) \cdot n^{-1/5}}
-$$
-
----
-
-## 4. Key Takeaways
-- `sns.histplot()` handles missing values (`NaN`) gracefully without crashing.
-- Setting `element="step"` or `multiple="stack"` creates clean, uncluttered visual comparisons across multiple species.
+## 🔑 Key Takeaways
+1. `sns.histplot()` replaces the deprecated `sns.distplot()`.
+2. Setting `kde=True` overlays a smooth probability density curve, mitigating the sensitivity of histograms to bin edge choices.
+3. Seaborn handles missing values (`NaN`) automatically during distribution calculations.

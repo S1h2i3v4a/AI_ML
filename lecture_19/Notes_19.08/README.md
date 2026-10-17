@@ -1,114 +1,103 @@
-# Day 19 - Lecture 19.8: Modern Matplotlib (Object-Oriented API)
+# Lecture 19.08: Modern Matplotlib (Object-Oriented API)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_08.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 19 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces the **Object-Oriented (OOP) API of Matplotlib**, contrasting it with the legacy pyplot state machine. By explicitly instantiating `Figure` and `Axes` objects using `plt.subplots()`, programmers gain deterministic control over complex multi-panel visual layouts.
 
 ---
 
-## 1. Overview & Architecture
-Matplotlib offers two distinct programming paradigms:
-1. **Pyplot / Stateful Interface (`plt.`):** Mimics MATLAB. Keeps track of the "current figure" and "current axes" implicitly in global memory. Fast for quick throwaway scripts, but error-prone for production.
-2. **Object-Oriented (OO) Interface (`fig, ax = plt.subplots()`):** Modern standard. Explicitly assigns Figure and Axes objects to Python variables, giving direct, granular control.
+## 🏛️ Matplotlib OOP Hierarchy
 
-### Matplotlib Layer Architecture:
 ```mermaid
 flowchart TD
-    A["Scripting Layer (pyplot)"] --> B["Artist Layer (Figure, Axes, Line2D, Text, Patches)"]
-    B --> C["Backend Layer (Renderer, Graphics Device / Display)"]
+    Fig["Figure Object: The Top-Level Window / Canvas"] --> Ax1["Axes Object 1: axes[0, 0]"]
+    Fig --> Ax2["Axes Object 2: axes[0, 1]"]
+    Fig --> Ax3["Axes Object 3: axes[1, 0]"]
+    Fig --> Ax4["Axes Object 4: axes[1, 1]"]
+    
+    Ax1 --> Comp1["XAxis, YAxis, Spines, Lines, Titles"]
+    Ax2 --> Comp2["XAxis, YAxis, Spines, Lines, Titles"]
+    Ax3 --> Comp3["XAxis, YAxis, Spines, Lines, Titles"]
+    Ax4 --> Comp4["XAxis, YAxis, Spines, Lines, Titles"]
 ```
 
-- **Figure (`fig`):** The entire top-level window or canvas. Holds all subplots, legends, and global titles.
-- **Axes (`ax`):** An individual plot or graph area with its own coordinate system, x/y axes, ticks, and data points.
+---
+
+## 📐 Method Mapping: Pyplot vs Object-Oriented Interface
+
+| Pyplot State-Machine (`plt.*`) | Object-Oriented API (`ax.*` / `fig.*`) | Purpose |
+| :--- | :--- | :--- |
+| `plt.plot(x, y)` | `ax.plot(x, y)` | Draw line / scatter points |
+| `plt.title("...")` | `ax.set_title("...")` | Set title for specific subplot |
+| `plt.xlabel("...")` | `ax.set_xlabel("...")` | Set horizontal axis label |
+| `plt.ylabel("...")` | `ax.set_ylabel("...")` | Set vertical axis label |
+| `plt.grid(True)` | `ax.grid(True)` | Enable coordinate grid |
+| `plt.suptitle("...")` | `fig.suptitle("...")` | Global super-title for the figure |
+| `plt.tight_layout()` | `fig.tight_layout()` | Automatically adjust padding |
 
 ---
 
-## 2. Syntax Translation: Pyplot vs. Object-Oriented
-
-| Stateful / Pyplot (`plt.`) | Modern Object-Oriented (`ax.`) |
-| :--- | :--- |
-| `plt.plot(x, y)` | `ax.plot(x, y)` |
-| `plt.title("Title")` | `ax.set_title("Title")` |
-| `plt.xlabel("X")` | `ax.set_xlabel("X")` |
-| `plt.ylabel("Y")` | `ax.set_ylabel("Y")` |
-| `plt.xlim(0, 10)` | `ax.set_xlim(0, 10)` |
-| `plt.grid(True)` | `ax.grid(True)` |
-| `plt.legend()` | `ax.legend()` |
-| *(No single shortcut)* | `ax.set(title="...", xlabel="...", ylabel="...")` |
-| `plt.title("Master Title")` | `fig.suptitle("Master Figure Title")` |
-
----
-
-## 3. Code Implementation
+## 💻 Python Implementation
 
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
 
-x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-y1 = [np.sqrt(i) for i in x]
-y2 = [i * 2 for i in x]
-y3 = [i ** 2 for i in x]
-y4 = [i ** 3 for i in x]
+def demonstrate_oop_matplotlib(show_plot=True):
+    """
+    Demonstrates the Object-Oriented (OOP) API of Matplotlib:
+    Explicit creation of Figure and Axes objects via plt.subplots().
+    Uses axes[row][col] and ax.set() dictionary packing.
+    
+    Returns:
+        dict: Figure and grid dimensions info.
+    """
+    x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    y1 = [np.sqrt(i) for i in x]
+    y2 = [i * 2 for i in x]
+    y3 = [i ** 2 for i in x]
+    y4 = [i ** 3 for i in x]
+    
+    # OOP explicit creation
+    fig, axes = plt.subplots(2, 2, figsize=(8, 7))
+    
+    # 2D indexing on axes array
+    axes[0, 0].plot(x, y1, color="navy")
+    axes[0, 0].set_title("Plot 1: Square Root")
+    axes[0, 0].grid(True, linestyle=":", alpha=0.6)
+    
+    axes[0, 1].plot(x, y2, color="forestgreen")
+    axes[0, 1].set_title("Plot 2: Double")
+    axes[0, 1].grid(True, linestyle=":", alpha=0.6)
+    
+    axes[1, 0].plot(x, y3, color="crimson")
+    axes[1, 0].set_title("Plot 3: Square")
+    axes[1, 0].grid(True, linestyle=":", alpha=0.6)
+    
+    axes[1, 1].plot(x, y4, color="purple")
+    axes[1, 1].set_title("Plot 4: Cube")
+    axes[1, 1].grid(True, linestyle=":", alpha=0.6)
+    
+    fig.suptitle("Multiple Mathematical Plots (OOP Interface)", fontsize=14, fontweight="bold")
+    fig.tight_layout()
+    
+    if show_plot:
+        plt.show()
+        
+    return {
+        "axes_shape": axes.shape,
+        "grid_rows": 2,
+        "grid_cols": 2
+    }
 
-# Create a 2x2 grid of subplots using OO style
-fig, axes = plt.subplots(2, 2, figsize=(9, 8))
+# --- Execution & Verification ---
+oop_info = demonstrate_oop_matplotlib(show_plot=False)
+print(f"OOP Grid Configuration: {oop_info}")
 
-# Access individual subplots via 2D array indexing: axes[row, col]
-axes[0, 0].plot(x, y1, 'b-o')
-axes[0, 0].set_title("Square Root (√x)")
-axes[0, 0].grid(True)
-
-axes[0, 1].plot(x, y2, 'g-s')
-axes[0, 1].set_title("Double (2x)")
-axes[0, 1].grid(True)
-
-axes[1, 0].plot(x, y3, 'r-^')
-axes[1, 0].set_title("Square (x²)")
-axes[1, 0].grid(True)
-
-axes[1, 1].plot(x, y4, 'm-d')
-axes[1, 1].set_title("Cube (x³)")
-axes[1, 1].grid(True)
-
-# Set super title for the overall figure
-fig.suptitle("Mathematical Functions Grid (Object-Oriented API)", fontsize=16, fontweight="bold")
-fig.tight_layout()
-plt.show()
-
-# Single subplot shortcut: ax.set()
-fig, ax = plt.subplots(figsize=(6, 4))
-vals = [1, 2, 3, 4, 5, 6]
-ax.plot(vals, vals, color='navy', marker='o')
-ax.set(
-    title="Clean OO Configuration with ax.set()",
-    xlabel="X Axis Values",
-    ylabel="Y Axis Values"
-)
-ax.grid(True)
-plt.show()
 ```
 
 ---
 
-## 📐 Subplot Matrix Topology & Tensor Indexing
-
-An $(R \times C)$ grid of subplots forms a 2-tensor of Axes objects:
-
-$$
-\mathbf{A} = (a_{r, c}) \in \mathcal{H}^{R \times C}, \quad r \in \{0, \dots, R-1\}, \; c \in \{0, \dots, C-1\}
-$$
-
-Linear index $i \in \{0, 1, \dots, R \cdot C - 1\}$ maps to matrix coordinates via integer quotient and modulo arithmetic:
-
-$$
-\boxed{r = \lfloor i / C \rfloor \qquad\text{and}\qquad c = i \pmod C}
-$$
-
----
-
-## 4. Key Takeaways & Best Practices
-- In production, data pipelines, and dashboards, **always prefer `fig, ax = plt.subplots()`**.
-- `ax.set(...)` saves multiple lines of code by setting titles, labels, and limits in a single method call.
+## 🔑 Key Takeaways
+1. The OOP API (`fig, axes = plt.subplots(nrows, ncols)`) is the industry standard for production code, data pipelines, and research publications.
+2. In a 2D grid, `axes` is a 2D NumPy array indexed via `axes[row, col]`.
+3. `ax.set(title=..., xlabel=..., ylabel=...)` provides a clean single-line configuration for subplot properties.

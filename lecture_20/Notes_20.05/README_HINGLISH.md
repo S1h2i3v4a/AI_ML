@@ -1,90 +1,110 @@
-# Day 20 - Lecture 20.5: Events ke Prakar (Types of Events) [Hinglish]
+# Notes_20.05: Events Ke Prakar (Types of Events) [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_05.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Events ke alag-alag types** ko detail mein samjhaya hai: Mutually Exclusive (Disjoint) events, Independent events, Dependent events, aur Exhaustive events mein kya antar hota hai.
 
 ---
 
-## 1. Events ka Vargikaran (Classification)
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Mutually Exclusive events kya hote hain ($A \cap B = \emptyset$)?
+- Independent vs Dependent events ka farq.
+- Exhaustive events ($A \cup B = S$) ka concept.
+- Ek bohot bada misconception: Mutually exclusive events kabhi independent nahi ho sakte!
 
-Probability theory me events ko unke sambandho aur mathematical properties ke adhaar par classify kiya jata hai:
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Mutually Exclusive (Disjoint) Events:
+Aise events jo **ek sath kabhi nahi ho sakte**.
+Jaise: Ek coin fekne par ya toh Head aayega ya Tail. Dono ek sath kabhi nahi aa sakte!
+Inke beech ka intersection zero hota hai:
+
+$$
+P(A \cap B) = 0
+$$
+
+#### 2. Independent Events:
+Jab ek event ke hone se doosre event par koi farq na pade.
+Jaise: Pehle coin par Head aana aur doosre coin par Tail aana. Pehla coin doosre coin ko influence nahi karta.
+
+$$
+P(A \cap B) = P(A) \cdot P(B)
+$$
+
+#### 3. Exhaustive Events:
+Jab saare events milkar poora sample space $S$ bana dein.
+Jaise: Even numbers $\{2, 4, 6\}$ aur Odd numbers $\{1, 3, 5\}$ milkar poora dice $\{1, 2, 3, 4, 5, 6\}$ cover kar lete hain.
+
+---
+
+### 📊 Blackboard Diagram: Mutually Exclusive vs Overlapping Events
 
 ```mermaid
 flowchart TD
-    A["Event Taxonomy"] --> B["Mutually Exclusive (Disjoint)"]
-    A --> C["Non-Disjoint (Overlapping)"]
-    A --> D["Independent Events"]
-    A --> E["Dependent Events"]
-    A --> F["Exhaustive Events"]
-    B --> G["A cap B = khali -> P(A cap B) = 0"]
-    C --> H["A cap B != khali -> P(A cap B) > 0"]
-    D --> I["P(A cap B) = P(A) * P(B)"]
-    E --> J["P(A cap B) = P(A) * P(B|A)"]
-    F --> K["Sabka Union = S -> Sum P = 1"]
+    subgraph Disjoint["Mutually Exclusive: Alag-alag Circles"]
+        A1["Event A: Head"] --- B1["Event B: Tail"]
+    end
+    subgraph Overlapping["Independent / Dependent: Overlapping Circles"]
+        A2["Event A: King"] -.- I["A ∩ B: King of Spades"] -.- B2["Event B: Spades"]
+    end
 ```
 
 ---
 
-## 2. Mukhya Ganitiya Niyam
-
-### 1. Mutually Exclusive (Disjoint) Events
-Yeh do events ek sath kabhi nahi ghatit ho sakte:
-
-$$
-oxed{A \cap B = \emptyset \implies P(A \cap B) = 0}
-$$
-
-### 2. Independent Events
-Ek event ke hone ya na hone se doosre event ki probability par koi asar nahi padta:
-
-$$
-oxed{P(A \cap B) = P(A) \cdot P(B) \iff P(A \mid B) = P(A)}
-$$
-
-> [!WARNING]
-> **Interview Trap:** Mutually exclusive events kabhi independent nahi hote! Agar do positive probability wale events mutually exclusive hain, toh unka $P(A \cap B) = 0$ hoga, jo ki $P(A) \cdot P(B) 
-e 0$ ke barabar nahi ho sakta. Yaani mutually exclusive events strictly **dependent** hote hain!
-
-### 3. Exhaustive Events
-Aise events jinka union pura sample space bana de:
-
-$$
-oxed{igcup_{i=1}^k E_i = \mathcal{S} \implies P\left(igcup_{i=1}^k E_iight) = 1.0}
-$$
-
-### 4. Partition
-Aisa collection jo mutually exclusive bhi ho aur exhaustive bhi ho (sample space ke tukde bina kisi overlap ke).
-
----
-
-## 3. Python Code
+### 💻 Python Code Implementation
 
 ```python
+def test_event_types(sample_space, event_a, event_b):
+    """
+    Classifies the mathematical relationship between two events A and B:
+    1. Mutually Exclusive (Disjoint): A ∩ B = ∅
+    2. Exhaustive: A ∪ B = S
+    3. Independent: P(A ∩ B) = P(A) * P(B)
+    
+    Parameters:
+        sample_space (set): Universal outcomes.
+        event_a (set): Event A outcomes.
+        event_b (set): Event B outcomes.
+        
+    Returns:
+        dict: Classification results.
+    """
+    n_s = len(sample_space)
+    intersection = event_a.intersection(event_b)
+    union = event_a.union(event_b)
+    
+    p_a = len(event_a) / n_s
+    p_b = len(event_b) / n_s
+    p_intersection = len(intersection) / n_s
+    
+    is_mutually_exclusive = (len(intersection) == 0)
+    is_exhaustive = (union == sample_space)
+    is_independent = np.isclose(p_intersection, p_a * p_b)
+    
+    return {
+        "P(A)": p_a,
+        "P(B)": p_b,
+        "P(A ∩ B)": p_intersection,
+        "is_mutually_exclusive": is_mutually_exclusive,
+        "is_exhaustive": is_exhaustive,
+        "is_independent": bool(is_independent)
+    }
+
+# --- Execution & Verification ---
 import numpy as np
+S = {1, 2, 3, 4, 5, 6}
+# A = Even {2, 4, 6}, B = Odd {1, 3, 5}
+res = test_event_types(S, {2, 4, 6}, {1, 3, 5})
+print("Even vs Odd Die Rolls:")
+print(f"Mutually Exclusive (Disjoint)? {res['is_mutually_exclusive']}")
+print(f"Exhaustive (Cover S)? {res['is_exhaustive']}")
+print(f"Independent? {res['is_independent']}")
 
-sample_space = {1, 2, 3, 4, 5, 6}
-A = {2, 4, 6}  # Even
-B = {1, 3, 5}  # Odd
-C = {1, 2, 3, 4} # <= 4
-
-def p(e): return len(e) / len(sample_space)
-
-# Mutually Exclusive Check
-print(f"P(A cap B) = {p(A.intersection(B))} -> Disjoint: {p(A.intersection(B)) == 0}")
-
-# Independent Check for A and B
-print(f"Independent? {np.isclose(p(A)*p(B), p(A.intersection(B)))}")
-
-# Independent Check for A and C
-print(f"P(A cap C) = {p(A.intersection(C))}, P(A)*P(C) = {p(A)*p(C)}")
-print(f"A and C Independent? {np.isclose(p(A)*p(C), p(A.intersection(C)))}")
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **Difference:** Mutually exclusive matlab "ek sath nahi ho sakte". Independent matlab "ek doosre ko prabhavit nahi karte".
-- **Law of Total Probability ka Adhaar:** Partition concept Bayes Theorem aur Law of Total Probability ka basic building block hai.
+### 🎯 Key Takeaways:
+1. Mutually Exclusive events mein koi common point nahi hota ($A \cap B = \emptyset$).
+2. Exhaustive events ka union hamesha $1.0$ hota hai.

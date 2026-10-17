@@ -1,106 +1,103 @@
-# Day 19 - Lecture 19.11: Creating Plots with Seaborn (Semantic Mapping) [Hinglish]
+# Notes_19.11: Seaborn relplot Ka Upyog [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_11.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 19 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **`sns.relplot()`** function ka use sikhaya hai: kaise ek hi graph ke andar 5 alag-alag features (Total Bill, Tip, Smoker status, Party Size, aur Lunch/Dinner) ko visual properties ke through represent kiya jata hai.
 
 ---
 
-## 1. Overview & Semantic Dimensions
-In standard plotting, each 2D chart represents 2 variables ($X$ and $Y$). Seaborn leverages the **Grammar of Graphics** to allow up to **5 or 6 dimensions of data** on a single 2D plot using **semantic mappings**:
-1. **$X$-axis / $Y$-axis:** Continuous quantitative positions.
-2. **`hue`:** Colors points/lines based on a categorical or continuous column.
-3. **`style`:** Changes marker symbols (circles, crosses, triangles) or line dash styles.
-4. **`size`:** Scales the area of markers or width of lines.
-5. **`col` / `row`:** Splits data across subplots (Faceting).
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- `sns.relplot()` kya hai aur yeh standard scatter plot se alag kyu hai?
+- Semantic parameters: `hue`, `style`, `size`, aur `col`.
+- Faceting: `col="time"` likhne se do alag subplots (Lunch vs Dinner) automatically kaise bante hain.
+- Complex multi-variable relationships ko single glance mein samajhna.
 
 ---
 
-## 2. Multi-Dimensional Semantic Mapping with `sns.relplot()`
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. `relplot` Kya Karta Hai?
+`relplot` ka matlab hai **Relational Plot**. Yeh do variables ke beech ka sambandh (relationship) dikhata hai.
+Lekin iski asli taqat yeh hai ki yeh ek sath 5 variables ko alag-alag visual dimensions par map kar sakta hai:
+1. `x="total_bill"`: Horizontal position
+2. `y="tip"`: Vertical position
+3. `hue="smoker"`: Color (Smoker vs Non-smoker)
+4. `style="smoker"`: Marker shape (Circle vs Cross)
+5. `size="size"`: Dot ka aakar (Kitne log the table par)
+6. `col="time"`: Do alag columns (Ek Lunch ke liye, ek Dinner ke liye)
+
+---
+
+### 📊 Blackboard Diagram: 5-Dimensional Mapping
 
 ```mermaid
 flowchart LR
-    Data["DataFrame: tips"] --> X["x = 'total_bill'"]
-    Data --> Y["y = 'tip'"]
-    Data --> H["hue = 'smoker' (Color)"]
-    Data --> S["style = 'smoker' (Marker)"]
-    Data --> Sz["size = 'size' (Point Area)"]
-    Data --> C["col = 'time' (Facet Grids)"]
-```
-
-### `sns.relplot()` Syntax:
-```python
-sns.relplot(
-    data=tips,
-    x="total_bill",      # Quantitative X
-    y="tip",             # Quantitative Y
-    col="time",          # Creates 2 subplots (Lunch & Dinner)
-    hue="smoker",        # Color by smoker status (Yes / No)
-    style="smoker",      # Different marker by smoker status
-    size="size",         # Marker size proportional to party size (1 to 6 people)
-    palette="Set2"       # Color palette
-)
+    Data["Tips Data"] --> Mapping["Visual Mapping"]
+    Mapping --> Pos["Position: (x, y) = Bill vs Tip"]
+    Mapping --> Col["Color: hue = Smoker"]
+    Mapping --> Sze["Size: size = Table Party Size"]
+    Mapping --> Fac["Columns: col = Lunch vs Dinner"]
 ```
 
 ---
 
-## 3. Code Implementation
+### 💻 Python Code Implementation
 
 ```python
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-tips = sns.load_dataset("tips")
+def create_multidimensional_relplot(show_plot=True):
+    """
+    Creates a multi-dimensional relational plot using sns.relplot().
+    Maps 5 variables simultaneously:
+    - x: total_bill
+    - y: tip
+    - hue: smoker (smoker vs non-smoker)
+    - style: smoker (different marker symbols)
+    - size: size (party size / number of guests)
+    - col: time (faceted columns for Lunch vs Dinner)
+    
+    Returns:
+        dict: Metadata regarding the mapped dimensions.
+    """
+    sns.set_theme(style="white")
+    tips = sns.load_dataset("tips")
+    
+    # Figure-level Faceted Relational Plot
+    g = sns.relplot(
+        data=tips,
+        x="total_bill",
+        y="tip",
+        col="time",
+        hue="smoker",
+        style="smoker",
+        size="size",
+        sizes=(20, 200),
+        palette="Set1",
+        alpha=0.85
+    )
+    g.fig.subplots_adjust(top=0.85)
+    g.fig.suptitle("Multi-Dimensional Relational Plot (Total Bill vs Tip by Meal Time)", fontweight="bold")
+    
+    if show_plot:
+        plt.show()
+        
+    return {
+        "x_variable": "total_bill",
+        "y_variable": "tip",
+        "hue_variable": "smoker",
+        "facet_column": "time",
+        "party_size_range": (int(tips["size"].min()), int(tips["size"].max()))
+    }
 
-# Multi-dimensional relational plot
-sns.set_theme(style="white")
+# --- Execution & Verification ---
+dims = create_multidimensional_relplot(show_plot=False)
+print(f"Mapped Plot Dimensions: {dims}")
 
-g = sns.relplot(
-    data=tips,
-    x="total_bill",
-    y="tip",
-    col="time",
-    hue="smoker",
-    style="smoker",
-    size="size",
-    sizes=(30, 200),
-    palette="Dark2",
-    alpha=0.85
-)
-
-g.fig.subplots_adjust(top=0.85)
-g.fig.suptitle("Multi-Dimensional Relationship: Bill vs Tip by Smoker, Party Size, and Time", fontsize=14, fontweight="bold")
-plt.show()
-
-# Line mapping with relplot
-x_vals = list(range(1, 11))
-y_vals = [i**2 for i in x_vals]
-
-sns.relplot(x=x_vals, y=y_vals, kind="line", marker="o", color="crimson")
-plt.title("Quadratic Growth with relplot(kind='line')")
-plt.show()
 ```
 
 ---
 
-## 📐 Matrix Grid aur Colormap Transfer Function Ka Ganitiya Sutra
-
-Heatmap (`plt.imshow`) me 2D matrix $\mathbf{M} \in \mathbb{R}^{m \times n}$ ke elements normalized scalars $z_{ij} \in [0, 1]$ me convert hote hain:
-
-$$
-\boxed{z_{ij} = \frac{M_{ij} - M_{\min}}{M_{\max} - M_{\min}}}
-$$
-
-Colormap transfer function $\Phi$ har scalar ko RGB color vector me project karta hai:
-
-$$
-\boxed{\mathbf{C}_{ij} = \Phi(z_{ij}) \in [0, 1]^3}
-$$
-
----
-
-## 4. Mukhya Batein (Key Takeaways)
-- **`hue` + `style` pairing:** When plotting scatter points, using `hue="smoker", style="smoker"` ensures both color and shape change together, making the chart **accessible to colorblind viewers**.
-- `sns.relplot()` is a **Figure-level function** that returns a `FacetGrid` object, allowing automated subplot generation via `col` and `row`.
+### 🎯 Key Takeaways:
+1. `col="time"` pass karne se Seaborn khud do subplots bana deta hai, aapko `plt.subplots()` likhne ki zaroorat nahi padti.
+2. `sizes=(20, 200)` se point sizes ko visually prominent banaya ja sakta hai.

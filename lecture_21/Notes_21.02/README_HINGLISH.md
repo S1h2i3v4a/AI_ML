@@ -1,70 +1,124 @@
-# Day 21 - Lecture 21.2: Seedhi Rekhayein aur Linear Equations (Straight Lines) [Hinglish]
+# Notes_21.02: Seedhi Rekha (Straight Lines) [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_02.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 21 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Straight Line ki equation ($y = mx + c$)** blackboard par samjhayi hai: Slope ($m$) kya hota hai, Intercept ($c$) kya hota hai, aur Machine Learning ke Linear Regression se iska kya seedha connection hai.
 
 ---
 
-## 1. Overview & Machine Learning Boundary
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Straight line ki standard equation: $y = mx + c$.
+- Slope ($m$): Dhalan kya hoti hai aur $m = \frac{y_2 - y_1}{x_2 - x_1} = \tan(\theta)$ kaise nikalta hai?
+- Y-Intercept ($c$): Line y-axis ko kahan kaat-ti hai.
+- Machine Learning connection: $y = wx + b$ (Weight aur Bias).
 
-2D Cartesian plane me ek **Straight Line** degree 1 ki linear equation hoti hai. Machine Learning me yeh do classes ke beech **Decision Boundary** banati hai jo data ko separate karti hai.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Straight Line Ki Equation:
+Blackboard par ma'am ne draw karke bataya:
+
+$$
+y = mx + c
+$$
+
+- **$m$ is Slope (Dhalan):** Yeh batata hai ki line kitni tezi se upar ya niche ja rahi hai:
+
+$$
+m = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1} = \tan(\theta)
+$$
+
+Agar $x$ ko 1 badhane par $y$, 2 badhta hai, toh slope $m = 2$.
+- **$c$ is Y-Intercept:** Jab $x = 0$ hota hai, tab $y$ ki value kya hai? Yaani line y-axis ko kis point $(0, c)$ par cut karti hai.
+
+#### 2. Machine Learning Se Connection:
+Linear Regression mein jo hum best fit line banate hain:
+
+$$
+\hat{y} = w x + b
+$$
+
+Yeh bilkul wahi $y = mx + c$ hai!
+- $m$ model ka **Weight ($w$)** hota hai.
+- $c$ model ka **Bias ($b$)** hota hai.
+
+---
+
+### 📊 Blackboard Diagram: Straight Line On Coordinate Plane
 
 ```mermaid
 flowchart LR
-    A["Features (x1, x2)"] --> B["Linear Equation: w1*x1 + w2*x2 + b"]
-    B --> C{Sign}
-    C -->|> 0| D["Class +1"]
-    C -->|< 0| E["Class -1"]
-    C -->|== 0| F["Boundary Line"]
+    Axes["X-Y Coordinate Axes"] --> Cut["Line y-axis ko cut karti hai (0, c) par"]
+    Cut --> Angle["X-axis ke sath angle θ banati hai"]
+    Angle --> Slope["m = tan(θ) = Rise / Run"]
 ```
 
 ---
 
-## 2. Ganitiya Sutra
-
-### Slope-Intercept Form:
-
-$$
-\boxed{y = mx + c}
-$$
-
-jahan slope $m = \frac{y_2 - y_1}{x_2 - x_1}$ aur $c$ y-intercept hota hai.
-
-### General Form:
-
-$$
-\boxed{ax + by + c = 0}
-$$
-
-### Machine Learning Hyperplane Notation:
-
-$$
-\boxed{\mathbf{w}^T \mathbf{x} + b = w_1 x_1 + w_2 x_2 + b = 0}
-$$
-
-- Weight vector $\mathbf{w} = [w_1, w_2]^T$ line ke hamesha **perpendicular (normal)** hota hai.
-- Bias $b$ yeh tay karta hai ki line origin se kitni door hai.
-
----
-
-## 3. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
 import numpy as np
+import matplotlib.pyplot as plt
 
-# Line: 2*x1 - 3*x2 + 6 = 0
-w1, w2, b = 2.0, -3.0, 6.0
-m = -w1 / w2
-c = -b / w2
+def compute_straight_line(m=2.0, c=3.0, x_range=(-5, 5), show_plot=True):
+    """
+    Computes and plots a straight line in slope-intercept form: y = mx + c.
+    Demonstrates slope m = tan(theta) = dy/dx and y-intercept c.
+    
+    Parameters:
+        m (float): Slope of the line (rate of change).
+        c (float): Y-intercept (point where line intersects y-axis at x=0).
+        x_range (tuple): (x_min, x_max) domain bounds.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Line parameters, inclination angle theta in degrees, and sample coordinates.
+    """
+    x = np.linspace(x_range[0], x_range[1], 100)
+    y = m * x + c
+    
+    # Angle of inclination: theta = arctan(m)
+    theta_deg = np.degrees(np.arctan(m))
+    
+    plt.figure(figsize=(7, 5))
+    plt.plot(x, y, "b-", linewidth=2.0, label=f"y = {m:.1f}x + {c:.1f}")
+    
+    # Mark y-intercept (0, c)
+    plt.plot(0, c, "ro", markersize=8, label=f"y-intercept (0, {c:.1f})")
+    
+    # Draw reference axes
+    plt.axhline(0, color="black", linewidth=1.0)
+    plt.axvline(0, color="black", linewidth=1.0)
+    
+    plt.title(f"Straight Line: y = {m}x + {c} (Slope m = {m}, Intercept c = {c})", fontweight="bold")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.legend(loc="upper left")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    return {
+        "slope_m": m,
+        "intercept_c": c,
+        "angle_theta_degrees": float(theta_deg),
+        "point_at_x0": (0.0, float(c)),
+        "point_at_x2": (2.0, float(m * 2.0 + c))
+    }
 
-print(f"Slope m: {m:.2f}, Intercept c: {c:.2f}")
+# --- Execution & Verification ---
+line_info = compute_straight_line(m=2.0, c=3.0, show_plot=False)
+print(f"Equation : y = {line_info['slope_m']}x + {line_info['intercept_c']}")
+print(f"Slope (m): {line_info['slope_m']} (Angle with x-axis: {line_info['angle_theta_degrees']:.1f}°)")
+print(f"Y-Intercept (c): Line passes through {line_info['point_at_x0']}")
+
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **Perceptron Boundary:** Perceptron aur Logistic Regression ka decision boundary yahi line $\mathbf{w}^T \mathbf{x} + b = 0$ hoti hai.
-- **Normal Vector:** Weight vector $\mathbf{w}$ decision surface ke 90 degree par point karta hai.
+### 🎯 Key Takeaways:
+1. Agar $m > 0$ hai, toh line upar ki taraf badhegi. Agar $m < 0$ hai, toh niche giregi.
+2. $c$ line ko upar ya niche shift karta hai bina uske angle ko badle.

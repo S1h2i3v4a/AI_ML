@@ -1,94 +1,94 @@
-# Day 20 - Lecture 20.4: Solving Foundation Probability Practice Problems
+# Lecture 20.04: Solving Practice Problems (Basic Probability)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_04.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am solves **hands-on practice problems** covering basic classical probability, including the standard colored marble selection experiment (5 Red, 3 Green, and 2 Blue marbles) and complementary non-occurrence events.
 
 ---
 
-## 1. Combinatorics & Counting Principles in Probability
-
-Calculating probabilities in discrete sample spaces requires the fundamental principles of combinatorics: the **Rule of Product**, **Permutations**, and **Combinations**.
+## 🏛️ Marble Selection Breakdown
 
 ```mermaid
 flowchart TD
-    A["Counting Principles"] --> B["Rule of Product: n1 * n2 * ... * nk"]
-    A --> C["Permutations: Order Matters! P(n, k) = n! / (n-k)!"]
-    A --> D["Combinations: Order Does NOT Matter! C(n, k) = n! / (k!(n-k)!)"]
+    Bag["Bag of 10 Marbles"] --> R["5 Red Marbles: P(Red) = 5/10 = 0.50"]
+    Bag --> G["3 Green Marbles: P(Green) = 3/10 = 0.30"]
+    Bag --> B["2 Blue Marbles: P(Blue) = 2/10 = 0.20"]
+    
+    subgraph Complement["Complementary Logic"]
+        B --> NB["P(Not Blue) = 1 - P(Blue) = 1 - 0.20 = 0.80"]
+    end
 ```
 
-### Mathematical Definitions:
+---
 
-#### Permutations (Order is Distinct):
-The number of ordered sequences of $k$ distinct elements chosen from an $n$-element set:
+## 📐 Mathematical Formulation
 
-$$
-oxed{P(n, k) = rac{n!}{(n - k)!}}
-$$
-
-#### Combinations (Order is Irrelevant):
-The number of subsets of size $k$ chosen from an $n$-element set:
+Given discrete partitions with counts $n_1, n_2, \dots, n_k$ such that $\sum n_i = N$:
 
 $$
-oxed{C(n, k) = inom{n}{k} = rac{n!}{k!(n - k)!}}
+P(C_i) = \frac{n_i}{N}
+$$
+
+The sum of all mutually exclusive and exhaustive partition probabilities satisfies the second axiom:
+
+$$
+\sum_{i=1}^k P(C_i) = \frac{5}{10} + \frac{3}{10} + \frac{2}{10} = 1.00
+$$
+
+The probability of drawing any marble that is not blue:
+
+$$
+P(\text{Not Blue}) = 1 - P(\text{Blue}) = 1 - \frac{2}{10} = \frac{8}{10} = 0.80
 $$
 
 ---
 
-## 2. Classic Problem Formulations & Analytical Solutions
-
-### Problem 1: Rolling Two Dice (Sum = 7 or 8)
-- Sample space size: $|\mathcal{S}| = 6 	imes 6 = 36$.
-- Event $A$ (Sum = 7): $\{(1,6), (2,5), (3,4), (4,3), (5,2), (6,1)\} \implies |A| = 6$.
-- Event $B$ (Sum = 8): $\{(2,6), (3,5), (4,4), (5,3), (6,2)\} \implies |B| = 5$.
-- Because $A \cap B = \emptyset$ (a sum cannot be both 7 and 8 simultaneously):
-
-$$
-oxed{P(	ext{Sum} \in \{7, 8\}) = rac{6 + 5}{36} = rac{11}{36} pprox 0.3056}
-$$
-
-### Problem 2: Card Drawing Without Replacement
-From a standard 52-card deck, draw 2 cards sequentially without replacement. What is the probability that both are Kings?
-- Total 2-card hands: $inom{52}{2} = rac{52 	imes 51}{2} = 1326$.
-- Favorable 2-King hands: $inom{4}{2} = rac{4 	imes 3}{2} = 6$.
-
-$$
-oxed{P(	ext{Both Kings}) = rac{6}{1326} = rac{1}{221} pprox 0.004525}
-$$
-
----
-
-## 3. Python Implementation & Verification
+## 💻 Python Implementation
 
 ```python
-import math
-from itertools import product, combinations
+def solve_marble_bag_problem(red=5, green=3, blue=2):
+    """
+    Solves the classic colored marble bag problem:
+    Total marbles = Red + Green + Blue.
+    Computes probabilities of selecting specific colors and complementary events.
+    
+    Parameters:
+        red (int): Red marble count.
+        green (int): Green marble count.
+        blue (int): Blue marble count.
+        
+    Returns:
+        dict: Theoretical probabilities for all colored selections.
+    """
+    total = red + green + blue
+    if total <= 0:
+        raise ValueError("Bag must contain at least one marble.")
+        
+    p_red = red / total
+    p_green = green / total
+    p_blue = blue / total
+    p_not_blue = 1.0 - p_blue
+    
+    return {
+        "bag_contents": {"red": red, "green": green, "blue": blue, "total": total},
+        "P(Red)": p_red,
+        "P(Green)": p_green,
+        "P(Blue)": p_blue,
+        "P(Not Blue)": p_not_blue
+    }
 
-# Problem 1: Two Dice Sum Simulation
-die = list(range(1, 7))
-sample_space_dice = list(product(die, die))
-favorable_dice = [pair for pair in sample_space_dice if sum(pair) in (7, 8)]
-p_dice_analytical = len(favorable_dice) / len(sample_space_dice)
+# --- Execution & Verification ---
+solution = solve_marble_bag_problem(red=5, green=3, blue=2)
+print("Bag Contents:", solution["bag_contents"])
+print(f"P(Red)      = {solution['P(Red)']:.4f} (5/10)")
+print(f"P(Green)    = {solution['P(Green)']:.4f} (3/10)")
+print(f"P(Blue)     = {solution['P(Blue)']:.4f} (2/10)")
+print(f"P(Not Blue) = {solution['P(Not Blue)']:.4f} (8/10)")
 
-print(f"Problem 1: |S| = {len(sample_space_dice)}, |Favorable| = {len(favorable_dice)}")
-print(f"P(Sum 7 or 8) = {p_dice_analytical:.4f} (Exact: 11/36)")
-
-# Problem 2: Combinatorial Poker Hand
-deck_size = 52
-kings_in_deck = 4
-total_hands = math.comb(deck_size, 2)
-king_hands = math.comb(kings_in_deck, 2)
-p_two_kings = king_hands / total_hands
-
-print(f"
-Problem 2: Total 2-Card Hands = {total_hands}, 2-King Hands = {king_hands}")
-print(f"P(Both Kings) = {p_two_kings:.6f} (Exact: 1/221 = {1/221:.6f})")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Permutations vs. Combinations:** If the order of assignment affects the outcome (e.g., passwords, rankings), use permutations; if only group membership matters (e.g., committee, feature subsets), use combinations.
-- **Denominator Discipline:** In conditional or sequential draws, always check whether replacement alters the sample space cardinality $|\mathcal{S}|$.
+## 🔑 Key Takeaways
+1. Exhaustive probabilities in any finite partition must sum to exactly 1.0.
+2. Calculating the complement $1 - P(E)$ is frequently faster than summing multiple favorable sub-cases.
+3. In machine learning, multi-class classification softmax outputs behave exactly like these normalized discrete probabilities.

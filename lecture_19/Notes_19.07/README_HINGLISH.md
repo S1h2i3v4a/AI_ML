@@ -1,110 +1,111 @@
-# Day 19 - Lecture 19.7: Subplots in Matplotlib [Hinglish]
+# Notes_19.07: Matplotlib Mein Subplots [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_07.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 19 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Subplots** banana sikhaya hai: `plt.subplot(nrows, ncols, index)` function ka use karke ek hi screen par 4 alag-alag graphs (Square root, Double, Square, aur Cube) ka 2x2 grid kaise banaya jata hai.
 
 ---
 
-## 1. Overview & Purpose
-When communicating findings or building dashboards, putting all curves on a single plot can cause severe visual clutter and scale mismatch. **Subplots** allow us to place multiple separate graphs in a clean, organized **grid layout** within a single figure.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Subplot kya hota hai aur ek se zyada plots ki zaroorat kyu padti hai?
+- `plt.subplot(2, 2, 1)` ka indexing rule (Row-major, 1-based index).
+- Alag-alag scale waali functions ko individual y-axis par plot karna.
+- `plt.tight_layout()` function kyu mandatory hota hai.
 
 ---
 
-## 2. Syntax & Row-Major Indexing
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-```python
-plt.subplot(nrows, ncols, index)
-```
-- `nrows`: Total number of rows in the grid.
-- `ncols`: Total number of columns in the grid.
-- `index`: 1-based index specifying which subplot is currently active.
+#### 1. Subplots Ki Zaroorat Kyu Hai?
+Maan lijiye aapke paas 4 functions hain:
+1. $y_1 = \sqrt{x}$ (Max value $\approx 3.16$)
+2. $y_2 = 2x$ (Max value $= 20$)
+3. $y_3 = x^2$ (Max value $= 100$)
+4. $y_4 = x^3$ (Max value $= 1000$)
+
+Agar aap in charo ko ek hi graph par plot karenge, toh $1000$ ke scale ke samne $\sqrt{x}$ ekdum flat zameen par chipak jayega aur kuch dikhega nahi.
+Isliye hum ek canvas ko 4 hisson (2 rows, 2 columns) mein baant dete hain!
+
+#### 2. Indexing Kaise Kaam Karti Hai?
+- `plt.subplot(2, 2, 1)`: Row 1, Column 1 (Top-Left)
+- `plt.subplot(2, 2, 2)`: Row 1, Column 2 (Top-Right)
+- `plt.subplot(2, 2, 3)`: Row 2, Column 1 (Bottom-Left)
+- `plt.subplot(2, 2, 4)`: Row 2, Column 2 (Bottom-Right)
+
+---
+
+### 📊 Blackboard Diagram: 2x2 Subplot Grid
 
 ```mermaid
 flowchart TD
-    subgraph Grid2x2["2x2 Subplot Grid (Row-Major Order)"]
-        direction LR
-        P1["plt.subplot(2, 2, 1)<br/>Top-Left"]
-        P2["plt.subplot(2, 2, 2)<br/>Top-Right"]
-        P3["plt.subplot(2, 2, 3)<br/>Bottom-Left"]
-        P4["plt.subplot(2, 2, 4)<br/>Bottom-Right"]
+    subgraph Canvas["Figure: 2x2 Grid Layout"]
+        A["Plot 1: Square Root (Index 1)"] --- B["Plot 2: Double (Index 2)"]
+        C["Plot 3: Squares (Index 3)"] --- D["Plot 4: Cubes (Index 4)"]
     end
 ```
 
-> [!IMPORTANT]
-> `index` starts at **1** (not 0) and counts row-wise from top-left to bottom-right.
-> Shortcut notation: `plt.subplot(221)` is identical to `plt.subplot(2, 2, 1)`.
-
 ---
 
-## 3. The Role of `plt.tight_layout()`
-When creating multiple subplots, axis labels, tick marks, and titles from adjacent subplots often collide or overlap. 
-Calling **`plt.tight_layout()`** automatically recalculates subplot margins, paddings, and font metrics to ensure zero overlap.
-
----
-
-## 4. Code Implementation: Function Transformations
+### 💻 Python Code Implementation
 
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
 
-x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-y1 = [np.sqrt(i) for i in x]  # Square root
-y2 = [i * 2 for i in x]        # Linear / Double
-y3 = [i ** 2 for i in x]       # Quadratic / Squares
-y4 = [i ** 3 for i in x]       # Cubic / Cubes
+def plot_mathematical_subplots(show_plot=True):
+    """
+    Demonstrates state-based subplot creation using plt.subplot(nrows, ncols, index).
+    Plots 4 mathematical transformations (sqrt, double, square, cube) on a 2x2 grid.
+    
+    Returns:
+        dict: Values computed across transformations.
+    """
+    x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    y1 = [np.sqrt(i) for i in x]
+    y2 = [i * 2 for i in x]
+    y3 = [i ** 2 for i in x]
+    y4 = [i ** 3 for i in x]
+    
+    plt.figure(figsize=(10, 8))
+    
+    # 1st Subplot (Row 1, Col 1 -> Index 1)
+    plt.subplot(2, 2, 1)
+    plt.plot(x, y1, "b-o", linewidth=1.5)
+    plt.title("Plot 1: Square Root (√x)")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    # 2nd Subplot (Row 1, Col 2 -> Index 2)
+    plt.subplot(2, 2, 2)
+    plt.plot(x, y2, "g-s", linewidth=1.5)
+    plt.title("Plot 2: Double (2x)")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    # 3rd Subplot (Row 2, Col 1 -> Index 3)
+    plt.subplot(2, 2, 3)
+    plt.plot(x, y3, "r-^", linewidth=1.5)
+    plt.title("Plot 3: Squares (x²)")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    # 4th Subplot (Row 2, Col 2 -> Index 4)
+    plt.subplot(2, 2, 4)
+    plt.plot(x, y4, "m-d", linewidth=1.5)
+    plt.title("Plot 4: Cubes (x³)")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    return {"x": x, "y1": y1, "y2": y2, "y3": y3, "y4": y4}
 
-plt.figure(figsize=(10, 8))
+# --- Execution & Verification ---
+data_dict = plot_mathematical_subplots(show_plot=False)
+print(f"X points: {data_dict['x']}")
+print(f"Squares: {data_dict['y3']}")
 
-# Subplot 1: Square Root
-plt.subplot(2, 2, 1)
-plt.plot(x, y1, 'b-o')
-plt.title("Plot 1: Square Root (√x)", fontweight="bold")
-plt.grid(True)
-
-# Subplot 2: Linear
-plt.subplot(2, 2, 2)
-plt.plot(x, y2, 'g-s')
-plt.title("Plot 2: Linear (2x)", fontweight="bold")
-plt.grid(True)
-
-# Subplot 3: Quadratic
-plt.subplot(2, 2, 3)
-plt.plot(x, y3, 'r-^')
-plt.title("Plot 3: Quadratic (x²)", fontweight="bold")
-plt.grid(True)
-
-# Subplot 4: Cubic
-plt.subplot(2, 2, 4)
-plt.plot(x, y4, 'm-d')
-plt.title("Plot 4: Cubic (x³)", fontweight="bold")
-plt.grid(True)
-
-plt.tight_layout()
-plt.show()
 ```
 
 ---
 
-## 5. Limitations of Stateful `plt.subplot()`
-The stateful approach relies on a global pointer to the "current active axis". For complex multi-panel figures or interactive code, this quickly leads to bugs. In the next lecture, we learn the superior **Object-Oriented API** (`fig, axes = plt.subplots()`).
-
-
----
-
-## 📐 Violin Plot Geometry aur Kernel Density Sutra
-
-Violin Plot box plot aur continuous Kernel Density Estimate $\hat{f}_h(y)$ ka combination hota hai. Elevation $y$ par horizontal envelope width:
-
-$$
-\boxed{x(y) = x_0 \pm \kappa \cdot \hat{f}_h(y)}
-$$
-
-jahan $x_0$ category center hai aur $\hat{f}_h(y)$ normalized density hai:
-
-$$
-\boxed{\int_{-\infty}^{\infty} \hat{f}_h(y) \, dy = 1.0}
-$$
+### 🎯 Key Takeaways:
+1. Indexing hamesha 1 se shuru hoti hai (0 se nahi).
+2. `plt.tight_layout()` call karna bohot zaroori hai, warna titles ek doosre ke upar chadh jaate hain.

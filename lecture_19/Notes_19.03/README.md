@@ -1,125 +1,102 @@
-# Day 19 - Lecture 19.3: Vertical Reference Lines (`plt.axvline`)
+# Lecture 19.03: axvline in Histogram
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_03.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 19 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers `plt.axvline()` (**Axes Vertical Line**), demonstrating how to draw reference lines across the full height of a plot to highlight critical benchmarks such as passing marks, mean, median, or classification thresholds.
 
 ---
 
-## 1. Overview & Purpose
-In data analysis, histograms show the distribution, but stakeholders need **benchmarks and reference thresholds**. 
-For example:
-- *What is the pass mark?* (e.g., 33 marks)
-- *What is the mean / average score?* ($\mu$)
-- *What is the median or 95th percentile?*
-- *What are control limits in manufacturing?*
+## 🏛️ Thresholding & Boundary Lines
 
-`plt.axvline()` draws an **infinite vertical reference line across the axes** at a specified x-coordinate.
-
----
-
-## 2. Syntax & Key Parameters
-
-```python
-plt.axvline(
-    x=0,                     # The x-coordinate where the line will be drawn
-    ymin=0, ymax=1,          # Normalized y-span (0 = bottom, 1 = top)
-    color='red',             # Line color
-    linestyle='--',          # Style: '--' (dashed), '-' (solid), ':' (dotted), '-.' (dashdot)
-    linewidth=2,             # Thickness of line
-    label='Threshold Name'   # Label for legend
-)
+```mermaid
+flowchart TD
+    Hist["Histogram Frequency Bars"] --> Canvas["Plot Canvas"]
+    Threshold["Threshold / Benchmark Value x*"] --> Line["plt.axvline(x=x*, linestyle='--', color='red')"]
+    Line --> Canvas
+    Canvas --> Separation["Visual Partition: Left = Fail / Below Target, Right = Pass / Above Target"]
 ```
 
-### Companion Methods:
-- `plt.axhline(y, ...)`: Draws horizontal reference line across entire width.
-- `plt.axvspan(xmin, xmax, ...)`: Highlights a vertical region (e.g. critical zone).
-- `plt.text(x, y, "label")` or `plt.annotate()`: Places descriptive text directly next to the line.
+---
+
+## 📐 Mathematical Formalism: Decision Threshold
+
+Given an indicator condition $I(x)$:
+
+$$
+I(x) = \begin{cases} 1 & \text{if } x \ge x_{\text{threshold}} \\ 0 & \text{if } x < x_{\text{threshold}} \end{cases}
+$$
+
+The vertical line $x = x_{\text{threshold}}$ divides the continuous distribution domain into two disjoint subsets $\Omega_{\text{fail}} = (-\infty, x_{\text{threshold}})$ and $\Omega_{\text{pass}} = [x_{\text{threshold}}, \infty)$.
 
 ---
 
-## 3. Mathematical Reference Lines
-
-Given a dataset $X = \{x_1, x_2, \dots, x_n\}$:
-1. **Sample Mean:**
-   $$\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$$
-2. **Standard Deviation Bands:**
-   $$\text{Upper: } \bar{x} + \sigma, \quad \text{Lower: } \bar{x} - \sigma$$
-
-Plotting $\bar{x}$ as a vertical dashed line instantly reveals skewness:
-- If $\text{Mean} > \text{Median}$, distribution is **positively (right) skewed**.
-- If $\text{Mean} < \text{Median}$, distribution is **negatively (left) skewed**.
-
----
-
-## 4. Code Implementation
+## 💻 Python Implementation
 
 ```python
 import matplotlib.pyplot as plt
-import numpy as np
 
-marks = [
-    25, 38, 42, 55, 61, 67, 72, 78, 83, 88,
-    91, 95, 47, 53, 59, 64, 69, 74, 79, 85,
-    92, 97, 33, 45, 58, 62, 71, 76, 81, 89
-]
-bins = [0, 30, 70, 90, 100]
+def plot_histogram_with_pass_line(marks=None, pass_mark=33, show_plot=True):
+    """
+    Plots a histogram with an axvline indicator to highlight decision boundaries
+    such as pass/fail cutoff marks or anomaly thresholds.
+    
+    Parameters:
+        marks (list): Student test scores.
+        pass_mark (float): Threshold line coordinate on the x-axis.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Count of students passing and failing.
+    """
+    if marks is None:
+        marks = [
+            25, 38, 42, 55, 61, 67, 72, 78, 83, 88,
+            91, 95, 47, 53, 59, 64, 69, 74, 79, 85,
+            92, 97, 33, 45, 58, 62, 71, 76, 81, 89
+        ]
+        
+    custom_bins = [0, 30, 70, 90, 100]
+    
+    plt.figure(figsize=(8, 5))
+    plt.hist(
+        marks,
+        bins=custom_bins,
+        color="lightblue",
+        edgecolor="black",
+        linewidth=1.2
+    )
+    
+    # Adding vertical line at pass mark (33)
+    plt.axvline(
+        x=pass_mark,
+        color="red",
+        linestyle="--",
+        linewidth=2.0,
+        label=f"Passing Mark ({pass_mark})"
+    )
+    
+    plt.xlabel("Marks")
+    plt.ylabel("Number of Students")
+    plt.title("Distribution of Marks of 30 Students with Pass Threshold")
+    plt.legend(loc="upper left")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    passed = sum(1 for m in marks if m >= pass_mark)
+    failed = len(marks) - passed
+    return {"passed": passed, "failed": failed, "total": len(marks)}
 
-plt.figure(figsize=(9, 6))
-plt.hist(marks, bins=bins, edgecolor="black", color="lightblue")
+# --- Execution & Verification ---
+res = plot_histogram_with_pass_line(show_plot=False)
+print(f"Results Analysis: {res}")
 
-# 1. Reference line for Passing Marks (33)
-plt.axvline(
-    x=33,
-    color="crimson",
-    linestyle="--",
-    linewidth=2.5,
-    label="Pass Mark (33)"
-)
-
-# 2. Reference line for Mean Score
-mean_val = np.mean(marks)
-plt.axvline(
-    x=mean_val,
-    color="darkblue",
-    linestyle="-.",
-    linewidth=2,
-    label=f"Mean Mark ({mean_val:.1f})"
-)
-
-plt.xlabel("Marks", fontsize=12)
-plt.ylabel("Number of Students", fontsize=12)
-plt.title("Distribution of Marks of 30 Students with Threshold Lines", fontsize=14, fontweight="bold")
-plt.legend(loc="upper left", fontsize=11)
-plt.grid(True, linestyle=":", alpha=0.6)
-plt.show()
 ```
 
 ---
 
-## 5. Summary & Best Practices
-- Always add `label=` to `axvline` and invoke `plt.legend()`.
-- Use contrasting styles (e.g. dashed red) so the threshold stands out clearly against the histogram bins.
-
-
----
-
-## 📐 Mathematical Statistical Benchmarks & Gaussian Moments
-
-Vertical reference lines mark key parametric population measures:
-
-$$
-\boxed{\mu = \frac{1}{N} \sum_{i=1}^N x_i \qquad\text{and}\qquad \sigma = \sqrt{\frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2}}
-$$
-
-Under the **Empirical Rule** for unimodal Gaussian distributions:
-
-$$
-\begin{aligned}
-\Pr(\mu - 1\sigma \le X \le \mu + 1\sigma) &\approx 68.27\% \\
-\Pr(\mu - 2\sigma \le X \le \mu + 2\sigma) &\approx 95.45\% \\
-\Pr(\mu - 3\sigma \le X \le \mu + 3\sigma) &\approx 99.73\%
-\end{aligned}
-$$
+## 🔑 Key Takeaways
+1. `plt.axvline(x=val)` spans across the entire y-axis automatically without needing manual y-coordinate bounds.
+2. Useful for showing statistical measures (mean $\mu$, median) or operational business thresholds (cutoff marks, SLA limits).
+3. Always provide `linestyle='--'` and a `label` to make the purpose of the line obvious.

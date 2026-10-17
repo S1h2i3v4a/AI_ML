@@ -1,94 +1,122 @@
-# Day 19 - Lecture 19.2: Multiple Datasets on Histogram [Hinglish]
+# Notes_19.02: Histogram Par Multiple Datasets [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_02.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 19 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne sikhaya hai ki **ek hi graph par do alag-alag datasets ka histogram** kaise banaya jata hai taaki unka comparison kiya ja sake, jaise Legitimate vs Fraudulent transactions.
 
 ---
 
-## 1. Overview & Purpose
-In real-world data science, we frequently need to **compare the distributions of two or more populations** (e.g., Male vs. Female heights, Fraudulent vs. Legitimate transactions, Control vs. Treatment groups).
-
-Plotting multiple datasets on the same histogram reveals:
-- **Shift in central tendency:** Is one group systematically higher than the other?
-- **Differences in variance/spread:** Is one group more dispersed or volatile?
-- **Overlap & separability:** Can a classifier easily separate the two classes based on this feature?
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Ek hi canvas par do histograms ko ek sath plot karna.
+- `alpha` parameter ka use karke transparency set karna.
+- `label` aur `plt.legend()` ka use karke visual distinction create karna.
+- Real-world fraud detection mein distribution comparison ki importance.
 
 ---
 
-## 2. Core Techniques & Parameters
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Multiple Histograms Kyu Banate Hain?
+Machine Learning mein humein dekhna hota hai ki kya hamare feature classes ko alag kar pa rahe hain.
+Agar hum legitimate transactions aur fraud transactions ko ek hi graph par dekhein:
+- Legitimate transactions chhote amounts ($10, $20, $50) par bohot zyada hote hain.
+- Fraud transactions bade amounts ($1000, $3000) tak jaate hain.
+
+#### 2. `alpha` Parameter Ki Ahmiyat:
+Default mein `alpha=1.0` (opaque) hota hai. Agar aap do histograms plot karenge, toh doosra histogram pehle waale ke bars ko poori tarah chhupa dega.
+`alpha=0.5` set karne se bars semi-transparent ho jaate hain aur overlap saaf dikhta hai.
+
+---
+
+### 📊 Blackboard Diagram: Transaction Comparison
 
 ```mermaid
-flowchart LR
-    A["Dataset 1 (e.g. Fraud)"] --> C["plt.hist(..., alpha=0.5, label='Fraud')"]
-    B["Dataset 2 (e.g. Legit)"] --> D["plt.hist(..., alpha=0.5, label='Legit')"]
-    C & D --> E["plt.legend() & plt.show()"]
+flowchart TD
+    A["Legit Transactions (Green)"] --> C["Single Plot Canvas (alpha=0.5)"]
+    B["Fraud Transactions (Red)"] --> C
+    C --> D["Result: Overlap saaf dikhta hai, dono ki distribution clear hoti hai"]
 ```
-
-### Key Parameters for Multiple Histograms:
-1. **`alpha` (Transparency):** Set `alpha=0.5` or `0.6` so that overlapping regions between datasets are clearly visible rather than one dataset occluding the other.
-2. **`label` and `plt.legend()`:** Essential for distinguishing which color corresponds to which group.
-3. **Aligned Bins:** To make a fair visual comparison, ensure both datasets share either the same number of bins or identical bin edges.
-4. **Side-by-side vs Overlaid:**
-   - **Overlaid:** Call `plt.hist()` twice on the same axes with `alpha`.
-   - **Side-by-side:** Pass a list of arrays: `plt.hist([data1, data2], label=['D1', 'D2'])`.
 
 ---
 
-## 3. Real-World Case Study: Fraud Detection
-
-In credit card transactions:
-- **Legitimate transactions:** High volume of small everyday purchases ($2 - $50), with a long tail tapering off.
-- **Fraudulent transactions:** Higher average amount, concentrated in round large values ($500, $1000, $2000).
+### 💻 Python Code Implementation
 
 ```python
 import matplotlib.pyplot as plt
 
-legit_transactions = [
-    2.99, 5.49, 8.99, 12.50, 14.99, 19.99, 23.45, 29.99, 34.99, 39.50,
-    45.00, 49.99, 55.25, 60.00, 75.99, 89.99, 120.50, 150.00, 199.99,
-    249.99, 300.75, 450.00, 600.00, 850.00, 1200.00
-]
+def plot_legit_vs_fraud_histogram(legit_tx=None, fraud_tx=None, show_plot=True):
+    """
+    Plots two overlapping distributions on a single histogram to compare
+    legitimate vs fraudulent transactions. Demonstrates alpha transparency,
+    color distinction, and legend integration.
+    
+    Parameters:
+        legit_tx (list): Transaction amounts for legitimate purchases.
+        fraud_tx (list): Transaction amounts for fraudulent activities.
+        show_plot (bool): Display control flag.
+        
+    Returns:
+        dict: Summary statistics comparing both datasets.
+    """
+    if legit_tx is None:
+        legit_tx = [
+            2.99, 5.49, 8.99, 12.50, 14.99, 19.99, 23.45, 29.99, 34.99, 39.50,
+            45.00, 49.99, 55.25, 60.00, 75.99, 89.99, 120.50, 150.00, 199.99,
+            249.99, 300.75, 450.00, 600.00, 850.00, 1200.00
+        ]
+    if fraud_tx is None:
+        fraud_tx = [
+            50, 100, 150, 200, 300, 500, 500, 750, 1000, 1000,
+            1200, 1500, 1500, 2000, 2500, 3000, 3000
+        ]
+        
+    plt.figure(figsize=(9, 5))
+    
+    # Legit transactions in green with alpha=0.5
+    plt.hist(
+        legit_tx,
+        bins=10,
+        color="green",
+        alpha=0.5,
+        edgecolor="black",
+        label="Legitimate Transactions"
+    )
+    
+    # Fraud transactions in red with alpha=0.5
+    plt.hist(
+        fraud_tx,
+        bins=10,
+        color="red",
+        alpha=0.5,
+        edgecolor="black",
+        label="Fraudulent Transactions"
+    )
+    
+    plt.xlabel("Transaction Amount ($)")
+    plt.ylabel("Frequency")
+    plt.title("Transaction Amount Distribution: Legitimate vs Fraudulent")
+    plt.legend(loc="upper right")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    summary = {
+        "legit_count": len(legit_tx),
+        "legit_max": max(legit_tx),
+        "fraud_count": len(fraud_tx),
+        "fraud_max": max(fraud_tx)
+    }
+    return summary
 
-fraud_transactions = [
-    50, 100, 150, 200, 300, 500, 500, 750, 1000, 1000,
-    1200, 1500, 1500, 2000, 2500, 3000, 3000
-]
+# --- Execution & Verification ---
+stats = plot_legit_vs_fraud_histogram(show_plot=False)
+print(f"Distribution Summary: {stats}")
 
-plt.figure(figsize=(10, 6))
-plt.hist(fraud_transactions, bins=10, label='Fraudulent', color='crimson', alpha=0.55, edgecolor='black')
-plt.hist(legit_transactions, bins=10, label='Legitimate', color='seagreen', alpha=0.55, edgecolor='black')
-
-plt.xlabel('Transaction Amount ($)', fontsize=12)
-plt.ylabel('Frequency', fontsize=12)
-plt.title('Transaction Amount Distribution: Legitimate vs Fraudulent', fontsize=14, fontweight='bold')
-plt.legend(fontsize=11)
-plt.grid(True, linestyle='--', alpha=0.5)
-plt.show()
 ```
 
 ---
 
-## 📐 Probability Density Normalization Ka Ganitiya Sutra
-
-Normalized histogram (`density=True`) me sabhi bars ka total area $1.0$ ke barabar hota hai. Bin $j$ (width $\Delta_j$, count $c_j$) ke liye probability density $f_j$:
-
-$$
-\boxed{f_j = \frac{c_j}{n \cdot \Delta_j}}
-$$
-
-Sabhi rectangular bars ke area ka sum probability conservation rule follow karta hai:
-
-$$
-\boxed{\sum_{j=1}^k f_j \cdot \Delta_j = 1.0}
-$$
-
-Is normalization se continuous probability density functions $p(x)$ ko histogram ke upar directly compare kiya ja sakta hai.
-
----
-
-## 4. Mukhya Batein (Key Takeaways) & Best Practices
-- When data scale varies dramatically (e.g. 1,000,000 legit vs 500 fraud), raw counts make the smaller class invisible. Use **`density=True`** (probability density) or a log scale (`plt.yscale('log')`).
-- Keep colors intuitive: Red/Crimson for anomalies/fraud/errors, Green/Blue for normal/legitimate data.
+### 🎯 Key Takeaways:
+1. Dono datasets ke liye `edgecolor="black"` aur `alpha=0.5` zaroor use karein.
+2. `plt.legend()` se viewer ko pata chalta hai ki green color legit ka hai aur red color fraud ka.

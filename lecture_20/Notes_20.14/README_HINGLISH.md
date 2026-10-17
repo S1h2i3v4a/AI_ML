@@ -1,62 +1,101 @@
-# Day 20 - Lecture 20.14: Random Variables (Yadrichhik Char) [Hinglish]
+# Notes_20.14: Random Variables (Discrete vs Continuous) [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_14.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Random Variables** ka concept explain kiya hai: Random variable koi variable nahi balki ek **Function** hota hai jo real-world outcomes ko numbers mein badalta hai, aur Discrete vs Continuous random variables mein kya antar hota hai.
 
 ---
 
-## 1. Paribhasha (Definition)
-
-**Random Variable** koi aam variable nahi hota; yeh ek **mathematical function** hota hai jo sample space $\mathcal{S}$ ke outcomes ko real numbers $\mathbb{R}$ me convert karta hai:
-
-$$
-\boxed{X: \mathcal{S} \to \mathbb{R}}
-$$
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Random Variable ($X$) asal mein kya hai? ($X: S \to \mathbb{R}$).
+- 2 Coins toss example: $\{TT, HT, TH, HH\} \to \{0, 1, 2\}$ heads.
+- Discrete (PMF) vs Continuous (PDF) ka farq.
+- Continuous distribution mein kisi single point ki probability $0$ kyu hoti hai?
 
 ---
 
-## 2. Discrete vs. Continuous Random Variables
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-| Gun (Property) | Discrete Random Variable | Continuous Random Variable |
-| :--- | :--- | :--- |
-| **Values** | Ginne yogya (Countable) jaise $0, 1, 2$ | Continuous range jaise height, weight $[a, b]$ |
-| **Function** | PMF: $p(x) = P(X = x)$ | PDF: $f(x)$ |
-| **Single Point** | $P(X = x) > 0$ ho sakta hai | $P(X = x) = 0$ hamesha |
-| **Sum / Integral** | $\sum p(x) = 1.0$ | $\int f(x)dx = 1.0$ |
+#### 1. Random Variable Kya Hai?
+Aap computer ko "Head" ya "Tail" directly math equations mein nahi de sakte. Computer ko numbers chahiye!
+**Random Variable** ek rule ya function hai jo sample space ke outcomes ko real numbers assign karta hai.
+Jaise: $X = \text{Kitne Heads aaye?}$
+- $TT \to X = 0 \implies P(X=0) = \frac{1}{4} = 0.25$
+- $HT, TH \to X = 1 \implies P(X=1) = \frac{2}{4} = 0.50$
+- $HH \to X = 2 \implies P(X=2) = \frac{1}{4} = 0.25$
 
----
-
-## 3. Cumulative Distribution Function (CDF)
-
-$$
-\boxed{F(x) = P(X \le x)}
-$$
-
-Continuous variables ke liye PDF aur CDF ka relation:
+#### 2. Discrete vs Continuous:
+- **Discrete:** Ginne laayak (countable) values (jaise 0, 1, 2, 3 heads ya dice ka number). Iske liye **PMF (Probability Mass Function)** hota hai:
 
 $$
-\boxed{f(x) = \frac{d}{dx} F(x)}
+\sum p(x_i) = 1
+$$
+
+- **Continuous:** Naapne laayak (measurable) continuous values (jaise height, temperature, time). Iske liye **PDF (Probability Density Function)** hota hai:
+
+$$
+\int_{-\infty}^{\infty} f(x) \, dx = 1
 $$
 
 ---
 
-## 4. Python Implementation
+### 📊 Blackboard Diagram: Mapping Outcomes to Numbers
 
-```python
-import numpy as np
-
-# 3 coins ke heads ka PMF
-x_vals = [0, 1, 2, 3]
-pmf = [1/8, 3/8, 3/8, 1/8]
-cdf = np.cumsum(pmf)
-
-for x, p, c in zip(x_vals, pmf, cdf):
-    print(f"X = {x}: PMF = {p:.3f}, CDF = {c:.3f}")
+```mermaid
+flowchart LR
+    A["Sample Space: {TT, HT, TH, HH}"] -->|Function X| B["Numbers: {0, 1, 2}"]
+    B --> C["PMF: P(0)=0.25, P(1)=0.50, P(2)=0.25"]
+    C --> D["Total Sum = 1.0"]
 ```
 
 ---
 
-## 5. Mukhya Batein (Key Takeaways) & Interview Points
-- **Single Point Trap:** Continuous random variable me exact ek point ki probability hamesha 0 hoti hai ($P(X = 5.0) = 0$); probability hamesha area under the curve (interval) se aati hai.
+### 💻 Python Code Implementation
+
+```python
+def simulate_coin_toss_random_variable():
+    """
+    Simulates a discrete random variable X defined as:
+    X = Number of Heads observed when tossing 2 fair coins.
+    Sample space S = {TT, HT, TH, HH}.
+    Maps outcomes to {0, 1, 2} and builds the Probability Mass Function (PMF).
+    
+    Returns:
+        dict: Outcome mappings, PMF, and verification that sum(P) = 1.
+    """
+    sample_space = ["TT", "HT", "TH", "HH"]
+    
+    # Mapping function X: S -> Real Numbers
+    mapping = {
+        "TT": 0,
+        "HT": 1,
+        "TH": 1,
+        "HH": 2
+    }
+    
+    # Probability Mass Function P(X = x)
+    pmf = {0: 1/4, 1: 2/4, 2: 1/4}
+    
+    sum_pmf = sum(pmf.values())
+    
+    return {
+        "sample_space": sample_space,
+        "random_variable_mapping": mapping,
+        "PMF_P(X=x)": pmf,
+        "sum_of_probabilities": sum_pmf
+    }
+
+# --- Execution & Verification ---
+rv = simulate_coin_toss_random_variable()
+print("Sample Space S:", rv["sample_space"])
+print("X(Outcome) Mapping:", rv["random_variable_mapping"])
+for k, v in rv["PMF_P(X=x)"].items():
+    print(f"P(X = {k}) = {v:.2f}")
+print(f"PMF Axiom Check: Sum = {rv['sum_of_probabilities']:.1f}")
+
+```
+
+---
+
+### 🎯 Key Takeaways:
+1. Random Variable outcomes ko ganit (numbers) mein convert karta hai.
+2. Continuous case mein probability sirf kisi range $[a, b]$ ke beech ka area nikaal kar milti hai ($P(X=x) = 0$).

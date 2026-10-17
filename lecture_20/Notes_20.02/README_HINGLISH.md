@@ -1,108 +1,103 @@
-# Day 20 - Lecture 20.2: Probability ke Buniyadi Siddhant [Hinglish]
+# Notes_20.02: Probability Ko Samajhna [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_02.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Probability ke basic terms aur rules** ko detail mein samjhaya hai: Random Experiment kya hota hai, Sample Space ($S$) kaise banate hain, aur kisi Event ($E$) ki probability kaise calculate ki jaati hai.
 
 ---
 
-## 1. Random Experiments, Sample Space aur Events
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Random Experiment, Sample Space ($S$), aur Event ($E$) ki paribhasha.
+- Classical Probability formula: $P(E) = \frac{n(E)}{n(S)}$.
+- Probability ki boundary: Value hamesha $0$ se $1$ ke beech kyu rehti hai?
+- Impossible event ($P=0$) aur Sure event ($P=1$).
 
-**Random Experiment** ek aisa process hota hai jiska final outcome pehle se 100% fix nahi hota, lekin uske sabhi possible outcomes ka set pehle se pata hota hai.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Basic Terms:
+1. **Random Experiment:** Aisa action jiska result pehle se 100% pakka na pata ho (jaise coin toss karna ya ludo ka dice fekna).
+2. **Sample Space ($S$):** Experiment ke sabhi possible outcomes ka set.
+   - Coin toss: $S = \{\text{Head}, \text{Tail}\} \implies n(S) = 2$
+   - 6-sided die: $S = \{1, 2, 3, 4, 5, 6\} \implies n(S) = 6$
+3. **Event ($E$):** Sample space ka koi bhi subset jo hamare interest ka ho (jaise "Even number aana": $E = \{2, 4, 6\}$).
+
+#### 2. Classical Formula:
+
+$$
+P(E) = \frac{n(E)}{n(S)} = \frac{\text{Kitne outcomes hamare favour mein hain}}{\text{Total kitne outcomes possible hain}}
+$$
+
+Even number aane ki probability:
+
+$$
+P(\text{Even}) = \frac{3}{6} = \frac{1}{2} = 0.5
+$$
+
+---
+
+### 📊 Blackboard Diagram: Sample Space Aur Event Ka Venn Diagram
 
 ```mermaid
-flowchart LR
-    A["Random Experiment"] --> B["Sample Space S"]
-    B --> C["Event A (Subset of S)"]
-    C --> D["Probability Measure P(A) in [0, 1]"]
+flowchart TD
+    subgraph SampleSpace["Sample Space S = {1, 2, 3, 4, 5, 6}"]
+        subgraph EventE["Event E (Even Numbers)"]
+            E1["2"]
+            E2["4"]
+            E3["6"]
+        end
+        O1["1"]
+        O2["3"]
+        O3["5"]
+    end
 ```
 
-### Mukhya Paribhashayein (Definitions):
-1. **Sample Space ($\mathcal{S}$ ya $\Omega$):** Sabhi possible outcomes ka complete set.
-   - Example (Fair 6-sided die): $\mathcal{S} = \{1, 2, 3, 4, 5, 6\}$.
-   - Example (Two coin tosses): $\mathcal{S} = \{HH, HT, TH, TT\}$.
-2. **Event ($A$):** Sample space ka koi bhi subset ($A \subseteq \mathcal{S}$).
-   - Example: Die par even number aana: $A = \{2, 4, 6\} \subseteq \mathcal{S}$.
-3. **Null Event ($\emptyset$):** Asambhav event jiski probability $0$ hoti hai ($P(\emptyset) = 0$).
-4. **Certain Event ($\mathcal{S}$):** Nischit event jiski probability $1.0$ hoti hai ($P(\mathcal{S}) = 1$).
-
 ---
 
-## 2. Kolmogorov ke Teeno Axioms (1933)
-
-Modern Probability Theory Andrey Kolmogorov ke 3 fundamental axioms par tiki hui hai:
-
-### Axiom 1: Non-Negativity (Gair-Nakarātmakta)
-Kisi bhi event $A$ ki probability hamesha zero ya zero se badi hoti hai:
-
-$$
-oxed{P(A) \ge 0}
-$$
-
-### Axiom 2: Normalization (Unit Measure)
-Pura sample space $\mathcal{S}$ hone ki probability $1.0$ hoti hai:
-
-$$
-oxed{P(\mathcal{S}) = 1.0}
-$$
-
-### Axiom 3: Countable Additivity (Disjoint Events)
-Agar events $A_1, A_2, \dots$ aapas me mutually exclusive (disjoint) hain ($A_i \cap A_j = \emptyset$ for $i 
-e j$), toh unke union ki probability individual probabilities ke sum ke barabar hoti hai:
-
-$$
-oxed{P\left(igcup_{i=1}^\infty A_iight) = \sum_{i=1}^\infty P(A_i)}
-$$
-
----
-
-## 3. Derivative Properties
-
-Inhi axioms se yeh basic properties derive hoti hain:
-
-$$
-oxed{P(\emptyset) = 0.0}
-$$
-
-$$
-oxed{0 \le P(A) \le 1.0}
-$$
-
-$$
-oxed{A \subseteq B \implies P(A) \le P(B)}
-$$
-
----
-
-## 4. Python Implementation: Kolmogorov Axioms Verification
+### 💻 Python Code Implementation
 
 ```python
-import numpy as np
+def compute_classical_probability(favorable_outcomes, total_outcomes):
+    """
+    Computes theoretical classical probability P(E) = n(E) / n(S)
+    and verifies Kolmogorov's first two probability axioms.
+    
+    Parameters:
+        favorable_outcomes (int or set): Event favorable outcomes.
+        total_outcomes (int or set): Universal sample space outcomes.
+        
+    Returns:
+        dict: Calculated probability and axiom compliance checks.
+    """
+    n_e = len(favorable_outcomes) if isinstance(favorable_outcomes, (set, list)) else favorable_outcomes
+    n_s = len(total_outcomes) if isinstance(total_outcomes, (set, list)) else total_outcomes
+    
+    if n_s <= 0:
+        raise ValueError("Sample space size must be strictly positive.")
+        
+    prob = n_e / n_s
+    
+    is_valid_range = (0.0 <= prob <= 1.0)
+    
+    return {
+        "event_count_nE": n_e,
+        "sample_space_nS": n_s,
+        "probability_PE": prob,
+        "axiom_valid_range": is_valid_range
+    }
 
-sample_space = {1, 2, 3, 4, 5, 6}
+# --- Execution & Verification ---
+# Rolling an even number on a 6-sided die: E = {2, 4, 6}, S = {1, 2, 3, 4, 5, 6}
+res = compute_classical_probability(favorable_outcomes={2, 4, 6}, total_outcomes={1, 2, 3, 4, 5, 6})
+print(f"Favorable Outcomes: {res['event_count_nE']}")
+print(f"Total Outcomes: {res['sample_space_nS']}")
+print(f"Theoretical Probability: P(E) = {res['probability_PE']:.4f}")
+print(f"Axiom 0 <= P(E) <= 1 satisfied? {res['axiom_valid_range']}")
 
-event_even = {2, 4, 6}
-event_odd = {1, 3, 5}
-
-def prob(event, s=sample_space):
-    return len(event.intersection(s)) / len(s)
-
-# Axiom 1 Check
-print(f"P(Even) = {prob(event_even)} >= 0: {prob(event_even) >= 0}")
-
-# Axiom 2 Check
-print(f"P(S) = {prob(sample_space)} == 1.0: {prob(sample_space) == 1.0}")
-
-# Axiom 3 Check (Even and Odd are mutually exclusive)
-p_union = prob(event_even.union(event_odd))
-p_sum = prob(event_even) + prob(event_odd)
-print(f"P(Even U Odd) == P(Even) + P(Odd): {np.isclose(p_union, p_sum)}")
 ```
 
 ---
 
-## 5. Mukhya Batein (Key Takeaways) & Interview Points
-- **Range of Probability:** Kisi bhi event ki probability hamesha $[0, 1]$ interval me hoti hai, na kabhi negative aur na kabhi 1 se badi.
-- **Axioms ka Mahatva:** Machine learning ke saare complex models (Bayes Rule, Gaussian distributions) inhi 3 axioms ke foundation par bante hain.
+### 🎯 Key Takeaways:
+1. Probability hamesha $0 \le P(E) \le 1$ ke range mein hoti hai.
+2. Agar koi event kabhi ho hi nahi sakta (jaise dice par 7 aana), toh $P(E) = 0$.

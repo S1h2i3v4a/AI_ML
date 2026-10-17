@@ -1,65 +1,102 @@
-# Day 20 - Lecture 20.9: Probability Rules ke Practice Problems [Hinglish]
+# Notes_20.09: Probability Ke Rules Par Practice Problems [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_09.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Addition aur Multiplication rules ke mixed questions** solve karwaye hain: Students ke Math aur Physics exam pass karne ka famous scenario jisme Venn diagram se sabhi parts ko tod kar calculate kiya jata hai.
 
 ---
 
-## 1. Overview & Real-World Use Cases
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Mixed probability word problems ko break down karna.
+- $P(\text{Math or Physics})$, $P(\text{Fail Both})$, aur $P(\text{Math Only})$ nikalna.
+- Venn diagram ke 4 alag-alag disjoint tukdo ka total $1.0$ verify karna.
 
-Cloud architecture aur AI server clusters me system reliability calculate karne ke liye Addition, Multiplication aur Complement rules ka complex mixture use hota hai.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Question:
+- 70% students Math pass karte hain $\implies P(M) = 0.70$
+- 60% students Physics pass karte hain $\implies P(P) = 0.60$
+- 45% students dono subjects pass karte hain $\implies P(M \cap P) = 0.45$
+
+Poocha gaya hai:
+1. **Kam se kam ek subject pass karne ki probability:**
+
+$$
+P(M \cup P) = 0.70 + 0.60 - 0.45 = 0.85 \quad (85\%)
+$$
+
+2. **Dono mein fail hone ki probability:**
+
+$$
+P(\text{Fail Both}) = 1 - 0.85 = 0.15 \quad (15\%)
+$$
+
+3. **Sirf Math pass hone ki probability (Physics mein fail):**
+
+$$
+P(\text{Math Only}) = 0.70 - 0.45 = 0.25 \quad (25\%)
+$$
+
+---
+
+### 📊 Blackboard Diagram: 4 Disjoint Tukde
 
 ```mermaid
 flowchart TD
-    subgraph Series["Series System (Dono chalna zaroori)"]
-        S1["Component A"] --> S2["Component B"]
-    end
-    subgraph Parallel["Parallel System (Kam se kam ek chalna chahiye)"]
-        P1["Component A"]
-        P2["Component B"]
+    subgraph S["Poore Students (100%)"]
+        A["Sirf Math: 25%"]
+        B["Dono Pass: 45%"]
+        C["Sirf Physics: 15%"]
+        D["Dono Fail: 15%"]
     end
 ```
 
 ---
 
-## 2. Ganitiya Sawal aur Solution
-
-### Problem 1: Series System (Zero Fault Tolerance)
-System tabhi chalega jab Component $A$ AUR Component $B$ dono sahi rahein:
-
-$$
-\boxed{R_{\text{series}} = P(A \cap B) = P(A) \cdot P(B) = 0.95 \cdot 0.90 = 0.855 \quad (85.5\%)}
-$$
-
-### Problem 2: Parallel Redundant System (Fault Tolerant)
-System tab chalega jab $A$ YA $B$ me se kam se kam ek sahi kaam kare:
-
-$$
-\boxed{R_{\text{parallel}} = 1 - P(A' \cap B') = 1 - (1 - R_A)(1 - R_B)}
-$$
-
-$$
-\boxed{R_{\text{parallel}} = 1 - (0.05)(0.10) = 1 - 0.005 = 0.995 \quad (99.5\%)}
-$$
-
----
-
-## 3. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
-r_a = 0.95
-r_b = 0.90
+def solve_student_exam_problem(p_math=0.7, p_physics=0.6, p_both=0.45):
+    """
+    Solves compound probability problems combining Addition and Multiplication rules:
+    - P(Pass Math OR Physics)
+    - P(Pass Neither)
+    - P(Pass Math but Fail Physics)
+    
+    Parameters:
+        p_math (float): P(Pass Math)
+        p_physics (float): P(Pass Physics)
+        p_both (float): P(Pass Both)
+        
+    Returns:
+        dict: Computed probabilities.
+    """
+    # 1. P(Pass Math or Physics)
+    p_or = p_math + p_physics - p_both
+    
+    # 2. P(Pass Neither) = 1 - P(Pass at least one)
+    p_neither = 1.0 - p_or
+    
+    # 3. P(Pass Math only) = P(Math) - P(Both)
+    p_math_only = p_math - p_both
+    
+    return {
+        "P(Math OR Physics)": p_or,
+        "P(Pass Neither)": p_neither,
+        "P(Math Only)": p_math_only
+    }
 
-r_series = r_a * r_b
-r_parallel = 1.0 - (1.0 - r_a) * (1.0 - r_b)
+# --- Execution & Verification ---
+sol = solve_student_exam_problem(p_math=0.7, p_physics=0.6, p_both=0.45)
+print(f"P(Pass at least one exam) = {sol['P(Math OR Physics)']:.2f} (85%)")
+print(f"P(Fail both exams)        = {sol['P(Pass Neither)']:.2f} (15%)")
+print(f"P(Pass Math ONLY)         = {sol['P(Math Only)']:.2f} (25%)")
 
-print(f"Series System Reliability:   {r_series:.4f} (85.5%)")
-print(f"Parallel System Reliability: {r_parallel:.4f} (99.5%)")
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **Series vs Parallel:** Series me reliability kam hoti hai ($0.95 \times 0.90 = 0.855$), jabki parallel backup lagane se reliability $99.5\%$ tak pahunch jati hai.
+### 🎯 Key Takeaways:
+1. $25\% + 45\% + 15\% + 15\% = 100\%$ — har slice disjoint hai aur milkarr 1 banti hai.
+2. Word problem ko dekhte hi pehle $P(A)$, $P(B)$, aur $P(A \cap B)$ identify karein.

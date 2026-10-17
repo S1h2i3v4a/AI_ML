@@ -1,102 +1,99 @@
-# Day 20 - Lecture 20.12: Bayes' Theorem
+# Lecture 20.12: Bayes' Theorem
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_12.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am derives **Bayes' Theorem** directly on the blackboard from conditional probability definitions, explaining how observing new evidence updates our prior beliefs into posterior probabilities.
 
 ---
 
-## 1. Overview & Epistemic Belief Updating
-
-**Bayes' Theorem** is the foundational engine of modern Bayesian machine learning, probabilistic inference, and cognitive artificial intelligence. It provides the exact mathematical framework for updating a degree of belief in a hypothesis ($H$) after observing empirical evidence ($E$).
+## 🏛️ Bayesian Updating Cycle
 
 ```mermaid
 flowchart LR
-    A["Prior Belief P(H)"] --> C["Bayesian Inference Engine"]
-    B["Observed Evidence P(E|H)"] --> C
-    C --> D["Posterior Belief P(H|E)"]
+    Prior["Prior P(A)<br/>Initial Belief before evidence"] --> Likelihood["Likelihood P(B | A)<br/>Compatibility of evidence with hypothesis"]
+    Likelihood --> Post["Posterior P(A | B)<br/>Updated belief after observing evidence B"]
+    Evidence["Marginal Evidence P(B)<br/>Total probability of evidence across all hypotheses"] -.-> Post
 ```
 
 ---
 
-## 2. Mathematical Derivation & Formulation
+## 📐 Blackboard Derivation: From Conditional Probability to Bayes
 
 From the definition of conditional probability:
 
 $$
-P(H \cap E) = P(H \mid E) \cdot P(E)
+P(A \mid B) = \frac{P(A \cap B)}{P(B)} \implies P(A \cap B) = P(A \mid B) \cdot P(B)
 $$
 
-$$
-P(H \cap E) = P(E \mid H) \cdot P(H)
-$$
-
-Equating the right-hand sides yields **Bayes' Theorem**:
+Symmetrically:
 
 $$
-\boxed{P(H \mid E) = \frac{P(E \mid H) \cdot P(H)}{P(E)}}
+P(B \mid A) = \frac{P(B \cap A)}{P(A)} \implies P(A \cap B) = P(B \mid A) \cdot P(A)
 $$
 
-### Decomposition into Scientific Components:
-1. **Prior Probability ($P(H)$):** Degree of belief in hypothesis $H$ *before* observing evidence $E$.
-2. **Likelihood ($P(E \mid H)$):** Probability of observing evidence $E$ assuming hypothesis $H$ is true.
-3. **Marginal Evidence ($P(E)$):** Total probability of observing evidence $E$ across all possible hypotheses, expanded via the Law of Total Probability:
+Equating the two joint expressions:
 
 $$
-\boxed{P(E) = P(E \mid H)P(H) + P(E \mid H')P(H')}
+P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A)
 $$
 
-4. **Posterior Probability ($P(H \mid E)$):** Updated degree of belief in hypothesis $H$ *after* incorporating evidence $E$.
-
-### Full Expanded Formulation:
+Dividing both sides by $P(B)$:
 
 $$
-\boxed{P(H_i \mid E) = \frac{P(E \mid H_i) P(H_i)}{\sum_{j=1}^k P(E \mid H_j) P(H_j)}}
+P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)}
+$$
+
+Expanding the denominator via the Law of Total Probability for partitions $A_1, A_2, \dots, A_n$:
+
+$$
+P(A_i \mid B) = \frac{P(B \mid A_i) \cdot P(A_i)}{\sum_{j=1}^n P(B \mid A_j) \cdot P(A_j)}
 $$
 
 ---
 
-## 3. Real-World Demonstrative Example
-
-Continuing our factory example from Lecture 20.11:
-- Factory 1 ($B_1$): produces 50% ($P=0.50$), defect rate 1%
-- Factory 2 ($B_2$): produces 30% ($P=0.30$), defect rate 2%
-- Factory 3 ($B_3$): produces 20% ($P=0.20$), defect rate 5%
-- Total Defect Rate: $P(D) = 0.021$
-
-A customer receives a **defective** speaker ($D$). What is the posterior probability that it originated from **Factory 3** ($B_3$)?
-
-$$
-\boxed{P(B_3 \mid D) = \frac{P(D \mid B_3) P(B_3)}{P(D)} = \frac{0.05 \cdot 0.20}{0.021} = \frac{0.010}{0.021} \approx 0.4762 \quad (47.62\%)}
-$$
-
-Notice the dramatic Bayesian update: Factory 3 only produces 20% of speakers, but accounts for nearly **48%** of all defective units!
-
----
-
-## 4. Python Implementation
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def compute_bayes_theorem(prior_a, likelihood_b_given_a, marginal_b):
+    """
+    Computes posterior probability P(A | B) using Bayes' Theorem:
+    P(A | B) = (P(B | A) * P(A)) / P(B)
+    
+    Parameters:
+        prior_a (float): Prior belief P(A).
+        likelihood_b_given_a (float): Likelihood P(B | A).
+        marginal_b (float): Total marginal probability of evidence P(B).
+        
+    Returns:
+        dict: Prior, likelihood, marginal evidence, and posterior probability.
+    """
+    if marginal_b <= 0:
+        raise ValueError("Marginal probability P(B) must be strictly positive.")
+        
+    numerator = likelihood_b_given_a * prior_a
+    posterior_a_given_b = numerator / marginal_b
+    
+    return {
+        "Prior P(A)": prior_a,
+        "Likelihood P(B|A)": likelihood_b_given_a,
+        "Marginal P(B)": marginal_b,
+        "Posterior P(A|B)": posterior_a_given_b
+    }
 
-p_prior = np.array([0.50, 0.30, 0.20])
-p_likelihood = np.array([0.01, 0.02, 0.05])
+# --- Execution & Verification ---
+# Defective item was found: What is probability it came from Machine A?
+# Prior P(A) = 0.60, Likelihood P(D|A) = 0.02, Marginal P(D) = 0.032
+res = compute_bayes_theorem(prior_a=0.60, likelihood_b_given_a=0.02, marginal_b=0.032)
+print(f"Prior Probability P(A)       = {res['Prior P(A)']:.2f} (60%)")
+print(f"Likelihood P(D|A)            = {res['Likelihood P(B|A)']:.4f} (2%)")
+print(f"Marginal Evidence P(D)       = {res['Marginal P(B)']:.4f} (3.2%)")
+print(f"Posterior Probability P(A|D) = {res['Posterior P(A|B)']:.4f} (37.5%)")
 
-# Marginal evidence
-p_evidence = np.sum(p_prior * p_likelihood)
-
-# Posterior distribution
-p_posterior = (p_prior * p_likelihood) / p_evidence
-
-print(f"Total Evidence P(D): {p_evidence:.4f}")
-print(f"Prior Probabilities:     {p_prior}")
-print(f"Posterior Probabilities: {np.round(p_posterior, 4)}")
-print(f"P(Factory 3 | Defect):    {p_posterior[2]:.4f} (47.62%)")
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-- **Belief Updating:** $\text{Posterior} \propto \text{Prior} \times \text{Likelihood}$.
-- **Naive Bayes Classifier:** Foundation of text classification, assuming features are conditionally independent given class labels.
+## 🔑 Key Takeaways
+1. **Prior $P(A)$**: Initial belief before seeing data.
+2. **Likelihood $P(B \mid A)$**: Probability of observing the evidence if the hypothesis is true.
+3. **Posterior $P(A \mid B)$**: Updated belief after incorporating new data.
+4. Bayes' Theorem is the mathematical foundation of Naive Bayes, spam filters, medical diagnostic algorithms, and Bayesian Neural Networks.

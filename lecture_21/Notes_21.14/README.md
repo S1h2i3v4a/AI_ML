@@ -1,85 +1,120 @@
-# Day 21 - Lecture 21.14: Determinants
+# Lecture 21.14: Determinants
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_14.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Determinants**, establishing that a determinant $|A|$ is a **single scalar number calculated from a square matrix**. She derives the $2 \times 2$ formula $|A| = ad - bc$ on the blackboard, covers $3 \times 3$ cofactor expansion, and explains its geometric interpretation as the area/volume scaling factor of linear transformations.
 
 ---
 
-## 1. Overview & Geometric Area/Volume Distortion
-
-The **Determinant** of a square matrix $\mathbf{A}$, denoted $\det(\mathbf{A})$ or $|\mathbf{A}|$, is a scalar value that encodes the **scaling factor of areas (in 2D) or volumes (in higher dimensions)** under the linear transformation represented by $\mathbf{A}$.
+## 🏛️ Geometric Scaling & Invertibility
 
 ```mermaid
-flowchart LR
-    A["Unit Square (Area = 1.0)"] -->|Linear Transformation A| B["Transformed Parallelogram"]
-    B --> C["New Area = |det(A)|"]
-    C --> D["Sign of det(A): Orientation (+ preserved, - flipped)"]
+flowchart TD
+    SquareMat["Square Matrix A (n x n)"] --> Det["Determinant |A| (Single Real Number)"]
+    Det --> Geo["Geometric Meaning: Factor by which unit area/volume stretches or shrinks"]
+    Det --> Inv{Is |A| ≠ 0?}
+    Inv -->|Yes| Invertible["Matrix is Invertible (Non-Singular)<br/>A⁻¹ exists, unique solution to Ax = b"]
+    Inv -->|No: |A| = 0| Singular["Matrix is Singular<br/>Space collapses, A⁻¹ does NOT exist"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-### 1. $2 \times 2$ Determinant:
-
-$$
-\boxed{\det \begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc}
-$$
-
-### 2. $3 \times 3$ Cofactor Expansion:
+### 1. $2 \times 2$ Matrix Determinant:
+For $\mathbf{A} = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$:
 
 $$
-\boxed{\det \begin{bmatrix} a & b & c \\ d & e & f \\ g & h & i \end{bmatrix} = a(ei - fh) - b(di - fg) + c(dh - eg)}
+|\mathbf{A}| = \det(\mathbf{A}) = ad - bc
 $$
 
-### 3. Invertibility & Singularity Theorem:
-A square matrix $\mathbf{A}$ is invertible if and only if its determinant is non-zero:
+Example:
 
 $$
-\boxed{\mathbf{A}^{-1} \text{ exists} \iff \det(\mathbf{A}) \ne 0}
+\mathbf{A} = \begin{bmatrix} 4 & 2 \\ 1 & 3 \end{bmatrix} \implies |\mathbf{A}| = (4 \times 3) - (2 \times 1) = 12 - 2 = 10
 $$
 
-If $\det(\mathbf{A}) = 0$, the transformation collapses space into a lower dimension (e.g., squashes a 2D plane into a 1D line), losing information irreversibly ($\mathbf{A}$ is **singular**).
+### 2. $3 \times 3$ Matrix Determinant (Cofactor Expansion):
+For $\mathbf{A} = \begin{bmatrix} a & b & c \\ d & e & f \\ g & h & i \end{bmatrix}$:
 
-### 4. Key Properties:
-- $\det(\mathbf{A}\mathbf{B}) = \det(\mathbf{A}) \cdot \det(\mathbf{B})$
-- $\det(\mathbf{A}^T) = \det(\mathbf{A})$
-- $\det(\mathbf{A}^{-1}) = \frac{1}{\det(\mathbf{A})}$
-- For orthogonal matrix $\mathbf{Q}$: $\det(\mathbf{Q}) = \pm 1$
+$$
+|\mathbf{A}| = a \begin{vmatrix} e & f \\ h & i \end{vmatrix} - b \begin{vmatrix} d & f \\ g & i \end{vmatrix} + c \begin{vmatrix} d & e \\ g & h \end{vmatrix}
+$$
+
+$$
+|\mathbf{A}| = a(ei - fh) - b(di - fg) + c(dh - eg)
+$$
+
+### 3. Machine Learning Connection: Invertibility
+In Ordinary Least Squares (OLS) Linear Regression, the analytical weight vector is solved as:
+
+$$
+\mathbf{w}^* = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}
+$$
+
+If $\det(\mathbf{X}^T \mathbf{X}) = 0$ (due to multicollinear redundant features), the matrix cannot be inverted!
 
 ---
 
-## 3. Python Implementation
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-# Non-singular matrix
-A = np.array([
-    [4.0, 7.0],
-    [2.0, 6.0]
-])
+def compute_determinant_with_steps(matrix_2x2=None, matrix_3x3=None):
+    """
+    Computes determinants of 2x2 and 3x3 square matrices.
+    2x2 formula: det(A) = a*d - b*c
+    3x3 cofactor expansion across the first row.
+    Explains geometric area/volume scaling and matrix invertibility.
+    
+    Returns:
+        dict: Determinant values and invertibility flags.
+    """
+    if matrix_2x2 is None:
+        # Shraddha ma'am's blackboard formula: A = [[a, b], [c, d]] -> ad - bc
+        matrix_2x2 = np.array([
+            [4, 2],
+            [1, 3]
+        ])
+    if matrix_3x3 is None:
+        matrix_3x3 = np.array([
+            [1, 2, 3],
+            [0, 1, 4],
+            [5, 6, 0]
+        ])
+        
+    # 2x2 Determinant
+    a, b = matrix_2x2[0, 0], matrix_2x2[0, 1]
+    c, d = matrix_2x2[1, 0], matrix_2x2[1, 1]
+    det_2x2_formula = float(a * d - b * c)
+    det_2x2_numpy = float(np.linalg.det(matrix_2x2))
+    
+    # 3x3 Determinant via NumPy
+    det_3x3_numpy = float(np.linalg.det(matrix_3x3))
+    
+    return {
+        "matrix_2x2": matrix_2x2.tolist(),
+        "det_2x2_formula": det_2x2_formula,
+        "det_2x2_numpy": det_2x2_numpy,
+        "is_2x2_invertible": bool(not np.isclose(det_2x2_numpy, 0.0)),
+        "matrix_3x3": matrix_3x3.tolist(),
+        "det_3x3_numpy": det_3x3_numpy,
+        "is_3x3_invertible": bool(not np.isclose(det_3x3_numpy, 0.0))
+    }
 
-# Singular matrix (col 2 is 2 * col 1)
-B = np.array([
-    [2.0, 4.0],
-    [3.0, 6.0]
-])
+# --- Execution & Verification ---
+res = compute_determinant_with_steps()
+print("2x2 Matrix:")
+print(np.array(res["matrix_2x2"]))
+print(f"det(A) = ad - bc = 4*3 - 2*1 = 12 - 2 = {res['det_2x2_formula']:.1f}")
+print("Is 2x2 Invertible (det != 0)?", res["is_2x2_invertible"])
+print(f"3x3 Matrix Determinant: {res['det_3x3_numpy']:.2f}")
 
-det_A = np.linalg.det(A)
-det_B = np.linalg.det(B)
-
-print(f"det(A): {det_A:.4f} (Exact: 4*6 - 7*2 = 24 - 14 = 10)")
-print(f"det(B): {det_B:.4f} (Exact: 2*6 - 4*3 = 12 - 12 = 0)")
-print(f"A is invertible: {not np.isclose(det_A, 0)}")
-print(f"B is invertible: {not np.isclose(det_B, 0)}")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Geometric Meaning:** $|\det(\mathbf{A})|$ is the volume distortion factor. If $\det(\mathbf{A}) = 2.5$, the transformation scales any region's volume by $2.5\times$.
-- **Normalizing Flows in Generative AI:** In Normalizing Flow generative models, change-of-variable density transformations require calculating the determinant of the Jacobian matrix $\det(\mathbf{J})$.
+## 🔑 Key Takeaways
+1. Determinants are defined strictly for **square matrices** ($n \times n$).
+2. The determinant is a single scalar representing the geometric scaling factor of area or volume.
+3. If $\det(A) = 0$, the matrix is singular and cannot be inverted.

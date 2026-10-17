@@ -1,103 +1,114 @@
-# Day 20 - Lecture 20.20: Normal Distribution
+# Lecture 20.20: Normal Distribution & The Empirical Rule
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_20.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the **Normal (Gaussian) Distribution** $\mathcal{N}(\mu, \sigma^2)$, the single most critical probability distribution in Machine Learning. She details the bell-shaped probability density function, the Central Limit Theorem intuition, and the **68-95-99.7 Empirical Rule**.
 
 ---
 
-## 1. Overview & Central Role in AI
-
-The **Normal (Gaussian) Distribution** $\mathcal{N}(\mu, \sigma^2)$ is the cornerstone of probability theory, statistics, and machine learning. By the **Central Limit Theorem (CLT)**, the sum of independent random variables tends toward a Gaussian distribution, regardless of their original distributions.
+## 🏛️ The Empirical 68-95-99.7% Confidence Architecture
 
 ```mermaid
 flowchart TD
-    A["Normal Distribution N(mu, sigma^2)"] --> B["Bell-Shaped Symmetrical PDF"]
-    A --> C["68-95-99.7 Empirical Rule"]
-    A --> D["Standard Normal Z ~ N(0, 1) via Z-score"]
-    A --> E["Central Limit Theorem: Sum of independent variables -> Gaussian"]
+    Gaussian["Gaussian Bell Curve N(μ, σ²)"] --> S1["μ ± 1σ: Encloses 68.27% of all data"]
+    Gaussian --> S2["μ ± 2σ: Encloses 95.45% of all data"]
+    Gaussian --> S3["μ ± 3σ: Encloses 99.73% of all data (Almost entire universe!)"]
+    
+    S3 --> Outliers["Points beyond ±3σ are extreme statistical anomalies (p < 0.003)"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation: The Gaussian PDF
 
-### Probability Density Function (PDF):
-For parameters $\mu \in \mathbb{R}$ (mean) and $\sigma > 0$ (standard deviation):
-
-$$
-\boxed{f(x) = \frac{1}{\sigma \sqrt{2\pi}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right) \quad \text{for } x \in (-\infty, \infty)}
-$$
-
-### Geometry of the Bell Curve:
-1. **Symmetry:** Centered and symmetric about $x = \mu$, where $\text{Mean} = \text{Median} = \text{Mode} = \mu$.
-2. **Inflection Points:** The second derivative $f''(x) = 0$ occurs exactly at $x = \mu - \sigma$ and $x = \mu + \sigma$.
-3. **Peak Height:** Maximum density at the mean is $f(\mu) = \frac{1}{\sigma \sqrt{2\pi}} \approx \frac{0.3989}{\sigma}$.
-
----
-
-## 3. The 68-95-99.7 Empirical Rule
-
-For any Gaussian distributed random variable $X \sim \mathcal{N}(\mu, \sigma^2)$:
+A continuous random variable $X \sim \mathcal{N}(\mu, \sigma^2)$ is governed by:
 
 $$
-\boxed{P(\mu - \sigma \le X \le \mu + \sigma) \approx 0.6827 \quad (68.27\%)}
+f(x) = \frac{1}{\sigma \sqrt{2\pi}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)
 $$
 
-$$
-\boxed{P(\mu - 2\sigma \le X \le \mu + 2\sigma) \approx 0.9545 \quad (95.45\%)}
-$$
+### Parameters:
+- $\mu$: The distribution mean, median, and mode (location of the peak).
+- $\sigma$: Standard deviation controlling the width / dispersion of the bell curve.
+- Inflection points occur exactly at $x = \mu \pm \sigma$.
+
+### Standard Normal Distribution ($Z$):
+Standardizing any Gaussian variable via the Z-score transformation:
 
 $$
-\boxed{P(\mu - 3\sigma \le X \le \mu + 3\sigma) \approx 0.9973 \quad (99.73\%)}
+Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1)
 $$
 
 ---
 
-## 4. Standard Normal Transformation ($Z$-Score)
-
-Any Gaussian variable $X \sim \mathcal{N}(\mu, \sigma^2)$ is converted to the Standard Normal Distribution $\mathcal{Z} \sim \mathcal{N}(0, 1)$ via affine standardization:
-
-$$
-\boxed{Z = \frac{X - \mu}{\sigma}}
-$$
-
-The Standard Normal PDF simplifies to:
-
-$$
-\boxed{\phi(z) = \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}}}
-$$
-
----
-
-## 5. Python Implementation
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 
-# Student Exam Scores: mu = 70, sigma = 10
-mu = 70
-sigma = 10
+def plot_normal_distribution_empirical_rule(mean=0.0, std=1.0, show_plot=True):
+    """
+    Plots the Gaussian Normal Distribution curve and visualizes the
+    Empirical Rule (68-95-99.7% rule) within 1, 2, and 3 standard deviations.
+    
+    Parameters:
+        mean (float): Distribution mean mu.
+        std (float): Distribution standard deviation sigma.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Empirical rule coverage percentages.
+    """
+    x = np.linspace(mean - 4 * std, mean + 4 * std, 1000)
+    pdf = norm.pdf(x, loc=mean, scale=std)
+    
+    plt.figure(figsize=(10, 5))
+    plt.plot(x, pdf, "b-", linewidth=2.5, label=f"N({mean}, {std}²)")
+    
+    # 68% band (mu ± 1 sigma)
+    x1 = np.linspace(mean - std, mean + std, 300)
+    plt.fill_between(x1, norm.pdf(x1, mean, std), color="blue", alpha=0.3, label="68.27% (μ ± 1σ)")
+    
+    # 95% band (mu ± 2 sigma)
+    x2_left = np.linspace(mean - 2 * std, mean - std, 150)
+    x2_right = np.linspace(mean + std, mean + 2 * std, 150)
+    plt.fill_between(x2_left, norm.pdf(x2_left, mean, std), color="orange", alpha=0.25)
+    plt.fill_between(x2_right, norm.pdf(x2_right, mean, std), color="orange", alpha=0.25, label="95.45% (μ ± 2σ)")
+    
+    plt.axvline(x=mean, color="black", linestyle="--", linewidth=1.5, label=f"Mean μ = {mean}")
+    plt.title("Normal (Gaussian) Distribution & The Empirical 68-95-99.7 Rule", fontweight="bold")
+    plt.xlabel("Z-Score / Values")
+    plt.ylabel("Probability Density")
+    plt.legend(loc="upper right")
+    plt.grid(True, linestyle=":", alpha=0.5)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    # Exact CDF coverage calculations
+    cov_1sigma = norm.cdf(mean + std, mean, std) - norm.cdf(mean - std, mean, std)
+    cov_2sigma = norm.cdf(mean + 2 * std, mean, std) - norm.cdf(mean - 2 * std, mean, std)
+    cov_3sigma = norm.cdf(mean + 3 * std, mean, std) - norm.cdf(mean - 3 * std, mean, std)
+    
+    return {
+        "coverage_1_sigma": float(cov_1sigma),
+        "coverage_2_sigma": float(cov_2sigma),
+        "coverage_3_sigma": float(cov_3sigma)
+    }
 
-x = np.linspace(30, 110, 1000)
-y = norm.pdf(x, mu, sigma)
+# --- Execution & Verification ---
+cov = plot_normal_distribution_empirical_rule(mean=0.0, std=1.0, show_plot=False)
+print(f"Coverage within ±1σ: {cov['coverage_1_sigma'] * 100:.2f}% (≈ 68%)")
+print(f"Coverage within ±2σ: {cov['coverage_2_sigma'] * 100:.2f}% (≈ 95%)")
+print(f"Coverage within ±3σ: {cov['coverage_3_sigma'] * 100:.2f}% (≈ 99.7%)")
 
-# Empirical Rule Verification
-p_1_sigma = norm.cdf(mu + sigma, mu, sigma) - norm.cdf(mu - sigma, mu, sigma)
-p_2_sigma = norm.cdf(mu + 2*sigma, mu, sigma) - norm.cdf(mu - 2*sigma, mu, sigma)
-p_3_sigma = norm.cdf(mu + 3*sigma, mu, sigma) - norm.cdf(mu - 3*sigma, mu, sigma)
-
-print(f"Empirical Rule Integrals:")
-print(f"  P(mu +- 1 sigma): {p_1_sigma * 100:.2f}% (Target: 68.27%)")
-print(f"  P(mu +- 2 sigma): {p_2_sigma * 100:.2f}% (Target: 95.45%)")
-print(f"  P(mu +- 3 sigma): {p_3_sigma * 100:.2f}% (Target: 99.73%)")
 ```
 
 ---
 
-## 6. Key Takeaways & Interview Points
-- **Z-Score Normalization:** StandardScaler in Scikit-Learn executes $Z = \frac{X - \mu}{\sigma}$ to standardize feature spaces.
-- **Maximum Entropy on $(-\infty, \infty)$:** Given only a specified mean and variance, the Gaussian distribution maximizes Shannon entropy.
+## 🔑 Key Takeaways
+1. The Normal distribution is symmetric around the mean: $\text{Mean} = \text{Median} = \text{Mode} = \mu$.
+2. The Empirical Rule states that 68% of data falls within $\pm 1\sigma$, 95% within $\pm 2\sigma$, and 99.7% within $\pm 3\sigma$.
+3. By the Central Limit Theorem (CLT), the sum or average of many independent random variables converges to a Normal distribution regardless of their underlying distribution.

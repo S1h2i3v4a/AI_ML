@@ -1,116 +1,119 @@
-# Day 19 - Lecture 19.4: Box Plots (Five-Number Summary) [Hinglish]
+# Notes_19.04: Matplotlib Mein Box Plots [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_04.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 19 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Box Plot (Box and Whisker Plot)** ka concept samjhaya hai: kaise 5-number summary se data ka spread samjha jata hai aur outliers ko identify kiya jata hai.
 
 ---
 
-## 1. Overview & Purpose
-A **Box Plot** (or Box-and-Whisker Plot), invented by mathematician **John Tukey** in 1977, is a standardized way of displaying the distribution of data based on a **five-number summary**:
-1. **Minimum** (lowest non-outlier)
-2. **First Quartile ($Q_1$)** (25th percentile)
-3. **Median ($Q_2$)** (50th percentile)
-4. **Third Quartile ($Q_3$)** (75th percentile)
-5. **Maximum** (highest non-outlier)
-
-Additionally, it explicitly detects and plots **Outliers** beyond the whiskers.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Box Plot kya hota hai aur iski zaroorat kyu hai?
+- 5-Number Summary: Minimum, $Q_1$, Median ($Q_2$), $Q_3$, aur Maximum.
+- Interquartile Range ($\text{IQR} = Q_3 - Q_1$) aur Outlier Fences ($1.5 \times \text{IQR}$).
+- `plt.boxplot()` function ka use karna.
 
 ---
 
-## 2. Anatomy of a Box Plot
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-### 📊 Visual Diagram & Derivation:
-![Box Plot Anatomy & Calculation](diagram.png)
+#### 1. Box Plot Kya Hai?
+Jab humein data ke spread aur extreme values (outliers) ko jaldi se dekhna hota hai, toh Box Plot sabse powerful visualization tool hai.
+Isme ek rectangular box hota hai jo middle 50% data ko represent karta hai, aur dono taraf lines nikli hoti hain jinhe **Whiskers** kehte hain.
+
+#### 2. 5-Number Summary:
+1. **$Q_1$ (25th Percentile):** 25% data isse chhota hota hai.
+2. **Median / $Q_2$ (50th Percentile):** Data ka bilkul center point.
+3. **$Q_3$ (75th Percentile):** 75% data isse chhota hota hai.
+4. **IQR (Interquartile Range):**
+
+$$
+\text{IQR} = Q_3 - Q_1
+$$
+
+5. **Whiskers & Outliers:**
+Agar koi value $Q_3 + 1.5 \cdot \text{IQR}$ se badi ho ya $Q_1 - 1.5 \cdot \text{IQR}$ se chhoti ho, toh use **Outlier** mana jata hai aur alag dot se show kiya jata hai.
+
+---
+
+### 📊 Blackboard Diagram: Box Plot Ki Anatomy
 
 ```mermaid
 flowchart TD
-    subgraph BoxPlotAnatomy["Anatomy of a Box Plot"]
-        A["Upper Outliers (> Upper Fence)"]
-        B["Upper Whisker: Max within Q3 + 1.5*IQR"]
-        C["Q3: 75th Percentile (Top edge of box)"]
-        D["Median / Q2: 50th Percentile (Line inside box)"]
-        E["Q1: 25th Percentile (Bottom edge of box)"]
-        F["Lower Whisker: Min within Q1 - 1.5*IQR"]
-        G["Lower Outliers (< Lower Fence)"]
-    end
-    A --- B --- C --- D --- E --- F --- G
+    A["Upper Whisker: Max Value within 1.5 * IQR"]
+    B["Q3 (75% marks)"]
+    C["Median Line (50% marks)"]
+    D["Q1 (25% marks)"]
+    E["Lower Whisker: Min Value within 1.5 * IQR"]
+    F["Outliers (Dots bahar ke)"]
+    
+    A --- B
+    B --- C
+    C --- D
+    D --- E
+    A -.-> F
 ```
 
-### Detailed Parts:
-- **Interquartile Range (IQR):**
-  $$\text{IQR} = Q_3 - Q_1$$
-  Represents the middle 50% of the dataset.
-- **Lower Whisker Limit (Lower Fence):**
-  $$\text{Lower Fence} = Q_1 - 1.5 \times \text{IQR}$$
-- **Upper Whisker Limit (Upper Fence):**
-  $$\text{Upper Fence} = Q_3 + 1.5 \times \text{IQR}$$
-- **Outliers:**
-  Any point $x < \text{Lower Fence}$ or $x > \text{Upper Fence}$ is treated as an outlier and rendered as a distinct point (circle, diamond, cross).
-
 ---
 
-## 3. When to Use a Box Plot?
-- **Comparing Multiple Categories:** When you want to compare 5, 10, or 20 groups side by side. Histograms would get messy with 10 groups, whereas box plots sit neatly side by side.
-- **Outlier Detection:** Immediate visual confirmation of extreme values.
-- **Skewness Detection:**
-  - If the median line is closer to $Q_1$, the data is right-skewed.
-  - If the median line is closer to $Q_3$, the data is left-skewed.
-  - If the median is centered and whiskers are equal, the distribution is symmetric.
-
----
-
-## 4. Code Implementation
+### 💻 Python Code Implementation
 
 ```python
 import matplotlib.pyplot as plt
+import numpy as np
 
-# Sample dataset
-data = [7, 8, 5, 6, 9, 4, 10, 12, 15]
+def compute_and_plot_boxplot(data=None, show_plot=True):
+    """
+    Computes 5-number summary and plots a standard Box & Whisker plot.
+    Identifies Q1, Median, Q3, IQR, and Outlier fences.
+    
+    Parameters:
+        data (list or np.ndarray): 1D continuous dataset.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: 5-number summary statistics and calculated fences.
+    """
+    if data is None:
+        data = [7, 8, 5, 6, 9, 4, 10, 12, 15]
+        
+    data_arr = np.array(data)
+    q1 = np.percentile(data_arr, 25)
+    median = np.median(data_arr)
+    q3 = np.percentile(data_arr, 75)
+    iqr = q3 - q1
+    lower_fence = q1 - 1.5 * iqr
+    upper_fence = q3 + 1.5 * iqr
+    
+    plt.figure(figsize=(7, 5))
+    plt.boxplot(data_arr, patch_artist=True, boxprops=dict(facecolor="lightblue"))
+    plt.title("Box Plot (5-Number Summary & Outlier Detection)")
+    plt.ylabel("Data Values")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    summary = {
+        "min": float(np.min(data_arr)),
+        "Q1 (25th percentile)": float(q1),
+        "Median (50th percentile)": float(median),
+        "Q3 (75th percentile)": float(q3),
+        "max": float(np.max(data_arr)),
+        "IQR": float(iqr),
+        "lower_fence": float(lower_fence),
+        "upper_fence": float(upper_fence)
+    }
+    return summary
 
-plt.figure(figsize=(6, 6))
-plt.boxplot(data)
-plt.title("Basic Box Plot (Five-Number Summary)", fontsize=14, fontweight="bold")
-plt.ylabel("Observed Values", fontsize=12)
-plt.grid(True, linestyle="--", alpha=0.6)
-plt.show()
+# --- Execution & Verification ---
+summary_stats = compute_and_plot_boxplot(show_plot=False)
+for k, v in summary_stats.items():
+    print(f"{k}: {v:.2f}")
+
 ```
 
 ---
 
-## 5. Key Interview Questions
-1. **Why 1.5 * IQR?**
-   John Tukey chose $1.5$ empirically. For a standard normal distribution, $\pm 1.5 \times \text{IQR}$ corresponds to approximately $\pm 2.7\sigma$ (covering 99.3% of the data). Points beyond it have a $<0.7\%$ probability under normality, making them plausible anomalies.
-2. **Is the median sensitive to outliers?**
-   No, the median and IQR are **robust statistics** (resistant to extreme outliers), unlike the mean and standard deviation.
-
-
----
-
-## 📐 Tukey's Five-Number Summary aur Outliers Ka Ganitiya Sutra
-
-Sorted data $X_{(1)} \le X_{(2)} \le \dots \le X_{(n)}$ ke liye John Tukey ka Five-Number Summary:
-
-$$
-\boxed{\text{Summary} = \left( X_{(1)}, \; Q_1, \; Q_2, \; Q_3, \; X_{(n)} \right)}
-$$
-
-jahan:
-- $Q_2 = \text{Median} = \text{50th percentile}$
-- $Q_1 = \text{First Quartile} = \text{25th percentile}$
-- $Q_3 = \text{Third Quartile} = \text{75th percentile}$
-- $\boxed{\text{IQR} = Q_3 - Q_1 \quad (\text{Interquartile Range})}$
-
-Outlier detection ke liye Tukey's Fences:
-
-$$
-\boxed{\text{Lower Fence} = Q_1 - 1.5 \cdot \text{IQR} \qquad\text{aur}\qquad \text{Upper Fence} = Q_3 + 1.5 \cdot \text{IQR}}
-$$
-
-In boundaries ke bahar aane wale sabhi points ko outliers mark kiya jaata hai:
-
-$$
-\boxed{\text{Outlier}(x_i) \iff x_i < \text{Lower Fence} \quad\lor\quad x_i > \text{Upper Fence}}
-$$
+### 🎯 Key Takeaways:
+1. Box ke andar ka area ($Q_1$ se $Q_3$) exactly 50% central data ko hold karta hai.
+2. Outliers ko detect karne ke liye $1.5 \times \text{IQR}$ formula universal rule hai.

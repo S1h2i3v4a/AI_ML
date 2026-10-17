@@ -1,83 +1,99 @@
-# Day 20 - Lecture 20.4: Foundation Probability Practice Problems [Hinglish]
+# Notes_20.04: Practice Problems Solve Karna [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_20_04.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Classical Probability ke practice questions** step-by-step solve karwaye hain: Bag of Marbles example (5 Laal, 3 Hari, aur 2 Neeli goliyaan) aur complementary events ko nikalna.
 
 ---
 
-## 1. Combinatorics & Counting Siddhant
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Multi-colored marble bag problem ko solve karna.
+- $P(\text{Red})$, $P(\text{Green})$, aur $P(\text{Blue})$ nikalna.
+- $P(\text{Not Blue}) = 1 - P(\text{Blue})$ ka simple use.
+- Sabhi mutually exclusive probabilities ka sum $1.0$ verify karna.
 
-Discrete probability solve karne ke liye counting rules aur combinatorics ka clear gyaan hona anivarya hai: **Product Rule**, **Permutations**, aur **Combinations**.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Question:
+Ek bag mein 10 marbles hain:
+- 5 Red
+- 3 Green
+- 2 Blue
+Total $= 5 + 3 + 2 = 10$.
+
+Agar bina dekhe 1 marble nikali jaye, toh kya probability hai ki:
+1. **Red aaye:** $P(\text{Red}) = \frac{5}{10} = 0.5$ (50%)
+2. **Green aaye:** $P(\text{Green}) = \frac{3}{10} = 0.3$ (30%)
+3. **Blue aaye:** $P(\text{Blue}) = \frac{2}{10} = 0.2$ (20%)
+4. **Blue NA aaye:** $P(\text{Not Blue}) = 1 - 0.2 = 0.8$ (80%)
+
+Formula:
+
+$$
+\sum_{i=1}^k P(C_i) = 0.5 + 0.3 + 0.2 = 1.0
+$$
+
+---
+
+### 📊 Blackboard Diagram: 10 Marbles Ka Partition
 
 ```mermaid
-flowchart TD
-    A["Counting Rules"] --> B["Product Rule: n1 * n2 * ... * nk"]
-    A --> C["Permutations: Order zaroori hai! P(n, k) = n! / (n-k)!"]
-    A --> D["Combinations: Order matter nahi karta! C(n, k) = n! / (k!(n-k)!)"]
+flowchart LR
+    Bag["Total 10 Marbles"] --> R["Red: 5/10 (50%)"]
+    Bag --> G["Green: 3/10 (30%)"]
+    Bag --> B["Blue: 2/10 (20%)"]
+    R & G --> NB["Not Blue: 8/10 (80%)"]
 ```
 
-### Ganitiya Sutra:
-
-#### Permutations (Kram / Order Matter Karta Hai):
-
-$$
-oxed{P(n, k) = rac{n!}{(n - k)!}}
-$$
-
-#### Combinations (Group Selection / Order Matter Nahi Karta):
-
-$$
-oxed{C(n, k) = inom{n}{k} = rac{n!}{k!(n - k)!}}
-$$
-
 ---
 
-## 2. Standard Practice Problems
-
-### Problem 1: Do Dice Roll Karna (Sum = 7 ya 8)
-- Total possible outcomes: $|\mathcal{S}| = 6 	imes 6 = 36$.
-- Event $A$ (Sum = 7): $\{(1,6), (2,5), (3,4), (4,3), (5,2), (6,1)\} \implies 6$ jode.
-- Event $B$ (Sum = 8): $\{(2,6), (3,5), (4,4), (5,3), (6,2)\} \implies 5$ jode.
-- Dono mutually exclusive hain:
-
-$$
-oxed{P(	ext{Sum} \in \{7, 8\}) = rac{6 + 5}{36} = rac{11}{36} pprox 0.3056}
-$$
-
-### Problem 2: Bina Replacement Ke 2 Kings Draw Karna
-52 taash ke patto me se bina wapas dale 2 patte nikale gaye:
-- Total combinations: $inom{52}{2} = 1326$.
-- 4 Kings me se 2 Kings chunne ke tarike: $inom{4}{2} = 6$.
-
-$$
-oxed{P(	ext{Dono Kings}) = rac{6}{1326} = rac{1}{221} pprox 0.004525}
-$$
-
----
-
-## 3. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
-import math
-from itertools import product
+def solve_marble_bag_problem(red=5, green=3, blue=2):
+    """
+    Solves the classic colored marble bag problem:
+    Total marbles = Red + Green + Blue.
+    Computes probabilities of selecting specific colors and complementary events.
+    
+    Parameters:
+        red (int): Red marble count.
+        green (int): Green marble count.
+        blue (int): Blue marble count.
+        
+    Returns:
+        dict: Theoretical probabilities for all colored selections.
+    """
+    total = red + green + blue
+    if total <= 0:
+        raise ValueError("Bag must contain at least one marble.")
+        
+    p_red = red / total
+    p_green = green / total
+    p_blue = blue / total
+    p_not_blue = 1.0 - p_blue
+    
+    return {
+        "bag_contents": {"red": red, "green": green, "blue": blue, "total": total},
+        "P(Red)": p_red,
+        "P(Green)": p_green,
+        "P(Blue)": p_blue,
+        "P(Not Blue)": p_not_blue
+    }
 
-# Problem 1 Verification
-die = list(range(1, 7))
-sample_space = list(product(die, die))
-favorable = [pair for pair in sample_space if sum(pair) in (7, 8)]
-print(f"P(Sum 7 ya 8) = {len(favorable)}/{len(sample_space)} = {len(favorable)/len(sample_space):.4f}")
+# --- Execution & Verification ---
+solution = solve_marble_bag_problem(red=5, green=3, blue=2)
+print("Bag Contents:", solution["bag_contents"])
+print(f"P(Red)      = {solution['P(Red)']:.4f} (5/10)")
+print(f"P(Green)    = {solution['P(Green)']:.4f} (3/10)")
+print(f"P(Blue)     = {solution['P(Blue)']:.4f} (2/10)")
+print(f"P(Not Blue) = {solution['P(Not Blue)']:.4f} (8/10)")
 
-# Problem 2 Verification
-total_hands = math.comb(52, 2)
-king_hands = math.comb(4, 2)
-print(f"P(Dono Kings) = {king_hands}/{total_hands} = {king_hands/total_hands:.6f}")
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **Selection Rule:** Jab arrangement matter kare toh $P(n, k)$, jab sirf grouping ya selection ho toh $inom{n}{k}$.
-- **Without Replacement Trap:** Bina replacement wale sawalo me denominator har draw ke sath 1 kam hota hai ($52 	o 51$).
+### 🎯 Key Takeaways:
+1. Sabhi possible categories ka total sum hamesha $1.0$ hota hai.
+2. "Not Blue" nikalne ke liye Red + Green karne ke bajaye $1 - P(\text{Blue})$ karna zyada tezi se kaam karta hai.

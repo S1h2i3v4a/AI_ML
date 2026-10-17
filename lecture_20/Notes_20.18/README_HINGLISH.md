@@ -1,69 +1,99 @@
-# Day 20 - Lecture 20.18: Binomial Distribution (Dvipad Vantann) [Hinglish]
+# Notes_20.18: Binomial Distribution [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_18.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Binomial Distribution** ka formula aur uski 4 conditions blackboard par samjhayi hain: 5 baar coin toss karne par exact 3 baar Head aane ki probability ($5/16 = 0.3125$) ko manual math aur `scipy.stats.binom` dono se solve kiya hai.
 
 ---
 
-## 1. Overview & Concept
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Binomial experiment ki 4 zaroori shartein (Bernoulli conditions).
+- Formula: $P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}$.
+- 5 Coins toss karne par 3 Heads aane ka blackboard solution ($5/16$).
+- Python mein `scipy.stats.binom.pmf()` ka use.
 
-**Binomial Distribution** $n$ independent **Bernoulli trials** me $k$ successes aane ki exact probability batata hai, jahan har trial me success ki probability $p$ constant rehti hai.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Binomial Ki 4 Shartein:
+1. Trials ki sankhya fixed ho ($n = 5$).
+2. Har trial ke sirf 2 hi result ho sakte hain: Success (Head) ya Failure (Tail).
+3. Success ki probability $p$ hamesha constant rahe ($p = 0.5$).
+4. Sabhi trials aapas mein independent hon.
+
+#### 2. Blackboard Calculation:
+Maan lijiye $n = 5$ coin tosses hain, aur humein $k = 3$ heads chahiye:
+
+$$
+P(X = 3) = \binom{5}{3} (0.5)^3 (0.5)^2
+$$
+
+$\binom{5}{3} = \frac{5 \times 4}{2 \times 1} = 10$ combinations.
+
+$$
+P(X = 3) = 10 \times \frac{1}{8} \times \frac{1}{4} = \frac{10}{32} = \frac{5}{16} = 0.3125 \quad (31.25\%)
+$$
+
+---
+
+### 📊 Blackboard Diagram: 5 Coin Tosses Tree
 
 ```mermaid
 flowchart LR
-    A["Bernoulli Trial: Success (p) / Fail (1-p)"] --> B["n baar repeat kiya"]
-    B --> C["Total Successes k: X ~ B(n, p)"]
+    Start["5 Coin Tosses"] --> Comb["10 Different Ways to get 3 Heads<br/>(HHHTT, HHTHT, ...)"]
+    Comb --> Math["Har combination ki prob = (1/2)^5 = 1/32"]
+    Math --> Res["Total = 10 * (1/32) = 5/16 = 31.25%"]
 ```
 
 ---
 
-## 2. Ganitiya Sutra
-
-### Probability Mass Function (PMF):
-
-$$
-\boxed{P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k}}
-$$
-
-### Mean aur Variance:
-
-$$
-\boxed{\mathbb{E}[X] = \mu = n \cdot p}
-$$
-
-$$
-\boxed{\text{Var}(X) = \sigma^2 = n \cdot p \cdot (1 - p)}
-$$
-
----
-
-## 3. Real-World Example
-
-5 users website par aaye ($n = 5$). Har user ke khareedne ki probability $p = 0.5$ hai. Exactly 3 users khareedein ($k = 3$) uski probability:
-
-$$
-\boxed{P(X = 3) = \binom{5}{3} (0.5)^3 (0.5)^2 = 10 \times \frac{1}{32} = \frac{5}{16} = 0.3125 \quad (31.25\%)}
-$$
-
----
-
-## 4. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
 from scipy.stats import binom
 
-n = 5
-k = 3
-p = 0.5
+def compute_binomial_probability(n=5, k=3, p=0.5):
+    """
+    Computes exact Binomial probability P(X = k) for k successes in n Bernoulli trials.
+    Demonstrates analytical combination formula and scipy.stats.binom verification.
+    
+    Parameters:
+        n (int): Number of independent trials.
+        k (int): Number of successful outcomes.
+        p (float): Success probability on a single trial.
+        
+    Returns:
+        dict: Mean, Variance, analytical and scipy PMF probabilities.
+    """
+    # Mean and Variance formulas: mu = n*p, var = n*p*(1-p)
+    mean_val = n * p
+    variance_val = n * p * (1 - p)
+    
+    # Scipy implementation
+    prob_k = float(binom.pmf(k, n, p))
+    
+    return {
+        "n_trials": n,
+        "k_successes": k,
+        "p_single": p,
+        "mean_np": mean_val,
+        "variance_npq": variance_val,
+        "P(X=k)": prob_k,
+        "fraction_str": "10 * (1/32) = 5/16 = 0.3125"
+    }
 
-prob = binom.pmf(k, n, p)
-print(f"P(X = 3) = {prob:.4f} (Exact: 5/16)")
+# --- Execution & Verification ---
+# Shraddha ma'am's coin problem: Toss 5 times, find probability of exactly 3 heads
+res = compute_binomial_probability(n=5, k=3, p=0.5)
+print(f"Trials n = {res['n_trials']}, Heads k = {res['k_successes']}, p = {res['p_single']}")
+print(f"Theoretical Probability: {res['fraction_str']}")
+print(f"Scipy binom.pmf result : {res['P(X=k)']:.4f}")
+print(f"Mean np = {res['mean_np']}, Variance np(1-p) = {res['variance_npq']:.2f}")
+
 ```
 
 ---
 
-## 5. Mukhya Batein (Key Takeaways) & Interview Points
-- **Variance Peak:** Variance sabse zyada tab hota hai jab $p = 0.5$ ho.
-- **CLT Connection:** Jab $n$ bada hota hai, Binomial distribution Normal distribution ban jata hai.
+### 🎯 Key Takeaways:
+1. Mean $\mu = n \cdot p$ hota hai (jaise 100 coin toss mein expected 50 heads).
+2. Variance $\sigma^2 = n \cdot p \cdot (1 - p)$ hota hai.

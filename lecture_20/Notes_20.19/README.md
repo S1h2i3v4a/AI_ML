@@ -1,86 +1,117 @@
-# Day 20 - Lecture 20.19: Uniform Distribution
+# Lecture 20.19: Uniform Distribution
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_19.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 20 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the **Continuous Uniform Distribution** ($U(a, b)$), explaining how every interval of equal length has identical probability, deriving the flat constant probability density function $f(x) = \frac{1}{b - a}$, and simulating it with 1,000,000 samples in NumPy.
 
 ---
 
-## 1. Overview & Principle of Maximum Entropy
-
-The **Continuous Uniform Distribution** $\mathcal{U}(a, b)$ assigns perfectly equal probability density across all sub-intervals of equal length within the support $[a, b]$. Under bounded support with no prior information, the uniform distribution maximizes Shannon entropy.
+## 🏛️ Rectangular Probability Density Geometry
 
 ```mermaid
-flowchart LR
-    A["Support Interval [a, b]"] --> B["Constant Density f(x) = 1 / (b - a)"]
-    B --> C["Total Area (b - a) * (1 / (b - a)) = 1.0"]
+flowchart TD
+    Low["Lower Bound a = 0"] --- High["Upper Bound b = 10"]
+    Low & High --> Rect["Rectangular Area = Width * Height = (b - a) * (1 / (b - a)) = 10 * 0.10 = 1.0"]
+    Rect --> Integral["Probability over subinterval [c, d] = (d - c) / (b - a)"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-### Probability Density Function (PDF):
-
-$$
-\boxed{f(x) = \begin{cases} \dfrac{1}{b - a} & \text{for } a \le x \le b \\ 0 & \text{otherwise} \end{cases}}
-$$
-
-### Cumulative Distribution Function (CDF):
+A continuous random variable $X \sim U(a, b)$ has constant probability density over $[a, b]$:
 
 $$
-\boxed{F(x) = \begin{cases} 0 & \text{for } x < a \\ \dfrac{x - a}{b - a} & \text{for } a \le x \le b \\ 1 & \text{for } x > b \end{cases}}
+f(x) = \begin{cases} \frac{1}{b - a} & \text{if } a \le x \le b \\ 0 & \text{otherwise} \end{cases}
 $$
 
-### Mathematical Derivation of Moments:
-
-#### Expected Value (Mean $\mu$):
-
-$$
-\boxed{\mathbb{E}[X] = \int_a^b x \cdot \frac{1}{b - a} \, dx = \frac{1}{b - a} \left[ \frac{x^2}{2} \right]_a^b = \frac{b^2 - a^2}{2(b - a)} = \frac{a + b}{2}}
-$$
-
-#### Second Moment $\mathbb{E}[X^2]$:
+### Normalization Axiom Check:
+The total area under the density curve must equal 1:
 
 $$
-\mathbb{E}[X^2] = \int_a^b x^2 \cdot \frac{1}{b - a} \, dx = \frac{b^3 - a^3}{3(b - a)} = \frac{a^2 + ab + b^2}{3}
+\int_a^b f(x) \, dx = \int_a^b \frac{1}{b - a} \, dx = \frac{1}{b - a} [b - a] = 1.00
 $$
 
-#### Variance ($\sigma^2$):
+### Moments:
+- **Mean (Expected Value):**
 
 $$
-\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2 = \frac{a^2 + ab + b^2}{3} - \frac{a^2 + 2ab + b^2}{4}
+\mu = \frac{a + b}{2}
 $$
 
+- **Variance:**
+
 $$
-\boxed{\text{Var}(X) = \frac{(b - a)^2}{12} \qquad\text{and}\qquad \sigma = \frac{b - a}{\sqrt{12}}}
+\sigma^2 = \frac{(b - a)^2}{12}
 $$
 
 ---
 
-## 3. Python Implementation & Simulation
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Generate 1,000,000 samples from U(0, 10)
-a, b = 0.0, 10.0
-n_samples = 1_000_000
-values = np.random.uniform(a, b, n_samples)
+def simulate_continuous_uniform_distribution(low=0.0, high=10.0, n_samples=1_000_000, show_plot=True):
+    """
+    Simulates a Continuous Uniform Distribution U(a, b).
+    Generates 1,000,000 random variables using np.random.uniform
+    and plots a normalized probability density histogram showing constant height 1/(b-a).
+    
+    Parameters:
+        low (float): Lower bound a.
+        high (float): Upper bound b.
+        n_samples (int): Sample draw count.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Theoretical vs empirical mean, variance, and theoretical density height.
+    """
+    # 1. Theoretical properties
+    theo_mean = (low + high) / 2.0
+    theo_var = ((high - low) ** 2) / 12.0
+    theo_height = 1.0 / (high - low)
+    
+    # 2. Empirical simulation
+    np.random.seed(42)
+    values = np.random.uniform(low, high, n_samples)
+    emp_mean = float(np.mean(values))
+    emp_var = float(np.var(values))
+    
+    plt.figure(figsize=(8, 5))
+    # density=True ensures total area under histogram equals 1.0
+    plt.hist(values, bins=100, density=True, color="skyblue", edgecolor="steelblue", alpha=0.6)
+    plt.axhline(y=theo_height, color="red", linestyle="--", linewidth=2.0, label=f"Theoretical PDF: f(x) = {theo_height:.2f}")
+    
+    plt.title(f"Continuous Uniform Distribution U({low}, {high}) - Area = 1.0", fontweight="bold")
+    plt.xlabel("x")
+    plt.ylabel("Probability Density")
+    plt.legend(loc="upper right")
+    plt.grid(True, linestyle=":", alpha=0.5)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    return {
+        "theoretical_height_1/(b-a)": theo_height,
+        "theoretical_mean": theo_mean,
+        "empirical_mean": emp_mean,
+        "theoretical_variance": theo_var,
+        "empirical_variance": emp_var
+    }
 
-mean_ana = (a + b) / 2
-var_ana = ((b - a) ** 2) / 12
+# --- Execution & Verification ---
+res = simulate_continuous_uniform_distribution(low=0.0, high=10.0, n_samples=100000, show_plot=False)
+print(f"Theoretical PDF Height f(x): {res['theoretical_height_1/(b-a)']:.2f} (Rectangle height)")
+print(f"Theoretical Mean: {res['theoretical_mean']:.2f} | Empirical Mean: {res['empirical_mean']:.4f}")
+print(f"Theoretical Var : {res['theoretical_variance']:.2f} | Empirical Var : {res['empirical_variance']:.4f}")
 
-print(f"Uniform U({a}, {b}) Parameters:")
-print(f"  Analytical Mean:     {mean_ana:.4f} | Empirical: {np.mean(values):.4f}")
-print(f"  Analytical Variance: {var_ana:.4f} | Empirical: {np.var(values):.4f}")
-print(f"  Theoretical PDF:     1/(b-a) = {1/(b-a):.4f}")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **The "Over 12" Divisor:** The denominator $12$ in $\text{Var}(X) = \frac{(b-a)^2}{12}$ is a favorite interview derivation test.
-- **Neural Network Weight Initialization:** He and Xavier Uniform initializations sample weights from $\mathcal{U}\left(-\sqrt{\frac{6}{n_{\text{in}} + n_{\text{out}}}}, +\sqrt{\frac{6}{n_{\text{in}} + n_{\text{out}}}}\right)$ to maintain variance across layers.
+## 🔑 Key Takeaways
+1. The Uniform distribution represents total uncertainty / maximum ignorance within a bounded interval $[a, b]$.
+2. The height of the PDF is $1/(b-a)$, ensuring that the rectangular area under the curve equals 1.0.
+3. In deep learning, neural network weights are frequently initialized using Uniform distributions (e.g. Xavier/Glorot uniform initialization).

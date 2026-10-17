@@ -1,62 +1,115 @@
-# Day 21 - Lecture 21.15: Eigenvectors aur Eigenvalues [Hinglish]
+# Notes_21.15: Eigenvectors Aur Eigenvalues [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_15.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 21 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Eigenvectors aur Eigenvalues** ka concept blackboard par diagram bana kar samjhaya hai: Eigenvector ek aisa non-zero vector hota hai jo matrix multiplication ke baad apni disha (direction) nahi badalta, bas stretch ya shrink hota hai ($A\mathbf{v} = \lambda \mathbf{v}$), aur PCA dimensionality reduction se iska kya connection hai.
 
 ---
 
-## 1. Overview & Geometric Arth
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Shraddha ma'am ki blackboard definition: *An eigenvector is a non-zero vector that does not change direction - it only gets scaled.*
+- Fundamental formula: $A\mathbf{v} = \lambda \mathbf{v}$.
+- Characteristic equation: $\det(A - \lambda I) = 0$.
+- Machine Learning link: PCA (Principal Component Analysis) mein covariance matrix ke eigenvectors ka use.
 
-Jab koi matrix kisi vector par act karti hai, toh aamtaur par vector ki lambai aur dishaa dono badal jati hain. Lekin kuch khaas vectors aise hote hain jinki **direction bilkul nahi badalti**, sirf lambai scale hoti hai. Inhi special vectors ko **Eigenvectors** aur unke scaling factor ko **Eigenvalues** kehte hain.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Blackboard Par Ma'am Ka Diagram:
+Aam taur par jab aap kisi vector $\mathbf{v}$ ko matrix $A$ se multiply karte hain, toh vector ghum jata hai (uski disha badal jaati hai).
+Lekin kuch khaas vectors hote hain jo ghumte nahi hain!
+Matrix $A$ se multiply hone ke baad bhi woh **usi straight line par rehte hain**, bas unki lambai badh ya ghat jaati hai:
+
+$$
+A\mathbf{v} = \lambda \mathbf{v}
+$$
+
+- $A$: Square matrix
+- $\mathbf{v}$: Eigenvector (Direction jo badli nahi)
+- $\lambda$ (Lambda): Eigenvalue (Kitna guna stretch ya shrink hua)
+
+#### 2. Characteristic Equation:
+$\lambda$ nikalne ke liye hum characteristic equation solve karte hain:
+
+$$
+\det(A - \lambda I) = 0
+$$
+
+#### 3. Machine Learning Mein PCA Se Connection:
+Jab hamare paas 100 features waala bada dataset hota hai aur humein use 2 features mein convert karna hota hai (**Dimensionality Reduction**):
+1. Hum dataset ki Covariance Matrix banate hain.
+2. Us matrix ke Eigenvectors aur Eigenvalues nikalte hain.
+3. Jis eigenvector ki eigenvalue sabse badi hoti hai, wahi hamara **First Principal Component (PC1)** hota hai jo data ki sabse zyada information preserve karta hai!
+
+---
+
+### 📊 Blackboard Diagram: Eigenvector Direction Preservation
 
 ```mermaid
 flowchart LR
-    A["Matrix A"] --> B["Aam Vector: Rotate bhi hota hai, stretch bhi"]
-    A --> C["Eigenvector v: Sirf stretch hota hai, rotate NAHI hota"]
-    C --> D["A * v = lambda * v"]
+    V["Original Vector v̄"] -->|Matrix Transformation A| AV["Transformed Vector A · v̄"]
+    AV --> SameDir["Direction bilkul SAME rehti hai!<br/>Length λ guna ho jaati hai: λv̄"]
 ```
 
 ---
 
-## 2. Ganitiya Sutra
-
-$$
-\boxed{\mathbf{A} \mathbf{v} = \lambda \mathbf{v}}
-$$
-
-Characteristic equation:
-
-$$
-\boxed{\det(\mathbf{A} - \lambda \mathbf{I}) = 0}
-$$
-
-### PCA (Principal Component Analysis) me Use:
-Machine Learning me jab hum high-dimensional data ko reduce karte hain (PCA), toh covariance matrix ke **eigenvectors** hi naye principal axes bante hain, aur **eigenvalues** yeh batate hain ki har axis me kitna variance (information) store hai.
-
----
-
-## 3. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
 import numpy as np
 
-A = np.array([[4.0, 2.0], [2.0, 3.0]])
-evals, evecs = np.linalg.eigh(A)
+def compute_eigen_decomposition(A=None):
+    """
+    Computes Eigenvalues and Eigenvectors of a square matrix A:
+    A * v = lambda * v
+    Demonstrates that eigenvector v maintains its direction under transformation A,
+    merely getting scaled by eigenvalue lambda.
+    
+    Parameters:
+        A (np.ndarray): Square matrix (2x2).
+        
+    Returns:
+        dict: Eigenvalues, Eigenvectors, and verification of A*v == lambda*v.
+    """
+    if A is None:
+        # Standard symmetric matrix
+        A = np.array([
+            [4.0, 1.0],
+            [1.0, 4.0]
+        ])
+        
+    # Compute eigenvalues and right eigenvectors
+    eigenvalues, eigenvectors = np.linalg.eig(A)
+    
+    # Verification for first eigenpair
+    lam0 = eigenvalues[0]
+    v0 = eigenvectors[:, 0]
+    
+    lhs = np.dot(A, v0)
+    rhs = lam0 * v0
+    
+    is_verified = bool(np.allclose(lhs, rhs))
+    
+    return {
+        "matrix_A": A.tolist(),
+        "eigenvalues": eigenvalues.tolist(),
+        "eigenvector_0": v0.tolist(),
+        "eigenvalue_0": float(lam0),
+        "is_Av_equal_lambdav": is_verified
+    }
 
-print("Eigenvalues:", evals)
-print("Eigenvectors:\n", evecs)
+# --- Execution & Verification ---
+res = compute_eigen_decomposition()
+print("Matrix A:")
+print(np.array(res["matrix_A"]))
+print(f"Eigenvalues (lambda): {[round(x, 4) for x in res['eigenvalues']]}")
+print(f"Eigenvector v0      : {[round(x, 4) for x in res['eigenvector_0']]}")
+print(f"Verification A*v == lambda*v? {res['is_Av_equal_lambdav']}")
 
-# Verification A*v == lambda*v
-v0 = evecs[:, 0]
-print("A @ v0:", A @ v0)
-print("eval[0] * v0:", evals[0] * v0)
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **PCA ka Foundation:** PCA algorithm covariance matrix ke eigenvalues aur eigenvectors nikal kar hi kaam karta hai.
-- **Trace aur Determinant:** Sabhi eigenvalues ka sum matrix ke trace ke barabar hota hai ($\sum \lambda_i = \text{Tr}(\mathbf{A})$), aur product determinant ke barabar hota hai ($\prod \lambda_i = \det(\mathbf{A})$).
+### 🎯 Key Takeaways:
+1. $A\mathbf{v} = \lambda \mathbf{v}$ Linear Algebra ki sabse famous equation hai.
+2. PCA algorithm dataset ke covariance matrix ke eigenvectors nikaal kar hi dimensionality reduce karta hai.

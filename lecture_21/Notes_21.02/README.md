@@ -1,87 +1,114 @@
-# Day 21 - Lecture 21.2: Straight Lines & Linear Equations
+# Lecture 21.02: Straight Lines in Coordinate Geometry
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_02.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the foundational mathematics of **Straight Lines**, establishing the standard slope-intercept equation $y = mx + c$, deriving the geometric interpretation of slope $m = \tan(\theta) = \frac{y_2 - y_1}{x_2 - x_1}$, and connecting this directly to Simple Linear Regression.
 
 ---
 
-## 1. Overview & Linear Decision Boundaries
-
-In Cartesian 2D coordinate space, a **straight line** is the geometric locus of points satisfying a linear polynomial equation of degree 1. In Machine Learning, a straight line serves as the fundamental **linear decision boundary** that separates two classification classes in a 2D feature space.
+## 🏛️ Slope-Intercept Geometry
 
 ```mermaid
-flowchart LR
-    A["Feature Vector (x1, x2)"] --> B["Linear Function: w1*x1 + w2*x2 + b"]
-    B --> C{Decision Sign}
-    C -->|> 0| D["Class +1 (Positive)"]
-    C -->|< 0| E["Class -1 (Negative)"]
-    C -->|== 0| F["Decision Boundary Line"]
+flowchart TD
+    Line["Straight Line Equation: y = mx + c"] --> Slope["m: Slope / Gradient<br/>Rise over Run = Δy / Δx = tan(θ)"]
+    Line --> Intercept["c: Y-Intercept<br/>Point (0, c) where the line crosses the y-axis"]
+    
+    Slope --> ML["In Machine Learning:<br/>m = Weight w (Feature Sensitivity)<br/>c = Bias b (Baseline Offset)"]
 ```
 
 ---
 
-## 2. Mathematical Formalism
+## 📐 Mathematical Formulation
 
-### 1. Slope-Intercept Form:
-For non-vertical lines with slope $m$ and vertical intercept $c$:
-
-$$
-\boxed{y = mx + c}
-$$
-
-where the slope $m = \tan(\theta) = \frac{y_2 - y_1}{x_2 - x_1}$ measures the rate of vertical change per unit horizontal displacement.
-
-### 2. General Standard Form:
+1. **Slope-Intercept Equation:**
 
 $$
-\boxed{ax + by + c = 0}
+y = mx + c
 $$
 
-Converting between forms:
+2. **Slope Calculation between two points $(x_1, y_1)$ and $(x_2, y_2)$:**
 
 $$
-y = -\frac{a}{b}x - \frac{c}{b} \implies m = -\frac{a}{b}, \quad \text{Intercept} = -\frac{c}{b} \quad (b \ne 0)
+m = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1} = \tan(\theta)
 $$
 
-### 3. Hyperplane Representation in Machine Learning:
-In machine learning vector notation, let feature vector $\mathbf{x} = [x_1, x_2]^T$, weight vector $\mathbf{w} = [w_1, w_2]^T$, and bias $b$:
+where $\theta$ is the inclination angle measured counter-clockwise from the positive x-axis.
+
+3. **Machine Learning Parameter Correspondence:**
 
 $$
-\boxed{\mathbf{w}^T \mathbf{x} + b = w_1 x_1 + w_2 x_2 + b = 0}
+\hat{y} = w x + b
 $$
 
-- The weight vector $\mathbf{w}$ is strictly **perpendicular (normal)** to the straight line boundary.
-- The bias $b$ controls the perpendicular offset of the line from the origin.
+- Slope $m \equiv w$: Controls the tilt/direction of the decision line.
+- Intercept $c \equiv b$: Shifts the line vertically up or down.
 
 ---
 
-## 3. Python Implementation: Plotting Linear Decision Boundary
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Linear equation parameters: w1*x1 + w2*x2 + b = 0 -> 2*x1 - 3*x2 + 6 = 0
-w1, w2, b = 2.0, -3.0, 6.0
+def compute_straight_line(m=2.0, c=3.0, x_range=(-5, 5), show_plot=True):
+    """
+    Computes and plots a straight line in slope-intercept form: y = mx + c.
+    Demonstrates slope m = tan(theta) = dy/dx and y-intercept c.
+    
+    Parameters:
+        m (float): Slope of the line (rate of change).
+        c (float): Y-intercept (point where line intersects y-axis at x=0).
+        x_range (tuple): (x_min, x_max) domain bounds.
+        show_plot (bool): Display control.
+        
+    Returns:
+        dict: Line parameters, inclination angle theta in degrees, and sample coordinates.
+    """
+    x = np.linspace(x_range[0], x_range[1], 100)
+    y = m * x + c
+    
+    # Angle of inclination: theta = arctan(m)
+    theta_deg = np.degrees(np.arctan(m))
+    
+    plt.figure(figsize=(7, 5))
+    plt.plot(x, y, "b-", linewidth=2.0, label=f"y = {m:.1f}x + {c:.1f}")
+    
+    # Mark y-intercept (0, c)
+    plt.plot(0, c, "ro", markersize=8, label=f"y-intercept (0, {c:.1f})")
+    
+    # Draw reference axes
+    plt.axhline(0, color="black", linewidth=1.0)
+    plt.axvline(0, color="black", linewidth=1.0)
+    
+    plt.title(f"Straight Line: y = {m}x + {c} (Slope m = {m}, Intercept c = {c})", fontweight="bold")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.legend(loc="upper left")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    return {
+        "slope_m": m,
+        "intercept_c": c,
+        "angle_theta_degrees": float(theta_deg),
+        "point_at_x0": (0.0, float(c)),
+        "point_at_x2": (2.0, float(m * 2.0 + c))
+    }
 
-# Generate x1 values
-x1 = np.linspace(-5, 5, 200)
-# Solve for x2: x2 = -(w1*x1 + b) / w2
-x2 = -(w1 * x1 + b) / w2
+# --- Execution & Verification ---
+line_info = compute_straight_line(m=2.0, c=3.0, show_plot=False)
+print(f"Equation : y = {line_info['slope_m']}x + {line_info['intercept_c']}")
+print(f"Slope (m): {line_info['slope_m']} (Angle with x-axis: {line_info['angle_theta_degrees']:.1f}°)")
+print(f"Y-Intercept (c): Line passes through {line_info['point_at_x0']}")
 
-slope = -w1 / w2
-intercept = -b / w2
-
-print(f"Line Equation: {w1}*x1 + ({w2})*x2 + {b} = 0")
-print(f"Slope m:       {slope:.4f}")
-print(f"Intercept c:   {intercept:.4f}")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Geometric Meaning of Weights:** The weights $w_1, w_2$ determine the orientation (tilt) of the decision boundary, while the weight vector $\mathbf{w}$ points directly in the direction of the positive class.
-- **Generalization to High Dimensions:** A straight line in $\mathbb{R}^2$ generalizes to a plane in $\mathbb{R}^3$, and a **hyperplane** in $\mathbb{R}^D$.
+## 🔑 Key Takeaways
+1. A positive slope ($m > 0$) means $y$ increases as $x$ increases; negative slope ($m < 0$) indicates an inverse relationship.
+2. A horizontal line has slope $m = 0$ ($y = c$); a vertical line has undefined infinite slope.
+3. Every single-variable linear regression model is fundamentally solving for optimal $m$ (weight) and $c$ (bias).

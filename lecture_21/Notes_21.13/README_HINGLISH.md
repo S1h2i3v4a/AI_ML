@@ -1,66 +1,115 @@
-# Day 21 - Lecture 21.13: Matrices par Operations (Addition, Multiplication, Inverse) [Hinglish]
+# Notes_21.13: Matrices Par Operations [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_13.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 21 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Matrices par mathematical operations** sikhaye hain: Addition, Subtraction, Scalar Multiplication, Matrix Multiplication ki inner-dimension shart ($(m \times k) \times (k \times n) \to m \times n$), aur Transpose ($\mathbf{A}^T$).
 
 ---
 
-## 1. Overview & Concept
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Matrix Addition aur Subtraction kab possible hota hai?
+- Matrix Multiplication ka golden rule: Row $\times$ Column Dot Product.
+- Inner dimension match: Matrix A ke columns = Matrix B ke rows hone chahiye.
+- Transpose ($\mathbf{A}^T$): Rows ko columns banana.
 
-Matrix Operations PyTorch, TensorFlow aur NumPy ke andar model execution ki core calculation hoti hain.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Addition & Subtraction:
+Do matrices tabhi jud ya ghat sakti hain jab dono ka **Dimension bilkul barabar** ho ($2 \times 2$ judegi $2 \times 2$ se). Element-by-element direct jodte hain.
+
+#### 2. Matrix Multiplication (Sabse Zaroori Rule!):
+Agar Matrix A ka size $m \times k$ hai aur Matrix B ka size $k \times n$ hai:
+- Beech ke dono numbers barabar hone chahiye ($k = k$).
+- Resultant matrix ka size bahar waale numbers honge ($m \times n$).
+
+Calculation (Row by Column):
+
+$$
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix} = \begin{bmatrix} 1(5) + 2(7) & 1(6) + 2(8) \\ 3(5) + 4(7) & 3(6) + 4(8) \end{bmatrix} = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
+$$
+
+*Dhyan dein:* Matrix multiplication commutative nahi hota: $\mathbf{A} \cdot \mathbf{B} \neq \mathbf{B} \cdot \mathbf{A}$.
+
+#### 3. Transpose ($\mathbf{A}^T$):
+Rows ko columns bana dena aur columns ko rows bana dena.
+Agar $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$ hai, toh $A^T = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}$.
+
+---
+
+### 📊 Blackboard Diagram: Matrix Dimension Matching
 
 ```mermaid
 flowchart LR
-    A["Operations"] --> B["Multiplication (A @ B): Non-commutative"]
-    A --> C["Transpose: Rows aur columns badalna"]
-    A --> D["Inverse: A * A^(-1) = I"]
+    A["Matrix A: (2 x 2)"] --- Match["Inner 2 == 2 (Valid!)"] --- B["Matrix B: (2 x 2)"]
+    Match --> Res["Resultant Matrix C: Size (2 x 2)"]
 ```
 
 ---
 
-## 2. Ganitiya Sutra
-
-### Matrix Multiplication:
-$\mathbf{A} \in \mathbb{R}^{m \times k}$ aur $\mathbf{B} \in \mathbb{R}^{k \times n}$ ke liye $\mathbf{C} = \mathbf{A}\mathbf{B} \in \mathbb{R}^{m \times n}$:
-
-$$
-\boxed{\mathbf{A}\mathbf{B} \ne \mathbf{B}\mathbf{A} \quad \text{(Non-Commutative)}}
-$$
-
-### Transpose Rule:
-
-$$
-\boxed{(\mathbf{A}\mathbf{B})^T = \mathbf{B}^T \mathbf{A}^T}
-$$
-
-### Linear Regression Normal Equation:
-
-$$
-\boxed{\mathbf{w}^* = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}}
-$$
-
----
-
-## 3. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
 import numpy as np
 
-A = np.array([[1, 2], [3, 4]])
-B = np.array([[5, 6], [7, 8]])
+def perform_matrix_operations():
+    """
+    Demonstrates fundamental matrix operations:
+    1. Matrix Addition & Subtraction (dimensions must match identically).
+    2. Scalar Multiplication (c * A).
+    3. Matrix Multiplication (inner dimensions must match: (m x k) @ (k x n) -> (m x n)).
+    4. Transpose (A^T: swapping rows and columns).
+    
+    Returns:
+        dict: Results of matrix operations.
+    """
+    A = np.array([
+        [1, 2],
+        [3, 4]
+    ])
+    
+    B = np.array([
+        [5, 6],
+        [7, 8]
+    ])
+    
+    # 1. Addition & Subtraction
+    mat_sum = A + B
+    mat_diff = A - B
+    
+    # 2. Scalar Multiplication
+    mat_scaled = 2 * A
+    
+    # 3. Matrix Multiplication (Row-by-Column Dot Product)
+    # [1*5 + 2*7, 1*6 + 2*8; 3*5 + 4*7, 3*6 + 4*8] = [19, 22; 43, 50]
+    mat_product = np.matmul(A, B)
+    
+    # 4. Transpose
+    mat_transpose = A.T
+    
+    return {
+        "A": A.tolist(),
+        "B": B.tolist(),
+        "A_plus_B": mat_sum.tolist(),
+        "A_minus_B": mat_diff.tolist(),
+        "2_times_A": mat_scaled.tolist(),
+        "A_dot_B": mat_product.tolist(),
+        "A_transpose": mat_transpose.tolist()
+    }
 
-C = A @ B
-A_inv = np.linalg.inv(A)
+# --- Execution & Verification ---
+res = perform_matrix_operations()
+print("Matrix A + B:")
+print(np.array(res["A_plus_B"]))
+print("Matrix Multiplication A @ B:")
+print(np.array(res["A_dot_B"]))
+print("Matrix Transpose A^T:")
+print(np.array(res["A_transpose"]))
 
-print("A @ B:\n", C)
-print("A @ A_inv:\n", np.round(A @ A_inv))
 ```
 
 ---
 
-## 4. Mukhya Batein (Key Takeaways) & Interview Points
-- **Order Matters:** $\mathbf{A}\mathbf{B}$ aur $\mathbf{B}\mathbf{A}$ alag-alag hote hain.
-- **Normal Equation:** Linear Regression ka closed-form solution $(\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}$ hota hai.
+### 🎯 Key Takeaways:
+1. Python mein Matrix multiplication ke liye `A @ B` ya `np.matmul(A, B)` use karte hain.
+2. `A * B` sirf element-wise multiply karta hai, matrix multiplication nahi karta.

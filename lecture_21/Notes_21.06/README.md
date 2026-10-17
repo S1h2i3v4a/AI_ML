@@ -1,80 +1,95 @@
-# Day 21 - Lecture 21.6: Practice Problems: Coordinate Geometry & Linear Boundaries
+# Lecture 21.06: Practice Problem (Coordinate Geometry)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_06.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am walks through a complete **step-by-step Coordinate Geometry problem** on the blackboard: finding the exact equation of a line perpendicular to a given line passing through a designated point $(x_0, y_0)$, and calculating distances between intersecting geometries.
 
 ---
 
-## 1. Problem Formulations
-
-This module applies coordinate geometry and distance theorems to practical machine learning decision boundary problems.
+## 🏛️ Problem Solving Workflow
 
 ```mermaid
 flowchart TD
-    A["Problem 1: Classifying Points relative to Hyperplane"] --> B["Compute sign(w^T * x + b)"]
-    C["Problem 2: Exact Perpendicular Margin Calculation"] --> D["Compute d = |w^T * x + b| / ||w||"]
-    E["Problem 3: Finding Midpoint Separating Line"] --> F["Construct orthogonal bisector"]
+    Given["Given: Line slope m1 = 2, and Target Point (x0, y0) = (3, 4)"] --> Step1["Step 1: Compute Perpendicular Slope m2 = -1 / m1 = -1 / 2 = -0.5"]
+    Step1 --> Step2["Step 2: Apply Point-Slope Form: y - y0 = m2 * (x - x0)"]
+    Step2 --> Step3["Step 3: Solve for Intercept c: c = y0 - m2 * x0 = 4 - (-0.5 * 3) = 5.5"]
+    Step3 --> Res["Final Perpendicular Line: y = -0.5x + 5.5"]
 ```
 
 ---
 
-## 2. Analytical Problems & Step-by-Step Solutions
+## 📐 Mathematical Formulation
 
-### Problem 1: Linear Classification Decision
-Given decision boundary $L: 2x_1 + 5x_2 - 10 = 0$, classify the following test points:
-- $P_1(3, 2)$: $f(3, 2) = 2(3) + 5(2) - 10 = 6 + 10 - 10 = +6 > 0 \implies \mathbf{\text{Class } +1}$.
-- $P_2(1, 1)$: $f(1, 1) = 2(1) + 5(1) - 10 = 2 + 5 - 10 = -3 < 0 \implies \mathbf{\text{Class } -1}$.
-- $P_3(0, 2)$: $f(0, 2) = 2(0) + 5(2) - 10 = 0 + 10 - 10 = 0 \implies \mathbf{\text{On Boundary}}$.
+### Problem Statement:
+Find the equation of the line passing through point $(3, 4)$ that is perpendicular to the line $y = 2x + 1$.
 
-### Problem 2: Exact Distance to Decision Surface
-What is the perpendicular distance from $P_1(3, 2)$ to the boundary $2x_1 + 5x_2 - 10 = 0$?
+### Step 1: Perpendicular Slope Condition
+Since the given line has slope $m_1 = 2$:
 
 $$
-\boxed{d = \frac{|2(3) + 5(2) - 10|}{\sqrt{2^2 + 5^2}} = \frac{6}{\sqrt{29}} \approx \frac{6}{5.3852} \approx 1.1142}
+m_2 = -\frac{1}{m_1} = -\frac{1}{2} = -0.5
 $$
 
-### Problem 3: Parallel Margin Plane Equation
-Find the parallel support vector hyperplane that passes directly through $P_1(3, 2)$:
-Since it is parallel, normal vector $[a, b] = [2, 5]$ remains identical:
-$2(3) + 5(2) + c_{\text{new}} = 0 \implies 16 + c_{\text{new}} = 0 \implies c_{\text{new}} = -16$.
+### Step 2: Point-Slope Formula
+Using the known coordinates $(x_0, y_0) = (3, 4)$:
 
 $$
-\boxed{2x_1 + 5x_2 - 16 = 0}
+y - y_0 = m_2(x - x_0) \implies y - 4 = -0.5(x - 3)
 $$
 
-Distance between this parallel plane and the decision boundary:
+$$
+y - 4 = -0.5x + 1.5 \implies y = -0.5x + 5.5
+$$
 
-$$
-\boxed{d = \frac{|-10 - (-16)|}{\sqrt{29}} = \frac{6}{\sqrt{29}} \approx 1.1142 \quad (\text{Matches!})}
-$$
+The perpendicular line intersects the y-axis at $(0, 5.5)$ and meets the original line at exactly $90^\circ$.
 
 ---
 
-## 3. Python Verification
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def solve_perpendicular_line_through_point(m_original=2.0, point=(3, 4)):
+    """
+    Solves the classic coordinate geometry problem:
+    Find the equation of the line passing through point (x0, y0)
+    perpendicular to a line with slope m_original.
+    
+    Parameters:
+        m_original (float): Slope of the given line.
+        point (tuple): Coordinates (x0, y0) that the perpendicular line must cross.
+        
+    Returns:
+        dict: Original slope, perpendicular slope, computed intercept, and equation string.
+    """
+    x0, y0 = point
+    
+    # 1. Perpendicular slope: m_perp = -1 / m_original
+    m_perp = -1.0 / m_original
+    
+    # 2. Intercept: y0 = m_perp * x0 + c_perp ==> c_perp = y0 - m_perp * x0
+    c_perp = y0 - (m_perp * x0)
+    
+    return {
+        "original_slope": m_original,
+        "perpendicular_slope": m_perp,
+        "point_passed": point,
+        "computed_intercept_c": c_perp,
+        "equation_str": f"y = {m_perp:.2f}x + {c_perp:.2f}"
+    }
 
-w = np.array([2.0, 5.0])
-b = -10.0
+# --- Execution & Verification ---
+# Given line has slope m = 2. Find perpendicular line passing through (3, 4):
+# m_perp = -1/2 = -0.5. c = 4 - (-0.5 * 3) = 4 + 1.5 = 5.5
+res = solve_perpendicular_line_through_point(m_original=2.0, point=(3, 4))
+print(f"Original Slope m       : {res['original_slope']}")
+print(f"Perpendicular Slope m' : {res['perpendicular_slope']}")
+print(f"Point Passed           : {res['point_passed']}")
+print(f"Perpendicular Equation : {res['equation_str']}")
 
-points = {
-    'P1': np.array([3.0, 2.0]),
-    'P2': np.array([1.0, 1.0]),
-    'P3': np.array([0.0, 2.0])
-}
-
-for name, pt in points.items():
-    score = np.dot(w, pt) + b
-    dist = abs(score) / np.linalg.norm(w)
-    pred_class = "+1" if score > 0 else ("-1" if score < 0 else "Boundary")
-    print(f"Point {name}: Score = {score:5.1f} | Class = {pred_class:8s} | Perpendicular Dist = {dist:.4f}")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Functional vs Geometric Margin:** The functional margin is $\hat{\gamma} = \mathbf{w}^T \mathbf{x} + b$; the physical geometric margin normalizes this by dividing by the Euclidean norm: $\gamma = \frac{\mathbf{w}^T \mathbf{x} + b}{\|\mathbf{w}\|}$.
+## 🔑 Key Takeaways
+1. Any line perpendicular to slope $m$ has slope $-1/m$.
+2. Substituting known point coordinates $(x_0, y_0)$ into $y = mx + c$ uniquely determines the intercept $c$.
+3. In machine learning, computing the normal vector to a decision hyperplane follows this exact perpendicular algebraic principle.

@@ -1,77 +1,94 @@
-# Day 20 - Lecture 20.10: Conditional Probability (Shartiya Sambhavna) [Hinglish]
+# Notes_20.10: Conditional Probability [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_10.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Conditional Probability ($P(A \mid B)$)** ka concept bohot hi intuitive tarike se samjhaya hai: kaise nayi information aane par sample space chhota ho jata hai aur probability update ho jaati hai.
 
 ---
 
-## 1. Overview & Reduced Sample Space
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Conditional Probability $P(A \mid B)$ ka matlab kya hai? ("B ho chuka hai, ab A ke hone ke kitne chances hain?").
+- Sample space ka shrink (collapse) hona.
+- Formula: $P(A \mid B) = \frac{P(A \cap B)}{P(B)}$.
+- Dice example: "Pata chala ki even number aaya hai, toh exact 2 aane ke kya chances hain?".
 
-**Conditional Probability** ($P(A \mid B)$) ka matlab hai: Agar event $B$ pehle hi ghatit ho chuka hai, toh uske baad event $A$ hone ki sambhavna kya hai. Geometrically, conditioning lagane se hamara sample space pure $\mathcal{S}$ se chota hokar sirf subset $B$ ban jata hai.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Sample Space Ka Shrink Hona:
+Normally ek 6-sided dice par 2 aane ki probability hoti hai:
+
+$$
+P(2) = \frac{1}{6} \approx 16.67\%
+$$
+
+Lekin maan lijiye aapke dost ne dice dekha aur aapko ek hint diya: **"Bhai, Even number aaya hai!"**
+Ab sample space $\{1, 2, 3, 4, 5, 6\}$ nahi raha! Odd numbers ($1, 3, 5$) eliminate ho gaye.
+Naya sample space ban gaya: $B = \{2, 4, 6\}$.
+Is naye chote space mein 2 aane ke chances hain:
+
+$$
+P(2 \mid \text{Even}) = \frac{1}{3} \approx 33.33\%
+$$
+
+Nayi information ne probability ko double kar diya!
+
+#### 2. Mathematical Formula:
+
+$$
+P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+$$
+
+---
+
+### 📊 Blackboard Diagram: Universe Ka Shrink Hona
 
 ```mermaid
 flowchart LR
-    S["Pura Universe S"] -->|B ho chuka hai| B["Chota Sample Space B"]
-    B --> A_given_B["B ke andar (A cap B) ka hissa"]
+    A["Poora Universe S: {1, 2, 3, 4, 5, 6}"] -->|Condition: Even Number| B["Naya Universe B: {2, 4, 6}"]
+    B --> C["A = {2} ki Probability: 1 / 3"]
 ```
 
 ---
 
-## 2. Ganitiya Sutra
-
-### Formal Paribhasha:
-
-$$
-\boxed{P(A \mid B) = \frac{P(A \cap B)}{P(B)}}
-$$
-
-Discrete counting me:
-
-$$
-\boxed{P(A \mid B) = \frac{|A \cap B|}{|B|}}
-$$
-
----
-
-## 3. Real-World Example: Medical Data
-
-1,000 patients ka survey:
-- Smoker ($B$): 300 patients
-- Non-Smoker ($B'$): 700 patients
-- Smoker aur CVD bimari ($A \cap B$): 90 patients
-
-Agar koi vyakti smoker hai, toh usko CVD hone ki probability kya hai?
-
-$$
-\boxed{P(\text{CVD} \mid \text{Smoker}) = \frac{90}{300} = 0.30 \quad (30\%)}
-$$
-
-Normal janta me CVD ki probability:
-
-$$
-\boxed{P(\text{CVD}) = \frac{125}{1000} = 0.125 \quad (12.5\%)}
-$$
-
----
-
-## 4. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
-import pandas as pd
+def compute_conditional_probability(p_intersection, p_given):
+    """
+    Computes conditional probability P(A | B) = P(A ∩ B) / P(B).
+    Demonstrates the restriction of the universal sample space S to conditioning event B.
+    
+    Parameters:
+        p_intersection (float): P(A ∩ B)
+        p_given (float): P(B) where P(B) > 0
+        
+    Returns:
+        dict: Calculated conditional probability.
+    """
+    if p_given <= 0:
+        raise ValueError("Conditioning event probability P(B) must be strictly positive.")
+        
+    p_conditional = p_intersection / p_given
+    
+    return {
+        "P(A ∩ B)": p_intersection,
+        "P(B)": p_given,
+        "P(A | B)": p_conditional
+    }
 
-df = pd.DataFrame({
-    'CVD_Yes': [90, 35],
-    'CVD_No': [210, 665]
-}, index=['Smoker', 'NonSmoker'])
+# --- Execution & Verification ---
+# Rolling a die: E = {number is 2}, B = {number is even {2, 4, 6}}
+# P(E ∩ B) = P({2}) = 1/6, P(B) = 3/6
+res = compute_conditional_probability(p_intersection=1/6, p_given=3/6)
+print(f"P(Number is 2 ∩ Even) = {res['P(A ∩ B)']:.4f} (1/6)")
+print(f"P(Even)               = {res['P(B)']:.4f} (3/6)")
+print(f"P(Number is 2 | Even) = (1/6) / (3/6) = {res['P(A | B)']:.4f} (1/3 = 33.33%)")
 
-p_cvd_given_smoker = df.loc['Smoker', 'CVD_Yes'] / df.loc['Smoker'].sum()
-print(f"P(CVD | Smoker) = {p_cvd_given_smoker:.2f} ({p_cvd_given_smoker*100:.0f}%)")
 ```
 
 ---
 
-## 5. Mukhya Batein (Key Takeaways) & Interview Points
-- **Denominator Badalta Hai:** Normal probability me denominator total sample space $|\mathcal{S}|$ hota hai, jabki conditional probability me denominator given condition $|B|$ hota hai.
-- **Independence Test:** Agar $P(A \mid B) = P(A)$, toh events independent hain; agar barabar nahi hain toh dependent hain.
+### 🎯 Key Takeaways:
+1. $P(A \mid B)$ mein vertical bar `$|$` ka matlab hota hai **"Given that"** (yeh event pehle hi ho chuka hai).
+2. Denominator hamesha given event $P(B)$ hota hai kyunki woh hamara naya sample space ban chuka hai.

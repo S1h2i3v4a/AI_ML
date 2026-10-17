@@ -1,68 +1,93 @@
-# Day 20 - Lecture 20.17: Probability Distributions aur Uske Types [Hinglish]
+# Notes_20.17: Probability Distributions Aur Unke Types [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](lecture_20_17.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 20 Module Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Probability Distributions ka complete classification** samjhaya hai: Discrete vs Continuous distributions kya hote hain, PMF aur PDF mein kya farq hota hai, aur CDF ka concept kya hai.
 
 ---
 
-## 1. Overview & Concept
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Probability Distribution ka matlab kya hai?
+- Discrete Distributions (Bernoulli, Binomial, Poisson).
+- Continuous Distributions (Uniform, Normal, Exponential).
+- PMF (Probability Mass Function) vs PDF (Probability Density Function).
+- CDF (Cumulative Distribution Function) $F(x) = P(X \le x)$.
 
-**Probability Distribution** ek ganitiya function hota hai jo random variable ke sabhi possible outcomes aur unki probability ko define karta hai.
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Distribution Kya Hoti Hai?
+Distribution ek mathematical rule ya table hai jo batata hai ki kisi experiment ke alag-alag outcomes aane ke kitne chances hain.
+
+#### 2. PMF vs PDF:
+- **PMF (Discrete):** Yahan aap seedha bol sakte hain ki $P(X = 3) = 0.3125$. Discrete points par direct probability milti hai:
+
+$$
+\sum p(x) = 1
+$$
+
+- **PDF (Continuous):** Curve ke kisi single dot par probability zero hoti hai. Probability nikalne ke liye humein curve ke niche ka **Area** (Integral) nikalna padta hai:
+
+$$
+P(a \le X \le b) = \int_a^b f(x) \, dx
+$$
+
+---
+
+### 📊 Blackboard Diagram: Discrete Bars vs Continuous Curve
 
 ```mermaid
-flowchart TD
-    A["Probability Distributions"] --> B["Discrete Distributions"]
-    A --> C["Continuous Distributions"]
-    B --> D["Binomial, Bernoulli, Poisson"]
-    C --> E["Uniform, Normal (Gaussian)"]
+flowchart LR
+    A["Discrete (PMF)"] --> B["Separate bars, har bar ki height = exact probability"]
+    C["Continuous (PDF)"] --> D["Smooth curve, shaded area under curve = probability"]
 ```
 
 ---
 
-## 2. Ganitiya Niyam
-
-### Discrete Distributions (PMF):
-
-$$
-\boxed{\sum_{x} p(x) = 1.0}
-$$
-
-### Continuous Distributions (PDF):
-
-$$
-\boxed{\int_{-\infty}^\infty f(x) \, dx = 1.0}
-$$
-
----
-
-## 3. Machine Learning me Use Cases
-
-- **Bernoulli:** Logistic Regression ka sigmoid output ($0$ ya $1$).
-- **Categorical:** Neural networks ka Softmax layer ($K$ classes).
-- **Uniform:** Weights initialization (Xavier Uniform).
-- **Normal (Gaussian):** VAEs ka latent space, Linear Regression ke residuals, Diffusion models.
-
----
-
-## 4. Python Implementation
+### 💻 Python Code Implementation
 
 ```python
-import numpy as np
-from scipy.stats import norm
+def classify_distribution_type(variable_type="discrete", name="Binomial"):
+    """
+    Returns taxonomy specifications for discrete vs continuous distributions.
+    
+    Parameters:
+        variable_type (str): 'discrete' or 'continuous'
+        name (str): Distribution name
+        
+    Returns:
+        dict: Mathematical properties (PMF/PDF, integration/summation, CDF).
+    """
+    taxonomies = {
+        "discrete": {
+            "function_type": "Probability Mass Function (PMF) P(X = x)",
+            "support": "Countable distinct integers",
+            "axiom_sum": "Sum of all P(X=x) == 1.0",
+            "point_probability": "Can be strictly positive P(X=x) > 0",
+            "examples": ["Bernoulli", "Binomial", "Poisson", "Geometric"]
+        },
+        "continuous": {
+            "function_type": "Probability Density Function (PDF) f(x)",
+            "support": "Uncountable real intervals (-inf, +inf) or [a, b]",
+            "axiom_sum": "Integral from -inf to +inf f(x) dx == 1.0",
+            "point_probability": "Always exactly zero at a point P(X=c) == 0",
+            "examples": ["Uniform", "Normal (Gaussian)", "Exponential", "Beta"]
+        }
+    }
+    
+    props = taxonomies.get(variable_type.lower(), {})
+    return {"name": name, "type": variable_type, "properties": props}
 
-# Discrete Sum
-pmf = np.array([0.2, 0.3, 0.5])
-print(f"Discrete Sum: {np.sum(pmf):.2f}")
+# --- Execution & Verification ---
+disc_info = classify_distribution_type("discrete", "Binomial")
+cont_info = classify_distribution_type("continuous", "Normal")
+print(f"Discrete Distribution ({disc_info['name']}): {disc_info['properties']['function_type']}")
+print(f"Continuous Distribution ({cont_info['name']}): {cont_info['properties']['function_type']}")
 
-# Continuous Integral
-x = np.linspace(-5, 5, 1000)
-pdf = norm.pdf(x, 0, 1)
-print(f"Gaussian Integral: {np.trapezoid(pdf, x):.4f}")
 ```
 
 ---
 
-## 5. Mukhya Batein (Key Takeaways) & Interview Points
-- **PDF vs PMF:** PMF me $P(X=x)$ seedhe probability deta hai. PDF me point probability 0 hoti hai aur area probability deta hai.
+### 🎯 Key Takeaways:
+1. Binary classification problems (0 ya 1) Bernoulli distribution follow karte hain.
+2. Continuous regression problems mein errors Normal (Gaussian) distribution follow karte hain.

@@ -1,89 +1,109 @@
-# Day 21 - Lecture 21.1: Introduction to Linear Algebra for AI & ML
+# Lecture 21.01: Introduction to Linear Algebra for AI & ML
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_21_01.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 21 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Linear Algebra as the operational language of modern Artificial Intelligence and Machine Learning**. High-dimensional datasets, word embeddings, image tensors, and neural network weights are universally represented and manipulated using vector spaces, matrices, and parallel tensor operations.
 
 ---
 
-## 1. Overview & Computational Architecture
-
-**Linear Algebra** is the operational language of modern Artificial Intelligence, Machine Learning, and High-Performance Computing. Virtually every foundational algorithm—from Ordinary Least Squares linear regression to 175-billion parameter Large Language Models (LLMs)—is fundamentally expressed as matrix and vector transformations executed massively in parallel across GPUs and TPUs.
+## 🏛️ Computational Data Representation Hierarchy
 
 ```mermaid
 flowchart TD
-    A["Raw World Data (Images, Audio, Text, Tables)"] --> B["Numerical Vector Representations (Embeddings)"]
-    B --> C["Linear Algebra Engine: Matrix Operations"]
-    C --> D["Linear Transformations & Projections"]
-    C --> E["Eigen Decomposition & SVD (PCA, Latent Spaces)"]
-    C --> F["Parallel Tensor Processing (GPU / Tensor Cores)"]
-    D --> G["Deep Neural Network Output"]
-    E --> G
-    F --> G
+    Data["Raw Data Modalities (Images, Audio, Text, Tables)"] --> Enc["Feature Encoding / Embeddings"]
+    Enc --> Tensors["Tensor Hierarchy in NumPy / PyTorch"]
+    
+    Tensors --> S0["Scalar: 0D Tensor (Single real number s ∈ ℝ)"]
+    Tensors --> S1["Vector: 1D Tensor (1D array / Feature vector v ∈ ℝⁿ)"]
+    Tensors --> S2["Matrix: 2D Tensor (Design matrix A ∈ ℝᵐˣⁿ, weights W)"]
+    Tensors --> S3["Tensor: nD Tensor (Images HxWxC, Video batches BxTxHxWxC)"]
+    
+    Tensors --> GPU["Massive Parallel Matrix Multiplications on GPUs / TPUs"]
 ```
 
-### Why Linear Algebra Powers AI:
-1. **Data Representation:** An image is a 3D tensor $\mathbf{X} \in \mathbb{R}^{H \times W \times C}$; a token embedding is a vector $\mathbf{v} \in \mathbb{R}^{D}$; a tabular dataset is an $N \times D$ design matrix.
-2. **Computational Parallelism:** Dense matrix multiplication ($\mathbf{C} = \mathbf{A}\mathbf{B}$) exhibits intense spatial locality, allowing GPU systolic arrays to execute trillions of multiply-accumulate (MAC) operations per second.
-3. **Linear Transformations:** Neural network layers perform affine mappings $\mathbf{y} = \sigma(\mathbf{W}\mathbf{x} + \mathbf{b})$, projecting high-dimensional input manifolds into feature spaces where classes become linearly separable.
+---
+
+## 📐 Mathematical Formalism: Vector Spaces and Tensors
+
+A **Vector Space** $\mathcal{V}$ over field $\mathbb{R}$ is an algebraic structure closed under vector addition and scalar multiplication.
+
+### The Tensor Order Hierarchy:
+1. **Scalar ($0^{\text{th}}$-order tensor):**
+
+$$
+s \in \mathbb{R}
+$$
+
+2. **Vector ($1^{\text{st}}$-order tensor):**
+
+$$
+\mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix} \in \mathbb{R}^n
+$$
+
+3. **Matrix ($2^{\text{nd}}$-order tensor):**
+
+$$
+\mathbf{A} = \begin{bmatrix} a_{11} & a_{12} & \dots & a_{1n} \\ a_{21} & a_{22} & \dots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \dots & a_{mn} \end{bmatrix} \in \mathbb{R}^{m \times n}
+$$
+
+4. **Deep Neural Network Affine Layer:**
+Every dense neural network layer is fundamentally an affine linear transformation followed by an element-wise activation $\sigma$:
+
+$$
+\mathbf{y} = \sigma(\mathbf{W}\mathbf{x} + \mathbf{b})
+$$
 
 ---
 
-## 2. Mathematical Formalism: Vector Spaces and Tensors
-
-A **Vector Space** $\mathcal{V}$ over field $\mathbb{R}$ is a set of mathematical objects endowed with two closed operations: vector addition and scalar multiplication.
-
-### The Tensor Hierarchy in Machine Learning:
-
-$$
-\boxed{\text{Scalar: } s \in \mathbb{R} \quad (\text{Order } 0)}
-$$
-
-$$
-\boxed{\text{Vector: } \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix} \in \mathbb{R}^n \quad (\text{Order } 1)}
-$$
-
-$$
-\boxed{\text{Matrix: } \mathbf{A} = \begin{bmatrix} a_{11} & a_{12} & \dots & a_{1n} \\ a_{21} & a_{22} & \dots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \dots & a_{mn} \end{bmatrix} \in \mathbb{R}^{m \times n} \quad (\text{Order } 2)}
-$$
-
-$$
-\boxed{\text{Tensor: } \boldsymbol{\mathcal{T}} \in \mathbb{R}^{d_1 \times d_2 \times \dots \times d_k} \quad (\text{Order } k)}
-$$
-
----
-
-## 3. Python Implementation: Tensor Representation in NumPy
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-# 1. Scalar (0D Tensor)
-scalar = np.array(42)
+def demonstrate_tensor_hierarchy():
+    """
+    Demonstrates the fundamental tensor hierarchy in Linear Algebra:
+    - Scalar (0D Tensor)
+    - Vector (1D Tensor / 1D Matrix)
+    - Matrix (2D Tensor)
+    - Tensor (3D+ Tensor, e.g. RGB Images)
+    
+    Returns:
+        dict: Shapes and ranks across the tensor hierarchy.
+    """
+    # 0D: Scalar (Order 0)
+    scalar_val = np.float32(42.0)
+    
+    # 1D: Vector (Order 1) - e.g. Feature vector or word embedding
+    vector_v = np.array([2.5, 3.1, -1.4], dtype=np.float32)
+    
+    # 2D: Matrix (Order 2) - e.g. Dataset with 4 samples, 3 features
+    matrix_a = np.array([
+        [1.0, 2.0, 3.0],
+        [4.0, 5.0, 6.0],
+        [7.0, 8.0, 9.0],
+        [10.0, 11.0, 12.0]
+    ], dtype=np.float32)
+    
+    # 3D: Tensor (Order 3) - e.g. Batch of 2 images of size 2x2 with 3 channels
+    tensor_3d = np.zeros((2, 2, 2, 3), dtype=np.float32)
+    
+    return {
+        "scalar": {"ndim": scalar_val.ndim, "shape": scalar_val.shape},
+        "vector": {"ndim": vector_v.ndim, "shape": vector_v.shape},
+        "matrix": {"ndim": matrix_a.ndim, "shape": matrix_a.shape},
+        "tensor": {"ndim": tensor_3d.ndim, "shape": tensor_3d.shape}
+    }
 
-# 2. Vector (1D Tensor): Feature embedding of a word
-vector = np.array([0.25, -1.40, 0.85, 3.12])
+# --- Execution & Verification ---
+res = demonstrate_tensor_hierarchy()
+for k, v in res.items():
+    print(f"{k.capitalize():<8}: Rank (ndim) = {v['ndim']}, Shape = {v['shape']}")
 
-# 3. Matrix (2D Tensor): Batch of 3 patient health records (Age, BP, Cholesterol)
-matrix = np.array([
-    [45, 120, 210],
-    [52, 135, 240],
-    [31, 110, 180]
-])
-
-# 4. 3D Tensor: Batch of image color channels (Batch x Height x Width)
-tensor_3d = np.random.randn(2, 4, 4)
-
-print(f"Scalar rank: {scalar.ndim}, shape: {scalar.shape}")
-print(f"Vector rank: {vector.ndim}, shape: {vector.shape}")
-print(f"Matrix rank: {matrix.ndim}, shape: {matrix.shape}")
-print(f"Tensor rank: {tensor_3d.ndim}, shape: {tensor_3d.shape}")
 ```
 
 ---
 
-## 4. Key Takeaways & Interview Points
-- **Linearity in AI:** Real-world phenomena are non-linear, but deep neural networks approximate non-linear manifolds using alternating stacks of **linear matrix transformations** and non-linear activations.
-- **Hardware Acceleration:** GPUs are specialized hardware engines built exclusively for dense linear algebra computations (BLAS Level 3 operations).
+## 🔑 Key Takeaways
+1. Linear Algebra enables high-dimensional data manipulation in compact vector-matrix notation.
+2. A vector is simply a 1D matrix ($\mathbb{R}^{n \times 1}$ or $\mathbb{R}^{1 \times n}$).
+3. GPUs are specialized hardware processors engineered specifically to execute dense matrix multiplications ($\mathbf{C} = \mathbf{A}\mathbf{B}$) with extreme parallel throughput.

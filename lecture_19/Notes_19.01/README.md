@@ -1,141 +1,125 @@
-# Day 19 - Lecture 19.1: Histograms in Matplotlib
+# Lecture 19.01: Histograms in Matplotlib
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_19_01.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 19 Module](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Histograms in Matplotlib**, explaining how continuous numerical data is partitioned into discrete intervals (**bins**) to reveal the underlying frequency distribution, spread, and central tendency.
 
 ---
 
-## 1. Overview & Purpose
-A **Histogram** is a graphical representation of the distribution of numerical data. It groups continuous data into discrete ranges called **bins** and counts how many values fall into each bin (frequency).
-
-### Why use a Histogram?
-- **Understand Data Distribution:** Quickly observe whether data is symmetric (normal), skewed (left/right), bimodal, or uniform.
-- **Identify Spread & Central Tendency:** See where the concentration of data lies (mean, median, mode region).
-- **Detect Outliers & Gaps:** Identify unusual spikes or regions where no data exists.
-- **Histogram vs. Bar Chart:**
-  - **Bar Chart:** Used for categorical/discrete categories (e.g., fruits, cities, movie titles). Bars have gaps between them.
-  - **Histogram:** Used for continuous quantitative variables (e.g., marks, age, height, salary). Bars typically touch each other because intervals are continuous.
-
----
-
-## 2. Core Concepts & Parameters
+## 📊 Histograms vs Bar Charts
 
 ```mermaid
 flowchart TD
-    A["Raw Continuous Data"] --> B["Divide Range into Bins/Intervals"]
-    B --> C["Count Frequencies per Bin"]
-    C --> D["Plot Bars: Width = Bin Range, Height = Frequency"]
+    Data["Raw Continuous Numerical Data"] --> Group["Divide Data Range into Bins [a, b)"]
+    Group --> Count["Count Number of Observations in Each Bin"]
+    Count --> Plot["Plot Contiguous Bars: Height = Frequency, Width = Bin Range"]
+    
+    subgraph Comparison["Key Structural Difference"]
+        Hist["Histogram: Continuous numerical data, NO gaps between bars"]
+        Bar["Bar Chart: Categorical discrete labels, distinct gaps between bars"]
+    end
 ```
-
-### `plt.hist()` Function Syntax:
-```python
-plt.hist(
-    x,                       # 1D array-like data
-    bins=None,               # Integer (number of equal bins) or sequence (custom bin edges)
-    range=None,              # (lower, upper) range of bins
-    density=False,           # If True, returns probability density (area sums to 1)
-    cumulative=False,        # If True, computes cumulative histogram
-    color='skyblue',         # Fill color of the bars
-    edgecolor='black',       # Outline color of bars (crucial for distinguishing adjacent bars!)
-    linewidth=1.2,           # Border thickness
-    alpha=1.0,               # Transparency level (0.0 transparent to 1.0 opaque)
-    orientation='vertical'   # 'vertical' (default) or 'horizontal'
-)
-```
-
-### Binning Strategies:
-1. **Integer Bins:** `bins=10` splits $[\min(x), \max(x)]$ into 10 equally spaced intervals.
-2. **Custom Bins (Sequence):** `bins=[0, 30, 70, 90, 100]` creates unequal bins: $[0, 30)$, $[30, 70)$, $[70, 90)$, $[90, 100]$. This is ideal for grade boundaries (e.g., Fail, Average, Good, Excellent).
 
 ---
 
-## 3. Mathematical & Statistical Foundation
+## 📐 Mathematical Formulation: Binning
 
-### 1. Bin Width Calculation:
-$$\Delta = \frac{\max(x) - \min(x)}{k}$$
-where $k$ is the number of bins.
+Given $n$ numerical data points $X = \{x_1, x_2, \dots, x_n\}$, the continuous range $[\min(X), \max(X)]$ is divided into $k$ contiguous bins of uniform width $\Delta$:
 
-### 2. Common Rules for Optimal Number of Bins ($k$):
-- **Sturges' Rule** (Best for normal data):
-  $$k = 1 + \lceil \log_2(n) \rceil$$
-- **Freedman-Diaconis Rule** (Resistant to outliers):
-  $$\text{Bin Width } h = 2 \cdot \frac{\text{IQR}(x)}{\sqrt[3]{n}}, \quad k = \left\lceil \frac{\max(x) - \min(x)}{h} \right\rceil$$
+$$
+\Delta = \frac{\max(X) - \min(X)}{k}
+$$
+
+### Optimal Bin Selection Rules:
+1. **Sturges' Rule** (Best for normal, symmetric data):
+
+$$
+k = 1 + \lceil \log_2(n) \rceil
+$$
+
+2. **Freedman-Diaconis Rule** (Robust against heavy tails and outliers):
+
+$$
+h = 2 \cdot \frac{\text{IQR}(X)}{n^{1/3}}, \quad k = \left\lceil \frac{\max(X) - \min(X)}{h} \right\rceil
+$$
+
+where $\text{IQR}(X) = Q_3 - Q_1$ is the interquartile range.
 
 ---
 
-## 4. Code Implementation
+## 💻 Python Implementation
 
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Set random seed for reproducibility
-np.random.seed(0)
+def plot_marks_histogram(marks_data=None, custom_bins=None, show_plot=True):
+    """
+    Plots a histogram for student marks using equal and custom bins.
+    Demonstrates continuous data binning, frequency counting, and edge color styling.
+    
+    Parameters:
+        marks_data (list or np.ndarray): 1D continuous scores.
+        custom_bins (list): Custom intervals for grading.
+        show_plot (bool): Whether to display the plot.
+        
+    Returns:
+        tuple: (counts, bin_edges) computed by plt.hist.
+    """
+    if marks_data is None:
+        marks_data = [
+            25, 38, 42, 55, 61, 67, 72, 78, 83, 88,
+            91, 95, 47, 53, 59, 64, 69, 74, 79, 85,
+            92, 97, 33, 45, 58, 62, 71, 76, 81, 89
+        ]
+        
+    if custom_bins is None:
+        custom_bins = [0, 30, 70, 90, 100]
+        
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # Plot 1: Equal bins (10 intervals)
+    counts1, edges1, _ = axes[0].hist(
+        marks_data,
+        bins=10,
+        color="skyblue",
+        edgecolor="black",
+        linewidth=1.2
+    )
+    axes[0].set_title("Distribution of Marks (10 Equal Bins)")
+    axes[0].set_xlabel("Marks Range")
+    axes[0].set_ylabel("Number of Students")
+    axes[0].grid(axis="y", linestyle="--", alpha=0.7)
+    
+    # Plot 2: Custom bins (Grading System)
+    counts2, edges2, _ = axes[1].hist(
+        marks_data,
+        bins=custom_bins,
+        color="lightgreen",
+        edgecolor="black",
+        linewidth=1.2
+    )
+    axes[1].set_title("Grade Distribution (Custom Bins: 0-30, 30-70, 70-90, 90-100)")
+    axes[1].set_xlabel("Score Intervals")
+    axes[1].set_ylabel("Number of Students")
+    axes[1].set_xticks(custom_bins)
+    axes[1].grid(axis="y", linestyle="--", alpha=0.7)
+    
+    plt.tight_layout()
+    if show_plot:
+        plt.show()
+        
+    return counts2, edges2
 
-# Generate 100 exam scores with mean = 70 and standard deviation = 10
-scores = np.random.normal(loc=70, scale=10, size=100)
+# --- Execution & Verification ---
+counts, edges = plot_marks_histogram(show_plot=False)
+print(f"Custom Bin Edges: {edges}")
+print(f"Student Counts per Bin: {counts}")
 
-# 1. Basic Histogram
-plt.figure(figsize=(8, 5))
-plt.hist(scores, bins=10, color='skyblue', edgecolor='black', alpha=0.8)
-plt.title("Distribution of Exam Scores (Equal Bins)")
-plt.xlabel("Marks / Scores")
-plt.ylabel("Number of Students (Frequency)")
-plt.grid(axis='y', linestyle='--', alpha=0.7)
-plt.show()
-
-# 2. Custom Bins (Grading System)
-marks = [
-    25, 38, 42, 55, 61, 67, 72, 78, 83, 88,
-    91, 95, 47, 53, 59, 64, 69, 74, 79, 85,
-    92, 97, 33, 45, 58, 62, 71, 76, 81, 89
-]
-grade_bins = [0, 33, 60, 80, 100]
-
-plt.figure(figsize=(8, 5))
-plt.hist(marks, bins=grade_bins, color='lightgreen', edgecolor='black', linewidth=1.5)
-plt.title("Grade Distribution of 30 Students (Custom Bins)")
-plt.xlabel("Score Intervals")
-plt.ylabel("Student Count")
-plt.xticks(grade_bins)
-plt.grid(True, linestyle=':', alpha=0.6)
-plt.show()
 ```
 
 ---
 
-## 5. Key Takeaways & Interview Points
-1. **Always specify `edgecolor`:** Without `edgecolor='black'`, adjacent bars blend together into a single monochromatic block.
-2. **Too many vs. Too few bins:**
-   - *Too few bins (underfitting):* Oversimplifies the distribution, hiding modes and clusters.
-   - *Too many bins (overfitting):* Creates a jagged, noisy plot dominated by sampling noise.
-3. **Horizontal orientation:** Use `orientation='horizontal'` when comparing against vertical axes or side-by-side marginal distributions.
-
-
----
-
-## 📐 Mathematical & Statistical Foundation (Histogram Bins)
-
-For a continuous dataset $X = \{x_1, x_2, \dots, x_n\}$, the continuous range $[\min(X), \max(X)]$ is divided into $k$ contiguous intervals of uniform width $\Delta$:
-
-$$
-\boxed{\Delta = \frac{\max(X) - \min(X)}{k}}
-$$
-
-### Optimal Bin Selection Rules:
-1. **Sturges' Rule** (Optimal for symmetric, normally distributed data):
-
-$$
-\boxed{k = 1 + \lceil \log_2(n) \rceil}
-$$
-
-2. **Freedman-Diaconis Rule** (Robust against heavy tails, skewness, and outliers):
-
-$$
-\boxed{h = 2 \cdot \frac{\text{IQR}(X)}{n^{1/3}} \qquad\implies\qquad k = \left\lceil \frac{\max(X) - \min(X)}{h} \right\rceil}
-$$
-
-where $\text{IQR}(X) = Q_3 - Q_1$ represents the sample interquartile range.
+## 🔑 Key Takeaways
+1. Always supply `edgecolor='black'` in `plt.hist()`, otherwise adjacent bars merge into an indistinct visual block.
+2. Custom bin edges like `[0, 30, 70, 90, 100]` allow non-uniform partitions ideal for real-world grading boundaries (Fail, Average, Good, Excellent).
+3. Histograms visualize data skewness, modalities (unimodal, bimodal), and the concentration of values.
