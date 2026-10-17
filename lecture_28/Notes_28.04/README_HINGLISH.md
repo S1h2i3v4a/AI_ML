@@ -56,17 +56,28 @@ Dono curves ka shape lagbhag ek jaisa (parabolic) hota hai, isiliye dono metrics
 ### 💻 Python Code
 
 ```python
-def gini(y, n):
-total = y + n
-if total == 0:
-return 0.0
-py = y / total
-pn = n / total
-return 1.0 - (py**2 + pn**2)
+def calculate_gini_impurity(yes_count, no_count):
+    """
+    Calculates Gini Impurity for a binary classification node.
+    Formula: GI(S) = 1 - (p_yes^2 + p_no^2)
+    
+    Returns:
+        float: Gini value in range [0.0 (Pure), 0.5 (Maximum Impurity)]
+    """
+    total = yes_count + no_count
+    if total == 0:
+        return 0.0
 
-print("Gini [3y, 3n]:", gini(3, 3))
-print("Gini [0y, 3n]:", gini(0, 3))
-print("Gini [2y, 1n]:", round(gini(2, 1), 4))
+    p_yes = yes_count / total
+    p_no = no_count / total
+
+    gini = 1.0 - (p_yes**2 + p_no**2)
+    return gini
+
+# --- Function Call & Verification ---
+print("Gini [3 Yes, 3 No]:", calculate_gini_impurity(3, 3))  # 0.5 (Maximum Impurity)
+print("Gini [0 Yes, 3 No]:", calculate_gini_impurity(0, 3))  # 0.0 (Pure node)
+print("Gini [2 Yes, 4 No]:", round(calculate_gini_impurity(2, 4), 3))  # 0.444
 ```
 
 ---

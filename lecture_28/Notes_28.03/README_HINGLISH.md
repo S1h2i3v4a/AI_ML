@@ -14,12 +14,8 @@
 #### 1. Entropy Kya Hoti Hai?
 Entropy ka seedha matlab hai: **kisi dataset ya dabbe ke andar kitna confusion, disorder ya ashuddhi (impurity) hai.**
 
-- Agar ek bag mein sirf aur sirf red balls hain, toh hum 100% sure hain ki haath daalne par red ball hi niklegi $
-\rightarrow$ Zero confusion $
-\rightarrow$ **Entropy = 0**.
-- Agar bag mein aadhi red aur aadhi blue balls hain, toh sabse zyada confusion hai $
-\rightarrow$ Maximum disorder $
-\rightarrow$ **Entropy = 1**.
+- Agar ek bag mein sirf aur sirf red balls hain, toh hum 100% sure hain ki haath daalne par red ball hi niklegi $\rightarrow$ Zero confusion $\rightarrow$ **Entropy = 0**.
+- Agar bag mein aadhi red aur aadhi blue balls hain, toh sabse zyada confusion hai $\rightarrow$ Maximum disorder $\rightarrow$ **Entropy = 1**.
 
 #### 2. Entropy Ka Formula
 Dataset $S$ ke liye formula hota hai:
@@ -67,17 +63,32 @@ Video mein ma'am ne board par ulta u-shape curve banaya:
 ```python
 import numpy as np
 
-def entropy(y, n):
-total = y + n
-if total == 0 or y == 0 or n == 0:
-return 0.0
-py = y / total
-pn = n / total
-return -(py * np.log2(py) + pn * np.log2(pn))
+def calculate_entropy(yes_count, no_count):
+    """
+    Calculates Shannon Entropy for a binary classification node.
+    Formula: E(S) = - [ p_yes * log2(p_yes) + p_no * log2(p_no) ]
+    
+    Returns:
+        float: Entropy value in range [0.0 (Pure), 1.0 (Maximum Impurity)]
+    """
+    total = yes_count + no_count
+    if total == 0:
+        return 0.0
 
-print("Entropy [3y, 3n]:", entropy(3, 3))
-print("Entropy [0y, 3n]:", entropy(0, 3))
-print("Entropy [2y, 1n]:", round(entropy(2, 1), 4))
+    p_yes = yes_count / total
+    p_no = no_count / total
+
+    # 0 * log2(0) is mathematically defined as 0
+    term_yes = p_yes * np.log2(p_yes) if p_yes > 0 else 0.0
+    term_no = p_no * np.log2(p_no) if p_no > 0 else 0.0
+
+    entropy = -(term_yes + term_no)
+    return entropy
+
+# --- Function Call & Verification ---
+print("Entropy [3 Yes, 3 No]:", calculate_entropy(3, 3))  # 1.0 (50-50 mix)
+print("Entropy [0 Yes, 3 No]:", calculate_entropy(0, 3))  # 0.0 (Pure node)
+print("Entropy [2 Yes, 4 No]:", round(calculate_entropy(2, 4), 3))  # 0.918
 ```
 
 ---

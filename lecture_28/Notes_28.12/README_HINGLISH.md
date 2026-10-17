@@ -58,17 +58,35 @@ Ma'am ne board ke upar circle karke likha: **$V_S = 8.75$**. Yeh hamari initial 
 
 ```python
 import numpy as np
+from sklearn.tree import DecisionTreeRegressor
 
-x = np.array([1, 2, 3, 4])
-y = np.array([2, 4, 6, 10])
+def fit_regression_tree_example():
+    """
+    Fits a DecisionTreeRegressor on the 4-sample classroom dataset
+    where target predictions are the mean of each leaf node.
+    """
+    # Classroom dataset: x = [1, 2, 3, 4], y = [2, 4, 6, 10]
+    X = np.array([[1], [2], [3], [4]])
+    y = np.array([2, 4, 6, 10])
 
-# Mean
-y_mean = np.mean(y)
-print("Mean (y_bar):", y_mean)
+    # 1. Calculate parent summary statistics
+    y_mean = np.mean(y)
+    y_var = np.var(y)
 
-# Variance
-var = np.var(y)
-print("Variance (V_S):", var)
+    # 2. Fit DecisionTreeRegressor with depth=1 (single split)
+    reg = DecisionTreeRegressor(max_depth=1, random_state=42)
+    reg.fit(X, y)
+
+    # 3. Generate predictions
+    predictions = reg.predict(X)
+
+    return reg, y_mean, y_var, predictions
+
+# --- Execute Function ---
+regressor, parent_mean, parent_var, preds = fit_regression_tree_example()
+print(f"Parent Mean (y_bar):   {parent_mean:.2f}")
+print(f"Parent Variance (V_S): {parent_var:.2f}")
+print(f"Model Predictions:     {preds}")
 ```
 
 ---

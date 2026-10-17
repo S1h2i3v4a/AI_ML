@@ -62,21 +62,35 @@ The instructor highlights on the blackboard: **$V_S = 8.75$**! This is the initi
 
 ```python
 import numpy as np
+from sklearn.tree import DecisionTreeRegressor
 
-# Classroom dataset
-x = np.array([1, 2, 3, 4])
-y = np.array([2, 4, 6, 10])
+def fit_regression_tree_example():
+    """
+    Fits a DecisionTreeRegressor on the 4-sample classroom dataset
+    where target predictions are the mean of each leaf node.
+    """
+    # Classroom dataset: x = [1, 2, 3, 4], y = [2, 4, 6, 10]
+    X = np.array([[1], [2], [3], [4]])
+    y = np.array([2, 4, 6, 10])
 
-# Mean prediction
-mean_y = np.mean(y)
+    # 1. Calculate parent summary statistics
+    y_mean = np.mean(y)
+    y_var = np.var(y)
 
-# Variance calculation
-variance_y = np.var(y)
+    # 2. Fit DecisionTreeRegressor with depth=1 (single split)
+    reg = DecisionTreeRegressor(max_depth=1, random_state=42)
+    reg.fit(X, y)
 
-print(f"Classroom Target Values: {y}")
-print(f"Parent Mean (y_bar):    {mean_y:.2f}")
-print(f"Parent Variance (V_S):   {variance_y:.2f}")
-assert np.isclose(variance_y, 8.75), "Variance must match blackboard calculation (8.75)!"
+    # 3. Generate predictions
+    predictions = reg.predict(X)
+
+    return reg, y_mean, y_var, predictions
+
+# --- Execute Function ---
+regressor, parent_mean, parent_var, preds = fit_regression_tree_example()
+print(f"Parent Mean (y_bar):   {parent_mean:.2f}")
+print(f"Parent Variance (V_S): {parent_var:.2f}")
+print(f"Model Predictions:     {preds}")
 ```
 
 ---

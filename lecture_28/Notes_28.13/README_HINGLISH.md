@@ -55,20 +55,35 @@ Kyunki $6.75 > 6.25$, isiliye Decision Tree **Case 2 ($x \le 3$)** ko chunega!
 ```python
 import numpy as np
 
+def calculate_variance_reduction(y_parent, y_left, y_right):
+    """
+    Calculates Variance Reduction achieved by splitting continuous target y into two child nodes.
+    Formula: VR = Var(Parent) - [ (|Left|/|Parent|)*Var(Left) + (|Right|/|Parent|)*Var(Right) ]
+    """
+    n_p = len(y_parent)
+    n_l = len(y_left)
+    n_r = len(y_right)
+
+    v_parent = np.var(y_parent)
+    v_left = np.var(y_left)
+    v_right = np.var(y_right)
+
+    weighted_child_var = (n_l / n_p) * v_left + (n_r / n_p) * v_right
+    reduction = v_parent - weighted_child_var
+    return reduction
+
+# --- Compare Candidate Splits on Video Example ---
 y = np.array([2, 4, 6, 10])
 
-# Case 1
-v_parent = np.var(y)
-v_case1 = (2/4)*np.var(y[:2]) + (2/4)*np.var(y[2:])
-vr1 = v_parent - v_case1
+# Split 1: x <= 2 -> Left [2, 4], Right [6, 10]
+vr_split1 = calculate_variance_reduction(y, np.array([2, 4]), np.array([6, 10]))
 
-# Case 2
-v_case2 = (3/4)*np.var(y[:3]) + (1/4)*np.var(y[3:])
-vr2 = v_parent - v_case2
+# Split 2: x <= 3 -> Left [2, 4, 6], Right [10]
+vr_split2 = calculate_variance_reduction(y, np.array([2, 4, 6]), np.array([10]))
 
-print(f"Parent Variance: {v_parent:.2f}")
-print(f"VR Case 1:       {vr1:.2f}")
-print(f"VR Case 2:       {vr2:.2f}")
+print(f"Variance Reduction (Split 1: x <= 2): {vr_split1:.3f}")
+print(f"Variance Reduction (Split 2: x <= 3): {vr_split2:.3f}")
+print("Best Split:", "Split 2 (x <= 3)" if vr_split2 > vr_split1 else "Split 1 (x <= 2)")
 ```
 
 ---

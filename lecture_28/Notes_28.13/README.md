@@ -59,26 +59,35 @@ Since **$VR_2 (6.75) > VR_1 (6.25)$**, the algorithm selects split candidate 2 (
 ```python
 import numpy as np
 
-def variance_reduction(y_parent, y_left, y_right):
-v_parent = np.var(y_parent)
-v_left = np.var(y_left)
-v_right = np.var(y_right)
+def calculate_variance_reduction(y_parent, y_left, y_right):
+    """
+    Calculates Variance Reduction achieved by splitting continuous target y into two child nodes.
+    Formula: VR = Var(Parent) - [ (|Left|/|Parent|)*Var(Left) + (|Right|/|Parent|)*Var(Right) ]
+    """
+    n_p = len(y_parent)
+    n_l = len(y_left)
+    n_r = len(y_right)
 
-w_left = len(y_left) / len(y_parent)
-w_right = len(y_right) / len(y_parent)
+    v_parent = np.var(y_parent)
+    v_left = np.var(y_left)
+    v_right = np.var(y_right)
 
-weighted_child_var = (w_left * v_left) + (w_right * v_right)
-return v_parent - weighted_child_var
+    weighted_child_var = (n_l / n_p) * v_left + (n_r / n_p) * v_right
+    reduction = v_parent - weighted_child_var
+    return reduction
 
+# --- Compare Candidate Splits on Video Example ---
 y = np.array([2, 4, 6, 10])
 
-# Case 1: Split at x <= 2
-vr_case1 = variance_reduction(y, y[:2], y[2:])
-print(f"Case 1 (x <= 2) Variance Reduction: {vr_case1:.2f}")
+# Split 1: x <= 2 -> Left [2, 4], Right [6, 10]
+vr_split1 = calculate_variance_reduction(y, np.array([2, 4]), np.array([6, 10]))
 
-# Case 2: Split at x <= 3
-vr_case2 = variance_reduction(y, y[:3], y[3:])
-print(f"Case 2 (x <= 3) Variance Reduction: {vr_case2:.2f}")
+# Split 2: x <= 3 -> Left [2, 4, 6], Right [10]
+vr_split2 = calculate_variance_reduction(y, np.array([2, 4, 6]), np.array([10]))
+
+print(f"Variance Reduction (Split 1: x <= 2): {vr_split1:.3f}")
+print(f"Variance Reduction (Split 2: x <= 3): {vr_split2:.3f}")
+print("Best Split:", "Split 2 (x <= 3)" if vr_split2 > vr_split1 else "Split 1 (x <= 2)")
 ```
 
 ---

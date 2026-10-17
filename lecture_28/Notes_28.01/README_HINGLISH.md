@@ -15,23 +15,31 @@
 Decision Tree ek aisa supervised machine learning algorithm hai jo feature ke basis par ek ke baad ek simple sawal (if-then questions) pooch kar prediction karta hai.
 
 Jaise hum daily life mein decision lete hain:
-- *"Kya bahar barish ho rahi hai?"* $
-\rightarrow$ Haan $
-\rightarrow$ *"Kya umbrella hai?"* $
-\rightarrow$ Haan $
-\rightarrow$ *"Bahar jao."*
+- *"Kya bahar barish ho rahi hai?"* $\rightarrow$ Haan $\rightarrow$ *"Kya umbrella hai?"* $\rightarrow$ Haan $\rightarrow$ *"Bahar jao."*
 Thik isi tarah machine learning mein decision tree data ko analyze karke rules banata hai.
 
 #### 2. Real-Life Example: Bank Loan Approval
 Video mein ma'am ne board par sabse pehle Python code ka simple example likh kar samjhaya:
 
 ```python
-if loan_amt >= 100000:
-print("Yes")
-elif employed == "Yes":
-print("Yes")
-else:
-print("No")
+def check_loan_approval(loan_amt, employed):
+    """
+    Simple if-else rules se loan approve hoga ya reject:
+    - Agar loan 1 Lakh ya zyada hai aur applicant employed hai -> Approved
+    - Agar loan 1 Lakh ya zyada hai aur unemployed hai -> Rejected
+    - Agar loan 1 Lakh se kam hai -> Seedha Approved
+    """
+    if loan_amt >= 100000:
+        if employed == "Yes":
+            return "Loan Approved"
+        else:
+            return "Loan Rejected"
+    else:
+        return "Loan Approved"
+
+# --- Function Test Karna ---
+faisla = check_loan_approval(loan_amt=150000, employed="Yes")
+print("Loan Faisla:", faisla)
 ```
 
 Jab hum isi logic ko visual diagram mein convert karte hain, toh yeh ek tree ban jata hai:
@@ -49,8 +57,7 @@ Jab hum isi logic ko visual diagram mein convert karte hain, toh yeh ek tree ban
 #### 4. Data Partitioning Ka Concept (Blue vs Orange Dots)
 Video mein ma'am ne blackboard par blue dots (Yes) aur orange dots (No) banakar dikhaya:
 - Root node par saare dots mix hote hain (ise hum **impure** ya ashuddh kehte hain).
-- Jab tree ek feature (jaise Gender $
-\rightarrow$ Male / Female) par split karta hai, toh ek taraf zyada blue dots chale jaate hain aur doosri taraf orange dots.
+- Jab tree ek feature (jaise Gender $\rightarrow$ Male / Female) par split karta hai, toh ek taraf zyada blue dots chale jaate hain aur doosri taraf orange dots.
 - Tree baar-baar split tab tak karta hai jab tak har ek leaf node bilkul **pure** (sirf blue ya sirf orange) na ho jaye!
 
 #### 5. Prastut Algorithms
@@ -67,25 +74,36 @@ Video mein ma'am ne blackboard par blue dots (Yes) aur orange dots (No) banakar 
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 
-# Feature: [Loan Amount in Lakhs, Employed (1=Yes, 0=No)]
-X = np.array([
-[0.5, 0],
-[0.8, 1],
-[1.5, 1],
-[2.0, 0],
-[3.0, 1]
-])
-# Target: 1 = Approved, 0 = Rejected
-y = np.array([1, 1, 1, 0, 1])
+def train_and_predict_loan_tree():
+    """
+    Trains a CART DecisionTreeClassifier on applicant data
+    and predicts approval for a new applicant.
+    """
+    # Feature matrix: [Loan_Amount_in_Lakhs, Employed (1=Yes, 0=No)]
+    X = np.array([
+        [0.5, 0],
+        [0.8, 1],
+        [1.5, 1],
+        [2.0, 0],
+        [3.0, 1]
+    ])
+    # Target: 1 = Approved, 0 = Rejected
+    y = np.array([1, 1, 1, 0, 1])
 
-# Model create aur train karna
-model = DecisionTreeClassifier(random_state=42)
-model.fit(X, y)
+    # 1. Initialize and fit Decision Tree Classifier
+    clf = DecisionTreeClassifier(random_state=42)
+    clf.fit(X, y)
 
-# Prediction check karna
-test_applicant = [[2.5, 0]] # 2.5 Lakh loan, unemployed
-pred = model.predict(test_applicant)
-print("Decision:", "Approved" if pred[0] == 1 else "Rejected")
+    # 2. Predict for a new applicant: Loan 2.5 Lakh, Unemployed (0)
+    new_applicant = [[2.5, 0]]
+    prediction = clf.predict(new_applicant)[0]
+    decision = "Approved" if prediction == 1 else "Rejected"
+
+    return clf, decision
+
+# --- Function Call & Result ---
+model, decision = train_and_predict_loan_tree()
+print("Prediction for [2.5L, Unemployed]:", decision)
 ```
 
 ---

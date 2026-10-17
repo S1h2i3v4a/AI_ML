@@ -32,20 +32,20 @@ Complete mathematical derivations, verified production code, aur visual systems 
 import numpy as np
 
 class ShannonEntropyCalculator:
-"""
-Pure NumPy implementation of Claude Shannon's Information Entropy for node impurity.
-Formula: H(S) = - sum(p_k * log2(p_k)) with 0 * log2(0) = 0 convention.
-"""
-@staticmethod
-def compute(labels):
-labels = np.asarray(labels)
-if len(labels) == 0:
-return 0.0
-_, counts = np.unique(labels, return_counts=True)
-probs = counts / counts.sum()
-# Enforce 0 * log2(0) = 0 convention
-non_zero_probs = probs[probs > 0]
-return float(-np.sum(non_zero_probs * np.log2(non_zero_probs)))
+    """
+    Pure NumPy implementation of Claude Shannon's Information Entropy for node impurity.
+    Formula: H(S) = - sum(p_k * log2(p_k)) with 0 * log2(0) = 0 convention.
+    """
+    @staticmethod
+    def compute(labels):
+        labels = np.asarray(labels)
+        if len(labels) == 0:
+            return 0.0
+        _, counts = np.unique(labels, return_counts=True)
+        probs = counts / counts.sum()
+        # Enforce 0 * log2(0) = 0 convention
+        non_zero_probs = probs[probs > 0]
+        return float(-np.sum(non_zero_probs * np.log2(non_zero_probs)))
 
 # Unit Test
 calc = ShannonEntropyCalculator()
@@ -84,30 +84,30 @@ print('Problem 01 Passed!')
 import numpy as np
 
 class GiniImpurityEvaluator:
-"""
-Pure NumPy implementation of Gini Impurity and weighted split impurity evaluation (CART standard).
-"""
-@staticmethod
-def compute_node(labels):
-labels = np.asarray(labels)
-if len(labels) == 0:
-return 0.0
-_, counts = np.unique(labels, return_counts=True)
-probs = counts / counts.sum()
-return float(1.0 - np.sum(probs ** 2))
+    """
+    Pure NumPy implementation of Gini Impurity and weighted split impurity evaluation (CART standard).
+    """
+    @staticmethod
+    def compute_node(labels):
+        labels = np.asarray(labels)
+        if len(labels) == 0:
+            return 0.0
+        _, counts = np.unique(labels, return_counts=True)
+        probs = counts / counts.sum()
+        return float(1.0 - np.sum(probs ** 2))
 
-@classmethod
-def evaluate_split(cls, parent_labels, left_labels, right_labels):
-n_p = len(parent_labels)
-n_l = len(left_labels)
-n_r = len(right_labels)
-if n_p == 0 or n_l == 0 or n_r == 0:
-return 0.0, 0.0 # No split possible
+    @classmethod
+    def evaluate_split(cls, parent_labels, left_labels, right_labels):
+        n_p = len(parent_labels)
+        n_l = len(left_labels)
+        n_r = len(right_labels)
+        if n_p == 0 or n_l == 0 or n_r == 0:
+            return 0.0, 0.0 # No split possible
 
-g_parent = cls.compute_node(parent_labels)
-g_children = (n_l / n_p) * cls.compute_node(left_labels) + (n_r / n_p) * cls.compute_node(right_labels)
-gini_gain = g_parent - g_children
-return float(g_children), float(gini_gain)
+        g_parent = cls.compute_node(parent_labels)
+        g_children = (n_l / n_p) * cls.compute_node(left_labels) + (n_r / n_p) * cls.compute_node(right_labels)
+        gini_gain = g_parent - g_children
+        return float(g_children), float(gini_gain)
 
 # Unit Test
 evaluator = GiniImpurityEvaluator()
@@ -150,48 +150,48 @@ print('Problem 02 Passed!')
 import numpy as np
 
 class ContinuousSplitFinder:
-"""
-Searches for optimal splitting threshold on a continuous 1D feature array.
-"""
-@staticmethod
-def find_best_split(feature_x, labels_y):
-x = np.asarray(feature_x)
-y = np.asarray(labels_y)
-unique_vals = np.sort(np.unique(x))
-if len(unique_vals) <= 1:
-return None, 0.0
+    """
+    Searches for optimal splitting threshold on a continuous 1D feature array.
+    """
+    @staticmethod
+    def find_best_split(feature_x, labels_y):
+        x = np.asarray(feature_x)
+        y = np.asarray(labels_y)
+        unique_vals = np.sort(np.unique(x))
+        if len(unique_vals) <= 1:
+            return None, 0.0
 
-candidates = (unique_vals[:-1] + unique_vals[1:]) / 2.0
-best_threshold = None
-best_gain = -1.0
+        candidates = (unique_vals[:-1] + unique_vals[1:]) / 2.0
+        best_threshold = None
+        best_gain = -1.0
 
-def gini_impurity(arr):
-if len(arr) == 0:
-return 0.0
-_, counts = np.unique(arr, return_counts=True)
-p = counts / counts.sum()
-return 1.0 - np.sum(p ** 2)
+        def gini_impurity(arr):
+            if len(arr) == 0:
+                return 0.0
+            _, counts = np.unique(arr, return_counts=True)
+            p = counts / counts.sum()
+            return 1.0 - np.sum(p ** 2)
 
-parent_gini = gini_impurity(y)
-n = len(y)
+        parent_gini = gini_impurity(y)
+        n = len(y)
 
-for th in candidates:
-left_mask = x <= th
-right_mask = ~left_mask
-y_l = y[left_mask]
-y_r = y[right_mask]
+        for th in candidates:
+            left_mask = x <= th
+            right_mask = ~left_mask
+            y_l = y[left_mask]
+            y_r = y[right_mask]
 
-if len(y_l) == 0 or len(y_r) == 0:
-continue
+            if len(y_l) == 0 or len(y_r) == 0:
+                continue
 
-child_gini = (len(y_l) / n) * gini_impurity(y_l) + (len(y_r) / n) * gini_impurity(y_r)
-gain = parent_gini - child_gini
+            child_gini = (len(y_l) / n) * gini_impurity(y_l) + (len(y_r) / n) * gini_impurity(y_r)
+            gain = parent_gini - child_gini
 
-if gain > best_gain:
-best_gain = gain
-best_threshold = th
+            if gain > best_gain:
+                best_gain = gain
+                best_threshold = th
 
-return float(best_threshold), float(best_gain)
+        return float(best_threshold), float(best_gain)
 
 # Unit Test
 x_sample = np.array([1.0, 2.0, 3.0, 10.0, 11.0, 12.0])
@@ -232,39 +232,39 @@ print('Problem 03 Passed!')
 import numpy as np
 
 class GainRatioOptimizer:
-"""
-C4.5 Information Gain Ratio optimizer penalizing high-cardinality split fragmentation.
-"""
-@staticmethod
-def entropy(y):
-if len(y) == 0:
-return 0.0
-_, c = np.unique(y, return_counts=True)
-p = c / c.sum()
-p = p[p > 0]
-return -np.sum(p * np.log2(p))
+    """
+    C4.5 Information Gain Ratio optimizer penalizing high-cardinality split fragmentation.
+    """
+    @staticmethod
+    def entropy(y):
+        if len(y) == 0:
+            return 0.0
+        _, c = np.unique(y, return_counts=True)
+        p = c / c.sum()
+        p = p[p > 0]
+        return -np.sum(p * np.log2(p))
 
-@classmethod
-def evaluate_attribute(cls, attribute_vals, labels_y):
-y = np.asarray(labels_y)
-attr = np.asarray(attribute_vals)
-n = len(y)
-parent_ent = cls.entropy(y)
+    @classmethod
+    def evaluate_attribute(cls, attribute_vals, labels_y):
+        y = np.asarray(labels_y)
+        attr = np.asarray(attribute_vals)
+        n = len(y)
+        parent_ent = cls.entropy(y)
 
-unique_levels, counts = np.unique(attr, return_counts=True)
-weighted_child_ent = 0.0
-split_info = 0.0
+        unique_levels, counts = np.unique(attr, return_counts=True)
+        weighted_child_ent = 0.0
+        split_info = 0.0
 
-for level, count in zip(unique_levels, counts):
-y_subset = y[attr == level]
-weight = count / n
-weighted_child_ent += weight * cls.entropy(y_subset)
-if weight > 0:
-split_info -= weight * np.log2(weight)
+        for level, count in zip(unique_levels, counts):
+            y_subset = y[attr == level]
+            weight = count / n
+            weighted_child_ent += weight * cls.entropy(y_subset)
+            if weight > 0:
+                split_info -= weight * np.log2(weight)
 
-ig = parent_ent - weighted_child_ent
-gain_ratio = ig / (split_info + 1e-12) if split_info > 0 else 0.0
-return float(ig), float(split_info), float(gain_ratio)
+        ig = parent_ent - weighted_child_ent
+        gain_ratio = ig / (split_info + 1e-12) if split_info > 0 else 0.0
+        return float(ig), float(split_info), float(gain_ratio)
 
 # Unit Test: True predictive feature vs Unique ID feature
 y_true = np.array([1, 1, 1, 1, 0, 0, 0, 0])
@@ -310,40 +310,40 @@ print('Problem 04 Passed!')
 import numpy as np
 
 class VarianceReductionSplitter:
-"""
-Finds continuous threshold maximizing variance reduction for regression trees.
-"""
-@staticmethod
-def evaluate_split(feature_x, target_y):
-x = np.asarray(feature_x)
-y = np.asarray(target_y)
-unique_vals = np.sort(np.unique(x))
-if len(unique_vals) <= 1:
-return None, 0.0
+    """
+    Finds continuous threshold maximizing variance reduction for regression trees.
+    """
+    @staticmethod
+    def evaluate_split(feature_x, target_y):
+        x = np.asarray(feature_x)
+        y = np.asarray(target_y)
+        unique_vals = np.sort(np.unique(x))
+        if len(unique_vals) <= 1:
+            return None, 0.0
 
-candidates = (unique_vals[:-1] + unique_vals[1:]) / 2.0
-n = len(y)
-parent_var = np.var(y)
-best_th = None
-best_vr = -1.0
+        candidates = (unique_vals[:-1] + unique_vals[1:]) / 2.0
+        n = len(y)
+        parent_var = np.var(y)
+        best_th = None
+        best_vr = -1.0
 
-for th in candidates:
-l_mask = x <= th
-r_mask = ~l_mask
-y_l = y[l_mask]
-y_r = y[r_mask]
+        for th in candidates:
+            l_mask = x <= th
+            r_mask = ~l_mask
+            y_l = y[l_mask]
+            y_r = y[r_mask]
 
-if len(y_l) == 0 or len(y_r) == 0:
-continue
+            if len(y_l) == 0 or len(y_r) == 0:
+                continue
 
-child_var = (len(y_l) / n) * np.var(y_l) + (len(y_r) / n) * np.var(y_r)
-vr = parent_var - child_var
+            child_var = (len(y_l) / n) * np.var(y_l) + (len(y_r) / n) * np.var(y_r)
+            vr = parent_var - child_var
 
-if vr > best_vr:
-best_vr = vr
-best_th = th
+            if vr > best_vr:
+                best_vr = vr
+                best_th = th
 
-return float(best_th), float(best_vr)
+        return float(best_th), float(best_vr)
 
 # Unit Test
 x_reg = np.array([1, 2, 3, 10, 11, 12])
@@ -385,28 +385,28 @@ import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 
 class CostComplexityPruningPathAnalyzer:
-"""
-Analyzes effective alpha sequence and tree shrinkage under minimal cost-complexity pruning.
-"""
-def __init__(self, random_state=42):
-self.random_state = random_state
+    """
+    Analyzes effective alpha sequence and tree shrinkage under minimal cost-complexity pruning.
+    """
+    def __init__(self, random_state=42):
+        self.random_state = random_state
 
-def analyze_path(self, X, y):
-base_tree = DecisionTreeClassifier(random_state=self.random_state)
-path = base_tree.cost_complexity_pruning_path(X, y)
-ccp_alphas = path.ccp_alphas
+    def analyze_path(self, X, y):
+        base_tree = DecisionTreeClassifier(random_state=self.random_state)
+        path = base_tree.cost_complexity_pruning_path(X, y)
+        ccp_alphas = path.ccp_alphas
 
-results = []
-for a in ccp_alphas:
-dt = DecisionTreeClassifier(random_state=self.random_state, ccp_alpha=a)
-dt.fit(X, y)
-results.append({
-'alpha': float(a),
-'node_count': dt.tree_.node_count,
-'leaf_count': dt.get_n_leaves(),
-'depth': dt.get_depth()
-})
-return ccp_alphas, results
+        results = []
+        for a in ccp_alphas:
+            dt = DecisionTreeClassifier(random_state=self.random_state, ccp_alpha=a)
+            dt.fit(X, y)
+            results.append({
+                'alpha': float(a),
+                'node_count': dt.tree_.node_count,
+                'leaf_count': dt.get_n_leaves(),
+                'depth': dt.get_depth()
+            })
+        return ccp_alphas, results
 
 # Unit Test
 np.random.seed(42)
@@ -455,28 +455,28 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import f1_score
 
 class PrePruningGridSearchOptimizer:
-def __init__(self, cv=3, random_state=42):
-self.cv = cv
-self.random_state = random_state
-self.best_estimator_ = None
-self.best_params_ = None
+    def __init__(self, cv=3, random_state=42):
+        self.cv = cv
+        self.random_state = random_state
+        self.best_estimator_ = None
+        self.best_params_ = None
 
-def fit(self, X, y, param_grid=None):
-if param_grid is None:
-param_grid = {
-'max_depth': [2, 3, 4, 5],
-'min_samples_leaf': [2, 5, 10]
-}
-base_clf = DecisionTreeClassifier(random_state=self.random_state, class_weight='balanced')
-skf = StratifiedKFold(n_splits=self.cv, shuffle=True, random_state=self.random_state)
-grid = GridSearchCV(base_clf, param_grid, cv=skf, scoring='f1_macro', n_jobs=1)
-grid.fit(X, y)
-self.best_estimator_ = grid.best_estimator_
-self.best_params_ = grid.best_params_
-return self
+    def fit(self, X, y, param_grid=None):
+        if param_grid is None:
+            param_grid = {
+                'max_depth': [2, 3, 4, 5],
+                'min_samples_leaf': [2, 5, 10]
+            }
+        base_clf = DecisionTreeClassifier(random_state=self.random_state, class_weight='balanced')
+        skf = StratifiedKFold(n_splits=self.cv, shuffle=True, random_state=self.random_state)
+        grid = GridSearchCV(base_clf, param_grid, cv=skf, scoring='f1_macro', n_jobs=1)
+        grid.fit(X, y)
+        self.best_estimator_ = grid.best_estimator_
+        self.best_params_ = grid.best_params_
+        return self
 
-def predict(self, X):
-return self.best_estimator_.predict(X)
+    def predict(self, X):
+        return self.best_estimator_.predict(X)
 
 # Unit Test
 optimizer = PrePruningGridSearchOptimizer(cv=3)
@@ -521,47 +521,47 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import f1_score, classification_report
 
 class ShopSmartPurchasePredictorPipeline:
-def __init__(self, csv_path):
-self.csv_path = csv_path
-self.pipeline_ = None
+    def __init__(self, csv_path):
+        self.csv_path = csv_path
+        self.pipeline_ = None
 
-def build_and_evaluate(self):
-df = pd.read_csv(self.csv_path).dropna()
-num_cols = ["Administrative", "Administrative_Duration", "Informational", "Informational_Duration",
-"ProductRelated", "ProductRelated_Duration", "BounceRates", "ExitRates", "PageValues", "SpecialDay"]
-cat_cols = ["Month", "VisitorType", "Weekend"]
+    def build_and_evaluate(self):
+        df = pd.read_csv(self.csv_path).dropna()
+        num_cols = ["Administrative", "Administrative_Duration", "Informational", "Informational_Duration",
+                    "ProductRelated", "ProductRelated_Duration", "BounceRates", "ExitRates", "PageValues", "SpecialDay"]
+        cat_cols = ["Month", "VisitorType", "Weekend"]
 
-X = df[num_cols + cat_cols]
-y = df["Revenue"].astype(int)
+        X = df[num_cols + cat_cols]
+        y = df["Revenue"].astype(int)
 
-X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+        X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-preprocessor = ColumnTransformer(
-transformers=[
-("num", StandardScaler(), num_cols),
-("cat", OneHotEncoder(drop="first", sparse_output=False, handle_unknown="ignore"), cat_cols)
-]
-)
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ("num", StandardScaler(), num_cols),
+                ("cat", OneHotEncoder(drop="first", sparse_output=False, handle_unknown="ignore"), cat_cols)
+            ]
+        )
 
-X_tr_proc = preprocessor.fit_transform(X_tr)
-X_te_proc = preprocessor.transform(X_te)
+        X_tr_proc = preprocessor.fit_transform(X_tr)
+        X_te_proc = preprocessor.transform(X_te)
 
-# Pre-pruned tuned tree
-model = DecisionTreeClassifier(
-max_depth=5,
-min_samples_leaf=15,
-class_weight="balanced",
-random_state=42
-)
-model.fit(X_tr_proc, y_tr)
-y_pred = model.predict(X_te_proc)
+        # Pre-pruned tuned tree
+        model = DecisionTreeClassifier(
+            max_depth=5,
+            min_samples_leaf=15,
+            class_weight="balanced",
+            random_state=42
+        )
+        model.fit(X_tr_proc, y_tr)
+        y_pred = model.predict(X_te_proc)
 
-test_f1 = f1_score(y_te, y_pred)
-return {
-'test_f1': float(test_f1),
-'benchmark': 0.55,
-'passed': bool(test_f1 >= 0.55)
-}
+        test_f1 = f1_score(y_te, y_pred)
+        return {
+            'test_f1': float(test_f1),
+            'benchmark': 0.55,
+            'passed': bool(test_f1 >= 0.55)
+        }
 
 # Unit Test with actual dataset
 pipeline = ShopSmartPurchasePredictorPipeline("c:/Users/Shivam Keshari/OneDrive/Desktop/AI-ML/lecture_28/shop_smart_ecommerce.csv")

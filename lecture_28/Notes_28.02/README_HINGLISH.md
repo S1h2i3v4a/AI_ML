@@ -36,21 +36,14 @@ Jab bhi model train hota hai, uske samne 2 main challenges hote hain:
 
 #### 3. Step 1: `Credit Score` Par Split Karke Dekhna
 Jab hum root node $[3y, 3n]$ ko `Credit Score` par divide karte hain:
-- **Low Credit Score**: Yahan 2 applicants aate hain, dono ka loan reject hai $
-\rightarrow [0y, 2n]$. Yeh **100% Pure** hai! Yahan aur koi sawal poochne ki zaroorat nahi hai, seedha prediction `No` hoga.
-- **High Credit Score**: Yahan 2 applicants aate hain, dono ka loan approve hai $
-\rightarrow [2y, 0n]$. Yeh bhi **100% Pure** hai! Seedha prediction `Yes` hoga.
-- **Medium Credit Score**: Yahan 2 applicants aate hain, jisme 1 ka Yes hai aur 1 ka No $
-\rightarrow [1y, 1n]$. Yeh **Impure** hai, kyunki yahan 50% chance Yes ka hai aur 50% No ka.
+- **Low Credit Score**: Yahan 2 applicants aate hain, dono ka loan reject hai $\rightarrow [0y, 2n]$. Yeh **100% Pure** hai! Yahan aur koi sawal poochne ki zaroorat nahi hai, seedha prediction `No` hoga.
+- **High Credit Score**: Yahan 2 applicants aate hain, dono ka loan approve hai $\rightarrow [2y, 0n]$. Yeh bhi **100% Pure** hai! Seedha prediction `Yes` hoga.
+- **Medium Credit Score**: Yahan 2 applicants aate hain, jisme 1 ka Yes hai aur 1 ka No $\rightarrow [1y, 1n]$. Yeh **Impure** hai, kyunki yahan 50% chance Yes ka hai aur 50% No ka.
 
 #### 4. Step 2: Recursive Splitting (Impure Node Ko Dobara Baantna)
 Ab Medium Credit Score wale dabbe mein confusion hai, isliye hum is node ko fir se split karte hain agle feature `Employed?` par:
-- Agar `Employed == Yes` $
-\rightarrow [1y, 0n]$ (Pure $
-\rightarrow$ Loan Approved).
-- Agar `Employed == No` $
-\rightarrow [0y, 1n]$ (Pure $
-\rightarrow$ Loan Rejected).
+- Agar `Employed == Yes` $\rightarrow [1y, 0n]$ (Pure $\rightarrow$ Loan Approved).
+- Agar `Employed == No` $\rightarrow [0y, 1n]$ (Pure $\rightarrow$ Loan Rejected).
 
 Ab saari branches pure leaf nodes tak pahunch gayi hain!
 
@@ -62,20 +55,34 @@ Ab saari branches pure leaf nodes tak pahunch gayi hain!
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier, export_text
 
-# Class wala exact dataset
-df = pd.DataFrame({
-'Credit_Score': [0, 0, 1, 2, 1, 2], # 0=Low, 1=Med, 2=High
-'Employed': [0, 1, 1, 1, 0, 0],     # 0=No, 1=Yes
-'Loan_Approved': [0, 0, 1, 1, 0, 1]
-})
+def build_credit_score_tree():
+    """
+    Builds a DecisionTreeClassifier on the exact 6-applicant classroom dataset
+    and returns the learned recursive splitting rules.
+    """
+    # 1. Dataset: Credit_Score (0: Low, 1: Medium, 2: High), Employed (0: No, 1: Yes)
+    data = {
+        'Credit_Score': [0, 0, 1, 2, 1, 2],
+        'Employed':     [0, 1, 1, 1, 0, 0],
+        'Loan_Approved': [0, 0, 1, 1, 0, 1]
+    }
+    df = pd.DataFrame(data)
 
-X = df[['Credit_Score', 'Employed']]
-y = df['Loan_Approved']
+    X = df[['Credit_Score', 'Employed']]
+    y = df['Loan_Approved']
 
-dt = DecisionTreeClassifier(random_state=42)
-dt.fit(X, y)
+    # 2. Train Decision Tree using Entropy criterion
+    clf = DecisionTreeClassifier(criterion='entropy', random_state=42)
+    clf.fit(X, y)
 
-print(export_text(dt, feature_names=['Credit_Score', 'Employed']))
+    # 3. Export text rules
+    rules = export_text(clf, feature_names=['Credit_Score', 'Employed'])
+    return clf, rules
+
+# --- Function Call & Output ---
+tree_model, decision_rules = build_credit_score_tree()
+print("Learned Decision Rules:\n")
+print(decision_rules)
 ```
 
 ---

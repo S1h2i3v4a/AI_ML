@@ -27,6 +27,7 @@ Ma'am ne video mein step-by-step code likha:
 
 **Step 1: Pruning Path Nikaalna**
 ```python
+# Unconstrained tree se pruning path nikalna
 path = model.cost_complexity_pruning_path(X_train, y_train)
 ccp_alphas = path.ccp_alphas
 ```
@@ -34,13 +35,13 @@ Yeh function candidate alpha values ki list return karta hai.
 
 **Step 2: Har Alpha Par Model Train Karna**
 ```python
-# train our model for all alphas
+# Har candidate alpha par model train karke test score record karna
 tree = []
 for alpha in ccp_alphas:
-model = DecisionTreeClassifier(random_state=42, ccp_alpha=alpha)
-model.fit(X_train, y_train)
-acc = model.score(X_test, y_test)
-tree.append((model, acc))
+    model = DecisionTreeClassifier(random_state=42, ccp_alpha=alpha)
+    model.fit(X_train, y_train)
+    acc = model.score(X_test, y_test)
+    tree.append((model, acc, alpha))
 ```
 
 **Step 3: Best Alpha Chunna**
@@ -58,25 +59,41 @@ Ma'am ne test accuracy check ki aur wo model pick kiya jahan test score sabse zy
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 
-# 1. Pruning path
-base_tree = DecisionTreeClassifier(random_state=42)
-path = base_tree.cost_complexity_pruning_path(X_train, y_train)
-alphas = path.ccp_alphas
+def find_optimal_ccp_alpha(X_train, y_train, X_test, y_test):
+    """
+    Cost-Complexity Pruning ka optimal alpha dhoondhne wala function:
+    - Step 1: Base tree se pruning path (candidate alphas) nikalta hai.
+    - Step 2: Har alpha par tree train karke test accuracy check karta hai.
+    - Step 3: Best alpha, best score aur best model return karta hai.
+    """
+    # 1. Pruning path nikalna
+    base_tree = DecisionTreeClassifier(random_state=42)
+    path = base_tree.cost_complexity_pruning_path(X_train, y_train)
+    alphas = path.ccp_alphas
 
-# 2. Iterate and evaluate
-best_alpha = 0
-best_score = 0
+    # 2. Candidate alphas par iterate karke evaluate karna
+    best_alpha = 0.0
+    best_score = 0.0
+    best_model = None
 
-for alpha in alphas:
-clf = DecisionTreeClassifier(random_state=42, ccp_alpha=alpha)
-clf.fit(X_train, y_train)
-score = clf.score(X_test, y_test)
-if score > best_score:
-best_score = score
-best_alpha = alpha
+    for alpha in alphas:
+        clf = DecisionTreeClassifier(random_state=42, ccp_alpha=alpha)
+        clf.fit(X_train, y_train)
+        score = clf.score(X_test, y_test)
+        
+        # Highest accuracy wala alpha track karna
+        if score > best_score:
+            best_score = score
+            best_alpha = alpha
+            best_model = clf
 
-print(f"Best ccp_alpha: {best_alpha:.5f}")
-print(f"Optimized Test Score: {best_score:.4f}")
+    # 3. Best results return karna
+    return best_alpha, best_score, best_model
+
+# --- Function Call & Testing ---
+# best_alpha, best_score, pruned_tree = find_optimal_ccp_alpha(X_train, y_train, X_test, y_test)
+# print(f"Best ccp_alpha:       {best_alpha:.5f}")
+# print(f"Optimized Test Score: {best_score:.4f}")
 ```
 
 ---

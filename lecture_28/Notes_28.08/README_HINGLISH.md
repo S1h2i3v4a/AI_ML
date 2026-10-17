@@ -41,15 +41,28 @@ Agar dataset mein 90% log Loan Reject wale hain aur sirf 10% Approve wale, toh t
 ```python
 from sklearn.tree import DecisionTreeClassifier
 
-# Overfitting se safe Decision Tree
-model = DecisionTreeClassifier(
-max_depth=4,
-min_samples_split=10,
-min_samples_leaf=5,
-class_weight="balanced",
-random_state=42
-)
-print("Configured Model:", model)
+def create_regularized_classifier(max_depth=4, min_samples_split=10, min_samples_leaf=5):
+    """
+    Builds a regularized DecisionTreeClassifier configured with key pre-pruning
+    hyperparameters to prevent tree overfitting.
+    """
+    model = DecisionTreeClassifier(
+        criterion='gini',
+        max_depth=max_depth,
+        min_samples_split=min_samples_split,
+        min_samples_leaf=min_samples_leaf,
+        class_weight='balanced',
+        random_state=42
+    )
+    return model
+
+# --- Function Call & Inspection ---
+tree_clf = create_regularized_classifier()
+print("Initialized Regularized DecisionTreeClassifier:")
+print(f"  - max_depth:         {tree_clf.max_depth}")
+print(f"  - min_samples_split: {tree_clf.min_samples_split}")
+print(f"  - min_samples_leaf:  {tree_clf.min_samples_leaf}")
+print(f"  - class_weight:      {tree_clf.class_weight}")
 ```
 
 ---

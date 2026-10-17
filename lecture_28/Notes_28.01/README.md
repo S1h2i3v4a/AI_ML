@@ -13,13 +13,24 @@ Imagine a bank loan officer evaluating whether an applicant should be granted a 
 
 In Python code, this thinking looks exactly like simple conditional statements:
 ```python
-if loan_amt >= 100000:
-if employed == "Yes":
-print("Loan Approved")
-else:
-print("Loan Rejected")
-else:
-print("Loan Approved")
+def check_loan_approval(loan_amt, employed):
+    """
+    Simulates simple if-else decision rules for loan approval:
+    - If loan amount >= 100,000 and applicant is employed -> Approved
+    - If loan amount >= 100,000 and applicant is unemployed -> Rejected
+    - If loan amount < 100,000 -> Approved directly
+    """
+    if loan_amt >= 100000:
+        if employed == "Yes":
+            return "Loan Approved"
+        else:
+            return "Loan Rejected"
+    else:
+        return "Loan Approved"
+
+# --- Function Call & Testing ---
+applicant_decision = check_loan_approval(loan_amt=150000, employed="Yes")
+print("Loan Decision:", applicant_decision)
 ```
 
 A **Decision Tree** is simply this nested `if-else` decision logic learned automatically from data!
@@ -60,8 +71,7 @@ Consider a mixed dataset with two classes:
 - **Orange dots** = Negative class (e.g., Loan Approved = No)
 
 At the root node, blue and orange dots are mixed together (**impure**). 
-When the tree tests a feature (for example, `Gender` $
-\rightarrow$ Male vs Female):
+When the tree tests a feature (for example, `Gender` $\rightarrow$ Male vs Female):
 - One branch receives a group that has mostly orange dots.
 - The other branch receives a group that has mostly blue dots.
 
@@ -84,24 +94,36 @@ Over the years, several algorithms have been developed to build decision trees:
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 
-# Feature matrix: [Loan_Amount_in_Lakhs, Employed (1=Yes, 0=No)]
-X = np.array([
-[0.5, 0],
-[0.8, 1],
-[1.5, 1],
-[2.0, 0],
-[3.0, 1]
-])
-# Target: 1 = Approved, 0 = Rejected
-y = np.array([1, 1, 1, 0, 1])
+def train_and_predict_loan_tree():
+    """
+    Trains a CART DecisionTreeClassifier on applicant data
+    and predicts approval for a new applicant.
+    """
+    # Feature matrix: [Loan_Amount_in_Lakhs, Employed (1=Yes, 0=No)]
+    X = np.array([
+        [0.5, 0],
+        [0.8, 1],
+        [1.5, 1],
+        [2.0, 0],
+        [3.0, 1]
+    ])
+    # Target: 1 = Approved, 0 = Rejected
+    y = np.array([1, 1, 1, 0, 1])
 
-# Initialize and fit Decision Tree Classifier
-clf = DecisionTreeClassifier(random_state=42)
-clf.fit(X, y)
+    # 1. Initialize and fit Decision Tree Classifier
+    clf = DecisionTreeClassifier(random_state=42)
+    clf.fit(X, y)
 
-# Predict for a new applicant: Loan 2.5 Lakh, Unemployed (0)
-prediction = clf.predict([[2.5, 0]])
-print("Prediction for [2.5L, Unemployed]:", "Approved" if prediction[0] == 1 else "Rejected")
+    # 2. Predict for a new applicant: Loan 2.5 Lakh, Unemployed (0)
+    new_applicant = [[2.5, 0]]
+    prediction = clf.predict(new_applicant)[0]
+    decision = "Approved" if prediction == 1 else "Rejected"
+
+    return clf, decision
+
+# --- Function Call & Result ---
+model, decision = train_and_predict_loan_tree()
+print("Prediction for [2.5L, Unemployed]:", decision)
 ```
 
 ---

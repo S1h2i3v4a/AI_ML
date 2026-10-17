@@ -38,8 +38,7 @@ ight) pprox 0.918$.
 - Male branch: $[2y, 1n]$ (total 3 samples)
 - $H(S_M) = -\left(rac{2}{3}\log_2rac{2}{3} + rac{1}{3}\log_2rac{1}{3}
 ight) pprox 0.918$.
-- Female branch: $[0y, 3n]$ (total 3 samples, all No $
-\rightarrow$ Pure)
+- Female branch: $[0y, 3n]$ (total 3 samples, all No $\rightarrow$ Pure)
 - $H(S_F) = 0.0$.
 
 **Step 3: Children Ki Weighted Entropy**
@@ -65,24 +64,46 @@ Kyunki $0.8 > 0.459$, isiliye Decision Tree pehle **`Employed`** feature par spl
 ```python
 import numpy as np
 
-def entropy(y, n):
-if y == 0 or n == 0:
-return 0.0
-total = y + n
-py = y / total
-pn = n / total
-return -(py * np.log2(py) + pn * np.log2(pn))
+def calculate_entropy(yes_count, no_count):
+    """Calculates Shannon Entropy for binary classes."""
+    total = yes_count + no_count
+    if total == 0 or yes_count == 0 or no_count == 0:
+        return 0.0
+    p1 = yes_count / total
+    p2 = no_count / total
+    return -(p1 * np.log2(p1) + p2 * np.log2(p2))
 
-# Parent Entropy
-h_parent = entropy(2, 4)
+def calculate_information_gain(parent_y, parent_n, left_y, left_n, right_y, right_n):
+    """
+    Calculates Information Gain achieved by splitting a parent node into two child branches.
+    Formula: IG = H(Parent) - [ (|Left|/|Parent|)*H(Left) + (|Right|/|Parent|)*H(Right) ]
+    """
+    total_parent = parent_y + parent_n
+    total_left = left_y + left_n
+    total_right = right_y + right_n
 
-# Children Weighted Entropy
-weighted_child = (3/6) * entropy(2, 1) + (3/6) * entropy(0, 3)
+    h_parent = calculate_entropy(parent_y, parent_n)
+    h_left = calculate_entropy(left_y, left_n)
+    h_right = calculate_entropy(right_y, right_n)
 
-# Information Gain
-ig = h_parent - weighted_child
-print(f"Parent Entropy: {h_parent:.3f}")
-print(f"Information Gain (Gender): {ig:.3f}")
+    weighted_child_entropy = (total_left / total_parent) * h_left + (total_right / total_parent) * h_right
+    info_gain = h_parent - weighted_child_entropy
+    return info_gain
+
+# --- Execute Calculation on Classroom Video Example ---
+# Parent Node: [2 Yes, 4 No]
+parent_entropy = calculate_entropy(2, 4)
+
+# Candidate 1: Split on Gender -> Male [0y, 3n], Female [2y, 1n]
+ig_gender = calculate_information_gain(2, 4, 0, 3, 2, 1)
+
+# Candidate 2: Split on Employed -> Employed [2y, 0n], Unemployed [0y, 4n]
+ig_employed = calculate_information_gain(2, 4, 2, 0, 0, 4)
+
+print(f"Parent Node Entropy:         {parent_entropy:.3f}")
+print(f"Information Gain (Gender):   {ig_gender:.3f}")
+print(f"Information Gain (Employed): {ig_employed:.3f}")
+print("Best Split Selected:", "Employed" if ig_employed > ig_gender else "Gender")
 ```
 
 ---

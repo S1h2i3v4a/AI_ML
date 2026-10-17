@@ -8,12 +8,26 @@ In this lecture, we implement **Pre-Pruning** on the Titanic dataset. We systema
 ## 🔍 The Systematic Depth Search Loop
 In the video, the instructor writes a clean loop over candidate depths:
 ```python
-max_depths = [2, 3, 4, 5, 6, 7, 8, 9, 10]
-for depth in max_depths:
-model = DecisionTreeClassifier(max_depth=depth, random_state=42)
-model.fit(X_train, y_train)
-acc = model.score(X_test, y_test)
-print(f"for depth={depth}, accuracy={acc}")
+def find_best_max_depth(X_train, y_train, X_test, y_test, depth_range=range(2, 11)):
+    """
+    Evaluates DecisionTreeClassifier test accuracy across max_depth values from 2 to 10
+    to identify the optimal tree depth.
+    """
+    best_depth = None
+    best_score = 0.0
+    history = []
+
+    for depth in depth_range:
+        clf = DecisionTreeClassifier(max_depth=depth, random_state=42)
+        clf.fit(X_train, y_train)
+        acc = clf.score(X_test, y_test)
+        
+        history.append((depth, acc))
+        if acc > best_score:
+            best_score = acc
+            best_depth = depth
+
+    return best_depth, best_score, history
 ```
 
 ### Actual Output from the Lecture:
@@ -38,18 +52,25 @@ Instead of tuning one parameter by hand, we can use Scikit-Learn's `GridSearchCV
 
 ```python
 from sklearn.model_selection import GridSearchCV
+from sklearn.tree import DecisionTreeClassifier
 
-param_grid = {
-'max_depth': [3, 4, 5, 6],
-'min_samples_leaf': [1, 2, 5, 10],
-'min_samples_split': [2, 5, 10]
-}
-
-grid = GridSearchCV(DecisionTreeClassifier(random_state=42), param_grid, cv=5, scoring='accuracy')
-grid.fit(X_train, y_train)
-
-print("Best Parameters:", grid.best_params_)
-print("Best Cross-Validation Score:", grid.best_score_)
+def tune_tree_with_gridsearch(X_train, y_train):
+    """
+    Performs 5-fold GridSearchCV across max_depth and min_samples_leaf
+    to identify optimal regularized hyperparameters.
+    """
+    param_grid = {
+        'max_depth': [2, 3, 4, 5, 6],
+        'min_samples_leaf': [2, 5, 10, 15]
+    }
+    grid = GridSearchCV(
+        DecisionTreeClassifier(random_state=42),
+        param_grid=param_grid,
+        cv=5,
+        scoring='accuracy'
+    )
+    grid.fit(X_train, y_train)
+    return grid.best_estimator_, grid.best_params_, grid.best_score_
 ```
 
 ---

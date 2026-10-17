@@ -39,17 +39,28 @@ $w_c = \frac{n_{\text{samples}}}{n_{\text{classes}} \cdot n_c}$.
 ```python
 from sklearn.tree import DecisionTreeClassifier
 
-# Highly regularized (pruned) Decision Tree Classifier
-clf = DecisionTreeClassifier(
-criterion="gini",
-max_depth=4,              # Stops tree at depth 4
-min_samples_split=10,     # Must have >= 10 samples to split
-min_samples_leaf=5,       # Every leaf must contain >= 5 samples
-class_weight="balanced",  # Automatically balances minority class
-random_state=42
-)
-print("Configured Classifier Parameters:")
-print(clf.get_params())
+def create_regularized_classifier(max_depth=4, min_samples_split=10, min_samples_leaf=5):
+    """
+    Builds a regularized DecisionTreeClassifier configured with key pre-pruning
+    hyperparameters to prevent tree overfitting.
+    """
+    model = DecisionTreeClassifier(
+        criterion='gini',
+        max_depth=max_depth,
+        min_samples_split=min_samples_split,
+        min_samples_leaf=min_samples_leaf,
+        class_weight='balanced',
+        random_state=42
+    )
+    return model
+
+# --- Function Call & Inspection ---
+tree_clf = create_regularized_classifier()
+print("Initialized Regularized DecisionTreeClassifier:")
+print(f"  - max_depth:         {tree_clf.max_depth}")
+print(f"  - min_samples_split: {tree_clf.min_samples_split}")
+print(f"  - min_samples_leaf:  {tree_clf.min_samples_leaf}")
+print(f"  - class_weight:      {tree_clf.class_weight}")
 ```
 
 ---

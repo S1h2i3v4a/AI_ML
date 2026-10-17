@@ -59,17 +59,28 @@ Because both curves have virtually identical shapes, they almost always agree on
 ## 💻 Python Implementation
 
 ```python
-def gini_impurity(y_count, n_count):
-total = y_count + n_count
-if total == 0:
-return 0.0
-p_y = y_count / total
-p_n = n_count / total
-return 1.0 - (p_y**2 + p_n**2)
+def calculate_gini_impurity(yes_count, no_count):
+    """
+    Calculates Gini Impurity for a binary classification node.
+    Formula: GI(S) = 1 - (p_yes^2 + p_no^2)
+    
+    Returns:
+        float: Gini value in range [0.0 (Pure), 0.5 (Maximum Impurity)]
+    """
+    total = yes_count + no_count
+    if total == 0:
+        return 0.0
 
-print("Gini of [3y, 3n] (50-50):", gini_impurity(3, 3))
-print("Gini of [0y, 3n] (Pure): ", gini_impurity(0, 3))
-print("Gini of [2y, 1n]:        ", round(gini_impurity(2, 1), 4))
+    p_yes = yes_count / total
+    p_no = no_count / total
+
+    gini = 1.0 - (p_yes**2 + p_no**2)
+    return gini
+
+# --- Function Call & Verification ---
+print("Gini [3 Yes, 3 No]:", calculate_gini_impurity(3, 3))  # 0.5 (Maximum Impurity)
+print("Gini [0 Yes, 3 No]:", calculate_gini_impurity(0, 3))  # 0.0 (Pure node)
+print("Gini [2 Yes, 4 No]:", round(calculate_gini_impurity(2, 4), 3))  # 0.444
 ```
 
 ---

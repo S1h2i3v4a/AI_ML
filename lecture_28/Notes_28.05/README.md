@@ -33,22 +33,40 @@ import time
 from sklearn.datasets import make_classification
 from sklearn.tree import DecisionTreeClassifier
 
-# Generate a synthetic dataset with 50,000 samples
-X, y = make_classification(n_samples=50000, n_features=20, random_state=42)
+def benchmark_gini_vs_entropy(n_samples=50000, random_state=42):
+    """
+    Benchmarks training runtime of Gini Impurity vs Shannon Entropy
+    to demonstrate why Gini is Scikit-Learn's default criterion.
+    """
+    # 1. Generate large synthetic classification dataset
+    X, y = make_classification(
+        n_samples=n_samples, n_features=20, n_informative=10, random_state=random_state
+    )
 
-# Benchmark Gini
-start = time.time()
-clf_gini = DecisionTreeClassifier(criterion='gini', random_state=42).fit(X, y)
-time_gini = time.time() - start
+    # 2. Measure Gini runtime
+    t0 = time.time()
+    clf_gini = DecisionTreeClassifier(criterion='gini', random_state=random_state)
+    clf_gini.fit(X, y)
+    gini_time = time.time() - t0
 
-# Benchmark Entropy
-start = time.time()
-clf_entropy = DecisionTreeClassifier(criterion='entropy', random_state=42).fit(X, y)
-time_entropy = time.time() - start
+    # 3. Measure Entropy runtime
+    t0 = time.time()
+    clf_entropy = DecisionTreeClassifier(criterion='entropy', random_state=random_state)
+    clf_entropy.fit(X, y)
+    entropy_time = time.time() - t0
 
-print(f"Gini Training Time:    {time_gini:.4f} seconds")
-print(f"Entropy Training Time: {time_entropy:.4f} seconds")
-print(f"Gini Speed Advantage:  {((time_entropy - time_gini)/time_entropy)*100:.1f}% faster")
+    results = {
+        'gini_time': gini_time,
+        'entropy_time': entropy_time,
+        'speedup': entropy_time / gini_time
+    }
+    return results
+
+# --- Function Call & Output ---
+res = benchmark_gini_vs_entropy()
+print(f"Gini Impurity Fit Time:  {res['gini_time']:.4f}s")
+print(f"Shannon Entropy Fit Time: {res['entropy_time']:.4f}s")
+print(f"Gini is {res['speedup']:.2f}x faster!")
 ```
 
 ---

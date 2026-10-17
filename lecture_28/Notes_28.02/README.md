@@ -43,12 +43,9 @@ Root -->|"High"| L3["High: [2y, 0n] (Pure)"]
 ```
 
 ### Observations:
-- **Low branch**: Contains 2 samples, both are `No` $
-\rightarrow [0y, 2n]$. This is **100% Pure (Homogeneous)**! No further splitting needed; this becomes a Leaf Node predicting `No`.
-- **High branch**: Contains 2 samples, both are `Yes` $
-\rightarrow [2y, 0n]$. This is **100% Pure (Homogeneous)**! This becomes a Leaf Node predicting `Yes`.
-- **Medium branch**: Contains 2 samples, one `Yes` and one `No` $
-\rightarrow [1y, 1n]$. This is **Impure (Heterogeneous)**. We cannot make a confident prediction here!
+- **Low branch**: Contains 2 samples, both are `No` $\rightarrow [0y, 2n]$. This is **100% Pure (Homogeneous)**! No further splitting needed; this becomes a Leaf Node predicting `No`.
+- **High branch**: Contains 2 samples, both are `Yes` $\rightarrow [2y, 0n]$. This is **100% Pure (Homogeneous)**! This becomes a Leaf Node predicting `Yes`.
+- **Medium branch**: Contains 2 samples, one `Yes` and one `No` $\rightarrow [1y, 1n]$. This is **Impure (Heterogeneous)**. We cannot make a confident prediction here!
 
 ---
 
@@ -62,12 +59,8 @@ Med -->|"Employed == No"| L_no["[0y, 1n] -> Rejected (No)"]
 ```
 
 Now:
-- If `Employed == Yes` $
-\rightarrow [1y, 0n]$ (Pure $
-\rightarrow$ Approved).
-- If `Employed == No` $
-\rightarrow [0y, 1n]$ (Pure $
-\rightarrow$ Rejected).
+- If `Employed == Yes` $\rightarrow [1y, 0n]$ (Pure $\rightarrow$ Approved).
+- If `Employed == No` $\rightarrow [0y, 1n]$ (Pure $\rightarrow$ Rejected).
 
 Every single branch now terminates in a completely pure leaf!
 
@@ -79,22 +72,34 @@ Every single branch now terminates in a completely pure leaf!
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier, export_text
 
-# Recreating the exact classroom dataset
-data = {
-'Credit_Score': [0, 0, 1, 2, 1, 2], # 0: Low, 1: Medium, 2: High
-'Employed': [0, 1, 1, 1, 0, 0],     # 0: No, 1: Yes
-'Loan_Approved': [0, 0, 1, 1, 0, 1] # 0: No, 1: Yes
-}
-df = pd.DataFrame(data)
+def build_credit_score_tree():
+    """
+    Builds a DecisionTreeClassifier on the exact 6-applicant classroom dataset
+    and returns the learned recursive splitting rules.
+    """
+    # 1. Dataset: Credit_Score (0: Low, 1: Medium, 2: High), Employed (0: No, 1: Yes)
+    data = {
+        'Credit_Score': [0, 0, 1, 2, 1, 2],
+        'Employed':     [0, 1, 1, 1, 0, 0],
+        'Loan_Approved': [0, 0, 1, 1, 0, 1]
+    }
+    df = pd.DataFrame(data)
 
-X = df[['Credit_Score', 'Employed']]
-y = df['Loan_Approved']
+    X = df[['Credit_Score', 'Employed']]
+    y = df['Loan_Approved']
 
-clf = DecisionTreeClassifier(criterion='entropy', random_state=42)
-clf.fit(X, y)
+    # 2. Train Decision Tree using Entropy criterion
+    clf = DecisionTreeClassifier(criterion='entropy', random_state=42)
+    clf.fit(X, y)
 
-print("Learned Decision Rules:")
-print(export_text(clf, feature_names=['Credit_Score', 'Employed']))
+    # 3. Export text rules
+    rules = export_text(clf, feature_names=['Credit_Score', 'Employed'])
+    return clf, rules
+
+# --- Function Call & Output ---
+tree_model, decision_rules = build_credit_score_tree()
+print("Learned Decision Rules:\n")
+print(decision_rules)
 ```
 
 ---

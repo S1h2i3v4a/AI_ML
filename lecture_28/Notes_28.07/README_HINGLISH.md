@@ -50,15 +50,36 @@ from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 
-X, y = make_classification(n_samples=500, n_features=10, random_state=42)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+def compare_unpruned_vs_pruned_trees():
+    """
+    Demonstrates tree overfitting in unconstrained trees vs generalization
+    restored by pre-pruning (max_depth=3).
+    """
+    # 1. Generate dataset
+    X, y = make_classification(n_samples=500, n_features=10, n_informative=5, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Bina kisi restriction ke tree (Overfit hoga)
-model = DecisionTreeClassifier(random_state=42)
-model.fit(X_train, y_train)
+    # 2. Unpruned (Overfitting) Tree
+    clf_unpruned = DecisionTreeClassifier(random_state=42)
+    clf_unpruned.fit(X_train, y_train)
 
-print("Training Score:", model.score(X_train, y_train))
-print("Testing Score: ", model.score(X_test, y_test))
+    # 3. Pruned Tree (max_depth=3)
+    clf_pruned = DecisionTreeClassifier(max_depth=3, random_state=42)
+    clf_pruned.fit(X_train, y_train)
+
+    # 4. Compare performance
+    results = {
+        'unpruned_train': clf_unpruned.score(X_train, y_train),
+        'unpruned_test':  clf_unpruned.score(X_test, y_test),
+        'pruned_train':   clf_pruned.score(X_train, y_train),
+        'pruned_test':    clf_pruned.score(X_test, y_test)
+    }
+    return results
+
+# --- Run & Print Results ---
+scores = compare_unpruned_vs_pruned_trees()
+print(f"Unpruned Train: {scores['unpruned_train']*100:.1f}% | Test: {scores['unpruned_test']*100:.1f}% (Overfitting!)")
+print(f"Pruned Train:   {scores['pruned_train']*100:.1f}% | Test: {scores['pruned_test']*100:.1f}% (Generalized!)")
 ```
 
 ---

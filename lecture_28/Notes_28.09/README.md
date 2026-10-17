@@ -33,45 +33,51 @@ The huge gap between training and testing performance clearly shows that an unpr
 
 ```python
 import pandas as pd
-import numpy as np
 import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier
 
-# 1. Load Titanic dataset
-titanic = sns.load_dataset('titanic')
+def train_titanic_baseline_tree():
+    """
+    Loads Titanic dataset, imputes missing values, and fits an unpruned
+    DecisionTreeClassifier to demonstrate overfit in a real-world pipeline.
+    """
+    # 1. Load dataset
+    df = sns.load_dataset('titanic')
+    features = ['pclass', 'sex', 'age', 'sibsp', 'parch', 'fare', 'embarked']
+    X = df[features].copy()
+    y = df['survived']
 
-# 2. Impute missing values
-imp_median = SimpleImputer(strategy="median")
-titanic["age"] = imp_median.fit_transform(titanic[["age"]])
+    # 2. Encode categorical variables
+    X['sex'] = X['sex'].map({'male': 0, 'female': 1})
+    X['embarked'] = X['embarked'].map({'S': 0, 'C': 1, 'Q': 2})
 
-imp_freq = SimpleImputer(strategy="most_frequent")
-titanic["embarked"] = imp_freq.fit_transform(titanic[["embarked"]]).ravel()
+    # 3. Impute missing values
+    imputer_age = SimpleImputer(strategy='median')
+    X['age'] = imputer_age.fit_transform(X[['age']])
 
-# 3. Simple Encoding
-titanic["sex"] = titanic["sex"].map({"female": 0, "male": 1})
-titanic["embarked"] = titanic["embarked"].map({"C": 0, "Q": 1, "S": 2})
+    imputer_emb = SimpleImputer(strategy='most_frequent')
+    X['embarked'] = imputer_emb.fit_transform(X[['embarked']])
 
-# 4. Select features and target
-X = titanic[["pclass", "sex", "fare", "embarked", "age"]]
-y = titanic["survived"]
+    # 4. Train-Test split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-# 5. Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # 5. Fit unpruned Decision Tree
+    clf = DecisionTreeClassifier(random_state=42)
+    clf.fit(X_train, y_train)
 
-# 6. Fit baseline unpruned tree
-dt_base = DecisionTreeClassifier(random_state=42)
-dt_base.fit(X_train, y_train)
+    train_acc = clf.score(X_train, y_train)
+    test_acc = clf.score(X_test, y_test)
 
-# 7. Evaluate
-train_acc = dt_base.score(X_train, y_train)
-test_acc = dt_base.score(X_test, y_test)
+    return clf, train_acc, test_acc
 
-print(f"Training Accuracy: {train_acc:.4f}")
-print(f"Testing Accuracy:  {test_acc:.4f}")
-print(f"Overfitting Gap:   {(train_acc - test_acc):.4f}")
+# --- Execute Function ---
+tree_model, train_score, test_score = train_titanic_baseline_tree()
+print(f"Train Accuracy: {train_score*100:.1f}%")
+print(f"Test Accuracy:  {test_score*100:.1f}% (Overfitting Gap: {(train_score - test_score)*100:.1f}%)")
 ```
 
 ---
