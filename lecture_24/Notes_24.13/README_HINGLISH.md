@@ -1,35 +1,88 @@
-# Module 24.13: Logistic Regression — Intuition Aur Sigmoid Function (Hinglish)
+# Notes_24.13: Logistic Regression Ki Intuition Aur Sigmoid Function [Hinglish]
 
-## 1. Linear Regression Classification Par Kyu Fail Ho Jata Hai?
-
-Classification mein answer $0$ ya $1$ hota hai. Agar hum Linear Regression $\hat{y} = w x + b$ lagate hain to do bohot badi problems aati hain:
-1. **Unbounded Output:** Linear Regression $-\infty$ se $+\infty$ tak koi bhi number de sakta hai. Lekin Probability hamesha $[0, 1]$ ke beech honi chahiye. $\hat{y} = 2.5$ ya $-0.4$ ka koi matlab nahi banta!
-2. **Outliers Ka Asar:** Agar door ek outlier aa jaye, to straight line uski taraf jhuk jaati hai aur sahi points ko galat predict karne lagti hai.
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Logistic Regression** ka foundational concept samjhaya hai: Linear Regression classification mein kyu fail ho jata hai aur **Sigmoid Function (S-Curve)** kaise probabilities generate karta hai.
 
 ---
 
-## 2. Sigmoid Function Ka Mathematical Derivation
-
-Hum linear equation $z = \mathbf{w}^T \mathbf{x} + b$ ko probability $p$ mein convert karte hain:
-
-1. **Odds:** $\frac{p}{1-p}$
-2. **Logit (Log-Odds):** $\ln\left(\frac{p}{1-p}\right) = z$
-3. **Inversion (Sigmoid):**
-$$
-p = \sigma(z) = \frac{1}{1 + e^{-z}}
-$$
-
-Ye S-shaped curve kisi bhi real number $z \in (-\infty, \infty)$ ko smoothly $0$ aur $1$ ke beech squeeze kar deta hai!
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Classification ke liye Linear Regression kyu galat hai?
+- Sigmoid Function ka formula: $g(z) = \frac{1}{1 + e^{-z}}$.
+- Probabilities ko 0 aur 1 ke beech squash karna.
+- 0.5 Decision Boundary ka rule.
 
 ---
 
-## 3. Decision Boundary
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-Jab probability $\ge 0.5$ hoti hai, to hum class $1$ predict karte hain.
-Kyunki $\sigma(z) = 0.5$ tab hota hai jab $z = 0$, isliye decision boundary hoti hai:
+#### 1. Linear Regression Classification Mein Kyu Fail Hua?
+Agar aap Linear Regression se predict karoge ki "Patient ko cancer hai (1) ya nahi (0)":
+- Ek straight line kabhi-kabhi $1.8$ ya $-0.5$ predict kar degi! Probability kabhi negative ya $1$ se badi nahi ho sakti.
+- Outlier aate hi straight line ghoom jaati hai aur sahi predictions ko bhi galat kar deti hai.
+
+#### 2. Sigmoid Function Ka Magic:
+Humein ek aisi machine chahiye jo chahe kitna bhi bada number aaye ($-\infty$ se $+\infty$), usse kheench kar **$0$ aur $1$ ke beech** bandh de!
+Is function ko **Sigmoid Function** kehte hain:
 
 $$
-\mathbf{w}^T \mathbf{x} + b = 0
+g(z) = \frac{1}{1 + e^{-z}}
 $$
 
-Ye feature space mein ek straight line ya hyperplane hoti hai jo dono classes ko alag karti hai!
+- Agar $z = 0 \implies g(z) = 0.5$ (50-50 chance).
+- Agar probability $\ge 0.5$ hai $\implies$ Class 1 (Approved / Cancer Yes).
+- Agar probability $< 0.5$ hai $\implies$ Class 0 (Rejected / Cancer No).
+
+---
+
+### 📊 Visual Flowchart: Sigmoid S-Curve
+
+```mermaid
+flowchart LR
+    A["Linear Score z = wx + b"] --> B["Sigmoid g(z)"]
+    B --> C["Probability between 0 and 1"]
+    C --> D{"p >= 0.5?"}
+    D -->|"Haan"| E["Class 1"]
+    D -->|"Nahi"| F["Class 0"]
+```
+
+---
+
+### 💻 Python Code
+
+```python
+import numpy as np
+
+def compute_sigmoid_probability(z_values):
+    """
+    Computes predicted probability using the Sigmoid (Logistic) Function:
+        g(z) = 1 / (1 + e^-z)
+        
+    Maps linear scores z in (-inf, inf) strictly into valid probabilities p in (0, 1).
+    Decision Threshold:
+        If p >= 0.5 (i.e., z >= 0) => Class 1
+        If p < 0.5  (i.e., z < 0)  => Class 0
+    """
+    z = np.array(z_values, dtype=float)
+    probabilities = 1.0 / (1.0 + np.exp(-z))
+    predictions = (probabilities >= 0.5).astype(int)
+    
+    return {
+        'linear_score_z': z.tolist(),
+        'probability': probabilities.round(4).tolist(),
+        'class_prediction': predictions.tolist()
+    }
+
+# --- Function Call & Testing ---
+sample_z = [-10.0, -2.0, 0.0, 2.0, 10.0]
+sig_data = compute_sigmoid_probability(sample_z)
+print(f"{'Linear Score z':<15} | {'Sigmoid Prob p':<18} | {'Predicted Class (0/1)':<20}")
+print("-" * 55)
+for z_val, p_val, cls_val in zip(sig_data['linear_score_z'], sig_data['probability'], sig_data['class_prediction']):
+    print(f"{z_val:<15.1f} | {p_val:<18.4f} | {cls_val:<20}")
+```
+
+---
+
+### 📌 Summary Points
+- Naam mein 'Regression' hai par yeh **Classification** algorithm hai.
+- Sigmoid real numbers ko probability ($0$ se $1$) mein badalta hai.

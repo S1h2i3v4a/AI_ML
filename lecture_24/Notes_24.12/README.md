@@ -1,36 +1,72 @@
-# Module 24.12: ElasticNet Overview (Hybrid L1 + L2 Regularization)
+# Lecture 24.12: ElasticNet Overview (Hybrid L1 + L2 Regularization)
 
-## 1. Limitations of Pure Lasso and Pure Ridge
-
-While Lasso and Ridge are foundational, both suffer from distinct operational limitations in high-dimensional real-world settings:
-
-| Scenario | Lasso Limitation | Ridge Limitation |
-| :--- | :--- | :--- |
-| **Collinear Feature Groups** | Arbitrarily selects **one** feature from a correlated cluster and drops the rest to zero, discarding group signal. | Retains **all** features with shared small weights; cannot perform feature selection. |
-| **High Dimensions ($p > m$)** | Can select at most $m$ features before saturating, regardless of how many true predictive signals exist. | Retains all $p$ features, risking overfitting. |
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers **ElasticNet**, a hybrid regularization technique that linearly combines both the L1 (Lasso) and L2 (Ridge) penalties to overcome individual limitations.
 
 ---
 
-## 2. Mathematical Formulation of ElasticNet
-
-Introduced by Zou and Hastie (2005), **ElasticNet** synthesizes both penalties into a single convex objective:
+## 🏛️ The ElasticNet Objective
 
 $$
-J_{\text{ElasticNet}}(\mathbf{w}, b) = \frac{1}{2m} \sum_{i=1}^m \left( \hat{y}^{(i)} - y^{(i)} \right)^2 + \alpha \left[ \rho \|\mathbf{w}\|_1 + \frac{1 - \rho}{2} \|\mathbf{w}\|_2^2 \right]
+J_{\text{ElasticNet}}(\mathbf{w}) = \text{MSE} + \alpha \left[ \rho \sum_{j=1}^d |w_j| + \frac{1 - \rho}{2} \sum_{j=1}^d w_j^2 \right]
 $$
 
 Where:
-- $\alpha \ge 0$: Total regularization strength.
-- $\rho \in [0, 1]$ (the `l1_ratio` parameter): Balances the mixture between L1 and L2 penalties:
-  - $\rho = 1.0 \implies$ Pure Lasso Regression.
-  - $\rho = 0.0 \implies$ Pure Ridge Regression.
-  - $0 < \rho < 1.0 \implies$ Hybrid ElasticNet.
+- $\alpha \ge 0$ is the overall regularization strength.
+- $\rho \in [0, 1]$ (called `l1_ratio` in Scikit-Learn) controls the balance:
+  - $\rho = 1 \implies$ Pure Lasso (L1).
+  - $\rho = 0 \implies$ Pure Ridge (L2).
+  - $0 < \rho < 1 \implies$ Hybrid ElasticNet!
+
+```mermaid
+flowchart LR
+    Lasso["L1 Lasso Penalty<br/>Feature Sparsity (Zero weights)"] --> EN["ElasticNet Hybrid<br/>l1_ratio controls balance!"]
+    Ridge["L2 Ridge Penalty<br/>Correlated Group Stability"] --> EN
+```
 
 ---
 
-## 3. The "Grouping Effect" Advantage
+## 💡 Why ElasticNet?
+When multiple features are highly correlated:
+- Lasso tends to pick one arbitrarily and zero out the others.
+- ElasticNet groups them and shrinks them together, preserving stability.
 
-ElasticNet provides the **grouping effect**:
-- Strongly correlated features share similar regression coefficients and enter or leave the model together as a group (inherited from L2).
-- Simultaneously, entire groups of irrelevant features are cleanly set to zero (inherited from L1).
-- The geometry of ElasticNet's constraint contour combines the sharp vertices of the L1 diamond with the strictly convex curvature of the L2 sphere, eliminating non-unique solutions.
+---
+
+## 💻 Python Implementation
+
+```python
+from sklearn.linear_model import ElasticNet
+import numpy as np
+
+def demonstrate_elastic_net(l1_ratio=0.5):
+    """
+    Demonstrates ElasticNet (Hybrid L1 + L2 Regularization):
+    Cost = MSE + alpha * [ l1_ratio * L1 + 0.5*(1 - l1_ratio) * L2 ]
+    
+    Combines Lasso's feature selection with Ridge's grouped selection stability.
+    """
+    np.random.seed(42)
+    X = np.random.randn(80, 5)
+    y = 3.0 * X[:, 0] + 2.0 * X[:, 1] + np.random.normal(0, 0.5, size=80)
+    
+    en = ElasticNet(alpha=0.5, l1_ratio=l1_ratio, random_state=42)
+    en.fit(X, y)
+    
+    return {
+        'l1_ratio': l1_ratio,
+        'coefficients': [round(c, 3) for c in en.coef_]
+    }
+
+# --- Function Call & Testing ---
+for ratio in [0.1, 0.5, 0.9]:
+    res = demonstrate_elastic_net(l1_ratio=ratio)
+    print(f"ElasticNet (l1_ratio={ratio:.1f}) Coefficients: {res['coefficients']}")
+```
+
+---
+
+## 🔑 Key Takeaways
+1. ElasticNet provides a continuous bridge between Lasso and Ridge.
+2. Controlled via `l1_ratio`.
+3. Standard choice when dealing with high-dimensional datasets with correlated predictor groups.

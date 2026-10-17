@@ -20,9 +20,9 @@ $$
 ### Questions:
 1. **Means & Covariance:** $\bar{x}$, $\bar{y}$, sample covariance $\text{Cov}(x, y)$ aur variance $\text{Var}(x)$ calculate karein.
 2. **OLS Parameters:** Closed-form formulas se optimal slope $w^*$ aur intercept $b^*$ nikaalein:
-   $$
+$$
    w^* = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}, \quad b^* = \bar{y} - w^* \bar{x}
-   $$
+$$
 3. **Centroid Proof:** Verify karein ki point $(\bar{x}, \bar{y})$ exactly line ke upar lie karta hai.
 4. **Sum of Residuals Invariant:** Har point ka residual $e_i = y_i - \hat{y}_i$ compute karein aur prove karein ki $\sum e_i = 0$.
 5. **Loss Metrics:** $SSE$, $MSE$ aur $SS_{\text{tot}}$ calculate karein.

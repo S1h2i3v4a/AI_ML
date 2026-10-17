@@ -1,48 +1,79 @@
-# 📈 Lecture 23.07: Linear Regression ki Shuruat [Hinglish]
+# Notes_23.07: Linear Regression Ki Shuruat [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Scikit--Learn](https://img.shields.io/badge/Scikit--Learn-1.4%2B-orange.svg?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 23 Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Linear Regression** ka core concept samjhaya hai: $y = mx + c$ ki straight line se machine learning model kaise predictions karta hai.
 
 ---
 
-## 📌 1. Linear Regression Kya Hai?
-
-**Linear Regression** ek fundamental supervised algorithm hai jo continuous target $y$ aur features $x$ ke beech ek seedhi line (linear relationship) fit karta hai:
-
-$$
-\hat{y} = w x + b
-$$
-
-- $w$ (**Weight / Slope**): Yeh batata hai ki $x$ ke 1 unit badhne par $y$ kitna badhega.
-- $b$ (**Bias / Intercept**): Yeh batata hai ki jab $x = 0$ ho, toh $y$ ki value kya hogi.
-
-Agar multiple features hon:
-
-$$
-\hat{y} = w_1 x_1 + w_2 x_2 + \dots + w_p x_p + b
-$$
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Linear Regression kya hoti hai?
+- Straight line ki equation: $y = mx + c$ (ya $\hat{y} = w_1 x + w_0$).
+- Slope ($m$) aur Intercept ($c$) ka real-world matlab.
+- Experience vs Salary ka blackboard example.
 
 ---
 
-## 📐 2. Geometrical Meaning
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-- 1 Feature: 2D space mein ek **Straight Line**.
-- 2 Features: 3D space mein ek **Flat Plane**.
-- $p$ Features: Multi-dimensional space mein ek **Hyperplane**.
+#### 1. Straight Line Ki Equation:
+
+$$
+\hat{y} = mx + c
+$$
+
+- **$x$ (Input Feature)**: Jaise kisi employee ka Experience (saalon mein).
+- **$m$ (Slope / Weight)**: Har 1 saal experience badhne par salary kitni badhegi? (Jaise ₹2.5 Lakh per year).
+- **$c$ (Intercept / Bias)**: Agar kisi ka 0 saal experience hai (Fresher), toh uski base salary kitni hogi? (Jaise ₹3.0 Lakh).
+- **$\hat{y}$ (Predicted Output)**: Model dwara predict ki gayi salary.
 
 ---
 
-## 💻 3. Python Code
+### 📊 Visual Flowchart: Equation Flow
+
+```mermaid
+flowchart LR
+    A["Experience x"] --> B["Multiply by Slope m (₹2.5L)"]
+    B --> C["Add Base Intercept c (₹3L)"]
+    C --> D["Final Salary Prediction y_hat"]
+```
+
+---
+
+### 💻 Python Code
 
 ```python
 import numpy as np
 
-# Hypothesis function
-def predict(x, w, b):
-    return w * x + b
+def compute_linear_regression_line(x_vals, m, c):
+    """
+    Computes Linear Regression line predictions:
+        y_hat = m * x + c
+        
+    Args:
+        x_vals: 1D array of input feature values
+        m: Slope (Weight / Coefficient w1)
+        c: Intercept (Bias w0)
+        
+    Returns:
+        1D array of predicted y_hat values
+    """
+    y_hat = m * np.array(x_vals) + c
+    return y_hat
 
-print("Prediction for x=30 (w=250, b=2000):", predict(30, 250, 2000))
+# --- Function Call & Testing ---
+# Experience in years (x) vs Salary in lakhs (y)
+experience = np.array([1, 2, 3, 4, 5])
+# Suppose m = 2.5 (2.5 Lakhs per year of exp) and c = 3.0 (Base salary 3 Lakhs)
+predicted_salary = compute_linear_regression_line(experience, m=2.5, c=3.0)
+
+print(f"{'Experience (Years)':<20} | {'Predicted Salary (Lakhs)':<25}")
+print("-" * 50)
+for exp, sal in zip(experience, predicted_salary):
+    print(f"{exp:<20} | {sal:<25.2f}")
 ```
+
+---
+
+### 📌 Summary Points
+- Linear regression data points ke beech se ek best fit straight line guzaarti hai.
+- $m$ line ka dhalan batata hai aur $c$ line ka starting point.

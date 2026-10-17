@@ -1,132 +1,118 @@
-# 📈 Lecture 22.09: Calculus Optimization Practice Problem
+# Lecture 22.09: Calculus Optimization Practice Problem
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Numpy](https://img.shields.io/badge/Numpy-Numerical%20Computing-013243.svg)](https://numpy.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 22](../README.md)
+## 📌 Topic Overview
+In this concluding lecture for Day 22, Shraddha ma'am walks through a complete end-to-end blackboard **Practice Problem**, solving the analytical minimum of a quadratic loss function and connecting it directly to Gradient Descent.
 
 ---
 
-## 📌 1. The Practice Problem Statement
+## 📋 Blackboard Practice Problem Statement
 
-Find and classify all critical points and local extrema for the cubic polynomial function:
+**Problem**: Find the value of $w$ that minimizes the loss function:
 
 $$
-f(x) = x^3 - 6x^2 + 9x
+J(w) = w^2 - 6w + 14
 $$
 
 ---
 
-## 📐 2. Step-by-Step Analytical Derivation
+## 🧮 Step-by-Step Analytical Solution
 
-### Step 1: Compute the First Derivative
-Applying the Power Rule:
-
-$$
-f'(x) = \frac{d}{dx}[x^3] - 6 \frac{d}{dx}[x^2] + 9 \frac{d}{dx}[x] = 3x^2 - 12x + 9
-$$
-
----
-
-### Step 2: Determine Critical Points
-Set $f'(x) = 0$:
+### Step 1: Compute First Derivative
 
 $$
-3x^2 - 12x + 9 = 0
+\frac{dJ}{dw} = \frac{d}{dw}[w^2 - 6w + 14] = 2w - 6
 $$
 
-Divide by $3$:
+### Step 2: Set Derivative to Zero to Find Critical Point
 
 $$
-x^2 - 4x + 3 = 0 \implies (x - 1)(x - 3) = 0
+2w - 6 = 0 \implies 2w = 6 \implies w^* = 3
 $$
 
-Thus, we obtain two critical points:
+### Step 3: Verify Minimum with Second Derivative Test
 
 $$
-x_1 = 1, \qquad x_2 = 3
+\frac{d^2J}{dw^2} = \frac{d}{dw}[2w - 6] = 2
+$$
+
+Since $\frac{d^2J}{dw^2} = 2 > 0$, the function is strictly convex and $w^* = 3$ is guaranteed to be the **Global Minimum**.
+
+### Step 4: Calculate Minimum Loss Value
+
+$$
+J(3) = (3)^2 - 6(3) + 14 = 9 - 18 + 14 = 5
 $$
 
 ---
 
-### Step 3: Compute the Second Derivative
-Differentiating $f'(x)$:
-
-$$
-f''(x) = \frac{d}{dx}[3x^2 - 12x + 9] = 6x - 12
-$$
-
----
-
-### Step 4: Classify Extrema via Second Derivative Test
-1. **At critical point $x_1 = 1$:**
-   $$
-   f''(1) = 6(1) - 12 = -6 < 0
-   $$
-   Since $f''(1) < 0$, the function is concave down. Therefore, **$x = 1$ is a Local Maximum**.
-   The maximum value is:
-   $$
-   f(1) = 1^3 - 6(1)^2 + 9(1) = 1 - 6 + 9 = 4
-   $$
-2. **At critical point $x_2 = 3$:**
-   $$
-   f''(3) = 6(3) - 12 = 18 - 12 = +6 > 0
-   $$
-   Since $f''(3) > 0$, the function is concave up. Therefore, **$x = 3$ is a Local Minimum**.
-   The minimum value is:
-   $$
-   f(3) = 3^3 - 6(3)^2 + 9(3) = 27 - 54 + 27 = 0
-   $$
-
----
-
-### Step 5: Determine the Inflection Point
-Set $f''(x) = 0$:
-
-$$
-6x - 12 = 0 \implies x_{\text{inf}} = 2
-$$
-
-At $x = 2$, $f(2) = 2^3 - 6(2)^2 + 9(2) = 8 - 24 + 18 = 2$.
-The point $(2, 2)$ is the inflection point where concavity flips from concave down to concave up.
+## 📊 Visual Diagram: Loss Optimization Convergence
 
 ```mermaid
-graph LR
-    A["Function: f(x) = x^3 - 6x^2 + 9x"] --> B["f'(x) = 3(x-1)(x-3) = 0"]
-    B --> C["x = 1 (Local Max: y = 4)"]
-    B --> D["x = 3 (Local Min: y = 0)"]
-    A --> E["f''(x) = 6x - 12 = 0"]
-    E --> F["x = 2 (Inflection Point: y = 2)"]
+flowchart TD
+    Start["Initial Weight w = 10.0<br/>Loss = 54.0 | Gradient = +14.0"] --> Step1["Gradient Descent Step<br/>w := w - η * (2w - 6)"]
+    Step1 --> Converge["Convergence Path<br/>w moves: 10.0 → 8.6 → 5.2 → 3.5 → 3.0"]
+    Converge --> Opt["Optimum Reached!<br/>w* = 3.0 | Minimum Loss = 5.0 | Gradient = 0"]
 ```
 
 ---
 
-## 💻 3. Python Verification & Plotting
+## 💻 Python Implementation
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
-x = np.linspace(-0.5, 4.5, 300)
-f = x**3 - 6*x**2 + 9*x
-df = 3*x**2 - 12*x + 9
+def solve_optimization_practice_problem():
+    """
+    Solves Shraddha ma'am's classroom blackboard practice problem:
+    Minimize the cost/loss function:
+        J(w) = w^2 - 6w + 14
+        
+    1. Analytical Solution:
+       dJ/dw = 2w - 6 = 0 => w* = 3.0
+       J(w*) = (3)^2 - 6(3) + 14 = 9 - 18 + 14 = 5.0
+       d2J/dw2 = 2 > 0 => Verified Global Minimum!
+       
+    2. Numerical Gradient Descent Simulation:
+       Starts from w_0 = 10.0 and converges to w* = 3.0.
+    """
+    # Analytical
+    w_star = 3.0
+    j_min = w_star ** 2 - 6 * w_star + 14
+    
+    # Numerical Gradient Descent verification
+    lr = 0.1
+    w = 10.0  # Initial guess far from optimum
+    iterations = 25
+    trajectory = []
+    
+    for step in range(iterations):
+        loss = w ** 2 - 6 * w + 14
+        grad = 2 * w - 6
+        trajectory.append({'step': step, 'w': w, 'loss': loss, 'grad': grad})
+        w = w - lr * grad
+        
+    return {
+        'analytical_w_opt': w_star,
+        'analytical_j_min': j_min,
+        'final_gd_w': w,
+        'sample_steps': trajectory[::5]
+    }
 
-plt.figure(figsize=(9, 5))
-plt.plot(x, f, 'b-', lw=2.5, label=r'$f(x) = x^3 - 6x^2 + 9x$')
-plt.plot(x, df, 'g--', lw=1.8, label=r"$f'(x) = 3x^2 - 12x + 9$")
-
-# Mark Extrema
-plt.scatter([1], [4], color='red', s=100, zorder=5, label='Local Maximum (1, 4)')
-plt.scatter([3], [0], color='green', s=100, zorder=5, label='Local Minimum (3, 0)')
-plt.scatter([2], [2], color='purple', s=100, marker='s', zorder=5, label='Inflection Point (2, 2)')
-
-plt.axhline(0, color='black', lw=1)
-plt.axvline(0, color='black', lw=1)
-plt.title(r'Calculus Optimization: Extrema & Inflection Points', fontsize=12, fontweight='bold')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.grid(True, linestyle=':', alpha=0.6)
-plt.legend()
-plt.show()
+# --- Function Call & Testing ---
+solution = solve_optimization_practice_problem()
+print(f"Analytical Optimal Weight w* : {solution['analytical_w_opt']:.2f}")
+print(f"Minimum Loss Value J(w*)     : {solution['analytical_j_min']:.2f}")
+print(f"Final GD Converged Weight    : {solution['final_gd_w']:.4f}")
+print()
+print(f"{'Step':<6} | {'Current w':<12} | {'Loss J(w)':<12} | {'Gradient':<12}")
+print("-" * 48)
+for row in solution['sample_steps']:
+    print(f"{row['step']:<6} | {row['w']:<12.4f} | {row['loss']:<12.4f} | {row['grad']:<12.4f}")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. Setting the first derivative to zero analytically finds the exact global optimum for convex loss functions.
+2. Gradient Descent takes iterative numerical steps proportional to the gradient, converging exactly to the analytical minimum $w^* = 3.0$.
+3. This single-variable problem is the direct prototype for multi-variable Linear Regression optimization.

@@ -1,98 +1,95 @@
-# 📉 Lecture 22.01: Introduction to Calculus for AI & Continuous Change
+# Lecture 22.01: Introduction to Calculus for AI & Continuous Change
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Numpy](https://img.shields.io/badge/Numpy-Numerical%20Computing-013243.svg)](https://numpy.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 22](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Calculus as the mathematics of continuous change**, explaining why artificial intelligence and deep neural networks depend entirely on differential calculus for model optimization and weight updates.
 
 ---
 
-## 📌 1. What is Calculus?
-
-**Calculus** is the branch of mathematics that studies **continuous change**. While algebra deals with static relationships and discrete operations, calculus provides the formal machinery to model, measure, and control quantities that change dynamically over continuous intervals.
-
-Calculus is divided into two fundamental branches:
-1. **Differential Calculus:** Focuses on instantaneous rates of change, derivatives, and slopes of curves. It answers: *"How sensitive is an output quantity to tiny variations in its input?"*
-2. **Integral Calculus:** Focuses on accumulation, total area under curves, and continuous summation. It answers: *"What total quantity accumulates when a rate varies continuously over time or space?"*
+## 🏛️ Differential vs Integral Calculus
 
 ```mermaid
-graph TD
-    A["Calculus: Mathematics of Continuous Change"] --> B["Differential Calculus"]
-    A --> C["Integral Calculus"]
-    B --> D["Instantaneous Rate of Change"]
-    B --> E["Slopes of Tangents & Gradients"]
-    B --> F["Optimization: Finding Minima & Maxima"]
-    C --> G["Accumulation of Continuous Quantities"]
-    C --> H["Area Under Loss Curves & PDFs"]
-    C --> I["Expectation in Continuous Probability"]
+flowchart TD
+    Calc["Calculus: Mathematics of Continuous Change"] --> Diff["Differential Calculus<br/>Instantaneous Rate of Change"]
+    Calc --> Int["Integral Calculus<br/>Accumulation & Area"]
+
+    Diff --> Slopes["Slopes of Tangents & Gradients"]
+    Diff --> Opt["Optimization: Gradient Descent"]
+
+    Int --> Area["Area Under Loss Curves"]
+    Int --> Prob["Continuous Probability Density"]
 ```
 
 ---
 
-## 📐 2. The Core Role of Calculus in Machine Learning & AI
+## 📐 Calculus in Machine Learning
 
-In Artificial Intelligence, every predictive model is fundamentally a parameterized function:
+In AI, every machine learning model is a mathematical function parameterized by weights $\mathbf{w}$:
 
 $$
 \hat{y} = f_{\mathbf{w}}(\mathbf{x})
 $$
 
-where $\mathbf{x}$ is the input feature vector and $\mathbf{w}$ represents trainable parameters (weights and biases).
-
-To train the model, we quantify prediction discrepancies using a scalar **Loss Function** (or Cost Function) $\mathcal{L}(\mathbf{w})$. Training is formulated as an optimization problem:
+To train the model, we calculate prediction error using a loss function $\mathcal{L}(\mathbf{w})$. Finding the best weights requires finding the minimum of this loss surface:
 
 $$
-\mathbf{w}^* = \mathop{\arg\min}_{\mathbf{w}} \mathcal{L}(\mathbf{w})
+\mathbf{w}^* = \arg\min_{\mathbf{w}} \mathcal{L}(\mathbf{w})
 $$
 
-### How Differential Calculus Drives Training:
-- **Sensitivity Analysis:** The derivative $\frac{d\mathcal{L}}{dw_i}$ reveals exactly how the overall error increases or decreases when a single parameter $w_i$ is perturbed.
-- **Gradient Vector:** In multidimensional parameter spaces, the gradient $\nabla \mathcal{L}(\mathbf{w})$ points in the direction of steepest error increase.
-- **Gradient Descent:** Parameters are iteratively updated against the gradient direction:
+### How Derivatives Drive Learning:
+1. **The Derivative $\frac{d\mathcal{L}}{dw_i}$**: Tells us whether increasing weight $w_i$ will increase or decrease total loss.
+2. **Gradient Descent**: Updates parameters iteratively in the opposite direction of the derivative:
 
 $$
 \mathbf{w}_{t+1} = \mathbf{w}_t - \eta \nabla \mathcal{L}(\mathbf{w}_t)
 $$
 
-where $\eta > 0$ is the learning rate.
-
 ---
 
-## 📊 3. Discrete vs. Continuous Perspectives in Data Science
-
-| Property | Discrete Mathematics (Algebra) | Continuous Mathematics (Calculus) |
-| :--- | :--- | :--- |
-| **Variable Nature** | Countable values ($n \in \mathbb{Z}$) | Uncountable intervals ($x \in \mathbb{R}$) |
-| **Change Measurement** | Difference $\Delta y = y_2 - y_1$ | Infinitesimal limit $\lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x}$ |
-| **Rate of Change** | Average speed / secant slope | Instantaneous velocity / tangent slope |
-| **Accumulation** | Discrete summation $\sum_{i=1}^N x_i$ | Continuous integration $\int_{a}^b f(x) \, dx$ |
-| **AI Application** | Decision trees, graph search, hashing | Neural networks, backprop, diffusion models |
-
----
-
-## 💻 4. Python Implementation: Discrete vs. Continuous Rate of Change
+## 💻 Python Implementation
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
-# Define a smooth non-linear function: f(x) = x^2
-def f(x):
-    return x**2
+def compute_instantaneous_slope(x0=3.0, deltas=None):
+    """
+    Demonstrates the fundamental concept of Calculus:
+    Transition from Average Rate of Change (Secant line slope)
+    to Instantaneous Rate of Change (Tangent line slope) as delta_x approaches 0.
+    
+    Function: f(x) = x^2, with analytical derivative f'(x) = 2x.
+    """
+    if deltas is None:
+        deltas = [1.0, 0.5, 0.1, 0.01, 0.001, 0.0001]
+        
+    def f(x):
+        return x ** 2
+        
+    analytical_derivative = 2 * x0
+    results = []
+    
+    for dx in deltas:
+        secant_slope = (f(x0 + dx) - f(x0)) / dx
+        error = abs(secant_slope - analytical_derivative)
+        results.append({
+            'delta_x': dx,
+            'secant_slope': secant_slope,
+            'analytical': analytical_derivative,
+            'error': error
+        })
+        
+    return results
 
-# Choose point of interest x0
-x0 = 3.0
-analytical_slope = 2 * x0  # f'(x) = 2x => 6.0
-
-# Demonstrate limit of average rate of change as delta_x -> 0
-deltas = [1.0, 0.5, 0.1, 0.01, 0.0001]
-print(f"Analytical Instantaneous Slope at x={x0}: {analytical_slope:.6f}\n")
-print(f"{'Delta x':<12} | {'Average Slope':<15} | {'Approximation Error':<20}")
-print("-" * 52)
-
-for dx in deltas:
-    avg_slope = (f(x0 + dx) - f(x0)) / dx
-    error = abs(avg_slope - analytical_slope)
-    print(f"{dx:<12.4f} | {avg_slope:<15.6f} | {error:<20.6e}")
+# --- Function Call & Testing ---
+slope_table = compute_instantaneous_slope(x0=3.0)
+print(f"{'Delta x':<10} | {'Secant Slope':<15} | {'Analytical (2x)':<15} | {'Error':<15}")
+print("-" * 62)
+for row in slope_table:
+    print(f"{row['delta_x']:<10.4f} | {row['secant_slope']:<15.6f} | {row['analytical']:<15.6f} | {row['error']:<15.6e}")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. Calculus models continuous dynamical change, while algebra handles static discrete points.
+2. Differential calculus provides the mathematical foundation of gradient descent optimization.
+3. As $\Delta x \to 0$, average rate of change converges exactly to the instantaneous derivative.

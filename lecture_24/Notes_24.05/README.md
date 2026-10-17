@@ -1,50 +1,69 @@
-# Module 24.05: Underfitting (High Bias & Oversimplification)
+# Lecture 24.05: Underfitting (High Bias & Oversimplification)
 
-## 1. Theoretical Definition of Underfitting
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers **Underfitting**, the opposite extreme of overfitting, where a model is too simplistic to learn the underlying structure of the data.
 
-**Underfitting** occurs when a machine learning model is overly simplistic and lacks the expressive mathematical capacity to capture the underlying structure, curvature, and relationships present in the data.
+---
 
-```
-   Target Ground Truth: Non-linear parabolic curve (y = 2 x^2 + 3)
-   
-   Underfitted Model: Simple straight line (y = w x + b)
-   Result:
-   * Training Error  -> High (Fails even on the data it was trained on)
-   * Test/Val Error  -> High (Equally poor generalization)
+## 🏛️ The Symptoms of Underfitting
+
+```mermaid
+flowchart TD
+    Model["Underfitted Simplistic Model<br/>(e.g., Straight line fitted to curved data)"] --> Train["Training Set Performance<br/>HIGH ERROR | Low Accuracy (~50%)"]
+    Model --> Test["Testing Set Performance<br/>HIGH ERROR | Low Accuracy (~48%)"]
+    Train --> Fail["Model failed to learn the true pattern in the first place!"]
+    Test --> Fail
 ```
 
 ---
 
-## 2. The Bias-Variance Perspective: High Bias
-
-Underfitting represents the **High Bias** regime of the Bias-Variance tradeoff:
-
-$$
-\text{Bias}\left[\hat{f}(x)\right] = \mathbb{E}\left[\hat{f}(x)\right] - f(x) \gg 0
-$$
-
-- The fundamental assumptions made by the model family are too restrictive.
-- For instance, forcing a strictly linear hypothesis $\hat{y} = w x + b$ onto an inherently sinusoidal or quadratic phenomenon.
-- Even if infinite training samples ($m \to \infty$) were provided, an underfitted model cannot improve beyond its rigid capacity boundary.
+## 💡 The Unprepared Student Analogy
+- An underfitted model is like a student who never studied the textbook at all.
+- The student fails both the classroom practice test and the final exam!
+- There is no gap between training error and test error — **both are terrible**.
 
 ---
 
-## 3. Causes and Diagnostic Signatures of Underfitting
+## 💻 Python Implementation
 
+```python
+import numpy as np
+
+def simulate_underfitting_behavior():
+    """
+    Demonstrates the signature symptoms of Underfitting (High Bias):
+    - Training Error: High
+    - Testing Error: High
+    - Root Cause: Model is too simplistic to capture underlying non-linear curvature
+    """
+    np.random.seed(42)
+    # True non-linear quadratic relationship: y = x^2
+    x = np.linspace(-3, 3, 20)
+    y = x ** 2 + np.random.normal(0, 0.5, size=20)
+    
+    # Underfitted Model: Fitting a straight line (Degree 1) to a parabola
+    linear_weights = np.polyfit(x, y, deg=1)
+    linear_model = np.poly1d(linear_weights)
+    
+    train_mse = np.mean((linear_model(x) - y) ** 2)
+    
+    return {
+        'model_type': 'Linear Model on Quadratic Data (Degree 1)',
+        'train_mse': float(train_mse),
+        'symptom': 'High error on both training and test data'
+    }
+
+# --- Function Call & Testing ---
+underfit_sim = simulate_underfitting_behavior()
+print("Underfitting Simulation:")
+print(f"  Model Type : {underfit_sim['model_type']}")
+print(f"  Train Error: {underfit_sim['train_mse']:.4f} (High error due to oversimplification!)")
+print(f"  Conclusion : {underfit_sim['symptom']}")
 ```
-+-----------------------------------------------------------------------------------------+
-| Root Causes of Underfitting                                                             |
-+-----------------------------------------------------------------------------------------+
-| 1. Model Too Simple: Linear model applied to non-linear physical systems.               |
-| 2. Insufficient / Uninformative Features: Critical predictive signals are missing.     |
-| 3. Excessive Regularization: Hyperparameter lambda is set so large that weights w -> 0. |
-| 4. Under-trained Model: Gradient descent terminated before reaching local/global min.   |
-+-----------------------------------------------------------------------------------------+
-```
 
-### Signature Diagnostic Sign:
-Both training and validation loss remain unacceptably high with minimal gap:
+---
 
-$$
-\mathcal{L}_{\text{train}} \approx \text{High}, \quad \mathcal{L}_{\text{val}} \approx \text{High}, \quad (\mathcal{L}_{\text{val}} - \mathcal{L}_{\text{train}} \approx 0)
-$$
+## 🔑 Key Takeaways
+1. Underfitting occurs when the model makes strong, incorrect assumptions about the data (High Bias).
+2. Characterized by high error on **both** training and test datasets.
+3. Fitting a linear regression line to complex non-linear data is the classic example of underfitting.

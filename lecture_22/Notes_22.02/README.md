@@ -1,103 +1,66 @@
-# 📈 Lecture 22.02: Mathematical Functions & Real-World Transformations
+# Lecture 22.02: Mathematical Functions & Real-World Transformations
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Numpy](https://img.shields.io/badge/Numpy-Numerical%20Computing-013243.svg)](https://numpy.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 22](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the mathematical definition of a **Function**, input domains, output ranges, and visual curves including $y = \sqrt{x}$ and $y = \sin(x)$.
 
 ---
 
-## 📌 1. Mathematical Definition of a Function
-
-A **Function** $f$ from set $X$ to set $Y$, denoted as:
-
-$$
-f: X \to Y
-$$
-
-is a deterministic mathematical rule that assigns **exactly one** element $y \in Y$ to each element $x \in X$.
-
-### Key Structural Sets:
-- **Domain ($\text{Dom}(f) = X$):** The set of all admissible input values for which $f(x)$ is defined.
-- **Codomain ($Y$):** The target space into which all outputs are constrained.
-- **Range ($\text{Ran}(f) \subseteq Y$):** The actual subset of outputs attained by the function:
-
-$$
-\text{Ran}(f) = \{y \in Y \mid \exists x \in X \text{ such that } f(x) = y\}
-$$
+## 🏛️ What is a Function?
+A function $f: X \to Y$ is a rule that assigns to each element $x$ in domain $X$ **exactly one** element $y = f(x)$ in range $Y$.
 
 ```mermaid
-graph LR
-    X["Domain X (Inputs)"] -- "Deterministic Rule f(x)" --> Y["Codomain Y"]
-    subgraph Codomain Y
-        R["Range: Set of Actual Outputs f(X)"]
-    end
+flowchart LR
+    Domain["Input Domain X<br/>(Allowed Values of x)"] --> Function["Function f(x)<br/>Mathematical Transformation"]
+    Function --> Range["Output Range Y<br/>(Set of Output Values)"]
 ```
 
 ---
 
-## 📐 2. Essential Functional Families in AI & ML
-
-### 1. Square Root & Power Functions ($y = \sqrt{x} = x^{1/2}$)
-- **Domain:** $[0, \infty)$
-- **Range:** $[0, \infty)$
-- **AI Use:** Euclidean norm scaling $\|\mathbf{x}\|_2 = \sqrt{\sum x_i^2}$, Standard deviation $\sigma = \sqrt{\text{Var}(X)}$, and learning rate schedules.
-
-### 2. Trigonometric Functions ($y = \sin(x), y = \cos(x)$)
-- **Domain:** $(-\infty, \infty)$
-- **Range:** $[-1, 1]$
-- **AI Use:** Positional Encodings in Transformer architectures (Vaswani et al.), Periodic Fourier embeddings in NeRFs.
-
-$$
-PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right), \qquad PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
-$$
-
-### 3. Exponential & Logarithmic Functions ($y = e^x, y = \ln(x)$)
-- **Exponential:** Maps $(-\infty, \infty) \to (0, \infty)$. Core component of Softmax probabilities:
-
-$$
-\text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
-$$
-
-- **Logarithm:** Maps $(0, \infty) \to (-\infty, \infty)$. Core component of Cross-Entropy Loss:
-
-$$
-\mathcal{L}_{\text{CE}} = - \sum_i y_i \ln(\hat{y}_i)
-$$
+## 📈 Common Curves in AI
+1. **Linear ($y = mx + c$)**: Constant rate of change (slope $= m$).
+2. **Quadratic ($y = ax^2 + bx + c$)**: Parabolic curve, fundamental to Mean Squared Error loss surfaces.
+3. **Square Root ($y = \sqrt{x}$)**: Only defined for $x \ge 0$. Output grows slowly as $x$ increases.
+4. **Trigonometric ($y = \sin(x)$)**: Periodic oscillation bounded strictly between $[-1, +1]$.
 
 ---
 
-## 💻 3. Python Implementation: Graphing Core Function Families
+## 💻 Python Implementation
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
-# Generate domains
-x_pos = np.linspace(0, 100, 1000)
-x_trig = np.linspace(-2 * np.pi, 2 * np.pi, 500)
+def evaluate_mathematical_functions(x_vals=None):
+    """
+    Evaluates domain, range, and outputs of fundamental mathematical functions
+    used throughout machine learning:
+    1. Linear Function: f(x) = 2x + 3
+    2. Quadratic Function: f(x) = x^2 - 4x + 4
+    3. Square Root: f(x) = sqrt(x) (Domain: x >= 0)
+    4. Sine Wave: f(x) = sin(x) (Periodic: [-1, 1])
+    """
+    if x_vals is None:
+        x_vals = np.array([0.0, 1.0, 2.0, 4.0, 9.0])
+        
+    results = {
+        'x': x_vals,
+        'linear': 2 * x_vals + 3,
+        'quadratic': x_vals ** 2 - 4 * x_vals + 4,
+        'sqrt': np.sqrt(x_vals),
+        'sin': np.sin(x_vals)
+    }
+    return results
 
-fig, axes = plt.subplots(1, 2, figsize=(12, 5))
-
-# Plot 1: Square root function y = sqrt(x)
-axes[0].plot(x_pos, np.sqrt(x_pos), color='purple', lw=2, label=r'$y = \sqrt{x}$')
-axes[0].set_title(r'Square Root Function $y = \sqrt{x}$', fontsize=12, fontweight='bold')
-axes[0].set_xlabel('x')
-axes[0].set_ylabel('y')
-axes[0].grid(True, linestyle=':', alpha=0.6)
-axes[0].legend()
-
-# Plot 2: Sinusoidal function y = sin(x)
-axes[1].plot(x_trig, np.sin(x_trig), color='blue', lw=2, label=r'$y = \sin(x)$')
-axes[1].axhline(0, color='black', lw=1, ls='--')
-axes[1].axvline(0, color='black', lw=1, ls='--')
-axes[1].set_title(r'Trigonometric Function $y = \sin(x)$', fontsize=12, fontweight='bold')
-axes[1].set_xlabel('x')
-axes[1].set_ylabel('y')
-axes[1].grid(True, linestyle=':', alpha=0.6)
-axes[1].legend()
-
-plt.tight_layout()
-plt.show()
+# --- Function Call & Testing ---
+eval_data = evaluate_mathematical_functions()
+print(f"{'x':<6} | {'Linear (2x+3)':<15} | {'Quadratic (x^2-4x+4)':<22} | {'Sqrt(x)':<10} | {'Sin(x)':<10}")
+print("-" * 72)
+for i in range(len(eval_data['x'])):
+    print(f"{eval_data['x'][i]:<6.1f} | {eval_data['linear'][i]:<15.2f} | {eval_data['quadratic'][i]:<22.2f} | {eval_data['sqrt'][i]:<10.3f} | {eval_data['sin'][i]:<10.3f}")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. A function must map every valid input to a unique output.
+2. In machine learning, neural network layers and loss objectives are pure functions.
+3. Understanding domain constraints prevents numerical bugs like negative square roots or $\log(0)$.

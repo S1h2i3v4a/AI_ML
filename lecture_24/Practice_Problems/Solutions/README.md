@@ -44,14 +44,14 @@ The test error curve exhibits the classic **U-Shape**:
 ### 1. Formulations & Optimization Mechanics
 - **Ridge (L2):** Adds smooth penalty $\frac{\lambda}{2} \sum_{j=1}^8 w_j^2$.
   Analytical solution:
-  $$
+$$
   \mathbf{w}_{\text{Ridge}}^*(\lambda) = (\mathbf{X}^T \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^T \mathbf{y}
-  $$
+$$
 - **Lasso (L1):** Adds absolute penalty $\lambda \sum_{j=1}^8 |w_j|$.
   Subgradient coordinate descent soft-thresholding rule:
-  $$
+$$
   w_j = \mathcal{S}\left(\frac{\rho_j}{z_j}, \frac{\lambda}{z_j}\right) = \text{sign}(\rho_j) \cdot \max\left(0, |\rho_j| - \lambda\right)
-  $$
+$$
 
 ### 2. Empirical Verification of Sparsity
 

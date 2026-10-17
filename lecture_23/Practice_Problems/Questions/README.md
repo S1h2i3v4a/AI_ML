@@ -20,9 +20,9 @@ $$
 ### Problem Statements:
 1. **First-Principles Derivation:** Compute the sample means $\bar{x}$ and $\bar{y}$. Calculate the sample covariance $\text{Cov}(x, y)$ and variance $\text{Var}(x)$.
 2. **Optimal Parameter Vector:** Compute the closed-form Ordinary Least Squares slope $w^*$ and intercept $b^*$:
-   $$
+$$
    w^* = \frac{\sum_{i=1}^m (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^m (x_i - \bar{x})^2}, \quad b^* = \bar{y} - w^* \bar{x}
-   $$
+$$
 3. **Centroid Invariant Check:** Prove mathematically and check computationally that the point $(\bar{x}, \bar{y})$ lies exactly on the line.
 4. **Residual Sum Invariant:** Compute each individual residual $e_i = y_i - \hat{y}_i$. Demonstrate that $\sum_{i=1}^{10} e_i = 0$ (within floating-point machine precision $\epsilon < 10^{-14}$).
 5. **Loss Metrics:** Compute the Sum of Squared Errors ($SSE$), Mean Squared Error ($MSE$), and the Total Sum of Squares ($SS_{\text{tot}}$).
@@ -61,7 +61,7 @@ When engineering models for high-dimensional business data, practitioners often 
 2. **Baseline Metric Suite:** Compute the complete metric suite: MAE, MSE, RMSE, and $R^2$.
 3. **Feature Bloat Injection:** Progressively append 20 independent standard Gaussian noise features $z_k \sim \mathcal{N}(0, 1)$ ($k = 1, \dots, 20$).
 4. **Metric Divergence Proof:** For total feature counts $k \in [3, 23]$, calculate both $R^2$ and Adjusted $R^2$:
-   $$
+$$
    R^2_{\text{adj}} = 1 - \left[ \frac{(1 - R^2)(m - 1)}{m - k - 1} \right]
-   $$
+$$
 5. **Diagnostic Visualizations:** Plot $R^2$ vs $R^2_{\text{adj}}$ across feature counts. Plot the residual scatter plot vs fitted values $\hat{y}$ to verify homoscedasticity.

@@ -1,92 +1,67 @@
-# 📈 Lecture 23.07: Starting with Linear Regression
+# Lecture 23.07: Starting with Linear Regression
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Scikit--Learn](https://img.shields.io/badge/Scikit--Learn-1.4%2B-orange.svg?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 23](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces the foundational supervised learning algorithm: **Simple Linear Regression**, examining the linear relationship hypothesis $\hat{y} = mx + c$ between a single predictor feature and a continuous target.
 
 ---
 
-## 📌 1. What is Linear Regression?
-
-**Linear Regression** is a fundamental supervised learning algorithm that models the relationship between a continuous scalar target variable $y$ and one or more explanatory feature variables $\mathbf{x}$ by fitting a linear equation to observed data.
-
-### 1. Simple Linear Regression (Single Feature $x$):
+## 🏛️ The Linear Regression Equation
 
 $$
-\hat{y} = w x + b \qquad\text{or}\qquad \hat{y} = \beta_1 x + \beta_0
+\hat{y} = mx + c \quad \text{or} \quad \hat{y} = w_1 x + w_0
 $$
 
-where:
-- $w$ (or $\beta_1$) is the **weight / slope**, representing the change in $\hat{y}$ per unit change in $x$.
-- $b$ (or $\beta_0$) is the **bias / intercept**, representing the predicted value of $y$ when $x = 0$.
-
-### 2. Multiple Linear Regression ($p$ Features):
-
-$$
-\hat{y} = w_1 x_1 + w_2 x_2 + \dots + w_p x_p + b = \mathbf{w}^T \mathbf{x} + b
-$$
-
-In compact matrix notation for $N$ observations:
-
-$$
-\hat{\mathbf{y}} = X \mathbf{w} + b \mathbf{1}
-$$
+Where:
+- $\hat{y}$: Predicted target output.
+- $x$: Input feature value.
+- $m$ (or $w_1$): **Slope / Weight** — represents the rate of change in $y$ for each one-unit increase in $x$.
+- $c$ (or $w_0$): **Intercept / Bias** — the baseline value of $y$ when $x = 0$.
 
 ```mermaid
-graph LR
-    x["Feature Vector x"] --> Mult["Dot Product with Weights: w^T x"]
-    Mult --> Add["Add Bias: w^T x + b"]
-    Add --> yhat["Predicted Target y_hat"]
+flowchart LR
+    Input["Input Feature x<br/>(e.g., Experience)"] --> Mult["Multiply by Slope m<br/>(Rate of growth)"]
+    Mult --> Add["Add Intercept c<br/>(Base salary)"]
+    Add --> Output["Prediction y_hat<br/>(Predicted Salary)"]
 ```
 
 ---
 
-## 📐 2. Geometric Interpretation Across Dimensions
-
-- **1 Feature ($p = 1$):** The model fits a **Straight Line** in 2D Euclidean space ($\mathbb{R}^2$).
-- **2 Features ($p = 2$):** The model fits a **2D Plane** in 3D Euclidean space ($\mathbb{R}^3$).
-- **$p$ Features ($p \ge 3$):** The model fits a **$(p)$-dimensional Hyperplane** in $\mathbb{R}^{p+1}$.
-
----
-
-## 🔍 3. Interpreting Model Parameters
-
-Consider an insurance charges prediction model:
-
-$$
-\text{charges} = 250 \cdot (\text{age}) + 330 \cdot (\text{bmi}) + 23800 \cdot (\text{smoker}) - 11000
-$$
-
-1. **Slope for `age` ($+250$):** Holding all other features constant, each additional year of age increases predicted healthcare charges by $\$250$.
-2. **Slope for `smoker` ($+23800$):** Smokers are predicted to incur $\$23,800$ more in annual medical charges than non-smokers.
-3. **Intercept ($-11000$):** Baseline offset adjustment.
-
----
-
-## 💻 4. Python Implementation: Visualizing a 1D Linear Hypothesis
+## 💻 Python Implementation
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
-# Generate synthetic linear trend
-np.random.seed(42)
-x = np.linspace(10, 60, 50)  # Age
-y = 250 * x + 2000 + np.random.randn(50) * 1500  # Charges
+def compute_linear_regression_line(x_vals, m, c):
+    """
+    Computes Linear Regression line predictions:
+        y_hat = m * x + c
+        
+    Args:
+        x_vals: 1D array of input feature values
+        m: Slope (Weight / Coefficient w1)
+        c: Intercept (Bias w0)
+        
+    Returns:
+        1D array of predicted y_hat values
+    """
+    y_hat = m * np.array(x_vals) + c
+    return y_hat
 
-# Specific parameters
-w, b = 250.0, 2000.0
+# --- Function Call & Testing ---
+# Experience in years (x) vs Salary in lakhs (y)
+experience = np.array([1, 2, 3, 4, 5])
+# Suppose m = 2.5 (2.5 Lakhs per year of exp) and c = 3.0 (Base salary 3 Lakhs)
+predicted_salary = compute_linear_regression_line(experience, m=2.5, c=3.0)
 
-plt.figure(figsize=(8, 5))
-plt.scatter(x, y, color='#1f77b4', alpha=0.7, label='Observed Data Points (x, y)')
-plt.plot(x, w * x + b, color='#d62728', lw=2.5, label=f'Hypothesis Line: y = {w}*x + {b}')
-
-plt.title('Simple Linear Regression: Hypothesis Line', fontsize=12, fontweight='bold')
-plt.xlabel('Age (Years)', fontsize=11)
-plt.ylabel('Charges ($)', fontsize=11)
-plt.grid(True, linestyle=':', alpha=0.6)
-plt.legend()
-plt.show()
+print(f"{'Experience (Years)':<20} | {'Predicted Salary (Lakhs)':<25}")
+print("-" * 50)
+for exp, sal in zip(experience, predicted_salary):
+    print(f"{exp:<20} | {sal:<25.2f}")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. Linear Regression models a straight-line relationship between inputs and continuous targets.
+2. The slope $m$ governs line steepness; the intercept $c$ governs vertical positioning.
+3. Machine learning's job is to discover the best $m$ and $c$ that minimize total prediction errors.

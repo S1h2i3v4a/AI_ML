@@ -1,101 +1,82 @@
-# 📈 Lecture 22.04: Operations on Functions: Scalar Multiplication & Addition
+# Lecture 22.04: Operations on Functions: Scalar Multiplication & Addition
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Numpy](https://img.shields.io/badge/Numpy-Numerical%20Computing-013243.svg)](https://numpy.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 22](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers operations on functions, specifically **Scalar Multiplication** $c \cdot f(x)$ and **Pointwise Addition** $(f + g)(x)$, exploring their geometric transformations.
 
 ---
 
-## 📌 1. Algebraic Operations on Functions
+## 🏛️ Mathematical Mechanics
 
-Given two real-valued functions $f, g: \mathbb{R} \to \mathbb{R}$ and a scalar constant $c \in \mathbb{R}$:
+### 1. Scalar Multiplication: $h(x) = c \cdot f(x)$
+- Multiplies the output of $f(x)$ by constant $c$.
+- **Geometric Effect**: Vertical stretching (if $c > 1$) or vertical compression (if $0 < c < 1$).
+- If $c < 0$, the graph is vertically reflected across the x-axis.
 
-1. **Function Addition:**
-   $$
-   (f + g)(x) = f(x) + g(x)
-   $$
-2. **Scalar Multiplication:**
-   $$
-   (c \cdot f)(x) = c \cdot f(x)
-   $$
-3. **Linear Combination:**
-   $$
-   h(x) = c_1 f(x) + c_2 g(x)
-   $$
-
-The domain of the sum $(f + g)$ is the intersection of their domains:
-
-$$
-\text{Dom}(f + g) = \text{Dom}(f) \cap \text{Dom}(g)
-$$
+### 2. Function Addition: $h(x) = f(x) + g(x)$
+- Evaluates both functions at input $x$ and adds their values: $h(x) = f(x) + g(x)$.
+- **In Machine Learning**: Ensemble methods and Residual Networks (ResNets) add feature representations: $x + \mathcal{F}(x)$.
 
 ---
 
-## 📐 2. Geometric Effects: Vertical Transformations
-
-When scalar operations are applied **outside** the function evaluation, they manipulate the graph vertically:
-
-| Transformation | Equation | Geometric Effect |
-| :--- | :--- | :--- |
-| **Vertical Stretch** | $y = a \cdot f(x)$ with $a > 1$ | Graph stretched away from the x-axis by factor $a$. |
-| **Vertical Compression** | $y = a \cdot f(x)$ with $0 < a < 1$ | Graph compressed toward the x-axis by factor $a$. |
-| **Vertical Reflection** | $y = -f(x)$ | Graph reflected across the x-axis. |
-| **Vertical Shift Up** | $y = f(x) + d$ with $d > 0$ | Graph shifted upward by $d$ units. |
-| **Vertical Shift Down** | $y = f(x) - d$ with $d > 0$ | Graph shifted downward by $d$ units. |
+## 📊 Visual Transformation Flowchart
 
 ```mermaid
-graph TD
-    A["Base Function f(x)"] --> B["a * f(x) : Vertical Scaling / Reflection"]
-    A --> C["f(x) + d : Vertical Shift (Bias Addition)"]
-    B --> D["Combined: y = a * f(x) + d"]
-    C --> D
+flowchart TD
+    F["Base Function f(x)"] --> Scale["Multiply by c > 1<br/>Vertical Stretch"]
+    F --> Compress["Multiply by 0 < c < 1<br/>Vertical Compression"]
+    F --> Add["Add g(x)<br/>Pointwise Sum f(x) + g(x)"]
 ```
 
 ---
 
-## 🤖 3. Machine Learning Application: Weighted Neurons & Residual Connections
-
-1. **Perceptron Output:** A single artificial neuron computes a linear combination of feature functions plus a vertical bias:
-
-$$
-y = \sum_{i=1}^m w_i x_i + b
-$$
-
-2. **Residual Networks (ResNets):** Residual skip connections perform function addition:
-
-$$
-\mathbf{h}_{l+1} = \mathbf{h}_l + \mathcal{F}(\mathbf{h}_l, W_l)
-$$
-
-Adding the identity function $\mathbf{h}_l$ prevents vanishing gradients and allows deep networks to train effectively.
-
----
-
-## 💻 4. Python Implementation: Visualizing Vertical Transformations
+## 💻 Python Implementation
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
-x = np.linspace(-3, 3, 300)
-base = x**2
+def operate_on_functions(c=2.0, x_vals=None):
+    """
+    Demonstrates algebraic operations on functions:
+    1. Scalar Multiplication: (c * f)(x) = c * f(x)
+       Vertically scales (stretches or compresses) the function graph.
+    2. Function Addition: (f + g)(x) = f(x) + g(x)
+       Sums outputs pointwise, fundamental to residual learning.
+       
+    Base functions: f(x) = x^2, g(x) = 3x
+    """
+    if x_vals is None:
+        x_vals = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
+        
+    def f(x):
+        return x ** 2
+        
+    def g(x):
+        return 3 * x
+        
+    f_vals = f(x_vals)
+    g_vals = g(x_vals)
+    scaled_f = c * f_vals
+    sum_fg = f_vals + g_vals
+    
+    return {
+        'x': x_vals,
+        'f(x)': f_vals,
+        'g(x)': g_vals,
+        '2*f(x)': scaled_f,
+        'f(x)+g(x)': sum_fg
+    }
 
-plt.figure(figsize=(9, 5))
-plt.plot(x, base, 'k-', lw=2, label='Base: f(x) = x^2')
-plt.plot(x, 2 * base, 'r--', lw=2, label='Vertical Stretch: 2 * f(x)')
-plt.plot(x, 0.5 * base, 'g:', lw=2, label='Vertical Compression: 0.5 * f(x)')
-plt.plot(x, base + 2, 'b-.', lw=2, label='Vertical Shift Up: f(x) + 2')
-plt.plot(x, -base, 'm--', lw=2, label='Vertical Reflection: -f(x)')
-
-plt.axhline(0, color='gray', lw=1)
-plt.axvline(0, color='gray', lw=1)
-plt.title('Vertical Transformations of Functions', fontsize=12, fontweight='bold')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.grid(True, linestyle=':', alpha=0.6)
-plt.legend()
-plt.ylim(-5, 10)
-plt.show()
+# --- Function Call & Testing ---
+ops = operate_on_functions(c=2.0)
+print(f"{'x':<6} | {'f(x)=x^2':<10} | {'g(x)=3x':<10} | {'2*f(x)':<10} | {'(f+g)(x)':<12}")
+print("-" * 56)
+for i in range(len(ops['x'])):
+    print(f"{ops['x'][i]:<6.1f} | {ops['f(x)'][i]:<10.2f} | {ops['g(x)'][i]:<10.2f} | {ops['2*f(x)'][i]:<10.2f} | {ops['f(x)+g(x)'][i]:<12.2f}")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. Multiplying by a constant scales the output vertically without shifting inputs horizontally.
+2. Adding two functions produces pointwise superposition of their curves.
+3. Linearity of derivatives: $\frac{d}{dx}[c f(x) + g(x)] = c f'(x) + g'(x)$.

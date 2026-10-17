@@ -1,79 +1,91 @@
-# 📈 Lecture 22.07: Differentiation Rules & Activation Function Derivatives
+# Lecture 22.07: Differentiation Rules & Activation Function Derivatives
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Numpy](https://img.shields.io/badge/Numpy-Numerical%20Computing-013243.svg)](https://numpy.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 22](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am details the fundamental **Rules of Differentiation** (Power Rule, Product Rule, Quotient Rule, Chain Rule) and applies them to calculate derivatives of key neural network **Activation Functions**.
 
 ---
 
-## 📌 1. Fundamental Rules of Differentiation
+## 🏛️ Essential Differentiation Rules
 
-| Rule Name | Mathematical Statement | Example |
+| Rule Name | Mathematical Formulation | Example |
 | :--- | :--- | :--- |
-| **Power Rule** | $\frac{d}{dx}[x^n] = n x^{n-1}$ | $\frac{d}{dx}[x^4] = 4x^3$ |
-| **Constant Multiple Rule** | $\frac{d}{dx}[c \cdot f(x)] = c f'(x)$ | $\frac{d}{dx}[5x^3] = 15x^2$ |
-| **Sum & Difference Rule** | $\frac{d}{dx}[f(x) \pm g(x)] = f'(x) \pm g'(x)$ | $\frac{d}{dx}[x^2 + 3x] = 2x + 3$ |
-| **Product Rule** | $\frac{d}{dx}[f(x) g(x)] = f'(x) g(x) + f(x) g'(x)$ | $\frac{d}{dx}[x e^x] = e^x + x e^x$ |
-| **Quotient Rule** | $\frac{d}{dx}\left[\frac{f(x)}{g(x)}\right] = \frac{f'(x)g(x) - f(x)g'(x)}{(g(x))^2}$ | $\frac{d}{dx}\left[\frac{x}{x+1}\right] = \frac{1}{(x+1)^2}$ |
-| **Chain Rule** | $\frac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)$ | $\frac{d}{dx}[(3x+1)^4] = 4(3x+1)^3 \cdot 3$ |
+| **Power Rule** | $\frac{d}{dx}[x^n] = n x^{n-1}$ | $\frac{d}{dx}[x^3] = 3x^2$ |
+| **Constant Multiple** | $\frac{d}{dx}[c f(x)] = c f'(x)$ | $\frac{d}{dx}[5x^2] = 10x$ |
+| **Sum / Difference** | $\frac{d}{dx}[f \pm g] = f' \pm g'$ | $\frac{d}{dx}[x^2 + 3x] = 2x + 3$ |
+| **Product Rule** | $\frac{d}{dx}[f \cdot g] = f' g + f g'$ | $\frac{d}{dx}[x e^x] = e^x + x e^x$ |
+| **Quotient Rule** | $\frac{d}{dx}\left[\frac{f}{g}\right] = \frac{f' g - f g'}{g^2}$ | $\frac{d}{dx}\left[\frac{x}{x+1}\right] = \frac{1}{(x+1)^2}$ |
+| **Chain Rule** | $\frac{d}{dx}[g(f(x))] = g'(f(x)) \cdot f'(x)$ | $\frac{d}{dx}[(2x+1)^3] = 3(2x+1)^2 \cdot 2$ |
 
 ---
 
-## 🧠 2. AI Activation Functions & Their Derivatives
+## 🧠 Activation Function Derivatives
 
-### 1. Sigmoid Function: $\sigma(x) = \frac{1}{1 + e^{-x}}$
-Using the Quotient / Chain Rule:
-
-$$
-\sigma'(x) = \frac{d}{dx}[(1 + e^{-x})^{-1}] = -(1 + e^{-x})^{-2} (-e^{-x}) = \frac{e^{-x}}{(1 + e^{-x})^2}
-$$
-
-Rewrite in self-referential form:
+### 1. Sigmoid Function: $\sigma(z) = \frac{1}{1 + e^{-z}}$
 
 $$
-\sigma'(x) = \frac{1}{1 + e^{-x}} \cdot \left(1 - \frac{1}{1 + e^{-x}}\right) = \sigma(x) (1 - \sigma(x))
+\sigma'(z) = \sigma(z)(1 - \sigma(z))
 $$
 
-### 2. Hyperbolic Tangent: $\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$
+At $z=0$, $\sigma'(0) = 0.5 \times 0.5 = 0.25$. As $|z| \to \infty$, derivative vanishes to $0$ (Vanishing Gradient Problem).
+
+### 2. ReLU Function: $f(z) = \max(0, z)$
 
 $$
-\tanh'(x) = 1 - \tanh^2(x)
+f'(z) = \begin{cases} 1 & \text{if } z > 0 \\ 0 & \text{if } z < 0 \end{cases}
 $$
 
-### 3. Rectified Linear Unit (ReLU): $\text{ReLU}(x) = \max(0, x)$
-
-$$
-\text{ReLU}'(x) = \begin{cases} 1 & \text{if } x > 0 \\ 0 & \text{if } x < 0 \end{cases}
-$$
-
-(At $x = 0$, the subgradient convention sets the derivative to $0$ or $1$).
-
-```mermaid
-graph TD
-    A["Neural Network Backpropagation"] --> B["Chain Rule: dL/dw = (dL/dy) * (dy/dz) * (dz/dw)"]
-    B --> C["dy/dz = Activation Function Derivative"]
-    C --> D["Sigmoid: σ(z)(1 - σ(z)) -> Max 0.25 -> Vanishing Gradient"]
-    C --> E["ReLU: 1.0 (z>0) -> Constant Gradient Flow"]
-```
+Derivative is either $1$ or $0$, preventing vanishing gradients during backpropagation.
 
 ---
 
-## 💻 3. Python Implementation: Verifying Activation Derivatives
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+def differentiate_activation_functions(z_vals=None):
+    """
+    Computes analytical derivatives of common neural network activation functions:
+    1. Sigmoid: sigma(z) = 1 / (1 + e^-z)
+       Derivative: sigma'(z) = sigma(z) * (1 - sigma(z))
+    2. ReLU: f(z) = max(0, z)
+       Derivative: f'(z) = 1 if z > 0 else 0
+    3. Tanh: tanh(z)
+       Derivative: tanh'(z) = 1 - tanh^2(z)
+    """
+    if z_vals is None:
+        z_vals = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
+        
+    # 1. Sigmoid
+    sig = 1.0 / (1.0 + np.exp(-z_vals))
+    sig_deriv = sig * (1.0 - sig)
+    
+    # 2. ReLU
+    relu = np.maximum(0.0, z_vals)
+    relu_deriv = np.where(z_vals > 0, 1.0, 0.0)
+    
+    # 3. Tanh
+    tanh_val = np.tanh(z_vals)
+    tanh_deriv = 1.0 - tanh_val ** 2
+    
+    return {
+        'z': z_vals,
+        'sigmoid_deriv': sig_deriv,
+        'relu_deriv': relu_deriv,
+        'tanh_deriv': tanh_deriv
+    }
 
-def sigmoid_deriv(x):
-    s = sigmoid(x)
-    return s * (1 - s)
-
-x_test = np.array([-2.0, 0.0, 2.0])
-print("Sigmoid values:     ", np.round(sigmoid(x_test), 4))
-print("Sigmoid derivatives:", np.round(sigmoid_deriv(x_test), 4))
-print("Max Sigmoid derivative occurs at x=0:", sigmoid_deriv(0.0))
+# --- Function Call & Testing ---
+activations = differentiate_activation_functions()
+print(f"{'Input z':<8} | {'Sigmoid Deriv':<15} | {'ReLU Deriv':<12} | {'Tanh Deriv':<12}")
+print("-" * 55)
+for i in range(len(activations['z'])):
+    print(f"{activations['z'][i]:<8.1f} | {activations['sigmoid_deriv'][i]:<15.4f} | {activations['relu_deriv'][i]:<12.1f} | {activations['tanh_deriv'][i]:<12.4f}")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. The power rule and chain rule form the mathematical bedrock of backpropagation.
+2. Sigmoid's maximum derivative is only $0.25$, which causes vanishing gradients in deep networks.
+3. ReLU maintains a gradient of $1.0$ for positive inputs, solving the vanishing gradient issue.

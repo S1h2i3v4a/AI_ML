@@ -1,88 +1,79 @@
-# Module 24.14: Logistic Regression — Cost Function & Optimization
+# Lecture 24.14: Logistic Regression — Cost Function (Log-Loss)
 
-## 1. Why Mean Squared Error (MSE) Fails for Logistic Regression
-
-In linear regression, MSE yields a strictly convex paraboloid.
-However, if we insert the non-linear Sigmoid hypothesis $\hat{y} = \sigma(\mathbf{w}^T \mathbf{x} + b)$ into the MSE loss:
-
-$$
-J_{\text{MSE}}(\mathbf{w}) = \frac{1}{2m} \sum_{i=1}^m \left( \sigma(\mathbf{w}^T \mathbf{x}^{(i)} + b) - y^{(i)} \right)^2
-$$
-
-The resulting loss surface is **non-convex**, riddled with flat plateaus and local minima! Gradient descent gets trapped and fails to converge to the optimal parameters.
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am explains why Mean Squared Error fails for Logistic Regression and derives the **Binary Cross-Entropy (Log-Loss)** cost function.
 
 ---
 
-## 2. Derivation of the Binary Cross-Entropy Cost via Maximum Likelihood Estimation (MLE)
-
-For binary targets $y \in \{0, 1\}$, the outcome follows a **Bernoulli distribution**:
-
-$$
-P(y|\mathbf{x}) = \hat{y}^y (1 - \hat{y})^{1 - y}
-$$
-
-For a dataset of $m$ independent observations, the joint **Likelihood Function** is:
+## 🏛️ Why MSE Fails for Logistic Regression
+If you insert the non-linear Sigmoid function into MSE:
 
 $$
-L(\mathbf{w}, b) = \prod_{i=1}^m P(y^{(i)} | \mathbf{x}^{(i)}) = \prod_{i=1}^m (\hat{y}^{(i)})^{y^{(i)}} (1 - \hat{y}^{(i)})^{1 - y^{(i)}}
+J(\mathbf{w}) = \frac{1}{2m} \sum \left(\sigma(\mathbf{w}^T \mathbf{x}) - y\right)^2
 $$
 
-### Taking the Log-Likelihood:
-$$
-\ln L(\mathbf{w}, b) = \sum_{i=1}^m \left[ y^{(i)} \ln \hat{y}^{(i)} + (1 - y^{(i)}) \ln(1 - \hat{y}^{(i)}) \right]
-$$
-
-### Converting to Minimization (Negative Log-Likelihood / Log Loss):
-Dividing by $-m$, we obtain the **Binary Cross-Entropy (Log Loss)** cost function:
-
-$$
-J(\mathbf{w}, b) = -\frac{1}{m} \sum_{i=1}^m \left[ y^{(i)} \ln \hat{y}^{(i)} + (1 - y^{(i)}) \ln(1 - \hat{y}^{(i)}) \right]
-$$
+The resulting loss surface is **non-convex**, riddled with local minima and flat plateaus where Gradient Descent gets permanently stuck!
 
 ---
 
-## 3. Piecewise Penalty Mechanics
+## 📐 Binary Cross-Entropy (Log-Loss)
 
-The loss per sample $L(\hat{y}, y)$ exhibits asymmetric logarithmic penalties:
+To ensure strict convexity, we use **Log-Loss**:
 
 $$
-L(\hat{y}, y) = \begin{cases} -\ln(\hat{y}) & \text{if } y = 1 \\ -\ln(1 - \hat{y}) & \text{if } y = 0 \end{cases}
+J(\mathbf{w}) = -\frac{1}{m} \sum_{i=1}^m \left[ y^{(i)} \log\left(\hat{p}^{(i)}\right) + \left(1 - y^{(i)}\right) \log\left(1 - \hat{p}^{(i)}\right) \right]
 $$
 
-```
-  If True Label y = 1:                    If True Label y = 0:
-  Loss ^                                  Loss ^
-       | \                                     |                                   /
-       |  \                                    |                                  /
-       |   \                                   |                                 /
-       |    \                                  |                                /
-     0 +-----+--------> \hat{y}              0 +-------------------------------+---> \hat{y}
-       0     1                                 0                               1
-  Prediction \hat{y} -> 1 ==> Loss -> 0   Prediction \hat{y} -> 0 ==> Loss -> 0
-  Prediction \hat{y} -> 0 ==> Loss -> inf Prediction \hat{y} -> 1 ==> Loss -> inf
+```mermaid
+flowchart TD
+    Target{"Actual Label y"} -->|"y = 1"| Loss1["Cost = -log(p_hat)<br/>If p_hat → 1: Cost = 0<br/>If p_hat → 0: Cost → ∞ (Severe Penalty!)"]
+    Target -->|"y = 0"| Loss0["Cost = -log(1 - p_hat)<br/>If p_hat → 0: Cost = 0<br/>If p_hat → 1: Cost → ∞ (Severe Penalty!)"]
+    Loss1 --> Convex["Log-Loss creates a strictly convex bowl!<br/>Gradient Descent is guaranteed to find global optimum!"]
+    Loss0 --> Convex
 ```
 
-If the model predicts confident wrong answers ($y=1$ but $\hat{y}=0$), the penalty approaches **infinity**!
+---
+
+## 💻 Python Implementation
+
+```python
+import numpy as np
+
+def compute_binary_cross_entropy(y_true, y_pred_prob):
+    """
+    Computes Binary Cross-Entropy (Log-Loss) Cost Function:
+        J(w) = - 1/m * sum [ y*log(p) + (1-y)*log(1-p) ]
+        
+    Guarantees strict convexity, eliminating local minima traps of MSE.
+    """
+    y = np.array(y_true, dtype=float)
+    p = np.clip(np.array(y_pred_prob, dtype=float), 1e-15, 1 - 1e-15)
+    m = len(y)
+    
+    # Pointwise log-loss
+    sample_losses = -(y * np.log(p) + (1.0 - y) * np.log(1.0 - p))
+    total_cost = (1.0 / m) * np.sum(sample_losses)
+    
+    return {
+        'total_cost': float(total_cost),
+        'sample_losses': sample_losses.round(4).tolist()
+    }
+
+# --- Function Call & Testing ---
+actual_labels = [1, 1, 0, 0]
+# Confident good predictions vs unconfident predictions
+confident_preds = [0.95, 0.90, 0.05, 0.10]
+poor_preds      = [0.20, 0.30, 0.80, 0.70]
+
+loss_good = compute_binary_cross_entropy(actual_labels, confident_preds)['total_cost']
+loss_bad  = compute_binary_cross_entropy(actual_labels, poor_preds)['total_cost']
+
+print(f"Log Loss with Confident Accurate Predictions : {loss_good:.4f}")
+print(f"Log Loss with Poor Misclassified Predictions: {loss_bad:.4f}")
+```
 
 ---
 
-## 4. Analytic Gradient Derivation & Update Rule
-
-Applying the chain rule using $\frac{d\sigma}{dz} = \sigma(z)(1 - \sigma(z))$:
-
-$$
-\frac{\partial J}{\partial w_j} = \frac{1}{m} \sum_{i=1}^m \left( \hat{y}^{(i)} - y^{(i)} \right) x_j^{(i)}
-$$
-
-$$
-\frac{\partial J}{\partial b} = \frac{1}{m} \sum_{i=1}^m \left( \hat{y}^{(i)} - y^{(i)} \right)
-$$
-
-### Vectorized Gradient Descent Update:
-$$
-\mathbf{w} := \mathbf{w} - \alpha \left[ \frac{1}{m} \mathbf{X}^T (\hat{\mathbf{y}} - \mathbf{y}) \right]
-$$
-
-$$
-b := b - \alpha \left[ \frac{1}{m} \sum_{i=1}^m (\hat{y}^{(i)} - y^{(i)}) \right]
-$$
+## 🔑 Key Takeaways
+1. Binary Cross-Entropy heavily penalizes confident wrong predictions with infinite loss.
+2. Log-loss restores convexity to the optimization surface.

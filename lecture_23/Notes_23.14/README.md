@@ -1,99 +1,111 @@
-# Module 23.14: Evaluation Metrics for Regression (MAE, MSE, RMSE, $R^2$, and Adjusted $R^2$)
+# Lecture 23.14: Evaluation Metrics for Regression
 
-## 1. Why Classification Accuracy Fails for Regression
-
-In classification problems, target outputs are discrete labels ($y \in \{0, 1\}$), permitting simple metric ratios such as $\frac{\text{Correct}}{\text{Total}}$.
-In regression, predictions $\hat{y}$ are continuous real numbers ($\hat{y} \in \mathbb{R}$). The probability of an exact floating-point match $P(\hat{y} = y) = 0$.
-Consequently, regression evaluation relies on **distance-based error norms** and **variance-explained ratios**.
+## 📌 Topic Overview
+In this concluding lecture for Day 23, Shraddha ma'am covers all essential **Regression Evaluation Metrics**: **MAE**, **MSE**, **RMSE**, **$R^2$ Score**, and **Adjusted $R^2$**.
 
 ---
 
-## 2. Distance-Based Error Metrics
+## 🏛️ Comprehensive Metrics Formulations
 
 ### 1. Mean Absolute Error (MAE)
-MAE measures the average absolute magnitude of the prediction errors:
 
 $$
-\text{MAE} = \frac{1}{m} \sum_{i=1}^m |y_i - \hat{y}_i|
+\text{MAE} = \frac{1}{m} \sum_{i=1}^m \left| y_i - \hat{y}_i \right|
 $$
 
-- **Units:** Exact same units as the target variable $y$.
-- **Robustness:** Robust to outliers because errors scale linearly ($|e_i|$). It treats all deviations proportionally.
+- In the original units of $y$. Robust to extreme outliers.
 
-### 2. Mean Squared Error (MSE)
-MSE computes the average of the squared prediction deviations:
+### 2. Mean Squared Error (MSE) & Root Mean Squared Error (RMSE)
 
 $$
-\text{MSE} = \frac{1}{m} \sum_{i=1}^m (y_i - \hat{y}_i)^2
+\text{MSE} = \frac{1}{m} \sum_{i=1}^m \left( y_i - \hat{y}_i \right)^2, \quad \text{RMSE} = \sqrt{\text{MSE}}
 $$
 
-- **Units:** Squared units of the target ($y^2$, e.g., $\$^{2}$).
-- **Outlier Sensitivity:** Highly sensitive to outliers. A single severe error drastically inflates MSE due to the quadratic exponent.
+- RMSE converts the squared metric back into the original units of the target variable.
 
-### 3. Root Mean Squared Error (RMSE)
-RMSE is the square root of the Mean Squared Error:
+### 3. $R^2$ Score (Coefficient of Determination)
 
 $$
-\text{RMSE} = \sqrt{\text{MSE}} = \sqrt{\frac{1}{m} \sum_{i=1}^m (y_i - \hat{y}_i)^2}
+R^2 = 1 - \frac{\text{SS}_{\text{res}}}{\text{SS}_{\text{tot}}} = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}
 $$
 
-- **Units:** Restores the original target unit $y$ while preserving the quadratic penalty on large outliers.
-- **Mathematical Property:** $\text{RMSE} \ge \text{MAE}$ always. The difference $\text{RMSE} - \text{MAE}$ reflects the variance in error magnitudes.
+- Measures the proportion of variance in $y$ explained by the features ($1.0$ is perfect; $0.0$ equals baseline mean predictor).
+
+### 4. Adjusted $R^2$
+
+$$
+R^2_{\text{adj}} = 1 - \left[ \frac{(1 - R^2)(n - 1)}{n - p - 1} \right]
+$$
+
+- **Why Adjusted $R^2$?** Adding irrelevant garbage features will *always* mechanically inflate raw $R^2$. Adjusted $R^2$ penalizes model complexity by including feature count $p$ in the denominator!
 
 ---
 
-## 3. Relative Goodness-of-Fit: $R^2$ Score
+## 📊 Metrics Flowchart
 
-The **Coefficient of Determination** ($R^2$) quantifies the proportion of target variance explained by the model compared to a baseline naive model that always predicts the sample mean $\bar{y}$.
+```mermaid
+flowchart TD
+    Eval["Regression Evaluation"] --> Abs["Absolute Errors<br/>MAE (Robust to Outliers)"]
+    Eval --> Sq["Squared Errors<br/>MSE & RMSE (Penalizes Large Errors)"]
+    Eval --> Var["Variance Explained<br/>R^2 Score & Adjusted R^2"]
 
-$$
-R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}} = 1 - \frac{\sum_{i=1}^m (y_i - \hat{y}_i)^2}{\sum_{i=1}^m (y_i - \bar{y})^2}
-$$
-
-Where:
-- **$SS_{\text{res}}$ (Residual Sum of Squares):** Unexplained variance in predictions.
-- **$SS_{\text{tot}}$ (Total Sum of Squares):** Total empirical variance in ground truth $y$.
-
-```
-Value of R^2         Interpretation
--------------------------------------------------------------------------------------------------
-R^2 = 1.0           Perfect model (zero residual errors; all points lie precisely on hyperplane).
-R^2 = 0.0           Model performs identically to predicting the sample mean \bar{y} for all inputs.
-R^2 < 0.0           Model performs WORSE than simply predicting the mean!
+    Var --> Adj["Adjusted R^2<br/>Penalizes adding useless features!"]
 ```
 
 ---
 
-## 4. The Pitfall of $R^2$ and the Adjusted $R^2$ Solution
+## 💻 Python Implementation
 
-### The Fundamental Flaw of $R^2$:
-As additional feature variables are added to a regression model ($p \to p + 1$), $SS_{\text{res}}$ can **never increase**; it either decreases or stays constant.
-Even if a completely random, useless noise feature is added, $R^2$ will artificially increase or remain unchanged. It never penalizes model bloat!
+```python
+import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-### The Adjusted $R^2$ Metric:
-Adjusted $R^2$ introduces a degrees-of-freedom penalty for every additional predictor feature $p$:
+def compute_regression_metrics(y_true, y_pred, num_features):
+    """
+    Computes all standard regression evaluation metrics:
+    1. MAE (Mean Absolute Error)
+    2. MSE (Mean Squared Error)
+    3. RMSE (Root Mean Squared Error)
+    4. R^2 (Coefficient of Determination)
+    5. Adjusted R^2 (Penalizes redundant features)
+    """
+    y_t = np.array(y_true)
+    y_p = np.array(y_pred)
+    n = len(y_t)
+    p = num_features
+    
+    mae = mean_absolute_error(y_t, y_p)
+    mse = mean_squared_error(y_t, y_p)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_t, y_p)
+    
+    # Adjusted R^2 formula
+    adj_r2 = 1.0 - ((1.0 - r2) * (n - 1) / (n - p - 1))
+    
+    return {
+        'MAE': float(mae),
+        'MSE': float(mse),
+        'RMSE': float(rmse),
+        'R2_Score': float(r2),
+        'Adjusted_R2': float(adj_r2)
+    }
 
-$$
-R^2_{\text{adj}} = 1 - \left[ \frac{(1 - R^2)(m - 1)}{m - p - 1} \right]
-$$
+# --- Function Call & Testing ---
+actuals = [100.0, 150.0, 200.0, 250.0, 300.0]
+preds   = [105.0, 142.0, 208.0, 245.0, 310.0]
 
-Where:
-- $m$: Total sample size.
-- $p$: Total number of independent predictors/features.
-
-### Behavioral Properties:
-1. If a newly added feature meaningfully reduces $SS_{\text{res}}$ beyond chance, $R^2_{\text{adj}}$ **increases**.
-2. If a newly added feature offers negligible predictive value, the penalty term $\frac{m-1}{m-p-1}$ dominates, and $R^2_{\text{adj}}$ **decreases**.
-3. $R^2_{\text{adj}} \le R^2$ always holds.
+metrics = compute_regression_metrics(actuals, preds, num_features=2)
+print("Regression Evaluation Metrics:")
+print(f"  MAE         : {metrics['MAE']:.2f}")
+print(f"  MSE         : {metrics['MSE']:.2f}")
+print(f"  RMSE        : {metrics['RMSE']:.2f}")
+print(f"  R^2 Score   : {metrics['R2_Score']:.4f}")
+print(f"  Adjusted R^2: {metrics['Adjusted_R2']:.4f}")
+```
 
 ---
 
-## 5. Comparative Evaluation Summary
-
-| Metric | Formula | Units | Sensitivity to Outliers | Primary Use Case |
-| :--- | :--- | :--- | :--- | :--- |
-| **MAE** | $\frac{1}{m}\sum \|y_i - \hat{y}_i\|$ | Same as $y$ | Low (Robust) | Business metrics requiring intuitive linear interpretation |
-| **MSE** | $\frac{1}{m}\sum (y_i - \hat{y}_i)^2$ | Squared $y^2$ | High | Loss function during model training optimization |
-| **RMSE**| $\sqrt{\text{MSE}}$ | Same as $y$ | High | Diagnostic evaluation when large errors are dangerous |
-| **$R^2$** | $1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}$ | Unitless $\in (-\infty, 1]$ | Medium | Evaluating explanatory variance of univariate models |
-| **$R^2_{\text{adj}}$**| $1 - \frac{(1-R^2)(m-1)}{m-p-1}$ | Unitless $\in (-\infty, 1]$ | Medium | Comparing multiple regression models with different feature counts |
+## 🔑 Key Takeaways
+1. MAE measures average magnitude; RMSE penalizes large blunders.
+2. $R^2$ tells you what percentage of target variance your model captures.
+3. Always report Adjusted $R^2$ when performing feature selection to detect useless predictors.

@@ -1,62 +1,74 @@
-# Module 24.08: Regularization — Lasso Regression (L1 Norm)
+# Lecture 24.08: Regularization — Lasso Regression (L1 Norm)
 
-## 1. What is Regularization?
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Lasso Regression (Least Absolute Shrinkage and Selection Operator)**, explaining how adding an **L1 Norm penalty** to the cost function cures overfitting and performs automatic feature selection.
 
-**Regularization** is an algorithmic technique designed to prevent overfitting by penalizing excessive model complexity. It modifies the loss function to discourage parameter weights from taking large, unstable values:
+---
+
+## 🏛️ The Lasso Cost Function
 
 $$
-\mathcal{L}_{\text{regularized}}(\mathbf{w}) = \mathcal{L}_{\text{data}}(\mathbf{w}) + \lambda \cdot \Omega(\mathbf{w})
+J_{\text{Lasso}}(\mathbf{w}) = \frac{1}{2m} \sum_{i=1}^m \left(\hat{y}^{(i)} - y^{(i)}\right)^2 + \lambda \sum_{j=1}^d |w_j|
 $$
 
 Where:
-- $\mathcal{L}_{\text{data}}(\mathbf{w})$: Empirical loss on training data (e.g., Mean Squared Error).
-- $\Omega(\mathbf{w})$: Model complexity penalty term.
-- $\lambda \ge 0$ (often denoted as $\alpha$): Regularization hyperparameter governing the tradeoff between data fit and parameter shrinkage.
+- $\lambda \ge 0$ (or `alpha` in Scikit-Learn) is the **regularization hyperparameter**.
+- The second term is the **L1 Norm penalty**: the sum of absolute values of weights.
+
+```mermaid
+flowchart TD
+    MSE["Ordinary Least Squares MSE<br/>Focuses on minimizing prediction error"] --> Loss["Lasso Objective:<br/>J = MSE + λ * ∑ |w_j|"]
+    L1["L1 Penalty: λ * ∑ |w_j|<br/>Diamond constraint boundary with sharp corners!"] --> Loss
+    Loss --> Zero["Forces uninformative coefficients strictly to 0.0<br/>Automatic Feature Selection!"]
+```
 
 ---
 
-## 2. Mathematical Formulation of Lasso (Least Absolute Shrinkage and Selection Operator)
-
-Lasso imposes an **L1 norm penalty** on the weight vector $\mathbf{w}$:
-
-$$
-J_{\text{Lasso}}(\mathbf{w}, b) = \frac{1}{2m} \sum_{i=1}^m \left( \hat{y}^{(i)} - y^{(i)} \right)^2 + \lambda \|\mathbf{w}\|_1
-$$
-
-Where the L1 norm is the sum of absolute parameter weights:
-
-$$
-\|\mathbf{w}\|_1 = \sum_{j=1}^p |w_j|
-$$
-
-> **Important Modeling Convention:** The intercept parameter $b$ is **never regularized**. Penalizing the intercept would unfairly force predictions toward zero regardless of the target variable's baseline level.
+## 💡 The Diamond Constraint Geometry
+Because the L1 norm creates a sharp diamond-shaped constraint region in parameter space, the elliptical MSE error contours frequently intersect the constraint region at its sharp vertices (corners). At any vertex, one or more coordinate weights equal **exactly zero**!
 
 ---
 
-## 3. Geometric Intuition: Why Lasso Induces Sparsity (Feature Selection)
+## 💻 Python Implementation
 
-Lasso optimization can be formulated as an equivalent constrained optimization problem (via Karush-Kuhn-Tucker duality):
+```python
+import numpy as np
+from sklearn.linear_model import Lasso
 
-$$
-\min_{\mathbf{w}} \frac{1}{2m} \|\mathbf{X} \mathbf{w} - \mathbf{y}\|_2^2 \quad \text{subject to} \quad \sum_{j=1}^p |w_j| \le C
-$$
+def demonstrate_lasso_feature_selection():
+    """
+    Demonstrates Lasso Regression (L1 Regularization):
+    Cost = MSE + alpha * sum(|theta_j|)
+    
+    Property: Forces uninformative feature coefficients strictly to 0.0 (Feature Sparsity).
+    """
+    # Synthetic data: 5 features, but only features 0 and 1 are truly informative
+    np.random.seed(42)
+    X = np.random.randn(50, 5)
+    # y depends only on X0 and X1; X2, X3, X4 are pure random noise
+    y = 5.0 * X[:, 0] - 3.0 * X[:, 1] + np.random.normal(0, 0.5, size=50)
+    
+    # Train Lasso with alpha = 1.0
+    lasso = Lasso(alpha=1.0, random_state=42)
+    lasso.fit(X, y)
+    
+    coefficients = lasso.coef_.tolist()
+    sparse_features = [f"X{i}" for i, c in enumerate(coefficients) if abs(c) < 1e-4]
+    
+    return {
+        'learned_coefficients': [round(c, 3) for c in coefficients],
+        'eliminated_features': sparse_features
+    }
 
+# --- Function Call & Testing ---
+lasso_res = demonstrate_lasso_feature_selection()
+print("Lasso Learned Coefficients (X0 to X4):", lasso_res['learned_coefficients'])
+print("Features eliminated (set strictly to 0) :", lasso_res['eliminated_features'])
 ```
-              w2 ^
-                 |         / \
-                 |        /   \  L1 Diamond Constraint: |w1| + |w2| <= C
-                 |       /     \
-                 |      /       \
-   --------------+-----+---------+------> w1
-                 |      \       /
-                 |       \  *  /  <-- Corner contact point (w1 = 0, w2 = w*)
-                 |        \   /
-                 |         \ /
-```
 
-### The Geometry of Axis Corners:
-1. In 2D parameter space, the constraint region $\|\mathbf{w}\|_1 \le C$ is a **diamond** (rhombus) with sharp corners positioned exactly on the coordinate axes ($w_1 = 0$ or $w_2 = 0$).
-2. The elliptical contours of the quadratic MSE loss expand outwards from the unconstrained OLS minimum.
-3. Due to the sharp geometric vertices of the diamond, the expanding ellipse will almost always make its first point of tangency **at a corner on the axis**.
-4. Consequently, Lasso forces redundant or uninformative feature weights strictly to **zero** ($w_j = 0$).
-5. **Key Advantage:** Lasso performs automatic **embedded feature selection**, producing sparse, highly interpretable models.
+---
+
+## 🔑 Key Takeaways
+1. Lasso applies an L1 penalty on the sum of absolute weights.
+2. Higher values of $\lambda$ shrink more coefficients to exactly zero.
+3. Serves as both a regularizer and an automatic feature selector.

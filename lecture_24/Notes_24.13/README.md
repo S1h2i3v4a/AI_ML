@@ -1,95 +1,74 @@
-# Module 24.13: Logistic Regression — Intuition & The Sigmoid Function
+# Lecture 24.13: Logistic Regression — Intuition & The Sigmoid Function
 
-## 1. Why Linear Regression Fails for Classification
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **Logistic Regression**, explaining why standard Linear Regression fails for binary classification and how the **Sigmoid Function** squashes continuous outputs into legitimate probabilities.
 
-In binary classification problems, the target label is categorical: $y \in \{0, 1\}$.
-Attempting to fit a linear regression hypothesis $\hat{y} = \mathbf{w}^T \mathbf{x} + b$ directly creates two fundamental mathematical flaws:
+---
 
-```
- Flaw 1: Unbounded Output Range
- Linear regression outputs real values on (-inf, +inf).
- Probabilities must be strictly bounded in [0, 1]. A prediction of \hat{y} = 2.4 or -0.8 is physically meaningless!
+## 🏛️ Why Linear Regression Fails for Classification
+1. **Unbounded Outputs**: A straight line $\hat{y} = mx + c$ produces values $< 0$ and $> 1$, which violates the fundamental law of probability $P \in [0, 1]$.
+2. **Sensitive to Outliers**: Adding a far-away data point rotates the linear decision boundary, causing massive classification errors on previously correct samples!
 
- Flaw 2: Extreme Outlier Sensitivity
- A single extreme positive outlier far to the right shifts the fitted regression line,
- tilting the decision boundary threshold and causing severe misclassification of existing points!
+```mermaid
+flowchart TD
+    Linear["Linear Score:<br/>z = w^T x + b<br/>Output Range: (-∞, +∞)"] --> Sigmoid["Sigmoid Function:<br/>g(z) = 1 / (1 + e^-z)<br/>Squashes output strictly into (0, 1)"]
+    Sigmoid --> Prob["Predicted Probability p_hat"]
+    Prob --> Decision{"p_hat >= 0.5 (z >= 0)?"}
+    Decision -->|"Yes"| Class1["Predict Class 1"]
+    Decision -->|"No"| Class0["Predict Class 0"]
 ```
 
 ---
 
-## 2. From Odds and Logits to the Sigmoid Function
-
-To map continuous inputs $\mathbf{w}^T \mathbf{x} + b \in (-\infty, \infty)$ into valid calibrated probabilities $p \in (0, 1)$, we progress through three mathematical steps:
-
-### Step 1: Probability to Odds Ratio
-The **Odds** of an event is the ratio of probability of occurrence to probability of non-occurrence:
+## 📐 The Sigmoid Formulation
 
 $$
-\text{Odds} = \frac{p}{1 - p} \in [0, \infty)
+\sigma(z) = \frac{1}{1 + e^{-z}}
 $$
 
-### Step 2: The Logit Function (Log-Odds)
-Taking the natural logarithm of the odds produces the **Logit**:
+- At $z = -\infty \implies \sigma(z) = 0.0$
+- At $z = 0 \implies \sigma(z) = 0.5$ (The Decision Threshold!)
+- At $z = +\infty \implies \sigma(z) = 1.0$
 
-$$
-\text{Logit}(p) = \ln\left( \frac{p}{1 - p} \right) \in (-\infty, \infty)
-$$
+---
 
-### Step 3: Inverting the Logit (The Sigmoid Function)
-We set the linear predictor equal to the log-odds:
+## 💻 Python Implementation
 
-$$
-\ln\left( \frac{p}{1 - p} \right) = \mathbf{w}^T \mathbf{x} + b = z
-$$
+```python
+import numpy as np
 
-Exponentiating both sides:
+def compute_sigmoid_probability(z_values):
+    """
+    Computes predicted probability using the Sigmoid (Logistic) Function:
+        g(z) = 1 / (1 + e^-z)
+        
+    Maps linear scores z in (-inf, inf) strictly into valid probabilities p in (0, 1).
+    Decision Threshold:
+        If p >= 0.5 (i.e., z >= 0) => Class 1
+        If p < 0.5  (i.e., z < 0)  => Class 0
+    """
+    z = np.array(z_values, dtype=float)
+    probabilities = 1.0 / (1.0 + np.exp(-z))
+    predictions = (probabilities >= 0.5).astype(int)
+    
+    return {
+        'linear_score_z': z.tolist(),
+        'probability': probabilities.round(4).tolist(),
+        'class_prediction': predictions.tolist()
+    }
 
-$$
-\frac{p}{1 - p} = e^z \implies p = e^z (1 - p) \implies p (1 + e^z) = e^z
-$$
-
-Solving for probability $p$:
-
-$$
-p = \sigma(z) = \frac{e^z}{1 + e^z} = \frac{1}{1 + e^{-z}}
-$$
-
-```
-               \sigma(z) ^
-                       1 |                  .-------------
-                         |                /
-                     0.5 |--------------* (z = 0, \sigma = 0.5)
-                         |             /
-                       0 | -----------'
-                         +-------------------------------> z
-                                      0
+# --- Function Call & Testing ---
+sample_z = [-10.0, -2.0, 0.0, 2.0, 10.0]
+sig_data = compute_sigmoid_probability(sample_z)
+print(f"{'Linear Score z':<15} | {'Sigmoid Prob p':<18} | {'Predicted Class (0/1)':<20}")
+print("-" * 55)
+for z_val, p_val, cls_val in zip(sig_data['linear_score_z'], sig_data['probability'], sig_data['class_prediction']):
+    print(f"{z_val:<15.1f} | {p_val:<18.4f} | {cls_val:<20}")
 ```
 
 ---
 
-## 3. Mathematical Properties of the Sigmoid Function
-
-1. **Symmetric S-Curve:** Centered at the inflection point $(0, 0.5)$.
-2. **Asymptotes:** $\lim_{z \to \infty} \sigma(z) = 1$ and $\lim_{z \to -\infty} \sigma(z) = 0$.
-3. **Analytic Derivative:** The derivative expresses cleanly in terms of the function itself:
-   $$
-   \sigma'(z) = \frac{d}{dz} \left( \frac{1}{1 + e^{-z}} \right) = \frac{e^{-z}}{(1 + e^{-z})^2} = \sigma(z) \left( 1 - \sigma(z) \right)
-   $$
-
----
-
-## 4. The Linear Decision Boundary
-
-To assign discrete binary class labels $\hat{y} \in \{0, 1\}$, we apply a standard probability threshold $\tau = 0.5$:
-
-$$
-\hat{y} = \begin{cases} 1 & \text{if } P(y=1|\mathbf{x}) \ge 0.5 \\ 0 & \text{if } P(y=1|\mathbf{x}) < 0.5 \end{cases}
-$$
-
-Because $\sigma(z) \ge 0.5 \iff z \ge 0$, the decision boundary satisfies:
-
-$$
-\mathbf{w}^T \mathbf{x} + b = 0
-$$
-
-This equation defines a **hyperplane** partitioning feature space into two prediction regions.
+## 🔑 Key Takeaways
+1. Despite its name, Logistic Regression is a **classification** algorithm.
+2. The Sigmoid function smoothly maps real-valued numbers to valid probabilities.
+3. The default decision boundary is $z = 0 \implies \hat{p} = 0.5$.

@@ -1,61 +1,104 @@
-# Module 23.14: Regression Evaluation Metrics (MAE, MSE, RMSE, $R^2$ & Adjusted $R^2$)
+# Notes_23.14: Regression Ke Evaluation Metrics [Hinglish]
 
-## 1. Regression Mein Accuracy Kyu Kaam Nahi Karti?
-
-Classification mein answer "Yes" ya "No" hota hai, to hum accuracy ($\frac{\text{Correct}}{\text{Total}}$) nikaal lete hain.
-Lekin Regression mein target ek continuous decimal number hota hai (jaise $\hat{y} = 25000.45$). Exact match hone ki probability mathematically zero hoti hai. Isliye regression mein hum errors ki doori (distance) aur explained variance calculate karte hain.
+## 📌 Topic Overview
+Is final lecture mein Shraddha ma'am ne Regression models ko test karne ke sabhi zaroori **Evaluation Metrics** (MAE, MSE, RMSE, $R^2$ aur Adjusted $R^2$) ko detail mein samjhaya hai.
 
 ---
 
-## 2. Distance-Based Error Metrics
-
-### 1. Mean Absolute Error (MAE):
-$$
-\text{MAE} = \frac{1}{m} \sum_{i=1}^m |y_i - \hat{y}_i|
-$$
-- **Unit:** Same as target (jaise Dollars ya Rupees).
-- **Outliers Par Asar:** Kam hota hai, sabhi errors ko linearly count karta hai.
-
-### 2. Mean Squared Error (MSE):
-$$
-\text{MSE} = \frac{1}{m} \sum_{i=1}^m (y_i - \hat{y}_i)^2
-$$
-- **Unit:** Squared unit ($\$^{2}$ ya $\text{Rs}^2$).
-- **Outliers Par Asar:** Bohot zyada hota hai. Agar ek point ka error 10 hai to square hokar 100 ho jayega.
-
-### 3. Root Mean Squared Error (RMSE):
-$$
-\text{RMSE} = \sqrt{\frac{1}{m} \sum_{i=1}^m (y_i - \hat{y}_i)^2}
-$$
-- **Unit:** Wapas normal currency unit mein aa jata hai.
-- Large errors ko strong penalty deta hai aur interpret karna easy hota hai.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- MAE (Mean Absolute Error) aur RMSE ka antar.
+- $R^2$ Score kya hota hai aur iski range (0 se 1).
+- Raw $R^2$ ka dhoka: Faltu features add karne se $R^2$ kyu badhta hai?
+- **Adjusted $R^2$** kyu sabse behtar metric hai.
 
 ---
 
-## 3. $R^2$ Score (Coefficient of Determination)
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-$R^2$ ye batata hai ki hamare model ne data ke kitne percent variance ko explain kar liya hai:
+#### 1. MAE vs RMSE:
+- **MAE**: Sidha average error. Agar actual ₹100 tha aur prediction ₹105 tha, toh error ₹5 hai.
+- **RMSE**: Outliers ko pakadne ke liye errors ka square karke root lete hain. Agar model ne koi bohot badi galti ki hai, toh RMSE turant badh jata hai.
+
+#### 2. $R^2$ Score (Variance Explained):
+Yeh batata hai ki aapke model ne target data ka kitna percentage pattern samajh liya hai:
+- $R^2 = 1.0$: 100% Perfect prediction.
+- $R^2 = 0.80$: Model ne 80% pattern samajh liya, 20% noise hai.
+
+#### 3. Adjusted $R^2$ Kyu Zaroori Hai?
+Agar aap house price model mein faltu features (jaise "owner ke kutte ka naam") add kar doge, tab bhi raw $R^2$ thoda sa badh jayega!
+Is dhoke se bachne ke liye **Adjusted $R^2$** use karte hain:
 
 $$
-R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}} = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2}
+R^2_{\text{adj}} = 1 - \left[ \frac{(1 - R^2)(n - 1)}{n - p - 1} \right]
 $$
 
-- $R^2 = 1.0$: Perfect model (zero error).
-- $R^2 = 0.80$: Model ne data ke 80% variation ko capture kar liya hai, 20% unexplained noise hai.
-- $R^2 = 0.0$: Baseline mean predictor jaisa bekaar model.
-- $R^2 < 0.0$: Mean predict karne se bhi zyada kharab model!
+Agar naya feature model ko koi asli faayda nahi de raha hai, toh Adjusted $R^2$ **kam ho jata hai**!
 
 ---
 
-## 4. $R^2$ Ki Kami Aur Adjusted $R^2$ Ka Solution
+### 📊 Visual Flowchart: Metrics Selection
 
-### $R^2$ Ka Sabse Bada Dhokha:
-Agar aap model mein 50 bekaar useless columns (jaise employee ka shoe size ya phone number) bhi add kar denge, tab bhi $R^2$ ya to badh jayega ya same rahega. $R^2$ kabhi kam nahi hota chahe feature kitna bhi bekaar ho!
+```mermaid
+flowchart TD
+    A["Model Predictions"] --> B["Absolute Error: MAE"]
+    A --> C["Squared Error: RMSE"]
+    A --> D["Variance Explained: R^2 Score"]
+    D --> E["Feature Penalty Check: Adjusted R^2"]
+```
 
-### Adjusted $R^2$ Ka Formula:
-$$
-R^2_{\text{adj}} = 1 - \left[ \frac{(1 - R^2)(m - 1)}{m - p - 1} \right]
-$$
-Yaha $m$ dataset ke samples hain aur $p$ total features ki count hai.
-- Agar naya feature kaam ka hai: $R^2_{\text{adj}}$ badhega.
-- Agar naya feature faltu/useless hai: $p$ badhne ki wajah se penalty lagegi aur $R^2_{\text{adj}}$ kam ho jayega!
+---
+
+### 💻 Python Code
+
+```python
+import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+def compute_regression_metrics(y_true, y_pred, num_features):
+    """
+    Computes all standard regression evaluation metrics:
+    1. MAE (Mean Absolute Error)
+    2. MSE (Mean Squared Error)
+    3. RMSE (Root Mean Squared Error)
+    4. R^2 (Coefficient of Determination)
+    5. Adjusted R^2 (Penalizes redundant features)
+    """
+    y_t = np.array(y_true)
+    y_p = np.array(y_pred)
+    n = len(y_t)
+    p = num_features
+    
+    mae = mean_absolute_error(y_t, y_p)
+    mse = mean_squared_error(y_t, y_p)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_t, y_p)
+    
+    # Adjusted R^2 formula
+    adj_r2 = 1.0 - ((1.0 - r2) * (n - 1) / (n - p - 1))
+    
+    return {
+        'MAE': float(mae),
+        'MSE': float(mse),
+        'RMSE': float(rmse),
+        'R2_Score': float(r2),
+        'Adjusted_R2': float(adj_r2)
+    }
+
+# --- Function Call & Testing ---
+actuals = [100.0, 150.0, 200.0, 250.0, 300.0]
+preds   = [105.0, 142.0, 208.0, 245.0, 310.0]
+
+metrics = compute_regression_metrics(actuals, preds, num_features=2)
+print("Regression Evaluation Metrics:")
+print(f"  MAE         : {metrics['MAE']:.2f}")
+print(f"  MSE         : {metrics['MSE']:.2f}")
+print(f"  RMSE        : {metrics['RMSE']:.2f}")
+print(f"  R^2 Score   : {metrics['R2_Score']:.4f}")
+print(f"  Adjusted R^2: {metrics['Adjusted_R2']:.4f}")
+```
+
+---
+
+### 📌 Summary Points
+- Business ko error samjhane ke liye **MAE / RMSE** best hain.
+- Model comparison ke liye **Adjusted $R^2$** sabse reliable metric hai.

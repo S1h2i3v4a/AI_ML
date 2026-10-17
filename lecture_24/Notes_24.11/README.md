@@ -1,32 +1,66 @@
-# Module 24.11: Using LassoCV for Automated Hyperparameter Tuning
+# Lecture 24.11: Using LassoCV for Automated Hyperparameter Tuning
 
-## 1. The Challenge of Selecting Optimal $\alpha$
-
-The regularization strength $\alpha$ is a **hyperparameter**—it cannot be learned directly by minimizing the training loss, because minimizing training loss trivially selects $\alpha = 0$ (unregularized OLS).
-Determining the optimal $\alpha^*$ requires evaluating generalization error across unseen validation folds via **K-Fold Cross-Validation**.
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **`LassoCV`**, Scikit-Learn's built-in cross-validation estimator that automatically searches for the optimal regularization strength $\alpha^*$ across a candidate grid.
 
 ---
 
-## 2. Algorithmic Mechanics of LassoCV
+## 🏛️ How LassoCV Works
 
-Scikit-learn's `LassoCV` automates the search across an array of candidate $\alpha$ values using an integrated coordinate descent path algorithm:
-
-```
-For each candidate alpha in [alpha_1, alpha_2, ..., alpha_k]:
-    For each fold k in K-Fold Cross Validation:
-        1. Train Lasso on K-1 folds
-        2. Evaluate validation MSE on fold k
-    Average the MSE across all K folds -> Mean CV Loss(alpha)
-
-Select alpha* = argmin Mean CV Loss(alpha)
-Re-fit Lasso on the ENTIRE training set using alpha*
+```mermaid
+flowchart TD
+    Candidates["Candidate Alphas: [0.001, 0.01, 0.1, 1.0, 10.0]"] --> KFold["5-Fold Cross Validation Split"]
+    KFold --> Train["Train on 4 Folds, Validate on 1 Fold"]
+    Train --> AvgMSE["Compute Average Validation MSE for each Alpha"]
+    AvgMSE --> Best["Select Alpha* with lowest Validation MSE!"]
 ```
 
 ---
 
-## 3. Inspecting the Fitted LassoCV Object
+## 💡 Why Use `LassoCV` Instead of Manual Loops?
+1. **Automated Search**: Eliminates manual `for`-loops across alphas.
+2. **Leak-Free Cross Validation**: Fits and tests on distinct rotated folds.
+3. **Internal Best Model**: Automatically refits the winning $\alpha^*$ on the full training set.
 
-After calling `model.fit(X_train, y_train)`:
-- `model.alpha_`: The single optimal regularization strength chosen by cross-validation.
-- `model.coef_`: The final feature coefficients learned at `alpha_`.
-- `model.mse_path_`: Matrix of shape `(n_alphas, n_folds)` containing validation errors for every fold and candidate parameter.
+---
+
+## 💻 Python Implementation
+
+```python
+import numpy as np
+from sklearn.linear_model import LassoCV
+
+def tune_lasso_with_cross_validation():
+    """
+    Demonstrates LassoCV: Automated hyperparameter tuning using K-Fold Cross Validation
+    to find the optimal alpha* that minimizes validation MSE.
+    """
+    np.random.seed(42)
+    X = np.random.randn(100, 6)
+    # Features 0 and 1 are signals, others are noise
+    y = 4.0 * X[:, 0] - 2.5 * X[:, 1] + np.random.normal(0, 0.5, size=100)
+    
+    alphas_to_test = [0.001, 0.01, 0.1, 0.5, 1.0, 5.0, 10.0]
+    
+    # 5-fold cross-validation
+    lasso_cv = LassoCV(alphas=alphas_to_test, cv=5, random_state=42, max_iter=2000)
+    lasso_cv.fit(X, y)
+    
+    return {
+        'optimal_alpha': float(lasso_cv.alpha_),
+        'active_features_count': int(np.sum(np.abs(lasso_cv.coef_) > 1e-4)),
+        'all_coefficients': [round(c, 3) for c in lasso_cv.coef_]
+    }
+
+# --- Function Call & Testing ---
+cv_res = tune_lasso_with_cross_validation()
+print(f"Optimal Alpha Selected by 5-Fold CV: {cv_res['optimal_alpha']}")
+print(f"Number of Retained Features        : {cv_res['active_features_count']} of 6")
+print(f"Final Model Coefficients           : {cv_res['all_coefficients']}")
+```
+
+---
+
+## 🔑 Key Takeaways
+1. Never guess the regularization parameter $\alpha$; let cross-validation find it.
+2. `lasso_cv.alpha_` stores the optimal hyperparameter.

@@ -1,51 +1,78 @@
-# 📈 Lecture 22.02: Ganitiya Functions aur Real-World Transformations [Hinglish]
+# Notes_22.02: Mathematical Functions Aur Real-World Transformations [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Numpy](https://img.shields.io/badge/Numpy-Numerical%20Computing-013243.svg)](https://numpy.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 22 Par Wapas Jayein](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Mathematical Functions** ka core concept samjhaya hai: Function kya hota hai, Domain aur Range kya hoti hain, aur alag-alag curves ($y = \sqrt{x}$, $y = \sin(x)$) ka nature kaisa hota hai.
 
 ---
 
-## 📌 1. Function Kya Hota Hai?
-
-Ek **Function** $f: X \to Y$ ek mathematical rule hota hai jo input set $X$ ke har element ko output set $Y$ ke **sirf aur sirf ek** unique element se map karta hai.
-
-- **Domain ($X$):** Sabhi valid inputs ka set jiske liye function defined hai.
-- **Codomain ($Y$):** Target set jisme output aane ki sambhavna hoti hai.
-- **Range:** Woh actual outputs ka set jo function produce karta hai ($\text{Range} \subseteq \text{Codomain}$).
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Function ki aasan paribhasha (Input $\to$ Rule $\to$ Output).
+- Domain (kya input de sakte hain) aur Range (kya output milega).
+- $y = \sqrt{x}$ ka curve aur negative values par restriction ($x \ge 0$).
+- $y = \sin(x)$ ka oscillatory nature (hamesha $-1$ se $+1$ ke beech).
 
 ---
 
-## 📐 2. AI mein Mukhya Function Types
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-1. **Root Functions ($y = \sqrt{x}$):**
-   - Inputs non-negative hone chahiye ($x \ge 0$).
-   - AI mein Euclidean distance aur standard deviation nikaalne mein use hota hai.
-2. **Trigonometric Functions ($y = \sin(x), y = \cos(x)$):**
-   - Output hamesha $[-1, 1]$ ke beech bounded hota hai.
-   - Transformers mein **Positional Encodings** ke liye use hota hai taaki tokens ki position capture ho sake.
-3. **Exponential aur Logarithm ($e^x, \ln(x)$):**
-   - $e^x$ numbers ko positive banata hai (Softmax probabilities).
-   - $\ln(x)$ multiplicative probabilities ko additive banata hai (Cross-Entropy loss calculation).
+#### 1. Function Kya Hota Hai?
+Function ek machine ki tarah hai. Aap usme ek input $x$ daalte ho, woh uspar koi mathematical rule lagata hai, aur badle mein ek unique output $y$ deta hai:
+
+$$
+y = f(x)
+$$
+
+- **Domain**: Woh saare inputs jo aap function ko bina kisi error ke de sakte ho. Jaise $\sqrt{x}$ mein negative numbers nahi daal sakte, toh Domain $x \ge 0$ hai.
+- **Range**: Function run hone ke baad jo outputs nikalte hain. Jaise $\sin(x)$ ka output chahe kuch bhi $x$ daalo hamesha $[-1, 1]$ ke beech rehta hai.
 
 ---
 
-## 💻 3. Python Plotting Code
+### 📊 Visual Flowchart: Function Machine
+
+```mermaid
+flowchart LR
+    A["Input x (Domain)"] --> B["Function f(x) Rule"]
+    B --> C["Output y (Range)"]
+```
+
+---
+
+### 💻 Python Code
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
-x = np.linspace(-2 * np.pi, 2 * np.pi, 200)
-y = np.sin(x)
+def evaluate_mathematical_functions(x_vals=None):
+    """
+    Evaluates domain, range, and outputs of fundamental mathematical functions
+    used throughout machine learning:
+    1. Linear Function: f(x) = 2x + 3
+    2. Quadratic Function: f(x) = x^2 - 4x + 4
+    3. Square Root: f(x) = sqrt(x) (Domain: x >= 0)
+    4. Sine Wave: f(x) = sin(x) (Periodic: [-1, 1])
+    """
+    if x_vals is None:
+        x_vals = np.array([0.0, 1.0, 2.0, 4.0, 9.0])
+        
+    results = {
+        'x': x_vals,
+        'linear': 2 * x_vals + 3,
+        'quadratic': x_vals ** 2 - 4 * x_vals + 4,
+        'sqrt': np.sqrt(x_vals),
+        'sin': np.sin(x_vals)
+    }
+    return results
 
-plt.plot(x, y, label='y = sin(x)', color='blue')
-plt.axhline(0, color='black', ls='--')
-plt.axvline(0, color='black', ls='--')
-plt.title('Sine Function')
-plt.legend()
-plt.grid(True)
-plt.show()
+# --- Function Call & Testing ---
+eval_data = evaluate_mathematical_functions()
+print(f"{'x':<6} | {'Linear (2x+3)':<15} | {'Quadratic (x^2-4x+4)':<22} | {'Sqrt(x)':<10} | {'Sin(x)':<10}")
+print("-" * 72)
+for i in range(len(eval_data['x'])):
+    print(f"{eval_data['x'][i]:<6.1f} | {eval_data['linear'][i]:<15.2f} | {eval_data['quadratic'][i]:<22.2f} | {eval_data['sqrt'][i]:<10.3f} | {eval_data['sin'][i]:<10.3f}")
 ```
+
+---
+
+### 📌 Summary Points
+- Machine Learning ka har model ek complex multi-variable function hota hai.
+- Domain check karna zaroori hai taaki runtime par invalid math operations na hon.

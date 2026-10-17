@@ -1,107 +1,70 @@
-# ⚖️ Lecture 23.05: Regression vs. Classification Tasks
+# Lecture 23.05: Regression vs. Classification Tasks
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Scikit--Learn](https://img.shields.io/badge/Scikit--Learn-1.4%2B-orange.svg?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![Status](https://img.shields.io/badge/Status-Completed-success.svg)](#)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Back to Lecture 23](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am contrasts the two core problem types of supervised learning: **Regression** (predicting continuous numerical quantities) and **Classification** (predicting discrete categorical labels).
 
 ---
 
-## 📌 1. The Core Distinction
+## 🏛️ Comparison: Regression vs Classification
 
-Supervised Machine Learning is fundamentally partitioned based on whether the target variable $y$ is **continuous** or **discrete**:
-
-| Dimension | Regression | Classification |
+| Dimension | Regression Task | Classification Task |
 | :--- | :--- | :--- |
-| **Target Space $\mathcal{Y}$** | Continuous real values $\mathcal{Y} \subseteq \mathbb{R}$ | Discrete categorical set $\mathcal{Y} \in \{C_1, \dots, C_k\}$ |
-| **Model Output** | Scalar quantity (e.g. $\$14,250.50$) | Class label or posterior probability $P(y=c \mid \mathbf{x})$ |
-| **Geometric Goal** | Fit a continuous surface / trend line | Find a separating decision boundary |
-| **Typical Loss Functions** | Mean Squared Error (MSE), MAE, Huber Loss | Binary Cross-Entropy / Log Loss, Multi-Class Cross-Entropy |
-| **Primary Evaluation** | $R^2$ Score, RMSE, MAE | Accuracy, Precision, Recall, F1-Score, ROC-AUC |
-| **Example Problems** | Insurance charges, house prices, GDP forecast | Cancer detection (Malignant/Benign), Spam detection |
+| **Target Variable ($y$)** | Continuous real number ($y \in \mathbb{R}$) | Discrete categorical class ($y \in \{C_1, C_2, \dots\}$) |
+| **Core Question** | *"How much?"* or *"What value?"* | *"Which category?"* or *"Is it A or B?"* |
+| **Output Space** | Infinite possible values | Finite distinct classes |
+| **Example Domains** | House prices, stock returns, temperature | Spam detection, disease diagnosis, credit approval |
+| **Evaluation Metrics** | MAE, MSE, RMSE, $R^2$ | Accuracy, Precision, Recall, F1, ROC-AUC |
 
 ```mermaid
-graph TD
-    ML["Supervised Learning Tasks"] --> Reg["Regression (Continuous Targets)"]
-    ML --> Clf["Classification (Discrete Targets)"]
-    Reg --> R1["Simple & Multiple Linear Regression"]
-    Reg --> R2["Polynomial Regression"]
-    Reg --> R3["Support Vector Regression (SVR)"]
-    Clf --> C1["Logistic Regression"]
-    Clf --> C2["Support Vector Machines (SVM)"]
-    Clf --> C3["Decision Trees & Random Forests"]
+flowchart TD
+    Supervised["Supervised Learning Tasks"] --> Reg["Regression<br/>Continuous Output (y ∈ ℝ)<br/>Predict House Price ₹54.2 Lakhs"]
+    Supervised --> Clf["Classification<br/>Discrete Output (y ∈ {0, 1})<br/>Predict Loan Approved / Rejected"]
 ```
 
 ---
 
-## 📐 2. Mathematical Comparison
-
-### Regression:
-Given feature vector $\mathbf{x}$, predict continuous scalar $\hat{y}$:
-
-$$
-\hat{y} = \mathbf{w}^T \mathbf{x} + b
-$$
-
-Cost function penalizes geometric distance between true value and prediction:
-
-$$
-J(\mathbf{w}, b) = \frac{1}{2m} \sum_{i=1}^m (y^{(i)} - \hat{y}^{(i)})^2
-$$
-
-### Classification:
-Given feature vector $\mathbf{x}$, estimate probability that sample belongs to class $1$:
-
-$$
-P(y = 1 \mid \mathbf{x}) = \sigma(\mathbf{w}^T \mathbf{x} + b) = \frac{1}{1 + e^{-(\mathbf{w}^T \mathbf{x} + b)}}
-$$
-
-Cost function penalizes logarithmic probability divergence:
-
-$$
-J(\mathbf{w}, b) = -\frac{1}{m} \sum_{i=1}^m \left[ y^{(i)} \ln(\hat{y}^{(i)}) + (1 - y^{(i)}) \ln(1 - \hat{y}^{(i)}) \right]
-$$
-
----
-
-## 💻 3. Python Demonstration: Visualizing Both Paradigms
+## 💻 Python Implementation
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
+def classify_task_type(target_values):
+    """
+    Determines whether a machine learning task is Regression or Classification
+    based on the data characteristics of the target variable.
+    """
+    import numpy as np
+    target_arr = np.array(target_values)
+    
+    # Check if target is continuous float or has many unique values
+    unique_count = len(np.unique(target_arr))
+    is_float = np.issubdtype(target_arr.dtype, np.floating)
+    
+    if is_float and unique_count > 10:
+        task_type = "Regression"
+        desc = "Target is continuous real-valued quantity (e.g., Price, Salary, Temperature)."
+        metrics = ["Mean Absolute Error (MAE)", "Mean Squared Error (MSE)", "R-squared"]
+    else:
+        task_type = "Classification"
+        desc = "Target consists of discrete categorical classes (e.g., 0/1, Spam/Ham, High/Med/Low)."
+        metrics = ["Accuracy", "Precision", "Recall", "F1-Score"]
+        
+    return {
+        'detected_task': task_type,
+        'unique_values': unique_count,
+        'description': desc,
+        'recommended_metrics': metrics
+    }
 
-np.random.seed(42)
-X = np.linspace(1, 10, 40)
+# --- Function Call & Testing ---
+house_prices = [45.5, 72.1, 89.0, 110.5, 55.2, 63.8, 95.0, 120.4, 48.0, 81.2, 105.0]
+spam_labels  = [0, 1, 0, 0, 1, 1, 0, 1, 0, 1]
 
-# Regression: Continuous target with Gaussian noise
-y_reg = 2.5 * X + 3.0 + np.random.randn(40) * 2.0
-
-# Classification: Binary thresholded target (0 or 1)
-y_clf = np.where(y_reg > 15.0, 1, 0)
-
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
-
-# Regression plot
-ax1.scatter(X, y_reg, color='blue', label='Data points y in R')
-ax1.plot(X, 2.5*X + 3.0, 'r-', lw=2, label='Fitted Line y_hat')
-ax1.set_title('Regression: Continuous Output', fontsize=12, fontweight='bold')
-ax1.set_xlabel('Feature x')
-ax1.set_ylabel('Continuous Target y')
-ax1.grid(True, linestyle=':')
-ax1.legend()
-
-# Classification plot
-ax2.scatter(X[y_clf == 0], y_clf[y_clf == 0], color='green', s=60, label='Class 0')
-ax2.scatter(X[y_clf == 1], y_clf[y_clf == 1], color='red', s=60, label='Class 1')
-ax2.axvline(4.8, color='black', linestyle='--', lw=2, label='Decision Boundary')
-ax2.set_title('Classification: Discrete Binary Output', fontsize=12, fontweight='bold')
-ax2.set_xlabel('Feature x')
-ax2.set_ylabel('Class Label y in {0, 1}')
-ax2.set_yticks([0, 1])
-ax2.grid(True, linestyle=':')
-ax2.legend()
-
-plt.tight_layout()
-plt.show()
+print("House Prices Task :", classify_task_type(house_prices)['detected_task'])
+print("Spam Detection Task:", classify_task_type(spam_labels)['detected_task'])
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. If the target is a continuous number with infinite possible values, it is Regression.
+2. If the target falls into discrete buckets or classes, it is Classification.
+3. Choosing the right algorithm and evaluation metric begins with identifying this distinction.

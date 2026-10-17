@@ -1,26 +1,82 @@
-# Module 24.05: Underfitting Kya Hoti Hai? (High Bias) (Hinglish)
+# Notes_24.05: Underfitting (High Bias Aur Oversimplification) [Hinglish]
 
-## 1. Underfitting Ka Matlab
-
-Jab koi machine learning model itna simple ya kamzor hota hai ki wo training data ke basic pattern ko bhi samajh nahi pata, to use **Underfitting** kehte hain.
-
-Jaise agar data parabola ya curved wave jaisa hai, aur hum zabardasti ek seedhi straight line khinch kar bolte hain ki ye model hai:
-- **Training Error:** Bohot high hota hai (Training data par hi fail ho jata hai).
-- **Test Error:** Wo bhi bohot high hota hai (Naye data par bhi fail rehta hai).
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Underfitting (High Bias)** ka concept samjhaya hai: jab model itna aalsi ya seedha hota hai ki woh data ke basic pattern ko bhi nahi seekh pata.
 
 ---
 
-## 2. High Bias Ka Concept
-
-Ise statistics mein **High Bias** kehte hain:
-- Model ne pehle se hi rigid assumption bana rakha hai ki "data linear hi hoga", chahe data kitna bhi complex kyu na ho.
-- Chahe aap model ko 10 lakh training examples bhi de dein, agar uske paas curve sikhne ki mathematical capacity hi nahi hai, to wo improve nahi hoga!
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Underfitting kya hoti hai?
+- Padhaai na karne wale aalsi student ki analogy.
+- High Bias ka matlab.
+- Underfitting ke lakshan (Train aur Test dono mein kharab score).
 
 ---
 
-## 3. Underfitting Hone Ki Wajah
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-1. **Model Bahut Simple Hai:** Non-linear data par linear model fit karna.
-2. **Kaam Ke Features Gayab Hain:** Data mein zaroori signals hi nahi diye gaye.
-3. **Regularization Bahut Zyada Hai:** Penalty parameter $\lambda$ itna bada kar diya ki saare weights zero ho gaye.
-4. **Under-training:** Gradient descent ko bohot kam iterations par rok diya.
+#### 1. Underfitting Ka Matlab:
+Maan lijiye aapka data ek ghumaavdaar curve (Parabola) hai. Lekin aapne zabardasti uspar ek seedhi lakir (Straight line) kheench di:
+Line data ke ghumaav ko pakad hi nahi sakti!
+Nateeja yeh hota hai ki model **training set par bhi fail hota hai aur testing set par bhi fail hota hai**.
+
+#### 2. Aalsi Student Analogy:
+Yeh woh student hai jisne poore saal kitaab kholi hi nahi:
+- Class test mein bhi fail (High Train Error).
+- Final exam mein bhi fail (High Test Error).
+
+---
+
+### 📊 Visual Flowchart: Underfit
+
+```mermaid
+flowchart LR
+    A["Parabolic Curved Data"] --> B["Zabardasti Straight Line Fit Kar Di"]
+    B --> C["Train Error High + Test Error High"]
+    C --> D["Bimari: Underfitting (High Bias)"]
+```
+
+---
+
+### 💻 Python Code
+
+```python
+import numpy as np
+
+def simulate_underfitting_behavior():
+    """
+    Demonstrates the signature symptoms of Underfitting (High Bias):
+    - Training Error: High
+    - Testing Error: High
+    - Root Cause: Model is too simplistic to capture underlying non-linear curvature
+    """
+    np.random.seed(42)
+    # True non-linear quadratic relationship: y = x^2
+    x = np.linspace(-3, 3, 20)
+    y = x ** 2 + np.random.normal(0, 0.5, size=20)
+    
+    # Underfitted Model: Fitting a straight line (Degree 1) to a parabola
+    linear_weights = np.polyfit(x, y, deg=1)
+    linear_model = np.poly1d(linear_weights)
+    
+    train_mse = np.mean((linear_model(x) - y) ** 2)
+    
+    return {
+        'model_type': 'Linear Model on Quadratic Data (Degree 1)',
+        'train_mse': float(train_mse),
+        'symptom': 'High error on both training and test data'
+    }
+
+# --- Function Call & Testing ---
+underfit_sim = simulate_underfitting_behavior()
+print("Underfitting Simulation:")
+print(f"  Model Type : {underfit_sim['model_type']}")
+print(f"  Train Error: {underfit_sim['train_mse']:.4f} (High error due to oversimplification!)")
+print(f"  Conclusion : {underfit_sim['symptom']}")
+```
+
+---
+
+### 📌 Summary Points
+- Train aur Test dono mein kharab score = Underfitting.
+- Model data ke complexity ke hisab se bohot simple hone par underfitting hoti hai.

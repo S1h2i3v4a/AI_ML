@@ -185,19 +185,19 @@ f''(x) = 6x - 12 = 6(x - 2)
 $$
 
 1. **At $x_1 = 1$:**
-   $$
+$$
    f''(1) = 6(1 - 2) = -6 < 0 \implies \text{Concave Down} \implies \boxed{\text{Local Maximum}}
-   $$
-   $$
+$$
+$$
    y_{\text{max}} = f(1) = 1^3 - 6(1)^2 + 9(1) = 4
-   $$
+$$
 2. **At $x_2 = 3$:**
-   $$
+$$
    f''(3) = 6(3 - 2) = +6 > 0 \implies \text{Concave Up} \implies \boxed{\text{Local Minimum}}
-   $$
-   $$
+$$
+$$
    y_{\text{min}} = f(3) = 3^3 - 6(3)^2 + 9(3) = 27 - 54 + 27 = 0
-   $$
+$$
 
 ---
 
