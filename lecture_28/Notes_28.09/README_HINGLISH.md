@@ -1,79 +1,80 @@
-# Lecture 28.09: Decision Tree Classifier Implementation in Scikit-Learn
+# Lecture 28.09: Decision Tree Classifier Code Walkthrough (Titanic Dataset)
 
-## 📌 Executive Summary (Hinglish)
-Scikit-Learn DecisionTreeClassifier ka hands-on implementation, parameter configuration, imbalanced data par class_weight='balanced', aur plot_tree se structure visualization.
-
----
-
-### 📋 Is Topic/Section Mein Hum Kya Cover Kar Rahe Hain?
-1. `DecisionTreeClassifier` class ka initialization aur parameter tuning.
-2. `class_weight='balanced'` se imbalanced target classes ko inversely weight karna.
-3. Tree attributes (`tree_.node_count`, `tree_.max_depth`, `feature_importances_`) ko introspect karna.
-4. `plot_tree` aur `export_text` se tree architecture visualize karna.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Video mein ma'am dwara Jupyter Notebook par Titanic dataset (`sns.load_dataset('titanic')`) ka live coding demonstration.
+- `SimpleImputer` se `age` (median) aur `embarked` (most_frequent) ke missing values handle karna.
+- Categorical features (`sex`, `embarked`) ko numerical mein convert karna.
+- Baseline `DecisionTreeClassifier` ko train karke overfitting ka live saboot dekhna (~98% train vs ~77% test).
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-**API Implementation**: `from sklearn.tree import DecisionTreeClassifier` se estimator initialize karke `fit()` aur `predict()` call karte hain.
+#### 1. Titanic Dataset Load Karna
+Video mein ma'am ne Seaborn se direct Titanic dataset load kiya. Target variable hai `survived` (1 = bacha, 0 = doob gaya).
+Features chune gaye:
+- `pclass`: Passenger class (1, 2, 3)
+- `sex`: Gender (male/female)
+- `age`: Umra
+- `fare`: Ticket ka kiraya
+- `embarked`: Boarding port (C, Q, S)
 
-**Class Imbalance Handling**: E-commerce ya banking datasets mein positive class kam hoti hai. `class_weight='balanced'` minority class ke samples ko higher penalty deta hai.
+#### 2. Missing Values Handle Karna (`SimpleImputer`)
+- `age` column mein kaafi missing values the, jinko ma'am ne `median` strategy se bhara (`SimpleImputer(strategy="median")`).
+- `embarked` column mein missing values ko mode yani sabse zyada aane wale port se bhara (`strategy="most_frequent"`).
 
-**Feature Importance**: Decision Tree har feature ke split se hone wale total Information Gain ko aggregate karke normalize karta hai, jisse feature importance array $\sum f_j = 1$ milta hai.
+#### 3. Encoding Karna
+Machine learning models text nahi samajhte, isiliye:
+- `female -> 0`, `male -> 1`
+- `C -> 0`, `Q -> 1`, `S -> 2`
 
-**Tree Visualization**: `sklearn.tree.plot_tree` se decision nodes, thresholds, impurity values aur sample counts ka graphical flowchart draw kiya ja sakta hai.
+#### 4. Baseline Model Aur Overfitting Ka Live Result
+Jab ma'am ne bina kisi restriction ke baseline model train kiya:
+- **Training Accuracy**: $\approx 98\%$
+- **Testing Accuracy**: $\approx 77.5\%$
 
----
-
-## 🏛️ Mathematical Architecture & Detailed Theory
-
-### 💻 Scikit-Learn DecisionTreeClassifier Architecture
-
-Scikit-Learn's `DecisionTreeClassifier` is an optimized Cython implementation of the CART (Classification and Regression Trees) algorithm supporting both dense and sparse float32 arrays.
-
-#### Mathematical Feature Importance Formulation:
-The importance of feature $j$ is calculated as the sum over all internal nodes $t$ split on feature $j$, weighted by the fraction of samples reaching node $t$:
-
-$$
-\boxed{
-\text{Imp}(j) = \sum_{t \in \text{Nodes}: \text{split}(t) = j} \left( \frac{N_t}{N} \Delta I(t) \right)
-}
-$$
-
-The scores are then normalized to sum to $1.0$:
-
-$$
-\text{Normalized Imp}(j) = \frac{\text{Imp}(j)}{\sum_{k=1}^d \text{Imp}(k)}
-$$
+Ma'am ne screen par dikhaya ki training score lagbhag 100% hai, lekin testing par score 20% gir gaya! Yeh classic saboot hai ki tree ne training data ko blindly ratt (memorize) liya hai. Isko theek karne ke liye agle lecture mein **Pre-pruning** lagayenge!
 
 ---
 
-## 💻 Python Implementation & Code Example
+### 💻 Python Code
 
 ```python
-import pandas as pd
-from sklearn.tree import DecisionTreeClassifier, export_text
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.tree import DecisionTreeClassifier
 
-# Fit sample classifier
-clf = DecisionTreeClassifier(max_depth=3, random_state=42)
-clf.fit(X_syn, y_syn)
+# 1. Dataset
+df = sns.load_dataset("titanic")
 
-# Introspect attributes
-print(f"Total Nodes: {clf.tree_.node_count}")
-print(f"Max Depth:   {clf.tree_.max_depth}")
-print(f"Feature Importances: {clf.feature_importances_}")
+# 2. Imputation
+imp_med = SimpleImputer(strategy="median")
+df["age"] = imp_med.fit_transform(df[["age"]])
 
-# Text tree visualization
-tree_rules = export_text(clf, feature_names=[f"Feature_{i}" for i in range(5)])
-print("
---- Tree Architecture ---")
-print(tree_rules[:300], "...")
+imp_mode = SimpleImputer(strategy="most_frequent")
+df["embarked"] = imp_mode.fit_transform(df[["embarked"]]).ravel()
 
+# 3. Encoding
+df["sex"] = df["sex"].map({"female": 0, "male": 1})
+df["embarked"] = df["embarked"].map({"C": 0, "Q": 1, "S": 2})
+
+X = df[["pclass", "sex", "fare", "embarked", "age"]]
+y = df["survived"]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 4. Model
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+print(f"Train Acc: {model.score(X_train, y_train):.3f}")
+print(f"Test Acc:  {model.score(X_test, y_test):.3f}")
 ```
 
 ---
 
-## 🎯 Quick Revision Points (Interview Notes)
-- **Scale Invariance**: Decision Trees monotonically invariant hote hain, isliye inme `StandardScaler` mandatory nahi hota.
-- **Gini vs Entropy**: Gini speed mein 10x faster hota hai kyunki logarithm computation ki zaroorat nahi padti.
-- **Pruning Necessity**: Unconstrained decision tree hamesha overfit karti hai; `min_samples_leaf` aur `ccp_alpha` sabse effective regularizers hain.
+### 📌 Summary Points
+- Unpruned tree Titanic data par severe overfit dikhati hai (98% train vs 77% test).
+- Missing values ko `SimpleImputer` se impute kiya jata hai.
+- Is overfitting ko solve karne ke liye pruning zaroori hai.

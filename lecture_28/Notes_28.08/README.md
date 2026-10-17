@@ -1,59 +1,60 @@
-# Lecture 28.08: Common Pruning Rules & Hyperparameter Regularization
+# Lecture 28.08: Common Pruning Rules & Hyperparameters
 
-## 📌 Executive Summary
-In-depth study of Scikit-Learn tree regularization hyperparameters: max_depth, min_samples_split, min_samples_leaf, max_leaf_nodes, and min_impurity_decrease.
-
----
-
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### 🛠️ Scikit-Learn Pre-Pruning Hyperparameters
-
-To enforce regularized inductive bias, Scikit-Learn provides five core structural hyperparameter constraints:
-
-| Hyperparameter | Mathematical Definition | Default | Typical Tuned Range | Engineering Impact |
-| :--- | :--- | :--- | :--- | :--- |
-| `max_depth` | $\max \{ \text{depth}(m) \mid m \in \mathcal{L} \} \le d_{\max}$ | `None` (unbounded) | $[3, 10]$ | Hard ceiling on hierarchy depth; drastically cuts variance |
-| `min_samples_split` | $|\mathcal{D}_t| \ge s_{\min}$ to attempt split | `2` | $[10, 100]$ | Prevents splitting small, statistically unreliable sample subsets |
-| `min_samples_leaf` | $\min(|\mathcal{D}_L|, |\mathcal{D}_R|) \ge l_{\min}$ | `1` | $[5, 50]$ | **Highest impact**: guarantees statistical support at all terminal leaves |
-| `max_leaf_nodes` | $|\mathcal{L}| \le L_{\max}$ | `None` | $[10, 64]$ | Best-first tree growth; bounds overall capacity |
-| `min_impurity_decrease` | $\Delta I(t) \ge \tau_{\min}$ | `0.0` | $[10^{-4}, 10^{-2}]$ | Rejects splits that provide negligible information gain |
+## 📌 Topic Overview
+In this lecture, we examine the official Scikit-Learn documentation for `DecisionTreeClassifier` and understand each hyperparameter used to prevent overfitting and control tree size.
 
 ---
 
-### 🛡️ Why `min_samples_leaf` is Superior to `min_samples_split`
+## 🛠️ Key Pruning Hyperparameters in Scikit-Learn
 
-Consider a node with 20 samples (`min_samples_split=20`):
-- A split producing $|\mathcal{D}_L| = 19$ and $|\mathcal{D}_R| = 1$ is valid under `min_samples_split=20`.
-- However, $|\mathcal{D}_R| = 1$ is a dangerous single-sample leaf that memorizes noise.
-- Setting `min_samples_leaf=10` forces both children to contain at least 10 samples, instantly disqualifying asymmetric noise splits.
+### 1. `max_depth` (int, default=None)
+- **Meaning**: The maximum allowed depth (vertical distance from root to leaf) of the tree.
+- **Why it matters**: If left as `None`, nodes expand until all leaves are pure or contain fewer than `min_samples_split` samples. Setting `max_depth=3` or `4` is the simplest and most effective pre-pruning rule.
+
+### 2. `min_samples_split` (int or float, default=2)
+- **Meaning**: The minimum number of samples a node must contain before it is allowed to split.
+- **Why it matters**: If a node has only 3 samples and `min_samples_split=10`, the tree will not split it further. It forces the tree to stop when subsets become too small.
+
+### 3. `min_samples_leaf` (int or float, default=1)
+- **Meaning**: The minimum number of samples that every terminal leaf node must possess.
+- **Why it matters**: A split will only be considered if it leaves at least `min_samples_leaf` training samples in each of the left and right branches. This directly prevents isolating single outlier samples (like the $[14y, 1n]$ case from the previous lecture!).
+
+### 4. `max_leaf_nodes` (int, default=None)
+- **Meaning**: Grow a tree with at most `max_leaf_nodes` in best-first fashion.
+- **Why it matters**: Places a hard ceiling on the total complexity of the tree.
+
+### 5. `class_weight` (dict or "balanced", default=None)
+- **Meaning**: Weights associated with classes.
+- **Why it matters**: When working with imbalanced data (e.g., 90% No, 10% Yes), setting `class_weight="balanced"` automatically adjusts weights inversely proportional to class frequencies:
+$w_c = \frac{n_{\text{samples}}}{n_{\text{classes}} \cdot n_c}$.
+
+### 6. `ccp_alpha` (non-negative float, default=0.0)
+- **Meaning**: Complexity parameter used for Minimal Cost-Complexity Pruning (post-pruning).
+- **Why it matters**: By default, `ccp_alpha=0.0` (no post-pruning). Increasing $\alpha$ prunes away the weakest subtrees.
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 💻 Python Implementation
 
 ```python
 from sklearn.tree import DecisionTreeClassifier
 
-# Regularized Tree using Pre-Pruning Hyperparameters
-regularized_tree = DecisionTreeClassifier(
-    max_depth=5,
-    min_samples_split=20,
-    min_samples_leaf=10,
-    random_state=42
+# Highly regularized (pruned) Decision Tree Classifier
+clf = DecisionTreeClassifier(
+criterion="gini",
+max_depth=4,              # Stops tree at depth 4
+min_samples_split=10,     # Must have >= 10 samples to split
+min_samples_leaf=5,       # Every leaf must contain >= 5 samples
+class_weight="balanced",  # Automatically balances minority class
+random_state=42
 )
-
-# Fits with strict structural safeguards
-regularized_tree.fit(X_syn, y_syn)
-print("Regularized Tree Depth:     ", regularized_tree.get_depth())
-print("Regularized Leaf Count:     ", regularized_tree.get_n_leaves())
-assert regularized_tree.get_depth() <= 5, "Depth constraint must be strictly respected"
-
+print("Configured Classifier Parameters:")
+print(clf.get_params())
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. `max_depth`, `min_samples_split`, and `min_samples_leaf` are the three primary pre-pruning knobs.
+2. `class_weight="balanced"` prevents majority-class bias in imbalanced datasets.
+3. `ccp_alpha` controls Minimal Cost-Complexity post-pruning.

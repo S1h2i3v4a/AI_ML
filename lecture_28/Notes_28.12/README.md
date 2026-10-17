@@ -1,75 +1,87 @@
-# Lecture 28.12: Decision Tree Regressor — Continuous Partitioning & Piecewise Constants
+# Lecture 28.12: Decision Tree Regressor
 
-## 📌 Executive Summary
-Formulating Decision Trees for continuous target regression, partitioning feature space into disjoint regions, and predicting regional sample averages.
-
----
-
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### 📈 Regression Trees & Piecewise Constant Approximations
-
-When the target supervisory response is continuous ($y \in \mathbb{R}$), the tree partitions the domain $\mathcal{X}$ into $M$ disjoint orthogonal regions $\{R_1, R_2, \dots, R_M\}$:
-
-$$
-\mathcal{X} = \bigcup_{m=1}^M R_m \quad \text{where } R_j \cap R_k = \emptyset \quad \forall j \neq k
-$$
-
-The model represents the global continuous response function as a linear combination of indicator basis functions:
-
-$$
-\boxed{
-f(\mathbf{x}) = \sum_{m=1}^M c_m \cdot \mathbb{I}(\mathbf{x} \in R_m)
-}
-$$
+## 📌 Topic Overview
+How does a Decision Tree work when the target variable is continuous (numerical) rather than categorical? In this lecture, we study the **Decision Tree Regressor**, understand how leaf predictions are calculated (mean/average), and examine the classroom numerical dataset.
 
 ---
 
-### 📐 Mathematical Derivation of Optimal Leaf Prediction $c_m$
+## 🎯 Regression vs Classification in Trees
 
-Under the classical Sum of Squared Errors (SSE) loss criterion:
-
-$$
-J(c_m) = \sum_{i \in R_m} (y_i - c_m)^2
-$$
-
-To find the minimizing constant $c_m^*$, compute the partial derivative with respect to $c_m$ and set to zero:
-
-$$
-\frac{\partial J}{\partial c_m} = -2 \sum_{i \in R_m} (y_i - c_m) = 0
-$$
-
-$$
-\sum_{i \in R_m} y_i - |R_m| c_m = 0 \implies \boxed{c_m^* = \frac{1}{|R_m|} \sum_{i \in R_m} y_i = \bar{y}_{R_m}}
-$$
-
-Thus, the optimal leaf prediction under squared error loss is strictly the **sample mean** of all training instances assigned to region $R_m$.
+| Property | Decision Tree Classifier | Decision Tree Regressor |
+| :--- | :--- | :--- |
+| **Target Variable ($y$)** | Discrete classes (e.g., Yes/No, Cat/Dog) | **Continuous numbers** (e.g., Salary, House Price, Age) |
+| **Leaf Prediction** | Majority class label (mode) | **Mean / Average ($\bar{y}$)** of leaf samples |
+| **Impurity Metric** | Entropy or Gini Impurity | **Variance ($\sigma^2$), MSE, or MAE** |
+| **Split Optimization** | Maximize Information Gain | Maximize **Variance Reduction** |
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 🍃 How Leaf Nodes Make Predictions: The Mean Value
+In a classification tree, a leaf predicts the majority vote.
+In a regression tree, if a leaf receives samples with target values $\{y_1, y_2, \dots, y_k\}$, the predicted value $\hat{y}$ is simply the **arithmetic mean**:
+
+$$\hat{y} = \bar{y} = \frac{1}{k} \sum_{i=1}^k y_i$$
+
+---
+
+## 🧮 Blackboard Numerical Example: Target Dataset
+In the video, the instructor writes a 4-sample dataset on the blackboard:
+
+| Feature ($x$) | Target ($y$) |
+| :--- | :--- |
+| 1 | 2 |
+| 2 | 4 |
+| 3 | 6 |
+| 4 | 10 |
+
+### 1. Calculating the Mean ($\bar{y}$)
+Total samples $n = 4$:
+
+$$\bar{y} = \frac{2 + 4 + 6 + 10}{4} = \frac{22}{4} = 5.5$$
+
+### 2. Calculating the Parent Node Variance ($V_S$)
+The variance formula is:
+
+$$V_S = \text{Var}(y) = \frac{1}{n} \sum_{i=1}^n (y_i - \bar{y})^2$$
+
+Calculating squared deviations from the mean ($\bar{y} = 5.5$):
+- $(2 - 5.5)^2 = (-3.5)^2 = 12.25$
+- $(4 - 5.5)^2 = (-1.5)^2 = 2.25$
+- $(6 - 5.5)^2 = (0.5)^2 = 0.25$
+- $(10 - 5.5)^2 = (4.5)^2 = 20.25$
+
+$$\text{Sum of Squared Errors} = 12.25 + 2.25 + 0.25 + 20.25 = 35.0$$
+
+$$V_S = \frac{35.0}{4} = 8.75$$
+
+The instructor highlights on the blackboard: **$V_S = 8.75$**! This is the initial impurity of the parent node.
+
+---
+
+## 💻 Python Implementation
 
 ```python
 import numpy as np
-from sklearn.tree import DecisionTreeRegressor
 
-# Generate non-linear 1D sine signal
-np.random.seed(42)
-X_1d = np.sort(np.random.uniform(0, 10, 80)).reshape(-1, 1)
-y_1d = np.sin(X_1d).ravel() + np.random.normal(0, 0.1, 80)
+# Classroom dataset
+x = np.array([1, 2, 3, 4])
+y = np.array([2, 4, 6, 10])
 
-reg = DecisionTreeRegressor(max_depth=3, random_state=42)
-reg.fit(X_1d, y_1d)
+# Mean prediction
+mean_y = np.mean(y)
 
-preds = reg.predict(X_1d)
-print("Unique Piecewise Constant Levels:", len(np.unique(preds)))
-assert len(np.unique(preds)) <= 2**3, "Depth 3 tree cannot have more than 8 distinct levels"
+# Variance calculation
+variance_y = np.var(y)
 
+print(f"Classroom Target Values: {y}")
+print(f"Parent Mean (y_bar):    {mean_y:.2f}")
+print(f"Parent Variance (V_S):   {variance_y:.2f}")
+assert np.isclose(variance_y, 8.75), "Variance must match blackboard calculation (8.75)!"
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. Decision Tree Regressors predict continuous numbers.
+2. A leaf node's prediction is the **mean (average)** of the target values in that leaf.
+3. Node impurity is measured using **Variance** or **Mean Squared Error (MSE)** instead of Entropy.

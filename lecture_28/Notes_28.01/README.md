@@ -1,74 +1,113 @@
-# Lecture 28.01: Introduction to Decision Trees & Non-Linear Partitioning
+# Lecture 28.01: Introduction to Decision Trees
 
-## 📌 Executive Summary
-First-principles introduction to Decision Trees, recursive orthogonal feature space partitioning, tree structural anatomy, and comparison with linear models and metric space learners.
+## 📌 Topic Overview
+In this lecture, we understand what a **Decision Tree** is, why it is one of the most intuitive and widely used machine learning models, and how it makes predictions using a sequence of simple if-else decisions.
 
 ---
 
-## 🏛️ Theoretical Formulation & Mathematical Architecture
+## 💡 Real-World Intuition: The Loan Approval Analogy
+Imagine a bank loan officer evaluating whether an applicant should be granted a loan. The officer naturally follows a chain of questions:
+1. *Is the applicant's loan amount $\ge 1$ Lakh?*
+2. *If yes, is the applicant employed?*
+3. *If employed, approve the loan; otherwise, reject.*
 
-### 🌲 The Inductive Bias of Decision Trees
+In Python code, this thinking looks exactly like simple conditional statements:
+```python
+if loan_amt >= 100000:
+if employed == "Yes":
+print("Loan Approved")
+else:
+print("Loan Rejected")
+else:
+print("Loan Approved")
+```
 
-In supervised machine learning, a **Decision Tree** is a non-parametric hierarchical model that solves classification and regression tasks by recursively partitioning the input feature space $\mathcal{X} \subseteq \mathbb{R}^d$ into a collection of mutually exclusive, axis-aligned hyper-rectangles (boxes).
+A **Decision Tree** is simply this nested `if-else` decision logic learned automatically from data!
+
+---
+
+## 🌲 Tree Structural Anatomy
+When we draw this sequence of decisions as a flowchart, it forms an upside-down tree:
 
 ```mermaid
 flowchart TD
-    A["Root Node: Is PageValues > 10.5?"] -->|"Yes"| B["Internal Node: Is ExitRates < 0.04?"]
-    A -->|"No"| C["Leaf Node 1: Purchase = No (92%)"]
-    
-    B -->|"Yes"| D["Leaf Node 2: Purchase = Yes (88%)"]
-    B -->|"No"| E["Leaf Node 3: Purchase = No (65%)"]
+A["Root Node: Loan Amount >= 1L?"] -->|"Yes"| B["Internal Node: Employed == Yes?"]
+A -->|"No"| C["Leaf Node: Approved (Yes)"]
+B -->|"Yes"| D["Leaf Node: Approved (Yes)"]
+B -->|"No"| E["Leaf Node: Rejected (No)"]
 ```
 
----
+### 1. Root Node
+- The very first node at the top where the decision process starts.
+- It contains all the training samples before any split occurs.
 
-### 🏛️ Tree Structural Anatomy
+### 2. Internal (Decision) Nodes
+- Intermediate nodes where a feature is tested (e.g., `employed == 'Yes'?`).
+- Each internal node splits the data further down two or more branches.
 
-A decision tree directed acyclic graph (DAG) consists of four fundamental architectural elements:
-1. **Root Node**: The origin node containing the entirety of the training distribution $\mathcal{D}$, which selects the globally most informative initial split $(x_j, \theta)$.
-2. **Internal (Decision) Nodes**: Intermediate conditional splits testing a specific scalar inequality $x_j \le \theta$.
-3. **Branches (Edges)**: Directed links representing the binary evaluation outcome (True or False / Left or Right).
-4. **Leaf (Terminal) Nodes**: Absorbing endpoints containing homogeneous subsets $\mathcal{D}_m$ that output the final prediction.
+### 3. Branches (Edges)
+- The connecting arrows representing the possible answers to the condition (e.g., `Yes` vs `No`).
 
----
-
-### ⚖️ Architectural Comparison: Linear Models vs Decision Trees
-
-| Property | Linear Models (Logistic / Ridge) | Decision Trees (CART) |
-| :--- | :--- | :--- |
-| **Decision Boundary** | Single global flat hyperplane $\mathbf{w}^T \mathbf{x} + b = 0$ | Piecewise orthogonal axis-aligned step boundaries |
-| **Feature Scaling** | **Mandatory** (Gradient descent & distances depend on scaling) | **Completely Invariant** to monotonic scale transformations |
-| **Feature Interactions**| Must be manually engineered ($x_1 \cdot x_2$) | Naturally captured via nested hierarchical splits |
-| **Interpretability** | Global linear weight coefficients | Transparent IF-THEN decision path |
+### 4. Leaf (Terminal) Nodes
+- The final endpoints where no further questions are asked.
+- Each leaf provides the final predicted output (e.g., class label in classification or average value in regression).
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 🎯 Visualizing Data Partitioning: Blue Dots vs Orange Dots
+Consider a mixed dataset with two classes:
+- **Blue dots** = Positive class (e.g., Loan Approved = Yes)
+- **Orange dots** = Negative class (e.g., Loan Approved = No)
+
+At the root node, blue and orange dots are mixed together (**impure**). 
+When the tree tests a feature (for example, `Gender` $
+\rightarrow$ Male vs Female):
+- One branch receives a group that has mostly orange dots.
+- The other branch receives a group that has mostly blue dots.
+
+By continuing this splitting recursively, the tree isolates the samples into **pure leaf nodes** containing only blue or only orange dots.
+
+---
+
+## 🏛️ Famous Decision Tree Algorithms
+Over the years, several algorithms have been developed to build decision trees:
+1. **CART (Classification and Regression Trees)**: The standard algorithm used in Scikit-Learn. It produces binary splits (2 children per node).
+2. **ID3 (Iterative Dichotomiser 3)**: Developed by Ross Quinlan; uses Information Gain (Entropy).
+3. **C4.5**: Quinlan's successor to ID3 that supports continuous features and pruning.
+4. **CHAID (Chi-square Automatic Interaction Detector)**: Uses Chi-square tests for categorical multi-way splits.
+
+---
+
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 
-# Simple demonstration of scale invariance
-X = np.array([[10, 50000], [15, 60000], [25, 120000], [30, 140000]])
-y = np.array([0, 0, 1, 1])
+# Feature matrix: [Loan_Amount_in_Lakhs, Employed (1=Yes, 0=No)]
+X = np.array([
+[0.5, 0],
+[0.8, 1],
+[1.5, 1],
+[2.0, 0],
+[3.0, 1]
+])
+# Target: 1 = Approved, 0 = Rejected
+y = np.array([1, 1, 1, 0, 1])
 
-# Scale feature 1 by 1000x
-X_scaled = X.copy()
-X_scaled[:, 1] = X_scaled[:, 1] * 1000
+# Initialize and fit Decision Tree Classifier
+clf = DecisionTreeClassifier(random_state=42)
+clf.fit(X, y)
 
-clf1 = DecisionTreeClassifier(random_state=42).fit(X, y)
-clf2 = DecisionTreeClassifier(random_state=42).fit(X_scaled, y)
-
-print("Predictions on unscaled:", clf1.predict(X))
-print("Predictions on scaled:  ", clf2.predict(X_scaled))
-assert np.array_equal(clf1.predict(X), clf2.predict(X_scaled)), "Trees must be scale-invariant!"
-
+# Predict for a new applicant: Loan 2.5 Lakh, Unemployed (0)
+prediction = clf.predict([[2.5, 0]])
+print("Prediction for [2.5L, Unemployed]:", "Approved" if prediction[0] == 1 else "Rejected")
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. Decision Trees predict outcomes by asking a sequence of hierarchical if-then questions.
+2. The tree consists of a **Root Node**, **Internal Decision Nodes**, **Branches**, and **Leaf Nodes**.
+3. The goal of tree building is to partition mixed data points into clean, homogeneous (pure) groups.
+4. Scikit-Learn implements the **CART** algorithm by default.

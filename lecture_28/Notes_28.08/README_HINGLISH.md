@@ -1,79 +1,60 @@
-# Lecture 28.08: Common Pruning Rules aur Hyperparameter Regularization
+# Lecture 28.08: Common Pruning Rules & Scikit-Learn Hyperparameters
 
-## 📌 Executive Summary (Hinglish)
-Scikit-Learn DecisionTreeClassifier ke regularizing hyperparameters ka deep dive: max_depth, min_samples_split, min_samples_leaf, max_leaf_nodes, aur min_impurity_decrease.
-
----
-
-### 📋 Is Topic/Section Mein Hum Kya Cover Kar Rahe Hain?
-1. `max_depth`: Tree ke maximum vertical growth ko constrain karna.
-2. `min_samples_split`: Split attempt karne ke liye minimum sample threshold.
-3. `min_samples_leaf`: Terminal leaves mein minimum sample support guarantee karna.
-4. `max_leaf_nodes` aur `min_impurity_decrease` ka mathematical impact.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Video mein ma'am dwara Scikit-Learn documentation ko open karke explain kiye gaye mukhya parameters.
+- `max_depth`, `min_samples_split`, aur `min_samples_leaf` ka practical matlab.
+- `class_weight="balanced"` kab aur kyun use karte hain.
+- `ccp_alpha` parameter ka role Minimal Cost-Complexity Pruning mein.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-**max_depth**: Yeh sabse direct hyperparameter hai jo root se kisi bhi leaf tak ke maximum steps ko limit karta hai. Depth 4-6 aksar tabular data ke liye sweet spot hota hai.
+#### 1. Video Mein Documentation Walkthrough
+Video mein ma'am ne browser khol kar Scikit-Learn ke `DecisionTreeClassifier` page se direct samjhaya ki overfitting rokne ke liye library mein kaun-kaun se options diye gaye hain.
 
-**min_samples_split**: Agar kisi node mein 20 se kam samples hain, toh aage split karne se mana kar deta hai. Yeh small noisy subsets par branching rokta hai.
+#### 2. Mukhya Pre-Pruning Parameters
 
-**min_samples_leaf**: Yeh guarantee karta hai ki banne wale left aur right child dono mein kam se kam $N$ samples ho. Yeh single-sample outlier leaves ko completely ban kar deta hai.
+##### A. `max_depth` (Tree Ki Lambai Par Rok)
+- Default: `None` (Tree tab tak badhti rehti hai jab tak har leaf pure na ho jaye).
+- **Practical Use**: Isko `3`, `4`, ya `5` set kar do. Isse tree kisi bhi branch ko 4 level se zyada gehra nahi le jayega. Yeh sabse popular aur aasan tareeqa hai overfitting rokne ka.
 
-**min_impurity_decrease**: Split tabhi accept hoga jab Information Gain kisi threshold $\epsilon$ se zyada ho, minor statistical fluctuations ko ignore karke.
+##### B. `min_samples_split` (Split Hone Ke Liye Minimum Log)
+- Default: `2`.
+- **Practical Use**: Agar hum ise `min_samples_split=10` set kar dein, toh agar kisi dabbe mein 9 ya usse kam samples bache hain, toh model use aage divide karne se inkaar kar dega.
 
----
+##### C. `min_samples_leaf` (Leaf Node Mein Kam Se Kam Kitne Samples Hon)
+- Default: `1`.
+- **Practical Use**: Pichhle lecture mein humne dekha tha ki 1 outlier ke liye tree alag branch bana deta tha. Agar hum `min_samples_leaf=5` kar dein, toh aisi koi branch ban hi nahi sakti jisme 5 se kam samples hon! Yeh boundary ko smooth karta hai.
 
-## 🏛️ Mathematical Architecture & Detailed Theory
+#### 3. `class_weight="balanced"` (Imbalanced Data Ke Liye)
+Agar dataset mein 90% log Loan Reject wale hain aur sirf 10% Approve wale, toh tree majority class ki taraf jhuk jata hai. `class_weight="balanced"` likhne se model minority class ko zyada weight dekar balance kar deta hai.
 
-### 🛠️ Scikit-Learn Pre-Pruning Hyperparameters
-
-To enforce regularized inductive bias, Scikit-Learn provides five core structural hyperparameter constraints:
-
-| Hyperparameter | Mathematical Definition | Default | Typical Tuned Range | Engineering Impact |
-| :--- | :--- | :--- | :--- | :--- |
-| `max_depth` | $\max \{ \text{depth}(m) \mid m \in \mathcal{L} \} \le d_{\max}$ | `None` (unbounded) | $[3, 10]$ | Hard ceiling on hierarchy depth; drastically cuts variance |
-| `min_samples_split` | $|\mathcal{D}_t| \ge s_{\min}$ to attempt split | `2` | $[10, 100]$ | Prevents splitting small, statistically unreliable sample subsets |
-| `min_samples_leaf` | $\min(|\mathcal{D}_L|, |\mathcal{D}_R|) \ge l_{\min}$ | `1` | $[5, 50]$ | **Highest impact**: guarantees statistical support at all terminal leaves |
-| `max_leaf_nodes` | $|\mathcal{L}| \le L_{\max}$ | `None` | $[10, 64]$ | Best-first tree growth; bounds overall capacity |
-| `min_impurity_decrease` | $\Delta I(t) \ge \tau_{\min}$ | `0.0` | $[10^{-4}, 10^{-2}]$ | Rejects splits that provide negligible information gain |
-
----
-
-### 🛡️ Why `min_samples_leaf` is Superior to `min_samples_split`
-
-Consider a node with 20 samples (`min_samples_split=20`):
-- A split producing $|\mathcal{D}_L| = 19$ and $|\mathcal{D}_R| = 1$ is valid under `min_samples_split=20`.
-- However, $|\mathcal{D}_R| = 1$ is a dangerous single-sample leaf that memorizes noise.
-- Setting `min_samples_leaf=10` forces both children to contain at least 10 samples, instantly disqualifying asymmetric noise splits.
+#### 4. `ccp_alpha` (Post-Pruning Ka Parameter)
+- Default: `0.0`.
+- Yeh **Minimal Cost-Complexity Pruning** ke liye use hota hai. Jaise-jaise alpha badhta hai, kamzor branches cut hoti jaati hain.
 
 ---
 
-## 💻 Python Implementation & Code Example
+### 💻 Python Code
 
 ```python
 from sklearn.tree import DecisionTreeClassifier
 
-# Regularized Tree using Pre-Pruning Hyperparameters
-regularized_tree = DecisionTreeClassifier(
-    max_depth=5,
-    min_samples_split=20,
-    min_samples_leaf=10,
-    random_state=42
+# Overfitting se safe Decision Tree
+model = DecisionTreeClassifier(
+max_depth=4,
+min_samples_split=10,
+min_samples_leaf=5,
+class_weight="balanced",
+random_state=42
 )
-
-# Fits with strict structural safeguards
-regularized_tree.fit(X_syn, y_syn)
-print("Regularized Tree Depth:     ", regularized_tree.get_depth())
-print("Regularized Leaf Count:     ", regularized_tree.get_n_leaves())
-assert regularized_tree.get_depth() <= 5, "Depth constraint must be strictly respected"
-
+print("Configured Model:", model)
 ```
 
 ---
 
-## 🎯 Quick Revision Points (Interview Notes)
-- **Scale Invariance**: Decision Trees monotonically invariant hote hain, isliye inme `StandardScaler` mandatory nahi hota.
-- **Gini vs Entropy**: Gini speed mein 10x faster hota hai kyunki logarithm computation ki zaroorat nahi padti.
-- **Pruning Necessity**: Unconstrained decision tree hamesha overfit karti hai; `min_samples_leaf` aur `ccp_alpha` sabse effective regularizers hain.
+### 📌 Summary Points
+- `max_depth` tree ki gehrai ko limit karta hai.
+- `min_samples_leaf` kisi single outlier ke liye alag leaf banne se rokta hai.
+- `class_weight="balanced"` imbalanced datasets par model ko bias hone se bachata hai.

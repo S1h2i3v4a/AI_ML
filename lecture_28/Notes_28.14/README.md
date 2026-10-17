@@ -1,65 +1,75 @@
-# Lecture 28.14: Decision Tree Regressor Implementation in Scikit-Learn
+# Lecture 28.14: Decision Tree Regressor in Scikit-Learn
 
-## 📌 Executive Summary
-Full production pipeline for DecisionTreeRegressor, multi-dimensional tabular fitting, tuning max_depth and min_samples_leaf, and comparing against Linear Regression.
-
----
-
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### 💻 DecisionTreeRegressor API & Evaluation Framework
-
-In Scikit-Learn, `DecisionTreeRegressor` implements regression tree induction with support for `criterion='squared_error'`, `'friedman_mse'`, `'absolute_error'`, and `'poisson'`.
-
-#### Evaluation Metrics Formulation:
-
-1. **Mean Squared Error (MSE)**:
-   
-$$
-   \text{MSE} = \frac{1}{m} \sum_{i=1}^m (y_i - \hat{y}_i)^2
-$$
-
-2. **Root Mean Squared Error (RMSE)**:
-   
-$$
-   \text{RMSE} = \sqrt{\text{MSE}}
-$$
-
-3. **Coefficient of Determination ($R^2$)**:
-   
-$$
-   \boxed{
-   R^2 = 1 - \frac{\sum_{i=1}^m (y_i - \hat{y}_i)^2}{\sum_{i=1}^m (y_i - \bar{y})^2} = 1 - \frac{\text{SS}_{\text{res}}}{\text{SS}_{\text{tot}}}
-   }
-$$
-
-Where $R^2 = 1.0$ represents a perfect regression fit, and $R^2 = 0.0$ corresponds to a naive baseline predicting the global mean $\bar{y}$.
+## 📌 Topic Overview
+In this final submodule, we implement `DecisionTreeRegressor` in Python using Scikit-Learn on the **Diabetes dataset** (`load_diabetes(as_frame=True)`), observe severe overfitting in continuous space (negative $R^2$ on test data!), visualize the tree with `plot_tree`, and resolve it using pre-pruning.
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 🩺 Dataset & Setup
+- **Dataset**: `load_diabetes(as_frame=True).frame` (442 samples, 10 physiological features).
+- **Target**: Continuous measure of disease progression one year after baseline.
+- **Split**: `train_test_split(X, y, test_size=0.3, random_state=42)`.
+
+---
+
+## ⚠️ Unpruned Regression Tree: Extreme Overfitting
+When we fit an unrestricted `DecisionTreeRegressor()`:
+- **Train MSE**: `0.0`
+- **Train $R^2$**: `1.0` (100% memorization!)
+- **Test MSE**: `5530.51`
+- **Test $R^2$**: **`-0.024`** (Negative $R^2$!)
+
+### Why is Test $R^2$ Negative?
+A negative $R^2$ means the unpruned tree is performing **worse than a simple horizontal line predicting the overall mean** ($\bar{y}$)! The tree created hundreds of tiny leaves to fit individual training outliers, which fail disastrously on test points.
+
+---
+
+## ✂️ Fixing the Model with Pre-Pruning
+By constraining the tree using `max_depth` and `min_samples_leaf`:
+- The tree stops memorizing noise.
+- The test $R^2$ turns from negative to positive.
+- The test MSE drops significantly.
+
+---
+
+## 💻 Python Implementation from Lecture
 
 ```python
+from sklearn.datasets import load_diabetes
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-# Fit regularized regressor
-reg_model = DecisionTreeRegressor(max_depth=4, min_samples_leaf=5, random_state=42)
-reg_model.fit(X_1d, y_1d)
+# 1. Load data
+df = load_diabetes(as_frame=True).frame
+X = df.drop(columns=["target"])
+y = df["target"]
 
-preds = reg_model.predict(X_1d)
-mse = mean_squared_error(y_1d, preds)
-r2 = r2_score(y_1d, preds)
+# 2. Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-print(f"Regression MSE: {mse:.4f}")
-print(f"Regression R^2: {r2:.4f}")
-assert r2 > 0.80, "Depth 4 tree must capture non-linear sine trend with high R^2"
+# 3. Unpruned Baseline Model
+base_model = DecisionTreeRegressor(random_state=42)
+base_model.fit(X_train, y_train)
 
+print("--- UNPRUNED BASELINE MODEL ---")
+print("MSE Train:", mean_squared_error(y_train, base_model.predict(X_train)))
+print("MSE Test: ", mean_squared_error(y_test, base_model.predict(X_test)))
+print("R2 Train: ", r2_score(y_train, base_model.predict(X_train)))
+print("R2 Test:  ", r2_score(y_test, base_model.predict(X_test)))
+
+# 4. Pre-Pruned Model
+pruned_model = DecisionTreeRegressor(max_depth=3, min_samples_leaf=15, random_state=42)
+pruned_model.fit(X_train, y_train)
+
+print("\n--- PRE-PRUNED MODEL (max_depth=3, min_samples_leaf=15) ---")
+print("MSE Test: ", mean_squared_error(y_test, pruned_model.predict(X_test)))
+print("R2 Test:  ", r2_score(y_test, pruned_model.predict(X_test)))
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. Unconstrained regression trees easily overfit, causing $R^2$ to become negative on test data.
+2. `plot_tree` allows visual inspection of leaf sizes and split criteria.
+3. Pre-pruning via `max_depth` and `min_samples_leaf` is essential to achieve positive generalization performance.

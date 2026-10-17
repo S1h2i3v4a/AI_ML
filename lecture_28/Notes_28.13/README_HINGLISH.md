@@ -1,101 +1,78 @@
-# Lecture 28.13: Variance Reduction as Impurity Metric for Regression Trees
+# Lecture 28.13: Variance Reduction (Formula & Split Selection)
 
-## 📌 Executive Summary (Hinglish)
-Variance Reduction ka mathematical formulation, MSE node impurity, MAE median criteria, aur regression trees mein optimal continuous split selection.
-
----
-
-### 📋 Is Topic/Section Mein Hum Kya Cover Kar Rahe Hain?
-1. Regression impurity metric: Node Mean Squared Error $MSE(S) = \frac{1}{|S|} \sum (y_i - \bar{y})^2$.
-2. Variance Reduction split selection formula: $\Delta V(S, A) = \text{Var}(S) - \left( \frac{|S_L|}{|S|} \text{Var}(S_L) + \frac{|S_R|}{|S|} \text{Var}(S_R) \right)$.
-3. MSE criterion vs MAE criterion ($L_1$ loss minimizing absolute deviation via median).
-4. Outlier robustness: MAE criterion extreme regression outliers se resistant rehta hai.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Variance Reduction (VR) ka concept: Regression mein Information Gain ka roop.
+- Formula: $VR = V_S - \text{Weighted Child Variance}$.
+- Video mein board par solve kiye gaye dono split cases:
+- Case 1 ($x \le 2$): $VR = 6.25$.
+- Case 2 ($x \le 3$): $VR = 6.75$.
+- Best split threshold ka chunav.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-**Node Variance as Impurity**: Classification mein impurity classes ke mix hone se banti hai, jabki regression mein impurity target values ke spread (sample variance) se measure hoti hai.
+#### 1. Variance Reduction Kya Hai?
+Classification mein hum Information Gain se dekhte the ki entropy kitni kam hui.
+Regression mein numbers hote hain, isiliye:
+> **Variance Reduction yeh naapta hai ki split karne ke baad data ke variance (bikhrav) mein kitni kami aayi.**
 
-**Variance Reduction**: Split select karte samay dekha jaata hai ki parent node ki variance se child nodes ki weighted variance kitni ghati hai. Maximum drop wala split winner banta hai.
+Jitna zyada Variance Reduction hoga, child nodes ke andar numbers apne average ke utne hi paas honge!
 
-**MSE vs MAE**: Standard criterion MSE mean predict karta hai. Agar dataset mein extreme price outliers hon, toh `criterion='absolute_error'` median predict karta hai.
+#### 2. Formula
 
-**L1 Robustness**: Median-based regression outlier data points se shift nahi hota, providing clean piece-wise medians.
+$$VR = V_S - \left( \frac{|S_L|}{|S|} V_L + \frac{|S_R|}{|S|} V_R \right)$$
 
----
+#### 3. Board Par Ki Gayi Calculation ($y = [2, 4, 6, 10]$, $V_S = 8.75$)
 
-## 🏛️ Mathematical Architecture & Detailed Theory
+**Case 1: Split $x \le 2$ Par**
+- Left branch mein 2 points: $[2, 4]$
+- Average: $\bar{y}_L = 3$
+- Variance: $V_L = 1.0$
+- Right branch mein 2 points: $[6, 10]$
+- Average: $\bar{y}_R = 8$
+- Variance: $V_R = 4.0$
+- Children ka weighted variance:
+$$\frac{2}{4}(1.0) + \frac{2}{4}(4.0) = 0.5 + 2.0 = 2.5$$
+- Variance Reduction:
+$$VR_1 = 8.75 - 2.5 = 6.25$$
 
-### 📉 Variance Reduction Formulation
+**Case 2: Split $x \le 3$ Par**
+- Left branch mein 3 points: $[2, 4, 6] \r\rightarrow V_L \approx 2.67$
+- Right branch mein 1 point: $[10] \r\rightarrow V_R = 0$ (single point ka variance hamesha 0 hota hai)
+- Weighted child variance:
+$$\frac{3}{4}(2.67) + \frac{1}{4}(0) = 2.0$$
+- Variance Reduction:
+$$VR_2 = 8.75 - 2.0 = 6.75$$
 
-In regression trees, node impurity is defined by the **Sample Variance** (or Mean Squared Error) of the continuous supervisory target $y$ within node $S$:
-
-$$
-I_{\text{MSE}}(S) = \frac{1}{|S|} \sum_{i \in S} (y_i - \bar{y}_S)^2 = \text{Var}(y \mid i \in S)
-$$
-
-For a proposed split on feature $A$ generating left subset $S_L$ and right subset $S_R$:
-
-$$
-\boxed{
-\Delta V(S, A) = I_{\text{MSE}}(S) - \left( \frac{|S_L|}{|S|} I_{\text{MSE}}(S_L) + \frac{|S_R|}{|S|} I_{\text{MSE}}(S_R) \right)
-}
-$$
-
-The optimal split maximizes the reduction in variance $\Delta V(S, A)$, forcing children to be tightly clustered around their respective local means.
-
----
-
-### 🛡️ Mean Absolute Error (MAE) Median Alternative
-
-Under $L_1$ loss:
-
-$$
-J_{\text{MAE}}(c) = \sum_{i \in S} |y_i - c|
-$$
-
-The minimizing constant is the **sample median**:
-
-$$
-c^* = \text{median}(y_i \mid i \in S)
-$$
-
-Impurity under MAE is the Mean Absolute Deviation from the median:
-
-$$
-I_{\text{MAE}}(S) = \frac{1}{|S|} \sum_{i \in S} |y_i - \text{median}(y)|
-$$
-
-MAE provides extreme resistance against wild regression outliers (such as ₹10 crore luxury property transactions in standard housing data).
+#### 4. Faisla (Decision)
+Kyunki $6.75 > 6.25$, isiliye Decision Tree **Case 2 ($x \le 3$)** ko chunega!
 
 ---
 
-## 💻 Python Implementation & Code Example
+### 💻 Python Code
 
 ```python
 import numpy as np
 
-def compute_variance_reduction(parent_y, left_y, right_y):
-    n_p, n_l, n_r = len(parent_y), len(left_y), len(right_y)
-    var_p = np.var(parent_y)
-    weighted_child_var = (n_l / n_p) * np.var(left_y) + (n_r / n_p) * np.var(right_y)
-    return var_p - weighted_child_var
+y = np.array([2, 4, 6, 10])
 
-# Test
-p_vals = np.array([1.0, 2.0, 9.0, 10.0])
-l_vals = np.array([1.0, 2.0])       # tight cluster around 1.5
-r_vals = np.array([9.0, 10.0])      # tight cluster around 9.5
+# Case 1
+v_parent = np.var(y)
+v_case1 = (2/4)*np.var(y[:2]) + (2/4)*np.var(y[2:])
+vr1 = v_parent - v_case1
 
-vr = compute_variance_reduction(p_vals, l_vals, r_vals)
-print("Variance Reduction for clean split:", round(vr, 4))
-assert vr > 0, "Clean separation must reduce continuous variance"
+# Case 2
+v_case2 = (3/4)*np.var(y[:3]) + (1/4)*np.var(y[3:])
+vr2 = v_parent - v_case2
 
+print(f"Parent Variance: {v_parent:.2f}")
+print(f"VR Case 1:       {vr1:.2f}")
+print(f"VR Case 2:       {vr2:.2f}")
 ```
 
 ---
 
-## 🎯 Quick Revision Points (Interview Notes)
-- **Scale Invariance**: Decision Trees monotonically invariant hote hain, isliye inme `StandardScaler` mandatory nahi hota.
-- **Gini vs Entropy**: Gini speed mein 10x faster hota hai kyunki logarithm computation ki zaroorat nahi padti.
-- **Pruning Necessity**: Unconstrained decision tree hamesha overfit karti hai; `min_samples_leaf` aur `ccp_alpha` sabse effective regularizers hain.
+### 📌 Summary Points
+- Variance Reduction regression trees ka split selection criteria hai.
+- Tree wo threshold chunta hai jo target variance ko sabse zyada ghatata hai.

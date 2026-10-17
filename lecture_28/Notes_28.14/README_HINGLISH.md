@@ -1,85 +1,78 @@
-# Lecture 28.14: Decision Tree Regressor Implementation in Scikit-Learn
+# Lecture 28.14: Decision Tree Regressor Code (Diabetes Dataset & Overfitting)
 
-## 📌 Executive Summary (Hinglish)
-Scikit-Learn DecisionTreeRegressor ka complete production pipeline, multi-dimensional tabular regression, hyperparameter tuning, aur Linear Regression ke sath comparison.
-
----
-
-### 📋 Is Topic/Section Mein Hum Kya Cover Kar Rahe Hain?
-1. `DecisionTreeRegressor` class ka configuration aur parameter tuning.
-2. Overfitting visualization: Unpruned regressor vs regularized smooth step approximation.
-3. Evaluation metrics: Mean Squared Error (MSE), Root MSE (RMSE), aur $R^2$ coefficient of determination.
-4. DecisionTreeRegressor vs Linear Regression: Non-linear response surface capability.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Scikit-Learn ke `load_diabetes` dataset par `DecisionTreeRegressor` ka implementation.
+- Video mein ma'am dwara dikhaya gaya extreme overfitting ka result:
+- `MSE train: 0.0`, `r^2 train: 1.0`
+- `MSE test: 5530.51`, **`r^2 test: -0.024`** (Negative $R^2$ score!).
+- Negative $R^2$ ka aasan bhasha mein matlab.
+- `plot_tree` se massive tree ko visualize karna.
+- Pre-pruning (`max_depth=3`, `min_samples_leaf=15`) se test $R^2$ ko positive karna.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-**API Implementation**: `from sklearn.tree import DecisionTreeRegressor` se continuous estimator initialize karke fit kiya jaata hai.
+#### 1. Diabetes Dataset Load Karna
+Video mein ma'am ne Scikit-Learn ka `load_diabetes(as_frame=True).frame` load kiya. Isme 442 patients ka data hai aur continuous target disease progression score hai.
 
-**Overfitting Trap**: Regression trees classification se bhi zyada aggressively overfit kar sakti hain, jahan har single training point ke liye separate step create ho jaata hai.
+#### 2. Baseline Model Aur Screen Ka Shocking Result
+Jab ma'am ne bina restriction ke `DecisionTreeRegressor()` train kiya, toh output aaya:
+- `MSE train: 0.0`
+- `MSE test: 5530.51`
+- `r^2 train: 1.0`
+- **`r^2 test: -0.024`**
 
-**Evaluation Metrics**: Regression performance measure karne ke liye $R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}$ aur RMSE calculate karte hain.
+Ma'am ne screen par highlight kiya:
+> **Train par error 0 hai aur $R^2$ 1.0 hai, lekin test par $R^2$ negative (-0.024) ho gaya!**
 
-**Linear vs Tree Benchmark**: Linear regression sirf straight slope fit karta hai, jabki DecisionTreeRegressor non-linear sinusoidal ya multi-threshold pricing surfaces ko naturally fit kar leta hai.
+#### 3. Negative $R^2$ Ka Matlab Kya Hai?
+$R^2 = 0$ ka matlab hota hai ki model dataset ke overall average jitna hi kaam kar raha hai.
+Lekin agar $R^2$ **negative** ho gaya, toh iska matlab hai ki hamara complex decision tree ek simple seedhi average line se bhi **zyada bura** predict kar raha hai! Tree ne training ke ek-ek point ko ratt kar massive overfitting kar li hai.
 
----
+#### 4. Pre-Pruning Se Solution
+Ma'am ne tree par do restrictions lagayi:
+- `max_depth = 3`
+- `min_samples_leaf = 15`
 
-## 🏛️ Mathematical Architecture & Detailed Theory
-
-### 💻 DecisionTreeRegressor API & Evaluation Framework
-
-In Scikit-Learn, `DecisionTreeRegressor` implements regression tree induction with support for `criterion='squared_error'`, `'friedman_mse'`, `'absolute_error'`, and `'poisson'`.
-
-#### Evaluation Metrics Formulation:
-
-1. **Mean Squared Error (MSE)**:
-   
-$$
-   \text{MSE} = \frac{1}{m} \sum_{i=1}^m (y_i - \hat{y}_i)^2
-$$
-
-2. **Root Mean Squared Error (RMSE)**:
-   
-$$
-   \text{RMSE} = \sqrt{\text{MSE}}
-$$
-
-3. **Coefficient of Determination ($R^2$)**:
-   
-$$
-   \boxed{
-   R^2 = 1 - \frac{\sum_{i=1}^m (y_i - \hat{y}_i)^2}{\sum_{i=1}^m (y_i - \bar{y})^2} = 1 - \frac{\text{SS}_{\text{res}}}{\text{SS}_{\text{tot}}}
-   }
-$$
-
-Where $R^2 = 1.0$ represents a perfect regression fit, and $R^2 = 0.0$ corresponds to a naive baseline predicting the global mean $\bar{y}$.
+Iske lagate hi:
+- Test MSE 5530 se ghat kar substantially kam ho gaya.
+- Test $R^2$ negative se badhkar healthy positive score ban gaya!
 
 ---
 
-## 💻 Python Implementation & Code Example
+### 💻 Python Code
 
 ```python
+from sklearn.datasets import load_diabetes
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-# Fit regularized regressor
-reg_model = DecisionTreeRegressor(max_depth=4, min_samples_leaf=5, random_state=42)
-reg_model.fit(X_1d, y_1d)
+# 1. Data load
+df = load_diabetes(as_frame=True).frame
+X = df.drop(columns=["target"])
+y = df["target"]
 
-preds = reg_model.predict(X_1d)
-mse = mean_squared_error(y_1d, preds)
-r2 = r2_score(y_1d, preds)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-print(f"Regression MSE: {mse:.4f}")
-print(f"Regression R^2: {r2:.4f}")
-assert r2 > 0.80, "Depth 4 tree must capture non-linear sine trend with high R^2"
+# 2. Baseline Tree (Extreme Overfit)
+base = DecisionTreeRegressor(random_state=42)
+base.fit(X_train, y_train)
 
+print(f"Base Train R2: {r2_score(y_train, base.predict(X_train)):.2f}")
+print(f"Base Test R2:  {r2_score(y_test, base.predict(X_test)):.4f}")
+
+# 3. Pruned Tree
+pruned = DecisionTreeRegressor(max_depth=3, min_samples_leaf=15, random_state=42)
+pruned.fit(X_train, y_train)
+
+print(f"Pruned Test R2: {r2_score(y_test, pruned.predict(X_test)):.4f}")
 ```
 
 ---
 
-## 🎯 Quick Revision Points (Interview Notes)
-- **Scale Invariance**: Decision Trees monotonically invariant hote hain, isliye inme `StandardScaler` mandatory nahi hota.
-- **Gini vs Entropy**: Gini speed mein 10x faster hota hai kyunki logarithm computation ki zaroorat nahi padti.
-- **Pruning Necessity**: Unconstrained decision tree hamesha overfit karti hai; `min_samples_leaf` aur `ccp_alpha` sabse effective regularizers hain.
+### 📌 Summary Points
+- Regression trees bina pruning ke train par 100% memorization kar leti hain lekin test par negative $R^2$ de sakti hain.
+- Negative $R^2$ severe overfitting ko darshata hai.
+- `max_depth` aur `min_samples_leaf` lagane se regression tree generalizable ban jaati hai.

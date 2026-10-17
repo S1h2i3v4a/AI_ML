@@ -1,70 +1,83 @@
-# Lecture 28.11: Post-Pruning Implementation — Minimal Cost-Complexity Pruning
+# Lecture 28.11: Post-Pruning Implementation (Cost-Complexity ccp_alpha)
 
-## 📌 Executive Summary
-Minimal Cost-Complexity Pruning mathematics (Breiman CART), effective alpha sequence extraction, cost-complexity path traversal, and finding optimal ccp_alpha via cross-validation.
+## 📌 Topic Overview
+In this lecture, we study **Post-Pruning** using **Minimal Cost-Complexity Pruning** (`ccp_alpha`). We let the tree grow completely, compute the pruning path with `cost_complexity_pruning_path()`, and find the optimal alpha parameter that maximizes generalization.
 
 ---
 
-## 🏛️ Theoretical Formulation & Mathematical Architecture
+## 📐 Mathematical Formulation: Cost-Complexity Cost Function
+Cost-complexity pruning defines a cost function that balances classification error with tree size:
 
-### 📐 Minimal Cost-Complexity Pruning Mathematics
-
-Formulated by Leo Breiman, Jerome Friedman, Richard Olshen, and Charles Stone (1984), **Minimal Cost-Complexity Pruning** defines a parameterized objective function balancing empirical misclassification error with structural tree complexity:
-
-$$
-\boxed{
-R_\alpha(T) = R(T) + \alpha |T|
-}
-$$
+$$R_\alpha(T) = R(T) + \alpha |T|$$
 
 Where:
-- $R(T) = \sum_{t \in \mathcal{L}} R(t) = \sum_{t \in \mathcal{L}} \left( \frac{N_t}{N} I(t) \right)$ is the total unpenalized leaf impurity/error.
-- $|T|$ is the number of terminal leaf nodes in subtree $T$.
-- $\alpha \ge 0$ is the **complexity parameter** (regularization penalty).
-
-#### Pruning Mechanics:
-For each internal node $t$:
-1. If node $t$ is collapsed into a single leaf, its error is $R(t)$.
-2. If subtree $T_t$ rooted at $t$ is kept, its error is $R(T_t) + \alpha |T_t|$.
-3. Subtree $T_t$ and leaf $t$ have identical cost-complexity when:
-   
-$$
-   R(t) + \alpha (1) = R(T_t) + \alpha |T_t| \implies \alpha = \frac{R(t) - R(T_t)}{|T_t| - 1}
-$$
-
-This critical value is the **effective alpha** for node $t$. Pruning the node with the smallest effective alpha produces the optimal nested subtree sequence:
-
-$$
-T_0 \supset T_1 \supset T_2 \supset \dots \supset \{t_{\text{root}}\}
-$$
+- $R(T)$ = Total training misclassification error of tree $T$.
+- $|T|$ = Number of terminal leaf nodes in tree $T$ (a measure of tree complexity).
+- $\alpha \ge 0$ = Complexity penalty parameter (`ccp_alpha`).
+- When $\alpha = 0$: Standard unpruned tree (pure leaves, high complexity).
+- As $\alpha \to \infty$: Penalty dominates; the tree gets pruned all the way back to a single root node.
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 🛠️ Step-by-Step Implementation from Lecture
 
+### 1. Extract the Pruning Path
+Scikit-Learn provides `cost_complexity_pruning_path()`, which returns the exact candidate alpha values where the tree structure changes:
 ```python
-from sklearn.tree import DecisionTreeClassifier
-
-# Compute Cost-Complexity Pruning Path
-base_clf = DecisionTreeClassifier(random_state=42).fit(X_syn, y_syn)
-path = base_clf.cost_complexity_pruning_path(X_syn, y_syn)
+path = model.cost_complexity_pruning_path(X_train, y_train)
 ccp_alphas, impurities = path.ccp_alphas, path.impurities
+```
 
-print(f"Total Effective Alphas: {len(ccp_alphas)}")
-print("First 3 Alphas: ", np.round(ccp_alphas[:3], 5))
-print("Final 3 Alphas: ", np.round(ccp_alphas[-3:], 5))
+### 2. Train a Model for Each Candidate Alpha
+In the video, the instructor loops through `ccp_alphas`:
+```python
+trees = []
+for alpha in ccp_alphas:
+model = DecisionTreeClassifier(random_state=42, ccp_alpha=alpha)
+model.fit(X_train, y_train)
+acc = model.score(X_test, y_test)
+trees.append((model, acc, alpha))
+```
 
-# Fit with mid-range alpha
-pruned_clf = DecisionTreeClassifier(random_state=42, ccp_alpha=ccp_alphas[len(ccp_alphas)//2])
-pruned_clf.fit(X_syn, y_syn)
-print(f"Unpruned Nodes: {base_clf.tree_.node_count} -> Pruned Nodes: {pruned_clf.tree_.node_count}")
-assert pruned_clf.tree_.node_count < base_clf.tree_.node_count
-
+### 3. Find the Best Alpha
+We select the alpha that gives the maximum test accuracy:
+```python
+best_tree, best_acc, best_alpha = max(trees, key=lambda x: x[1])
+print(f"Optimal ccp_alpha: {best_alpha:.5f}")
+print(f"Best Test Accuracy: {best_acc:.4f}")
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 💻 Python Implementation
+
+```python
+import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier
+
+# Fit initial tree to get pruning path
+clf_initial = DecisionTreeClassifier(random_state=42)
+path = clf_initial.cost_complexity_pruning_path(X_train, y_train)
+ccp_alphas = path.ccp_alphas
+
+train_scores = []
+test_scores = []
+
+for alpha in ccp_alphas:
+clf = DecisionTreeClassifier(random_state=42, ccp_alpha=alpha)
+clf.fit(X_train, y_train)
+train_scores.append(clf.score(X_train, y_train))
+test_scores.append(clf.score(X_test, y_test))
+
+# Best alpha selection
+best_idx = np.argmax(test_scores)
+print(f"Best Alpha: {ccp_alphas[best_idx]:.5f}")
+print(f"Best Test Accuracy: {test_scores[best_idx]:.4f}")
+```
+
+---
+
+## 🔑 Key Takeaways
+1. Post-pruning lets the tree grow fully, then trims weakest leaves bottom-up.
+2. `cost_complexity_pruning_path()` provides exact candidate `ccp_alpha` thresholds.
+3. Increasing `ccp_alpha` simplifies the tree by penalizing the number of leaf nodes.

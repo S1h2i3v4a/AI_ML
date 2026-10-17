@@ -1,91 +1,69 @@
-# Lecture 28.07: Pruning Decision Trees — Overfitting aur Generalization Gap
+# Lecture 28.07: Pruning Decision Trees (Concept & Overfitting)
 
-## 📌 Executive Summary (Hinglish)
-Bina pruning ke decision trees kyun overfit karte hain, noise memorization aur high variance ka mathematical reason, generalization gap, aur tree pruning ka overarching framework.
-
----
-
-### 📋 Is Topic/Section Mein Hum Kya Cover Kar Rahe Hain?
-1. Fully grown decision trees ka memorization behavior: $100\%$ training accuracy par zero test generalization.
-2. High Variance regime: Small sample noise ke basis par complex branch creation.
-3. Generalization Gap: $\text{Gap} = \text{Error}_{\text{test}} - \text{Error}_{\text{train}}$ ka divergence.
-4. Pruning strategies ka taxonomy: Pre-Pruning (Early Stopping) vs Post-Pruning (Prune after growth).
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Decision Tree overfit kyun hota hai.
+- Video mein board par draw kiya gaya $[14y, 1n]$ outlier node ka example.
+- Overfitting ki pehchaan: `Training Accuracy >>>> Testing Accuracy`.
+- Pruning kya hoti hai aur iska gardener analogy se connection.
+- Pre-pruning (early stopping) aur Post-pruning ke beech ka farak.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-**Overfitting Reality**: Agar decision tree ko bina kisi restriction ke grow kiya jaye, toh har leaf node mein sirf 1 sample reh jaata hai. Model training data ko 100% memorise kar leta hai.
+#### 1. Decision Tree Overfit Kyun Hota Hai?
+Decision tree bohot greedy hota hai. Wo tab tak split karta rehta hai jab tak har ek single data point alag na ho jaye.
 
-**High Variance Pathology**: Training set ke 2 outliers ke liye tree 5 extra deep levels create kar leti hai, jo test set par aane wale normal samples ko galat predict karte hain.
+Video mein ma'am ne board par ek node draw kiya:
+$$[14y, 1n]$$
+- Yahan 14 log Yes keh rahe hain aur sirf 1 aadmi No keh raha hai (jo ki ek outlier ya galti ho sakti hai).
+- Lekin bina rok-tok ke decision tree is 1 aadmi ke liye ek alag branch aur alag leaf node bana deta hai: $[14y, 0n]$ aur $[0y, 1n]$.
+- **Natija**: Tree unnecessarily deep ban jata hai aur noise ko yaad kar leta hai.
 
-**Generalization Gap**: Jaise-jaise tree depth badhti hai, Training Error girte-girte 0 ho jaati hai, lekin Test Error ek point ke baad skyrocket ho jaati hai.
+#### 2. Overfitting Ki Pehchaan
+Ma'am ne board ke upar likha:
+$$	ext{Training} \gg 	ext{Testing}$$
+- Training data par accuracy $100\%$ aa rahi hoti hai.
+- Lekin jab wahi model naye (testing) data par chalta hai, toh accuracy gir kar $70-75\%$ reh jaati hai. Isi ko **Overfitting** kehte hain.
 
-**Pruning Taxonomy**: Pre-pruning tree growth ke dauran hi stopping rules lagati hai. Post-pruning poori tree grow karke statistically weak subtrees ko cut karti hai.
+#### 3. Pruning Kya Hai?
+Jaise bageeche mein maali (gardener) paudhe ki bekar aur lambi branches ko kaat kar chhota karta hai taaki paudha theek se grow kare, thik waise hi:
+> **Pruning wo technique hai jisme hum Decision Tree ki unnecessary branches ko kaat dete hain taaki overfitting kam ho aur model naye data par accha perform kare.**
 
----
+#### 4. Pruning Ke Do Tareeqe
 
-## 🏛️ Mathematical Architecture & Detailed Theory
+**1. Pre-pruning (Pehle hi rok dena):**
+- Tree ko bohot gehra banne hi mat do.
+- Board par ma'am ne ek horizontal line draw ki aur likha: `max_depth = 4`.
+- Isse tree 4 level ke baad aage split nahi hoga chahe data pure ho ya na ho.
 
-### 💥 The Pathology of Unconstrained Decision Trees
-
-If a decision tree induction algorithm is permitted to execute without structural stopping constraints, it will continue recursive partitioning until every terminal leaf is **strictly pure** ($I(m) = 0$).
-
-```mermaid
-flowchart TD
-    A["Fully Grown Unpruned Tree"] --> B["Leaf Size = 1 Sample"]
-    A --> C["Training Accuracy = 100% (Zero Bias)"]
-    A --> D["Astronomical Variance (Extreme Sensitivity to Noise)"]
-    
-    B --> E["Generalization Catastrophe"]
-    C --> E
-    D --> E["Test F1 Score Collapses from 0.85 to 0.52"]
-```
-
-#### The Bias-Variance Tradeoff in Tree Depth:
-- **Shallow Trees (Depth 1 to 2)**: Suffer from **High Bias** (underfitting). The model cannot capture non-linear feature interactions (a depth-1 tree is merely a single decision stump).
-- **Deep Unconstrained Trees (Depth $\ge 15$)**: Suffer from **High Variance** (overfitting). The model memorizes training noise and outliers.
-
----
-
-### ✂️ The Pruning Framework Taxonomy
-
-To achieve optimal generalization on unseen test instances, we apply regularization via two distinct paradigms:
-
-1. **Pre-Pruning (Early Stopping)**:
-   Halts tree expansion during the recursive partitioning loop when heuristic stopping conditions are triggered:
-   - `max_depth` attained.
-   - Sample count in node drops below `min_samples_split`.
-   - Impurity reduction $\Delta I$ falls below `min_impurity_decrease`.
-
-2. **Post-Pruning (Subtree Pruning)**:
-   Allows the tree to grow to its maximum unrestricted depth, then algorithmically traverses from the leaves upward, replacing subtrees with single leaf nodes if their presence does not significantly enhance generalization.
+**2. Post-pruning (Baad mein kaatna):**
+- Pehle tree ko poora badhne do (full grow hone do).
+- Fir niche se shuru karke dekho ki kaun si branch faltu hai aur usko cut kar do.
 
 ---
 
-## 💻 Python Implementation & Code Example
+### 💻 Python Code
 
 ```python
-import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 
-# Synthetic dataset with noisy labels
-np.random.seed(42)
-X_syn = np.random.randn(200, 5)
-y_syn = (X_syn[:, 0] * 1.2 + np.random.randn(200) * 0.8 > 0).astype(int)
+X, y = make_classification(n_samples=500, n_features=10, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Unconstrained Tree
-unconstrained = DecisionTreeClassifier(random_state=42).fit(X_syn, y_syn)
-print("Unconstrained Tree Depth:     ", unconstrained.get_depth())
-print("Unconstrained Leaf Count:     ", unconstrained.get_n_leaves())
-print("Unconstrained Train Accuracy: ", unconstrained.score(X_syn, y_syn))
-assert unconstrained.score(X_syn, y_syn) > 0.98, "Unconstrained tree must overfit training data"
+# Bina kisi restriction ke tree (Overfit hoga)
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
 
+print("Training Score:", model.score(X_train, y_train))
+print("Testing Score: ", model.score(X_test, y_test))
 ```
 
 ---
 
-## 🎯 Quick Revision Points (Interview Notes)
-- **Scale Invariance**: Decision Trees monotonically invariant hote hain, isliye inme `StandardScaler` mandatory nahi hota.
-- **Gini vs Entropy**: Gini speed mein 10x faster hota hai kyunki logarithm computation ki zaroorat nahi padti.
-- **Pruning Necessity**: Unconstrained decision tree hamesha overfit karti hai; `min_samples_leaf` aur `ccp_alpha` sabse effective regularizers hain.
+### 📌 Summary Points
+- Decision tree outliers ke liye alag branch banakar overfit ho jata hai.
+- Pruning unnecessary branches ko hata kar overfitting ko theek karta hai.
+- Pre-pruning tree ke badhne ke dauran rokti hai, jabki Post-pruning baad mein cut karti hai.

@@ -1,80 +1,80 @@
-# Lecture 28.04: Gini Impurity — Formulation & Mathematical Mechanics
+# Lecture 28.04: Gini Impurity
 
-## 📌 Executive Summary
-Mathematical derivation of Gini Impurity, probability of misclassification interpretation, computational efficiency without transcendental functions, and its role as the CART default.
-
----
-
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### 📊 The Probabilistic Meaning of Gini Impurity
-
-Originally formulated by Italian statistician Corrado Gini, **Gini Impurity** measures the probability that a randomly chosen element from a set would be incorrectly labeled if it were randomly labeled according to the empirical distribution of class labels in the subset.
-
-Let a node contain items from $K$ classes with empirical probabilities $p_1, p_2, \dots, p_K$.
-- The probability that an item belongs to class $k$ is $p_k$.
-- The probability that the item is assigned class $j \neq k$ is $(1 - p_k)$.
-
-Summing across all $K$ classes:
-
-$$
-\boxed{
-G(S) = \sum_{k=1}^K p_k (1 - p_k) = \sum_{k=1}^K (p_k - p_k^2) = \sum_{k=1}^K p_k - \sum_{k=1}^K p_k^2 = 1 - \sum_{k=1}^K p_k^2
-}
-$$
+## 📌 Topic Overview
+In this lecture, we study the second major impurity metric: **Gini Impurity**. This is the default metric used by CART and Scikit-Learn. We examine who invented it, its formula, range, and blackboard calculation.
 
 ---
 
-### 📐 Binary Classification Gini Dynamics
+## 🏛️ What is Gini Impurity?
+Named after the Italian statistician and demographer **Corrado Gini**, Gini Impurity measures:
+> **The likelihood of a random element being misclassified if it were randomly labeled according to the class distribution in the dataset.**
 
-In a binary classification setting ($K=2$ with positive class proportion $p$):
+The general formula is:
 
-$$
-G(p) = 1 - \left( p^2 + (1-p)^2 \right) = 1 - (p^2 + 1 - 2p + p^2) = 2p - 2p^2 = 2p(1 - p)
-$$
+$$GI = 1 - \sum_{i=1}^c (p_i)^2$$
 
-```mermaid
-flowchart LR
-    A["Pure Node (p=1.0 or p=0.0)"] --> B["Gini = 2(1)(0) = 0.00 (Zero Disorder)"]
-    C["Moderately Pure (p=0.80)"] --> D["Gini = 2(0.8)(0.2) = 0.32 (Low Impurity)"]
-    E["Maximum Mixture (p=0.50)"] --> F["Gini = 2(0.5)(0.5) = 0.50 (Maximum Disorder)"]
-```
+For binary classification (`Yes` and `No`):
 
-#### Multi-Class Bound:
-For $K$ classes, maximum Gini impurity occurs at uniform distribution $p_k = 1/K$:
-
-$$
-G_{\max} = 1 - \sum_{k=1}^K \left(\frac{1}{K}\right)^2 = 1 - \frac{K}{K^2} = 1 - \frac{1}{K} = \frac{K-1}{K}
-$$
-
-As $K \to \infty$, $G_{\max} \to 1.0$.
+$$GI = 1 - (p_{	ext{yes}}^2 + p_{	ext{no}}^2)$$
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 📊 Range of Gini Impurity for Binary Classification
+- **Minimum Value = 0.0**: When all samples belong to a single class (completely pure).
+- **Maximum Value = 0.5**: When classes are equally split (50% Yes and 50% No).
+
+$$	ext{Max } GI = 1 - (0.5^2 + 0.5^2) = 1 - (0.25 + 0.25) = 1 - 0.5 = 0.5$$
+
+> **Key Distinction**: While maximum Entropy is **1.0**, maximum Gini Impurity for binary classification is **0.5**!
+
+---
+
+## 🧮 Numerical Examples from Blackboard
+
+### Example 1: Impure Node $[3n, 3y]$
+- Total samples = 6
+- $p_y = rac{3}{6} = 0.5$, $p_n = rac{3}{6} = 0.5$
+
+$$GI = 1 - (p_y^2 + p_n^2) = 1 - \left( rac{1}{4} + rac{1}{4} 
+ight) = 1 - rac{1}{2} = 0.5$$
+
+### Example 2: Pure Node $[0n, 3y]$
+- Total samples = 3
+- $p_y = rac{3}{3} = 1.0$, $p_n = 0.0$
+
+$$GI = 1 - (1.0^2 + 0.0^2) = 1 - 1 = 0.0$$
+
+---
+
+## 📈 Comparing Curves: Entropy vs Gini Impurity
+On the blackboard, the instructor plots both curves on the same axes:
+- The **orange curve (Entropy)** peaks at **1.0** when $p=0.5$.
+- The **blue curve (Gini Impurity)** peaks at **0.5** when $p=0.5$.
+- Both curves share the exact same minima ($0.0$) at $p=0$ and $p=1$.
+
+Because both curves have virtually identical shapes, they almost always agree on which feature split is best!
+
+---
+
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+def gini_impurity(y_count, n_count):
+total = y_count + n_count
+if total == 0:
+return 0.0
+p_y = y_count / total
+p_n = n_count / total
+return 1.0 - (p_y**2 + p_n**2)
 
-def calculate_gini(labels):
-    _, counts = np.unique(labels, return_counts=True)
-    probs = counts / counts.sum()
-    return 1.0 - np.sum(probs ** 2)
-
-# Test
-pure = np.array([0, 0, 0, 0])
-fifty_fifty = np.array([0, 1, 0, 1])
-
-print("Pure Gini:        ", calculate_gini(pure))
-print("50-50 Gini:       ", calculate_gini(fifty_fifty))
-assert calculate_gini(pure) == 0.0
-assert calculate_gini(fifty_fifty) == 0.5
-
+print("Gini of [3y, 3n] (50-50):", gini_impurity(3, 3))
+print("Gini of [0y, 3n] (Pure): ", gini_impurity(0, 3))
+print("Gini of [2y, 1n]:        ", round(gini_impurity(2, 1), 4))
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. Gini Impurity measures the probability of misclassification.
+2. For binary classification, Gini ranges from **0.0 (pure)** to **0.5 (maximum impurity)**.
+3. Because Gini only requires squaring numbers (no logarithms), it is computationally faster than Entropy.

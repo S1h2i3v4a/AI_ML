@@ -1,95 +1,79 @@
-# Lecture 28.12: Decision Tree Regressor — Continuous Partitioning aur Piecewise Constants
+# Lecture 28.12: Decision Tree Regressor (Core Concepts & Mean Prediction)
 
-## 📌 Executive Summary (Hinglish)
-Continuous target regression ke liye Decision Trees ka formulation, feature space ko orthogonal regions $R_m$ mein partition karna, aur regional sample mean $\bar{y}_m$ se prediction karna.
-
----
-
-### 📋 Is Topic/Section Mein Hum Kya Cover Kar Rahe Hain?
-1. Decision Tree Regressor ka objective: Continuous target variable $y \in \mathbb{R}$ ko predict karna.
-2. Feature space ko $M$ disjoint hyper-rectangles $R_1, R_2, \dots, R_M$ mein partition karna.
-3. Optimal leaf output: Regional sample mean $c_m = \text{mean}(y_i \mid \mathbf{x}_i \in R_m)$.
-4. Piecewise constant step-function approximation ki non-linear characteristics.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Decision Tree Regressor aur Classifier ke beech ka farak.
+- Leaf node par prediction kaise aati hai: **Mean / Average ($\bar{y}$)**.
+- Regression mein Impurity Metric: Entropy/Gini ke badle **Variance ($\sigma^2$) ya MSE**.
+- Video mein board par solve kiya gaya dataset: $x = [1, 2, 3, 4]$ aur $y = [2, 4, 6, 10]$.
+- Parent node ka Mean ($\bar{y} = 5.5$) aur Variance ($V_S = 8.75$) nikaalna.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-**Continuous Regression**: Classification mein classes hoti hain, jabki regression mein continuous numerical values predict karni hoti hain (jaise house prices ya customer lifetime spend).
+#### 1. Classifier vs Regressor Mein Farak
+- **Classifier**: Target categorical hota hai (Yes/No, Spam/Not Spam). Leaf par majority vote se faisla hota hai.
+- **Regressor**: Target continuous number hota hai (Salary, Price, Temperature). Leaf par aane wale sabhi numbers ka **Average (Mean)** output banta hai!
 
-**Space Partitioning**: Regressor feature space ko orthogonal boxes $R_m$ mein divide karta hai. Har box ke andar model ek constant horizontal value predict karta hai.
+#### 2. Leaf Node Prediction Ka Niyam
+Agar kisi leaf node mein 3 points pahunche jinki salary hai ₹30k, ₹40k, aur ₹50k, toh wo leaf kya predict karega?
+Un teeno ka average:
+$$\hat{y} = \frac{30 + 40 + 50}{3} = 40\text{k}$$
 
-**Leaf Mean Calculation**: Squared error loss $\sum (y_i - c)^2$ ko minimize karne wala optimal constant value sample mean $\bar{y} = \frac{1}{N_m} \sum y_i$ hoti hai.
+#### 3. Board Par Ki Gayi Calculation
 
-**Piecewise Constant Nature**: Tree smooth linear lines draw nahi karti balki stair-case (step function) curve banati hai, jo non-linear trends ko naturally approximate karti hai.
+Video mein ma'am ne board par table banayi:
 
----
+| $x$ | $y$ |
+| :--- | :--- |
+| 1 | 2 |
+| 2 | 4 |
+| 3 | 6 |
+| 4 | 10 |
 
-## 🏛️ Mathematical Architecture & Detailed Theory
+**Step 1: Mean ($\bar{y}$) Nikaalna**
 
-### 📈 Regression Trees & Piecewise Constant Approximations
+$$\bar{y} = \frac{2 + 4 + 6 + 10}{4} = \frac{22}{4} = 5.5$$
 
-When the target supervisory response is continuous ($y \in \mathbb{R}$), the tree partitions the domain $\mathcal{X}$ into $M$ disjoint orthogonal regions $\{R_1, R_2, \dots, R_M\}$:
+**Step 2: Variance ($V_S$) Nikaalna**
+Formula:
 
-$$
-\mathcal{X} = \bigcup_{m=1}^M R_m \quad \text{where } R_j \cap R_k = \emptyset \quad \forall j \neq k
-$$
+$$V_S = \frac{1}{n} \sum (y_i - \bar{y})^2$$
 
-The model represents the global continuous response function as a linear combination of indicator basis functions:
+Har point ka $(y_i - 5.5)^2$:
+- $(2 - 5.5)^2 = (-3.5)^2 = 12.25$
+- $(4 - 5.5)^2 = (-1.5)^2 = 2.25$
+- $(6 - 5.5)^2 = (0.5)^2 = 0.25$
+- $(10 - 5.5)^2 = (4.5)^2 = 20.25$
 
-$$
-\boxed{
-f(\mathbf{x}) = \sum_{m=1}^M c_m \cdot \mathbb{I}(\mathbf{x} \in R_m)
-}
-$$
+Sum $= 12.25 + 2.25 + 0.25 + 20.25 = 35.0$.
 
----
+$$V_S = \frac{35.0}{4} = 8.75$$
 
-### 📐 Mathematical Derivation of Optimal Leaf Prediction $c_m$
-
-Under the classical Sum of Squared Errors (SSE) loss criterion:
-
-$$
-J(c_m) = \sum_{i \in R_m} (y_i - c_m)^2
-$$
-
-To find the minimizing constant $c_m^*$, compute the partial derivative with respect to $c_m$ and set to zero:
-
-$$
-\frac{\partial J}{\partial c_m} = -2 \sum_{i \in R_m} (y_i - c_m) = 0
-$$
-
-$$
-\sum_{i \in R_m} y_i - |R_m| c_m = 0 \implies \boxed{c_m^* = \frac{1}{|R_m|} \sum_{i \in R_m} y_i = \bar{y}_{R_m}}
-$$
-
-Thus, the optimal leaf prediction under squared error loss is strictly the **sample mean** of all training instances assigned to region $R_m$.
+Ma'am ne board ke upar circle karke likha: **$V_S = 8.75$**. Yeh hamari initial impurity hai!
 
 ---
 
-## 💻 Python Implementation & Code Example
+### 💻 Python Code
 
 ```python
 import numpy as np
-from sklearn.tree import DecisionTreeRegressor
 
-# Generate non-linear 1D sine signal
-np.random.seed(42)
-X_1d = np.sort(np.random.uniform(0, 10, 80)).reshape(-1, 1)
-y_1d = np.sin(X_1d).ravel() + np.random.normal(0, 0.1, 80)
+x = np.array([1, 2, 3, 4])
+y = np.array([2, 4, 6, 10])
 
-reg = DecisionTreeRegressor(max_depth=3, random_state=42)
-reg.fit(X_1d, y_1d)
+# Mean
+y_mean = np.mean(y)
+print("Mean (y_bar):", y_mean)
 
-preds = reg.predict(X_1d)
-print("Unique Piecewise Constant Levels:", len(np.unique(preds)))
-assert len(np.unique(preds)) <= 2**3, "Depth 3 tree cannot have more than 8 distinct levels"
-
+# Variance
+var = np.var(y)
+print("Variance (V_S):", var)
 ```
 
 ---
 
-## 🎯 Quick Revision Points (Interview Notes)
-- **Scale Invariance**: Decision Trees monotonically invariant hote hain, isliye inme `StandardScaler` mandatory nahi hota.
-- **Gini vs Entropy**: Gini speed mein 10x faster hota hai kyunki logarithm computation ki zaroorat nahi padti.
-- **Pruning Necessity**: Unconstrained decision tree hamesha overfit karti hai; `min_samples_leaf` aur `ccp_alpha` sabse effective regularizers hain.
+### 📌 Summary Points
+- Decision Tree Regressor continuous target values ke liye use hota hai.
+- Leaf node ka prediction usme aane wale samples ka mean hota hai.
+- Impurity metric variance ($\sigma^2$) ya MSE hota hai.

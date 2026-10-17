@@ -1,71 +1,90 @@
-# Lecture 28.07: Pruning Decision Trees — Overfitting, Memorization & Generalization Gap
+# Lecture 28.07: Pruning Decision Trees
 
-## 📌 Executive Summary
-Why fully grown decision trees suffer from high variance and noise memorization, structural causes of the generalization gap, and the overarching framework of tree pruning.
+## 📌 Topic Overview
+Decision Trees have a natural tendency to overfit because they greedily keep splitting until every single training sample is memorized. In this lecture, we explore why overfitting happens, the visual outlier node example, and the concept of **Pruning**.
 
 ---
 
-## 🏛️ Theoretical Formulation & Mathematical Architecture
+## ⚠️ Why Decision Trees Overfit
+A Decision Tree will continue splitting until every leaf node is 100% pure, even if it has to create deeply nested branches for a single noise sample!
 
-### 💥 The Pathology of Unconstrained Decision Trees
+### The Blackboard Outlier Example
+In the lecture, the instructor draws a node containing:
+$$[14y, 1n]$$
+- 14 samples are `Yes`.
+- Only 1 sample is `No` (an outlier or data error).
 
-If a decision tree induction algorithm is permitted to execute without structural stopping constraints, it will continue recursive partitioning until every terminal leaf is **strictly pure** ($I(m) = 0$).
+Without restrictions, the tree splits this node into:
+- Branch 1: $[14y, 0n]$ (Leaf node)
+- Branch 2: $[0y, 1n]$ (Leaf node)
+
+**Problem**: The tree created an entirely new depth level just to isolate a single outlier! 
+When evaluated:
+- **Training accuracy**: $100\%$
+- **Testing accuracy**: Very poor!
+This is the classic definition of **Overfitting**: $	ext{Training Accuracy} \gg 	ext{Testing Accuracy}$.
+
+---
+
+## ✂️ What is Pruning?
+> **Pruning is a technique used in Decision Trees to remove parts of the tree that are unnecessary, in order to reduce overfitting and improve performance on unseen test data.**
+
+Just as a gardener prunes overgrown branches to keep a plant healthy, we cut off noisy branches of a decision tree.
+
+---
+
+## 🌲 Two Main Pruning Approaches
+On the blackboard, the instructor explains the two fundamental pruning paradigms:
 
 ```mermaid
 flowchart TD
-    A["Fully Grown Unpruned Tree"] --> B["Leaf Size = 1 Sample"]
-    A --> C["Training Accuracy = 100% (Zero Bias)"]
-    A --> D["Astronomical Variance (Extreme Sensitivity to Noise)"]
-    
-    B --> E["Generalization Catastrophe"]
-    C --> E
-    D --> E["Test F1 Score Collapses from 0.85 to 0.52"]
+P["Pruning Strategies"] --> Pre["1. Pre-Pruning (Early Stopping)"]
+P --> Post["2. Post-Pruning (Cost-Complexity)"]
+
+Pre --> Pre1["max_depth"]
+Pre --> Pre2["min_samples_leaf"]
+Pre --> Pre3["min_samples_split"]
+
+Post --> Post1["Grow full tree first"]
+Post --> Post2["Prune bottom-up using ccp_alpha"]
 ```
 
-#### The Bias-Variance Tradeoff in Tree Depth:
-- **Shallow Trees (Depth 1 to 2)**: Suffer from **High Bias** (underfitting). The model cannot capture non-linear feature interactions (a depth-1 tree is merely a single decision stump).
-- **Deep Unconstrained Trees (Depth $\ge 15$)**: Suffer from **High Variance** (overfitting). The model memorizes training noise and outliers.
+### 1. Pre-Pruning (Early Stopping)
+- We stop the tree from growing before it becomes too complex.
+- We draw a horizontal cutoff line using constraints like:
+- `max_depth = 4`
+- `min_samples_leaf = 5`
+
+### 2. Post-Pruning
+- We let the tree grow completely until all leaves are pure.
+- Then, we inspect the tree from the bottom up and trim away branches that do not provide significant predictive benefit.
 
 ---
 
-### ✂️ The Pruning Framework Taxonomy
-
-To achieve optimal generalization on unseen test instances, we apply regularization via two distinct paradigms:
-
-1. **Pre-Pruning (Early Stopping)**:
-   Halts tree expansion during the recursive partitioning loop when heuristic stopping conditions are triggered:
-   - `max_depth` attained.
-   - Sample count in node drops below `min_samples_split`.
-   - Impurity reduction $\Delta I$ falls below `min_impurity_decrease`.
-
-2. **Post-Pruning (Subtree Pruning)**:
-   Allows the tree to grow to its maximum unrestricted depth, then algorithmically traverses from the leaves upward, replacing subtrees with single leaf nodes if their presence does not significantly enhance generalization.
-
----
-
-## 💻 Vectorized Python Implementation
+## 💻 Python Implementation: Demonstrating Overfitting
 
 ```python
-import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 
-# Synthetic dataset with noisy labels
-np.random.seed(42)
-X_syn = np.random.randn(200, 5)
-y_syn = (X_syn[:, 0] * 1.2 + np.random.randn(200) * 0.8 > 0).astype(int)
+X, y = make_classification(n_samples=500, n_features=15, n_informative=8, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Unconstrained Tree
-unconstrained = DecisionTreeClassifier(random_state=42).fit(X_syn, y_syn)
-print("Unconstrained Tree Depth:     ", unconstrained.get_depth())
-print("Unconstrained Leaf Count:     ", unconstrained.get_n_leaves())
-print("Unconstrained Train Accuracy: ", unconstrained.score(X_syn, y_syn))
-assert unconstrained.score(X_syn, y_syn) > 0.98, "Unconstrained tree must overfit training data"
+# Unpruned tree (default)
+unpruned = DecisionTreeClassifier(random_state=42)
+unpruned.fit(X_train, y_train)
 
+print("--- UNPRUNED DECISION TREE ---")
+print(f"Train Accuracy: {unpruned.score(X_train, y_train):.4f}")
+print(f"Test Accuracy:  {unpruned.score(X_test, y_test):.4f}")
+print("Overfitting Gap:", unpruned.score(X_train, y_train) - unpruned.score(X_test, y_test))
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. Unconstrained decision trees memorize noise and outliers (e.g., splitting a $[14y, 1n]$ node).
+2. Overfitting occurs when $	ext{Training Accuracy} \gg 	ext{Testing Accuracy}$.
+3. **Pruning** trims unnecessary branches to restore generalization.
+4. Pruning can be done during growth (**Pre-pruning**) or after full growth (**Post-pruning**).

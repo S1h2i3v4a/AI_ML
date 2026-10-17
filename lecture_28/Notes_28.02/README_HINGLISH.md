@@ -1,107 +1,86 @@
-# Lecture 28.02: Decision Tree Classifier — Recursive Binary Splitting aur Hunt's Algorithm
+# Lecture 28.02: Decision Tree Classifier Aur Recursive Splitting
 
-## 📌 Executive Summary (Hinglish)
-Recursive binary splitting ka algorithmic workflow, Hunt's greedy split algorithm, continuous features ke split candidate thresholds calculate karna, aur leaves par majority voting.
-
----
-
-### 📋 Is Topic/Section Mein Hum Kya Cover Kar Rahe Hain?
-1. Hunt's Algorithm ka top-down greedy recursive workflow.
-2. Continuous numerical features par split candidate thresholds $(\theta_i = \frac{x_i + x_{i+1}}{2})$ ka generation.
-3. Terminal leaf node par class assignment rule: Plurality Majority Voting $\hat{y} = \arg\max_k \hat{p}_{mk}$.
-4. Computational complexity: Training phase $\mathcal{O}(d \cdot m \log m)$ vs Inference phase $\mathcal{O}(\text{depth})$.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Video mein ma'am dwara samjhaya gaya 6 applicants ka Credit Score aur Employment dataset.
+- Root node par target distribution $[3y, 3n]$ ka matlab.
+- Decision Tree ke do sabse bade sawal: Feature selection aur Degree of purity.
+- `Credit Score` par pehla split karne par Low, Med, High branches ka behaviour.
+- Pure (homogeneous) aur Impure (heterogeneous) nodes ke beech ka antar.
+- Impure node par recursive split kaise perform hota hai.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-**Hunt's Algorithm**: Tree construction root se start hoti hai. Har step par greedy approach se best feature aur best threshold chuna jaata hai jo impurity ko maximum reduce kare.
+#### 1. Blackboard Ka 6-Applicant Dataset
+Video mein ma'am ne board par ek table banayi thi:
 
-**Continuous Thresholds**: Kisi continuous feature ke $m$ unique values ko sort karke adjacent values ke midpoints ko test kiya jaata hai. Maximum $m-1$ possible candidate thresholds bante hain.
+| Credit Score | Employed | Loan Approved |
+| :--- | :--- | :--- |
+| Low | No | No |
+| Low | Yes | No |
+| Medium | Yes | Yes |
+| High | Yes | Yes |
+| Medium | No | No |
+| High | No | Yes |
 
-**Majority Voting**: Kisi leaf node par aane wale samples mein jis class ka count highest hota hai, wahi class pure leaf ka prediction ban jaati hai.
+Root node par total 6 applicants hain:
+- 3 logon ka Loan Approve hua (Yes)
+- 3 logon ka Loan Reject hua (No)
+- Isko ma'am ne board par likha: **$[3y, 3n]$** (yani 50-50 confusion, maximum impurity).
 
-**Computational Complexity**: Training mein sorting ki vajah se $\mathcal{O}(d \cdot m \log m)$ lagta hai, lekin inference ultra-fast $\mathcal{O}(\log m)$ ya $\mathcal{O}(\text{depth})$ hoti hai.
+#### 2. Decision Tree Classifier Ke Do Mukhya Sawal
+Jab bhi model train hota hai, uske samne 2 main challenges hote hain:
+1. **Feature selection for split**: Pehle kis feature se sawal poochein? `Credit Score` se ya `Employed` se?
+2. **Degree of purity of a split**: Split karne ke baad bache hue groups kitne saaf (pure) hue hain, yeh kaise measure karein?
 
----
+#### 3. Step 1: `Credit Score` Par Split Karke Dekhna
+Jab hum root node $[3y, 3n]$ ko `Credit Score` par divide karte hain:
+- **Low Credit Score**: Yahan 2 applicants aate hain, dono ka loan reject hai $
+\rightarrow [0y, 2n]$. Yeh **100% Pure** hai! Yahan aur koi sawal poochne ki zaroorat nahi hai, seedha prediction `No` hoga.
+- **High Credit Score**: Yahan 2 applicants aate hain, dono ka loan approve hai $
+\rightarrow [2y, 0n]$. Yeh bhi **100% Pure** hai! Seedha prediction `Yes` hoga.
+- **Medium Credit Score**: Yahan 2 applicants aate hain, jisme 1 ka Yes hai aur 1 ka No $
+\rightarrow [1y, 1n]$. Yeh **Impure** hai, kyunki yahan 50% chance Yes ka hai aur 50% No ka.
 
-## 🏛️ Mathematical Architecture & Detailed Theory
+#### 4. Step 2: Recursive Splitting (Impure Node Ko Dobara Baantna)
+Ab Medium Credit Score wale dabbe mein confusion hai, isliye hum is node ko fir se split karte hain agle feature `Employed?` par:
+- Agar `Employed == Yes` $
+\rightarrow [1y, 0n]$ (Pure $
+\rightarrow$ Loan Approved).
+- Agar `Employed == No` $
+\rightarrow [0y, 1n]$ (Pure $
+\rightarrow$ Loan Rejected).
 
-### ⚙️ Hunt's Greedy Recursive Binary Splitting
-
-Decision trees are constructed via **top-down greedy induction**. The general procedure, formalized in **Hunt's Algorithm** and implemented in modern CART, follows this recursive structure:
-
-Let $\mathcal{D}_t$ be the set of training records that reach node $t$:
-1. **Purity Base Case**: If all records in $\mathcal{D}_t$ belong to the same class $y_k$, node $t$ is designated a **Leaf Node** predicting class $y_k$.
-2. **Greedy Partitioning Step**: If $\mathcal{D}_t$ contains multiple classes, iterate through all $d$ available features $j \in \{1, \dots, d\}$ and all valid candidate thresholds $\theta$.
-3. Evaluate the split $(j, \theta)$ that maximizes the **Impurity Reduction**:
-   
-$$
-   \Delta I(t) = I(t) - \left( \frac{|\mathcal{D}_L|}{|\mathcal{D}_t|} I(\mathcal{D}_L) + \frac{|\mathcal{D}_R|}{|\mathcal{D}_t|} I(\mathcal{D}_R) \right)
-$$
-
-4. Create child nodes $\mathcal{D}_L = \{\mathbf{x} \in \mathcal{D}_t \mid x_j \le \theta\}$ and $\mathcal{D}_R = \{\mathbf{x} \in \mathcal{D}_t \mid x_j > \theta\}$ and recursively repeat.
-
----
-
-### 📐 Continuous Threshold Formulation
-
-For a continuous feature $X_j$, sort the unique observed values in ascending order:
-
-$$
-x_{(1), j} < x_{(2), j} < \dots < x_{(u), j}
-$$
-
-The set of valid split candidates $\Theta_j$ consists of the midpoints between adjacent sorted values:
-
-$$
-\boxed{
-\theta_i = \frac{x_{(i), j} + x_{(i+1), j}}{2} \quad \text{for } i = 1, 2, \dots, u-1
-}
-$$
+Ab saari branches pure leaf nodes tak pahunch gayi hain!
 
 ---
 
-### 🗳️ Majority Plurality Leaf Assignment
-
-For any leaf node $m$ containing a subset of samples $\mathcal{D}_m$, the empirical class probability for class $k$ is:
-
-$$
-\hat{p}_{mk} = \frac{1}{|\mathcal{D}_m|} \sum_{i \in \mathcal{D}_m} \mathbb{I}(y_i = k)
-$$
-
-The deterministic class prediction $\hat{y}_m$ is the plurality winner:
-
-$$
-\boxed{
-\hat{y}_m = \arg\max_k \hat{p}_{mk}
-}
-$$
-
----
-
-## 💻 Python Implementation & Code Example
+### 💻 Python Code
 
 ```python
-import numpy as np
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, export_text
 
-def generate_candidate_thresholds(feature_values):
-    unique_vals = np.sort(np.unique(feature_values))
-    midpoints = (unique_vals[:-1] + unique_vals[1:]) / 2.0
-    return midpoints
+# Class wala exact dataset
+df = pd.DataFrame({
+'Credit_Score': [0, 0, 1, 2, 1, 2], # 0=Low, 1=Med, 2=High
+'Employed': [0, 1, 1, 1, 0, 0],     # 0=No, 1=Yes
+'Loan_Approved': [0, 0, 1, 1, 0, 1]
+})
 
-# Test
-sample_feature = np.array([12.5, 5.0, 8.0, 5.0, 15.0])
-candidates = generate_candidate_thresholds(sample_feature)
-print("Unique Sorted:", np.unique(sample_feature))
-print("Split Candidates:", candidates)
-assert len(candidates) == len(np.unique(sample_feature)) - 1
+X = df[['Credit_Score', 'Employed']]
+y = df['Loan_Approved']
 
+dt = DecisionTreeClassifier(random_state=42)
+dt.fit(X, y)
+
+print(export_text(dt, feature_names=['Credit_Score', 'Employed']))
 ```
 
 ---
 
-## 🎯 Quick Revision Points (Interview Notes)
-- **Scale Invariance**: Decision Trees monotonically invariant hote hain, isliye inme `StandardScaler` mandatory nahi hota.
-- **Gini vs Entropy**: Gini speed mein 10x faster hota hai kyunki logarithm computation ki zaroorat nahi padti.
-- **Pruning Necessity**: Unconstrained decision tree hamesha overfit karti hai; `min_samples_leaf` aur `ccp_alpha` sabse effective regularizers hain.
+### 📌 Summary Points
+- Node pure tab hota hai jab usme saare samples sirf ek hi class ke hote hain.
+- Impure node par tree rukta nahi hai, balki agle feature se dobara split (recursive splitting) karta hai.
+- Final prediction hamesha leaf node ke majority class ke hisaab se hota hai.

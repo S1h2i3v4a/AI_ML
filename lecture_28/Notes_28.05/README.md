@@ -1,69 +1,59 @@
-# Lecture 28.05: Entropy vs Gini Impurity — Mathematical Comparison & Invariants
+# Lecture 28.05: Entropy vs Gini Impurity
 
-## 📌 Executive Summary
-Rigorous mathematical comparison of Entropy vs Gini, Taylor series connection, split selection concordance rates, and computational throughput considerations.
-
----
-
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### 🔬 The Taylor Series Mathematical Equivalence
-
-While Shannon Entropy derives from information theory and Gini Impurity derives from variance of multinomial indicators, they are mathematically connected through the **first-order Taylor series expansion** of the natural logarithm:
-
-$$
-\ln(x) = -\sum_{n=1}^\infty \frac{(1-x)^n}{n} \approx -(1 - x) = x - 1 \quad \text{for } x \approx 1
-$$
-
-Expressing Entropy in natural log base:
-
-$$
-H_e(S) = -\sum_{k=1}^K p_k \ln(p_k)
-$$
-
-Substituting $\ln(p_k) \approx p_k - 1$:
-
-$$
-H_e(S) \approx -\sum_{k=1}^K p_k (p_k - 1) = \sum_{k=1}^K (p_k - p_k^2) = 1 - \sum_{k=1}^K p_k^2 = G(S)
-$$
-
-Thus, **Gini Impurity is the first-order Taylor polynomial approximation of Shannon Entropy**.
+## 📌 Topic Overview
+Both Entropy and Gini Impurity measure node impurity, but which one should you choose in practice? In this lecture, we compare training speed, mathematical complexity, split behaviour, and Scikit-Learn defaults.
 
 ---
 
-### ⚖️ Side-by-Side Architectural Summary
+## ⚖️ Head-to-Head Comparison Table
+The instructor presents the following clear comparison on the slide:
 
-| Metric Feature | Shannon Entropy $H(S)$ | Gini Impurity $G(S)$ |
+| Scenario / Property | Entropy | Gini Impurity |
 | :--- | :--- | :--- |
-| **Formula** | $-\sum p_k \log_2 p_k$ | $1 - \sum p_k^2$ |
-| **Binary Range** | $[0.0, 1.0]$ bits | $[0.0, 0.5]$ |
-| **Peak (Binary)** | $1.0$ at $p=0.5$ | $0.5$ at $p=0.5$ |
-| **Computation Cost** | Higher (calls `log2`, SIMD transcendentals) | Minimal (pure algebraic multiply-accumulate) |
-| **Default In** | ID3, C4.5, C5.0 | CART, Scikit-Learn `DecisionTreeClassifier` |
-| **Split Selection** | Slightly favors balanced splits | Slightly favors isolating dominant pure classes |
+| **Training Speed** | Slightly slower (due to $\log_2$ calculations) | **Faster computation** (only simple multiplication & squaring) |
+| **Split Behaviour** | Produces slightly more **balanced** node partitions | Creates splits quickly, slightly favouring **dominant classes** |
+| **Dataset Size** | Well-suited for small, structured datasets | **Efficient for large**, high-dimensional datasets |
+| **Sensitivity to Distribution** | More sensitive to subtle probability variations | Less sensitive to tiny probability fluctuations |
+| **Library Standard** | Preferred in theoretical formulations (ID3, C4.5) | **Default in Scikit-Learn** (`criterion="gini"`) |
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 🎯 Practical Rule of Thumb
+As summarized on the blackboard:
+- **Small Datasets**: Using **Entropy** is completely fine since log computation overhead is negligible.
+- **Large Datasets**: Always prefer **Gini Impurity** because avoiding $\log_2$ saves significant CPU training time!
+- **Model Accuracy**: In over 98% of machine learning tasks, both metrics produce virtually identical classification accuracy.
+
+---
+
+## 💻 Python Benchmark: Execution Speed
 
 ```python
-import numpy as np
+import time
+from sklearn.datasets import make_classification
+from sklearn.tree import DecisionTreeClassifier
 
-p = np.linspace(0.01, 0.99, 100)
-entropy = -p * np.log2(p) - (1-p) * np.log2(1-p)
-gini = 2 * p * (1-p)
-scaled_entropy = 0.5 * entropy
+# Generate a synthetic dataset with 50,000 samples
+X, y = make_classification(n_samples=50000, n_features=20, random_state=42)
 
-# Measure absolute maximum deviation between scaled entropy and Gini
-max_diff = np.max(np.abs(scaled_entropy - gini))
-print(f"Max absolute divergence between 0.5*Entropy and Gini: {max_diff:.4f}")
-assert max_diff < 0.08, "Scaled entropy and Gini must be tightly aligned!"
+# Benchmark Gini
+start = time.time()
+clf_gini = DecisionTreeClassifier(criterion='gini', random_state=42).fit(X, y)
+time_gini = time.time() - start
 
+# Benchmark Entropy
+start = time.time()
+clf_entropy = DecisionTreeClassifier(criterion='entropy', random_state=42).fit(X, y)
+time_entropy = time.time() - start
+
+print(f"Gini Training Time:    {time_gini:.4f} seconds")
+print(f"Entropy Training Time: {time_entropy:.4f} seconds")
+print(f"Gini Speed Advantage:  {((time_entropy - time_gini)/time_entropy)*100:.1f}% faster")
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. Gini Impurity is faster because it does not compute logarithms.
+2. Entropy tends to produce slightly more balanced trees.
+3. Scikit-Learn uses Gini by default (`criterion='gini'`).

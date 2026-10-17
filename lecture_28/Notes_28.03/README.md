@@ -1,86 +1,104 @@
-# Lecture 28.03: Entropy as an Impurity Metric — Shannon Information Theory
+# Lecture 28.03: Entropy as an Impurity Metric
 
-## 📌 Executive Summary
-Information-theoretic formulation of Shannon Entropy, bits of surprise, self-information, properties of the entropy curve, and its role as a node impurity measure in ID3 and C4.5.
-
----
-
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### 💡 Shannon Information Theory Foundations
-
-In 1948, Claude Shannon established mathematical information theory by defining the **Self-Information** (or surprisal) of observing an event with probability $P(E)$:
-
-$$
-I(E) = -\log_2 P(E) = \log_2 \left( rac{1}{P(E)} ight)
-$$
-
-The base-2 logarithm quantifies information in **bits**:
-- An event with $P(E) = 1.0$ yields $I(E) = 0$ bits (no surprise).
-- An event with $P(E) = 0.5$ yields $I(E) = 1$ bit (equivalent to a fair coin flip).
+## 📌 Topic Overview
+To automate feature selection, a Decision Tree needs a mathematical formula to quantify impurity and disorder. That formula is **Entropy**. In this lecture, we study the theoretical formula, its range, and the exact step-by-step blackboard calculation.
 
 ---
 
-### 📐 Shannon Entropy Formulation for Node Impurity
+## 📐 Mathematical Definition of Entropy
+**Entropy** originated in physics (thermodynamics) and information theory (Claude Shannon). In Machine Learning:
+> **Entropy measures the impurity, disorder, or uncertainty in a given dataset $S$.**
 
-For a dataset partition $S$ containing samples across $K$ discrete classes with empirical proportions $p_1, p_2, \dots, p_K$ (where $\sum_{k=1}^K p_k = 1$ and $0 \log_2 0 \equiv 0$):
+The formula for a dataset with $c$ classes is:
 
-$$
-\boxed{
-H(S) = -\sum_{k=1}^K p_k \log_2(p_k)
-}
-$$
+$$E(S) = -\sum_{i=1}^c p_i \log_2(p_i)$$
 
-#### Mathematical Invariants of Entropy:
-1. **Non-Negativity**: $H(S) \ge 0$ for all valid probability vectors.
-2. **Absolute Purity (Minimum)**:
-   
-$$
-   H(S) = 0 \iff \exists k 	ext{ such that } p_k = 1 	ext{ and } p_{j \neq k} = 0
-$$
+Where:
+- $p_i$ is the proportion (probability) of class $i$ in sample set $S$.
+- $\log_2$ is logarithm base 2.
 
-3. **Maximum Disorder (Uniform Uncertainty)**:
-   
-$$
-   H(S) = \log_2(K) \iff p_1 = p_2 = \dots = p_K = \frac{1}{K}
-$$
+For a binary classification task (classes `Yes` and `No`):
 
-For a binary classification problem ($K=2$ with positive class proportion $p$):
-
-$$
-H(p) = -p \log_2(p) - (1-p) \log_2(1-p)
-$$
-
-The function achieves its global maximum $H(0.5) = 1.0$ bit at equal mixture.
+$$E(S) = - p_{	ext{yes}} \log_2(p_{	ext{yes}}) - p_{	ext{no}} \log_2(p_{	ext{no}})$$
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 📈 Range and Inverted Parabola Curve
+For binary classification:
+- **Minimum Value = 0**: When the node is 100% pure (all `Yes` or all `No`). There is zero uncertainty!
+- **Maximum Value = 1**: When there is a 50-50 split ($p_{	ext{yes}} = 0.5$, $p_{	ext{no}} = 0.5$). There is maximum uncertainty!
+
+```
+Entropy E(S)
+1.0 +         .-'-.
+|       .'     '.
+|      /         \
+0.5 +     /           \
+|    /             \
+|   /               \
+0.0 +--+-----------------+--
+0        0.5      1    Probability (p)
+```
+
+At $p=0$ and $p=1$, entropy drops to $0$. At $p=0.5$, entropy peaks at $1.0$.
+
+---
+
+## 🧮 Step-by-Step Numerical Example from Video
+In the video, the instructor works out the following calculation on the blackboard:
+
+### Given Node:
+$S = [3y, 3n]$ (3 Yes and 3 No, total samples = 6).
+
+$$p_{	ext{yes}} = rac{3}{6} = rac{1}{2} = 0.5$$
+
+$$p_{	ext{no}} = rac{3}{6} = rac{1}{2} = 0.5$$
+
+Applying the formula:
+
+$$E(S) = - \left( rac{1}{2} \cdot \log_2 rac{1}{2} 
+ight) - \left( rac{1}{2} \cdot \log_2 rac{1}{2} 
+ight)$$
+
+Recall that $\log_2(0.5) = \log_2(2^{-1}) = -1$:
+
+$$E(S) = - \left( rac{1}{2} \cdot (-1) 
+ight) - \left( rac{1}{2} \cdot (-1) 
+ight) = rac{1}{2} + rac{1}{2} = 1.0$$
+
+### Completely Pure Node:
+For a node $S_{	ext{pure}} = [0y, 3n]$ (all 3 samples are No):
+- $p_{	ext{yes}} = 0$, $p_{	ext{no}} = 1$.
+- By convention, $0 \cdot \log_2(0) = 0$.
+- $E(S_{	ext{pure}}) = - 0 - (1 \cdot \log_2 1) = 0 - 0 = 0.0$.
+
+---
+
+## 💻 Python Implementation
 
 ```python
 import numpy as np
 
-def calculate_entropy(labels):
-    _, counts = np.unique(labels, return_counts=True)
-    probs = counts / counts.sum()
-    # Zero probability safe mask
-    probs = probs[probs > 0]
-    return -np.sum(probs * np.log2(probs))
+def calculate_entropy(y_count, n_count):
+total = y_count + n_count
+if total == 0:
+return 0.0
+p_y = y_count / total
+p_n = n_count / total
 
-# Test
-pure_labels = np.array([1, 1, 1, 1, 1])
-mixed_labels = np.array([0, 1, 0, 1, 0, 1])
+term_y = p_y * np.log2(p_y) if p_y > 0 else 0
+term_n = p_n * np.log2(p_n) if p_n > 0 else 0
 
-print("Pure Node Entropy: ", calculate_entropy(pure_labels))
-print("50-50 Node Entropy:", calculate_entropy(mixed_labels))
-assert calculate_entropy(pure_labels) == 0.0
-assert calculate_entropy(mixed_labels) == 1.0
+return -(term_y + term_n)
 
+print("Entropy of [3y, 3n] (50-50):", calculate_entropy(3, 3))
+print("Entropy of [0y, 3n] (Pure): ", calculate_entropy(0, 3))
+print("Entropy of [2y, 1n]:        ", round(calculate_entropy(2, 1), 4))
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. Entropy measures disorder or unpredictability.
+2. For binary classification, Entropy is bounded between $0$ (pure) and $1$ (maximum uncertainty).
+3. The lower the entropy of a node, the better and cleaner that subset is.

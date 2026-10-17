@@ -1,87 +1,105 @@
-# Lecture 28.02: Decision Tree Classifier — Recursive Binary Splitting & Hunt's Algorithm
+# Lecture 28.02: Decision Tree Classifier & Recursive Splitting
 
-## 📌 Executive Summary
-The mechanics of recursive binary splitting, Hunt's greedy algorithm, evaluating continuous feature thresholds, and computing majority plurality voting at leaf nodes.
-
----
-
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### ⚙️ Hunt's Greedy Recursive Binary Splitting
-
-Decision trees are constructed via **top-down greedy induction**. The general procedure, formalized in **Hunt's Algorithm** and implemented in modern CART, follows this recursive structure:
-
-Let $\mathcal{D}_t$ be the set of training records that reach node $t$:
-1. **Purity Base Case**: If all records in $\mathcal{D}_t$ belong to the same class $y_k$, node $t$ is designated a **Leaf Node** predicting class $y_k$.
-2. **Greedy Partitioning Step**: If $\mathcal{D}_t$ contains multiple classes, iterate through all $d$ available features $j \in \{1, \dots, d\}$ and all valid candidate thresholds $\theta$.
-3. Evaluate the split $(j, \theta)$ that maximizes the **Impurity Reduction**:
-   
-$$
-   \Delta I(t) = I(t) - \left( \frac{|\mathcal{D}_L|}{|\mathcal{D}_t|} I(\mathcal{D}_L) + \frac{|\mathcal{D}_R|}{|\mathcal{D}_t|} I(\mathcal{D}_R) \right)
-$$
-
-4. Create child nodes $\mathcal{D}_L = \{\mathbf{x} \in \mathcal{D}_t \mid x_j \le \theta\}$ and $\mathcal{D}_R = \{\mathbf{x} \in \mathcal{D}_t \mid x_j > \theta\}$ and recursively repeat.
+## 📌 Topic Overview
+How does a Decision Tree Classifier actually decide which feature to test first? In this lecture, we examine the classroom applicant dataset, the concept of **node purity**, and the recursive splitting process.
 
 ---
 
-### 📐 Continuous Threshold Formulation
+## 📊 The Classroom Loan Applicant Dataset
+In the lecture, the instructor presents the following 6-sample dataset on the blackboard:
 
-For a continuous feature $X_j$, sort the unique observed values in ascending order:
+| Credit Score | Employed | Loan Approved (Target) |
+| :--- | :--- | :--- |
+| Low | No | No |
+| Low | Yes | No |
+| Medium | Yes | Yes |
+| High | Yes | Yes |
+| Medium | No | No |
+| High | No | Yes |
 
-$$
-x_{(1), j} < x_{(2), j} < \dots < x_{(u), j}
-$$
-
-The set of valid split candidates $\Theta_j$ consists of the midpoints between adjacent sorted values:
-
-$$
-\boxed{
-\theta_i = \frac{x_{(i), j} + x_{(i+1), j}}{2} \quad \text{for } i = 1, 2, \dots, u-1
-}
-$$
-
----
-
-### 🗳️ Majority Plurality Leaf Assignment
-
-For any leaf node $m$ containing a subset of samples $\mathcal{D}_m$, the empirical class probability for class $k$ is:
-
-$$
-\hat{p}_{mk} = \frac{1}{|\mathcal{D}_m|} \sum_{i \in \mathcal{D}_m} \mathbb{I}(y_i = k)
-$$
-
-The deterministic class prediction $\hat{y}_m$ is the plurality winner:
-
-$$
-\boxed{
-\hat{y}_m = \arg\max_k \hat{p}_{mk}
-}
-$$
+### Target Distribution at Root:
+Total samples = 6:
+- Yes = 3
+- No = 3
+- Notation: **$[3y, 3n]$** (completely mixed / 50-50 uncertainty).
 
 ---
 
-## 💻 Vectorized Python Implementation
+## ❓ The Two Fundamental Questions of Tree Building
+To build a decision tree classifier, the algorithm must answer two core questions at every step:
+1. **Feature selection for split**: Which feature (`Credit Score` or `Employed`?) should be chosen at this node?
+2. **Degree of purity of a split**: How do we measure whether a proposed split actually makes our subsets cleaner and more homogeneous?
+
+---
+
+## 🌳 Splitting on Feature 1: `Credit Score`
+Let us test splitting the root $[3y, 3n]$ by `Credit Score` (Low, Medium, High):
+
+```mermaid
+flowchart TD
+Root["Root: Credit Score [3y, 3n]"] -->|"Low"| L1["Low: [0y, 2n] (Pure)"]
+Root -->|"Medium"| L2["Medium: [1y, 1n] (Impure)"]
+Root -->|"High"| L3["High: [2y, 0n] (Pure)"]
+```
+
+### Observations:
+- **Low branch**: Contains 2 samples, both are `No` $
+\rightarrow [0y, 2n]$. This is **100% Pure (Homogeneous)**! No further splitting needed; this becomes a Leaf Node predicting `No`.
+- **High branch**: Contains 2 samples, both are `Yes` $
+\rightarrow [2y, 0n]$. This is **100% Pure (Homogeneous)**! This becomes a Leaf Node predicting `Yes`.
+- **Medium branch**: Contains 2 samples, one `Yes` and one `No` $
+\rightarrow [1y, 1n]$. This is **Impure (Heterogeneous)**. We cannot make a confident prediction here!
+
+---
+
+## 🔄 Recursive Splitting: Handling the Impure Node
+Since the `Medium` node is impure $[1y, 1n]$, we must split it further using the remaining unused feature: `Employed?`
+
+```mermaid
+flowchart TD
+Med["Medium Credit Score [1y, 1n]"] -->|"Employed == Yes"| L_yes["[1y, 0n] -> Approved (Yes)"]
+Med -->|"Employed == No"| L_no["[0y, 1n] -> Rejected (No)"]
+```
+
+Now:
+- If `Employed == Yes` $
+\rightarrow [1y, 0n]$ (Pure $
+\rightarrow$ Approved).
+- If `Employed == No` $
+\rightarrow [0y, 1n]$ (Pure $
+\rightarrow$ Rejected).
+
+Every single branch now terminates in a completely pure leaf!
+
+---
+
+## 💻 Python Implementation
 
 ```python
-import numpy as np
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, export_text
 
-def generate_candidate_thresholds(feature_values):
-    unique_vals = np.sort(np.unique(feature_values))
-    midpoints = (unique_vals[:-1] + unique_vals[1:]) / 2.0
-    return midpoints
+# Recreating the exact classroom dataset
+data = {
+'Credit_Score': [0, 0, 1, 2, 1, 2], # 0: Low, 1: Medium, 2: High
+'Employed': [0, 1, 1, 1, 0, 0],     # 0: No, 1: Yes
+'Loan_Approved': [0, 0, 1, 1, 0, 1] # 0: No, 1: Yes
+}
+df = pd.DataFrame(data)
 
-# Test
-sample_feature = np.array([12.5, 5.0, 8.0, 5.0, 15.0])
-candidates = generate_candidate_thresholds(sample_feature)
-print("Unique Sorted:", np.unique(sample_feature))
-print("Split Candidates:", candidates)
-assert len(candidates) == len(np.unique(sample_feature)) - 1
+X = df[['Credit_Score', 'Employed']]
+y = df['Loan_Approved']
 
+clf = DecisionTreeClassifier(criterion='entropy', random_state=42)
+clf.fit(X, y)
+
+print("Learned Decision Rules:")
+print(export_text(clf, feature_names=['Credit_Score', 'Employed']))
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Axis-Aligned Partitioning**: Decision trees recursively split feature space along orthogonal boundaries without requiring feature scaling.
-2. **Impurity Optimization**: Split selection deterministically maximizes impurity reduction (Information Gain for classification, Variance Reduction for regression).
-3. **Generalization Safeguards**: Regularization via pre-pruning (`max_depth`, `min_samples_leaf`) and post-pruning (`ccp_alpha`) prevents noisy leaf memorization.
+## 🔑 Key Takeaways
+1. A node is **pure (homogeneous)** when all its samples belong to the same class.
+2. An **impure (heterogeneous)** node contains a mixture of classes and requires further splitting.
+3. The decision tree repeats this splitting process recursively until all leaves are pure or a stopping condition is reached.
