@@ -1,52 +1,81 @@
-# Notes_25.07: Naive Bayes Ke Prakar: Gaussian, Multinomial, Bernoulli [Hinglish]
+# Notes_25.07: Naive Bayes Ke Types (Gaussian, Multinomial, Bernoulli) [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_07.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 25 Overview](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne Naive Bayes ke teen alag-alag roop samjhaye hain: **GaussianNB**, **MultinomialNB**, aur **BernoulliNB**, aur bataya hai ki kis dataset ke liye kaunsa model chunna chahiye.
 
 ---
 
-## 📌 Executive Summary
-GaussianNB, MultinomialNB, aur BernoulliNB ke beech ka difference aur kab kaunsa use karein.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Gaussian Naive Bayes kab lagate hain (Continuous numbers).
+- Multinomial Naive Bayes kab lagate hain (Word counts / Text NLP).
+- Bernoulli Naive Bayes kab lagate hain (Binary 0 ya 1 features).
+- Sahi model choose karne ka decision tree.
 
 ---
 
-## 🎯 Mathematical Formulations
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-Gaussian Naive Bayes Likelihood (Normal PDF):
+#### 1. Gaussian Naive Bayes (`GaussianNB`):
+- **Features**: Continuous decimal numbers (jaise Age = 25.5, Salary = ₹50,000, Temperature = 36.8°C).
+- **Logic**: Yeh assume karta hai ki data ek normal bell-curve (Gaussian distribution) banata hai. Har feature ka mean ($\mu$) aur variance ($\sigma^2$) calculate kiya jata hai.
 
-$$
-P(x_j \mid y) = \frac{1}{\sqrt{2\pi \sigma_{j, y}^2}} \exp\left( -\frac{(x_j - \mu_{j, y})^2}{2\sigma_{j, y}^2} \right)
-$$
+#### 2. Multinomial Naive Bayes (`MultinomialNB`):
+- **Features**: Count data (jaise kisi article mein word "cricket" 5 baar aaya, "match" 3 baar aaya).
+- **Logic**: NLP (Natural Language Processing) aur document classification ke liye sabse famous model.
 
-Multinomial Likelihood:
-
-$$
-P(\mathbf{x} \mid y) = \frac{(\sum x_i)!}{\prod x_i!} \prod p_{i, y}^{x_i}
-$$
-
----
-
-## 💡 Concept Intuition & Key Insights (Desi Style)
-
-### Kaunsa Model Kab Lagayein?
-1. **GaussianNB:** Jab features continuous real numbers hon (jaise Age, Blood Pressure, Temperature). Yeh assume karta hai ki har feature class ke andar Gaussian/Normal distribution follow karta hai.
-2. **MultinomialNB:** Text classification jahan word frequency count (Bag of Words / TF-IDF) hota hai (jaise text documents, sentiment analysis).
-3. **BernoulliNB:** Jab features binary yes/no ($1$ ya $0$) indicators hon (jaise word present hai ya absent).
+#### 3. Bernoulli Naive Bayes (`BernoulliNB`):
+- **Features**: Binary 0 ya 1 (jaise email mein word "Offer" hai = 1, nahi hai = 0).
+- **Logic**: Chhote text messages (jaise SMS spam detection) mein jahan word kitni baar aaya usse zyada yeh matter karta hai ki word mojood hai ya nahi.
 
 ---
 
-## 💻 Python Production Implementation
+### 📊 Visual Flowchart: Model Selection Guide
+
+```mermaid
+flowchart TD
+    A["Aapka Data Kaisa Hai?"] --> BFeature Check
+    B -->|"Continuous Decimal (Age, Salary)"| C["GaussianNB"]
+    B -->|"Word Frequency Count (5 baar, 10 baar)"| D["MultinomialNB"]
+    B -->|"Sirf Yes/No ya 0/1 (Word Present?)"| E["BernoulliNB"]
+```
+
+---
+
+### 💻 Python Code
 
 ```python
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
-import numpy as np
 
-# Continuous features -> GaussianNB
-X_cont = np.array([[1.2, 5.4], [2.1, 4.8], [5.6, 1.2], [6.2, 0.9]])
-y = [0, 0, 1, 1]
-gnb = GaussianNB().fit(X_cont, y)
-print("GaussianNB Classes:", gnb.classes_)
+def select_naive_bayes_model(feature_type):
+    """
+    Selects and initializes the appropriate Naive Bayes variant:
+    - 'continuous' -> GaussianNB (Bell curve, mean & variance)
+    - 'counts'     -> MultinomialNB (Word frequencies, discrete counts)
+    - 'binary'     -> BernoulliNB (Presence/absence 0 or 1)
+    """
+    if feature_type == 'continuous':
+        model = GaussianNB()
+        desc = "GaussianNB: Continuous real-valued features following Normal Distribution."
+    elif feature_type == 'counts':
+        model = MultinomialNB()
+        desc = "MultinomialNB: Discrete integer count data (e.g., Bag-of-Words in NLP)."
+    elif feature_type == 'binary':
+        model = BernoulliNB()
+        desc = "BernoulliNB: Binary boolean features (e.g., word present=1, absent=0)."
+    else:
+        raise ValueError(f"Unknown feature type: {feature_type}")
+
+    return model, desc
+
+# --- Function Call & Testing ---
+for f_type in ['continuous', 'counts', 'binary']:
+    clf, description = select_naive_bayes_model(f_type)
+    print(f"[{f_type.upper()}] => {clf.__class__.__name__}")
+    print(f"  Usage: {description}")
 ```
+
+---
+
+### 📌 Summary Points
+- Sahi data type ke liye sahi Naive Bayes choose karna zaroori hai.
+- Numbers ke liye **Gaussian**, Word counts ke liye **Multinomial**, aur 0/1 ke liye **Bernoulli**.

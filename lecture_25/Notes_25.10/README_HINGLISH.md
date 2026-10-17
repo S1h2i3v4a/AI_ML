@@ -1,55 +1,98 @@
-# Notes_25.10: Python Mein kNN Classifier Ka Code [Hinglish]
+# Notes_25.09: kNN (K Nearest Neighbours) Ka Concept [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_10.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 25 Overview](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **k-Nearest Neighbors (kNN)** algorithm ka visual concept samjhaya hai: doori (distance) kaise nikaalte hain aur majority voting se naye point ka faisla kaise hota hai.
 
 ---
 
-## 📌 Executive Summary
-Heart dataset par StandardScaler ke sath kNN model train aur evaluate karna.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- kNN algorithm asal mein kya hota hai? (Lazy learner ka matlab).
+- Naye data point ke liye decision lene ke 3 steps.
+- **Euclidean Distance** aur **Manhattan Distance** ka formula.
+- $K$ ki value hamesha **Odd (visham: 3, 5, 7)** kyu chunni chahiye?
+- Majority voting ka simple rule.
 
 ---
 
-## 🎯 Mathematical Formulations
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-Uniform vs Distance-Weighted Voting:
+#### 1. kNN Kaise Kaam Karta Hai? (Padosi Rule)
+Yeh algorithm bolta hai: *"Aap jaise logon ke sath rehte ho, aap waise hi bante ho!"*
+Jab koi naya data point aata hai:
+1. Sabhi purane points se uski doori (distance) calculate karo.
+2. Sabse kareebi **$K$ padosi** chun lo.
+3. Padosiyon mein **Majority Vote** karao — jis class ke padosi zyada honge, naya point usi class ka maan liya jayega!
 
-$$
-w_i = \frac{1}{d(\mathbf{x}, \mathbf{x}_i)}, \qquad \hat{y} = \arg\max_c \sum_{i \in N_K, y_i = c} w_i
-$$
+#### 2. Distance Formulas:
+- **Euclidean Distance** (Seedhi doori / Pythagoras rule):
+
+$$d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$$
+
+- **Manhattan Distance** (Grid / City-block doori):
+
+$$d = |x_2 - x_1| + |y_2 - y_1|$$
+
+#### 3. $K$ Hamesha Odd Kyu Rakhein?
+Binary classification (0 ya 1) mein agar aap $K=4$ (even number) rakhoge, toh ho sakta hai 2 padosi 0 bole aur 2 padosi 1 bole! Tie ho jayega aur model confuse ho jayega. Isliye hamesha $K=3, 5, 7$ jaisi odd values rakhi jaati hain taaki tie na ho.
 
 ---
 
-## 💡 Concept Intuition & Key Insights (Desi Style)
+### 📊 Visual Flowchart: kNN Prediction Process
 
-### Feature Scaling kNN Ke Liye Compulsory Hai!
-kNN geometry aur distances par nirbhar karta hai. Agar hum data scale nahi karenge, toh bada feature distance ko dominate karega aur accuracy dramatically drop ho jayegi.
+```mermaid
+flowchart TD
+    A["Naya Point Aaya"] --> B["Sabhi Training Points se Distance Nikalo"]
+    B --> C["Top K Kareebi Padosi Chun Lo"]
+    C --> DPadosiyon Ka Majority Vote
+    D -->|"Zyada Padosi Class 1 Ke"| E["Predict: Class 1"]
+    D -->|"Zyada Padosi Class 0 Ke"| F["Predict: Class 0"]
+```
 
 ---
 
-## 💻 Python Production Implementation
+### 💻 Python Code
 
 ```python
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
+import numpy as np
 
-df = pd.read_csv("heart.csv")
-X = df.drop("target", axis=1)
-y = df["target"]
+def predict_knn_majority_vote(query_point, dataset_points, dataset_labels, k=3):
+    """
+    Manual demonstration of k-Nearest Neighbors classification:
+    Calculates Euclidean distances, picks the k nearest neighbors,
+    and returns the plurality majority class label.
+    """
+    query = np.asarray(query_point)
+    points = np.asarray(dataset_points)
+    labels = np.asarray(dataset_labels)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # 1. Euclidean distance: sqrt(sum((x2 - x1)^2))
+    distances = np.sqrt(np.sum((points - query) ** 2, axis=1))
 
-scaler = StandardScaler()
-X_train_s = scaler.fit_transform(X_train)
-X_test_s = scaler.transform(X_test)
+    # 2. Find indices of k smallest distances
+    nearest_indices = np.argsort(distances)[:k]
+    nearest_labels = labels[nearest_indices]
 
-knn = KNeighborsClassifier(n_neighbors=5, weights='distance')
-knn.fit(X_train_s, y_train)
-print("kNN Accuracy:", accuracy_score(y_test, knn.predict(X_test_s)).round(4))
+    # 3. Plurality majority vote
+    counts = np.bincount(nearest_labels)
+    predicted_class = int(np.argmax(counts))
+
+    return predicted_class, nearest_labels, distances[nearest_indices]
+
+# --- Function Call & Testing ---
+# Class 0: Cyan Crosses | Class 1: Orange Circles
+training_pts = [[1, 2], [2, 3], [3, 3], [6, 5], [7, 7], [8, 6]]
+training_lbl = [0, 0, 0, 1, 1, 1]
+new_point    = [5, 5]
+
+pred, neighbors, dists = predict_knn_majority_vote(new_point, training_pts, training_lbl, k=3)
+print(f"Query Point: {new_point}")
+print(f"3 Nearest Neighbor Labels: {neighbors} (Distances: {dists.round(2)})")
+print(f"Majority Predicted Class:  Class {pred}")
 ```
+
+---
+
+### 📌 Summary Points
+- kNN ko pehle se model train karne ki zaroorat nahi padti (Lazy Learner).
+- Prediction ke time saara distance calculate hota hai.
+- Hamesha odd $K$ chunein taaki voting mein tie na ho.

@@ -1,52 +1,60 @@
-# Notes_25.08: Naive Bayes Implementation in Python
+# Lecture 25.08: Naive Bayes Implementation in Scikit-Learn
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_08.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Lecture 25 Overview](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am demonstrates the Python implementation of **GaussianNB** using Scikit-Learn, training the model on continuous features and inspecting the resulting accuracy and classification report.
 
 ---
 
-## 📌 Executive Summary
-Building GaussianNB classifier on real cardiovascular data and evaluating classification performance.
+## 🛠️ Scikit-Learn Workflow
+1. Split raw data into `X_train`, `X_test`, `y_train`, `y_test`.
+2. Initialize `GaussianNB()`.
+3. Fit the model using `model.fit(X_train, y_train)`.
+4. Predict test samples with `model.predict(X_test)`.
+5. Evaluate using `accuracy_score` and `classification_report`.
 
 ---
 
-## 🎯 Mathematical Formulations
-
-Model Log-Likelihood Decision Boundary:
-
-$$
-\log P(y \mid \mathbf{x}) \propto \log P(y) + \sum_{j=1}^d \log P(x_j \mid y)
-$$
-
----
-
-## 💡 Conceptual Principles & Architecture
-
-### Log-Probabilities Kyu Use Karte Hain?
-Jab d-dimensions bohot bada hota hai (e.g. text classification mein $10,000$ words), toh small probabilities ($0.001 	imes 0.002 	imes \dots$) multiply karte-karte computer ke floating point precision se bahar nikal kar underflow ($0.0$) ho jaati hain.
-Logarithm lene se multiplication addition ban jata hai: $\log(a \cdot b) = \log a + \log b$, jisse underflow bilkul prevent ho jata hai!
-
----
-
-## 💻 Python Production Implementation
+## 💻 Python Implementation
 
 ```python
-import pandas as pd
+from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score, classification_report
 
-df = pd.read_csv("heart.csv")
-X = df.drop("target", axis=1)
-y = df["target"]
+def train_and_evaluate_gaussian_nb():
+    """
+    Trains a GaussianNB classifier on a classification dataset,
+    evaluates its performance, and returns metrics.
+    """
+    # 1. Synthetic continuous feature dataset
+    X, y = make_classification(
+        n_samples=500, n_features=6, n_informative=4, random_state=42
+    )
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-gnb = GaussianNB()
-gnb.fit(X_train, y_train)
-y_pred = gnb.predict(X_test)
+    # 2. Fit Gaussian Naive Bayes
+    gnb = GaussianNB()
+    gnb.fit(X_train, y_train)
 
-print("Classification Report:\n", classification_report(y_test, y_pred))
+    # 3. Evaluate
+    y_pred = gnb.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
+
+    return gnb, acc, report
+
+# --- Function Call & Testing ---
+model, accuracy, metrics_report = train_and_evaluate_gaussian_nb()
+print(f"GaussianNB Accuracy: {accuracy*100:.1f}%")
+print("Classification Report:")
+print(metrics_report)
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. `GaussianNB` requires zero tuning parameters; it runs instantaneously because fitting simply calculates feature means and variances.
+2. It serves as an exceptional fast baseline model for any classification benchmark.

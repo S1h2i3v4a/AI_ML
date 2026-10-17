@@ -1,55 +1,90 @@
-# Notes_25.03: Understanding the Confusion Matrix
+# Lecture 25.03: Understanding Confusion Matrix
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_03.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Lecture 25 Overview](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces the **Confusion Matrix** for binary classification, detailing how predictions are categorized against ground-truth labels into True Positives, True Negatives, False Positives, and False Negatives.
 
 ---
 
-## 📌 Executive Summary
-2x2 Contingency table for binary classification, Type I and Type II errors.
+## 🏛️ The 2x2 Confusion Matrix Layout
+On the classroom blackboard, ma'am drew the exact 2x2 grid representing binary classification:
+
+```mermaid
+classDiagram
+    class ConfusionMatrix {
+        Actual_0 : TN (True Negative) | FP (False Positive - Type 1)
+        Actual_1 : FN (False Negative - Type 2) | TP (True Positive)
+    }
+```
+
+| | **Predicted 0 (Negative)** | **Predicted 1 (Positive)** |
+| :--- | :--- | :--- |
+| **Actual 0 (Negative)** | **TN** (True Negative) - Correct | **FP** (False Positive - Type I Error) |
+| **Actual 1 (Positive)** | **FN** (False Negative - Type II Error) | **TP** (True Positive) - Correct |
 
 ---
 
-## 🎯 Mathematical Formulations
+## 🔍 The Four Quadrants Explained
 
-Confusion Matrix Table:
+### 1. True Negative (TN)
+- Actual value was **0 (Negative)**, and model correctly predicted **0 (Negative)**.
+- *Example*: Healthy patient correctly diagnosed as healthy.
 
-$$
-\begin{array}{c|cc}
-& \text{Predicted Negative (0)} & \text{Predicted Positive (1)} \\
-\hline
-\text{Actual Negative (0)} & \text{True Negative (TN)} & \text{False Positive (FP) [Type I Error]} \\
-\text{Actual Positive (1)} & \text{False Negative (FN) [Type II Error]} & \text{True Positive (TP)}
-\end{array}
-$$
+### 2. False Positive (FP) — Type I Error
+- Actual value was **0 (Negative)**, but model wrongly predicted **1 (Positive)**.
+- *Example*: Important legitimate email mistakenly sent to Spam folder.
 
----
+### 3. False Negative (FN) — Type II Error
+- Actual value was **1 (Positive)**, but model wrongly predicted **0 (Negative)**.
+- *Example*: Sick cancer patient wrongly told they are healthy. (Extremely dangerous!)
 
-## 💡 Conceptual Principles & Architecture
-
-### 4 Outcomes Ka Desi Matlab:
-1. **True Positive (TP):** Mareez ko bimaari thi, aur model ne bhi bola bimaari hai (Sahi pakda!).
-2. **True Negative (TN):** Insaan bilkul healthy tha, aur model ne bola healthy hai (Sahi chhora!).
-3. **False Positive (FP - Type I Error):** Insaan healthy tha, lekin model ne jhootha alarm baja diya ki bimaari hai.
-4. **False Negative (FN - Type II Error):** Mareez ko bimaari thi, lekin model ne bol diya ki healthy hai. (Medical field mein yeh sabse zyada deadly aur khatarnak error hota hai!).
+### 4. True Positive (TP)
+- Actual value was **1 (Positive)**, and model correctly predicted **1 (Positive)**.
+- *Example*: Fraudulent transaction successfully caught and blocked.
 
 ---
 
-## 💻 Python Production Implementation
+## 💻 Python Implementation
 
 ```python
-from sklearn.metrics import confusion_matrix
 import numpy as np
+from sklearn.metrics import confusion_matrix
 
-y_true = np.array([1, 0, 1, 1, 0, 1, 0, 0, 1, 0])
-y_pred = np.array([1, 0, 1, 0, 0, 1, 1, 0, 1, 0])
+def compute_binary_confusion_matrix(y_true, y_pred):
+    """
+    Computes and formats a 2x2 binary confusion matrix:
+    Returns TN, FP, FN, TP values explicitly.
+    """
+    cm = confusion_matrix(y_true, y_pred)
+    # Scikit-Learn convention:
+    # cm[0, 0] = TN, cm[0, 1] = FP
+    # cm[1, 0] = FN, cm[1, 1] = TP
+    tn, fp, fn, tp = cm.ravel()
 
-cm = confusion_matrix(y_true, y_pred)
-tn, fp, fn, tp = cm.ravel()
+    summary = {
+        'matrix': cm,
+        'TN': int(tn),
+        'FP': int(fp),
+        'FN': int(fn),
+        'TP': int(tp)
+    }
+    return summary
 
-print("Confusion Matrix:\n", cm)
-print(f"TP: {tp}, TN: {tn}, FP: {fp}, FN: {fn}")
+# --- Function Call & Testing ---
+# 0 = Non-Spam / Healthy, 1 = Spam / Diseased
+actuals    = [0, 0, 0, 0, 1, 1, 1, 1]
+predicted  = [0, 0, 1, 0, 0, 1, 1, 1]
+
+results = compute_binary_confusion_matrix(actuals, predicted)
+print("Confusion Matrix:\n", results['matrix'])
+print(f"TN: {results['TN']} (Actual 0, Predicted 0)")
+print(f"FP: {results['FP']} (Actual 0, Predicted 1) -> Type I Error")
+print(f"FN: {results['FN']} (Actual 1, Predicted 0) -> Type II Error")
+print(f"TP: {results['TP']} (Actual 1, Predicted 1)")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. The diagonal entries (TN and TP) represent correct predictions.
+2. The off-diagonal entries (FP and FN) represent prediction errors.
+3. Type I Error (FP) vs Type II Error (FN) have very different real-world consequences depending on the problem domain.

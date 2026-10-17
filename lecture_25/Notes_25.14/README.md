@@ -1,63 +1,67 @@
-# Notes_25.14: Cross Validation for Hyperparameter Tuning (GridSearchCV)
+# Lecture 25.14: Hyperparameter Tuning with Cross Validation
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_14.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Lecture 25 Overview](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am demonstrates how to combine Cross Validation with **GridSearchCV** to automatically search for the optimal $K$ neighbors parameter in kNN.
 
 ---
 
-## 📌 Executive Summary
-Exhaustive grid search with cross-validation to select optimal K and distance metrics.
+## 🛠️ The GridSearchCV Architecture
+
+```mermaid
+flowchart TD
+    A["Hyperparameter Candidates<br/>K = [1, 3, 5, 7, 9, 11, 13, 15]"] --> B["GridSearchCV Engine"]
+    B --> C["Run 5-Fold CV for K=1"]
+    B --> D["Run 5-Fold CV for K=3"]
+    B --> E["Run 5-Fold CV for K=..."]
+    C --> F["Compare Average CV Scores"]
+    D --> F
+    E --> F
+    F --> G["Select Best K (e.g., K = 7)"]
+```
 
 ---
 
-## 🎯 Mathematical Formulations
-
-Optimal Hyperparameter Selection:
-
-$$
-\theta^* = \arg\max_{\theta \in \Theta} \frac{1}{K} \sum_{k=1}^K \text{Metric}\left( f_{\theta}(\mathcal{D}_{\text{train}}^{(-k)}), \mathcal{D}_{\text{val}}^{(k)} \right)
-$$
-
----
-
-## 💡 Conceptual Principles & Architecture
-
-### GridSearchCV Kaise Kaam Karta Hai?
-Hum hyperparameters ki ek dictionary pass karte hain (jaise `n_neighbors`: $[3, 5, 7, 9, 11]$ aur `weights`: `['uniform', 'distance']`).
-GridSearchCV har combination par K-Fold Cross Validation run karta hai aur mathematically sabse best hyperparameter $\theta^*$ select kar leta hai!
-
----
-
-## 💻 Python Production Implementation
+## 💻 Python Implementation
 
 ```python
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.pipeline import Pipeline
+from sklearn.datasets import make_classification
 from sklearn.preprocessing import StandardScaler
-import pandas as pd
 
-df = pd.read_csv("heart.csv")
-X = df.drop("target", axis=1)
-y = df["target"]
+def tune_knn_k_parameter():
+    """
+    Uses 5-Fold GridSearchCV to find the optimal 'n_neighbors' (K)
+    for KNeighborsClassifier across candidate values [1, 3, 5, 7, 9, 11, 13, 15].
+    """
+    X, y = make_classification(n_samples=500, random_state=42)
+    X_scaled = StandardScaler().fit_transform(X)
 
-pipe = Pipeline([
-    ('scaler', StandardScaler()),
-    ('knn', KNeighborsClassifier())
-])
+    # 1. Define hyperparameter grid
+    param_grid = {'n_neighbors': [1, 3, 5, 7, 9, 11, 13, 15]}
 
-param_grid = {
-    'knn__n_neighbors': [3, 5, 7, 9, 11, 15],
-    'knn__weights': ['uniform', 'distance'],
-    'knn__p': [1, 2]  # 1=Manhattan, 2=Euclidean
-}
+    # 2. Initialize GridSearchCV
+    grid_search = GridSearchCV(
+        KNeighborsClassifier(),
+        param_grid=param_grid,
+        cv=5,
+        scoring='accuracy'
+    )
 
-grid = GridSearchCV(pipe, param_grid, cv=5, scoring='accuracy')
-grid.fit(X, y)
+    # 3. Fit grid search
+    grid_search.fit(X_scaled, y)
 
-print("Best Parameters:", grid.best_params_)
-print(f"Best CV Accuracy: {grid.best_score_:.4f}")
+    return grid_search.best_params_, grid_search.best_score_
+
+# --- Function Call & Testing ---
+best_params, best_acc = tune_knn_k_parameter()
+print(f"Optimal K found:  {best_params['n_neighbors']}")
+print(f"Best CV Accuracy: {best_acc*100:.2f}%")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. `GridSearchCV` runs an exhaustive combinatorial search across your parameter dictionary.
+2. It automatically evaluates each candidate using internal $K$-fold cross-validation.
+3. Access optimal parameters via `grid.best_params_` and `grid.best_score_`.

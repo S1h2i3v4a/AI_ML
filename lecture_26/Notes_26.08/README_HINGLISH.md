@@ -1,66 +1,70 @@
-# Lecture 26.08: Linear Regression — Gradient Descent vs Ordinary Least Squares (Algorithmic Trade-offs)
+# Notes_26.08: Gradient Descent Vs OLS Ka Antar [Hinglish]
 
-## 📌 Saransh (Executive Summary)
-Gradient Descent vs OLS ka architectural comparison: Time complexity $\mathcal{O}(d^3)$ vs $\mathcal{O}(k \cdot m \cdot d)$, memory limits, aur decision tree.
-
----
-
-## 🔬 First-Principles Theory & Intuition
-### 1. Kab Kaunsa Algorithm Use Karein?
-Donon algorithms ke apne pros aur cons hain:
-
-#### Kab OLS Best Hai?
-- Jab features kam hon ($d < 1,000$) aur dataset memory mein fit ho jaye.
-- OLS mein koi learning rate set nahi karni padti, koi loop nahi chalana padta; ek baar mein exact mathematically perfect answer mil jata hai.
-
-#### Kab Gradient Descent Compulsory Hai?
-1. **Jab Features bohot zyada hon (High Dimensions, $d > 10,000$)**:
-   Matrix inversion ka time complexity $\mathcal{O}(d^3)$ hota hai. Agar $d = 10,000$ hai, toh $(10^4)^3 = 10^{12}$ operations lagenge jo computer ko crash kar denge! GD linear $\mathcal{O}(d)$ hota hai.
-2. **Jab Big Data ho ($m > 1,000,000$)**:
-   Mini-batch GD data ko chhote chunks mein process kar leta hai.
-3. **Streaming / Online Data**:
-   Agar data live stream ho raha hai, toh har naye data point par GD model ko incrementally update kar sakta hai.
-
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Gradient Descent** aur **OLS (Normal Equation)** ka direct comparison karke samjhaya hai: kab konsa method use karna chahiye.
 
 ---
 
-## 💻 Python & NumPy Code Implementation
-```python
-import numpy as np
-import time
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- OLS aur Gradient Descent ka side-by-side comparison.
+- Computational Complexity: $\mathcal{O}(d^3)$ vs $\mathcal{O}(k \cdot m \cdot d)$.
+- Memory aur speed ka difference.
+- Real-world decision flowchart.
 
-# Empirical Benchmark: OLS vs GD as feature dimension d scales
-m = 10000
-for d in [10, 100, 500, 1500]:
-    X = np.random.randn(m, d)
-    y = np.random.randn(m)
-    
-    # OLS Benchmark
-    t0 = time.perf_counter()
-    X_b = np.c_[np.ones((m, 1)), X]
-    theta_ols = np.linalg.inv(X_b.T @ X_b) @ X_b.T @ y
-    t_ols = time.perf_counter() - t0
-    
-    # GD Benchmark (10 iterations)
-    t0 = time.perf_counter()
-    w = np.zeros(d)
-    b = 0.0
-    for _ in range(10):
-        y_pred = X @ w + b
-        res = y_pred - y
-        dw = (1/m) * (X.T @ res)
-        db = (1/m) * np.sum(res)
-        w -= 0.01 * dw
-        b -= 0.01 * db
-    t_gd = time.perf_counter() - t0
-    
-    print(f"Features d={d:<5} | OLS Time: {t_ols:.4f}s | GD (10 iters): {t_gd:.4f}s")
+---
 
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. OLS Kab Use Karein?
+- Jab features ki sankhya choti ho ($d < 10,000$).
+- Iska sabse bada faayda: **Koyi learning rate choose nahi karni padti**, na koi epoch ka chakkar hota hai. Direct exact formula se answer milta hai.
+
+#### 2. Gradient Descent Kab Use Karein?
+- Jab features bohot zyada hon ($d > 10,000$) ya data croron rows ka ho.
+- OLS mein matrix inverse $(X^T X)^{-1}$ nikalne mein computer ki RAM crash ho sakti hai (complexity $\mathcal{O}(d^3)$ hoti hai). Gradient Descent step-by-step update karke RAM ko safe rakhta hai.
+
+---
+
+### 📊 Visual Flowchart: Kab Kya Chunein?
+
+```mermaid
+flowchart TD
+    AFeatures (d) Kitne Hain?
+    A -->|"d < 10,000 (Chota/Medium Data)"| B["OLS Normal Equation Chuno<br/>Instant aur exact answer!"]
+    A -->|"d > 10,000 ya Croron Rows"| C["Gradient Descent Chuno<br/>RAM crash hone se bachao!"]
 ```
 
 ---
 
-## 🎯 Key Takeaways & Practical Tips
-1. **Black-Box Se Azadi**: Libraries ko blind use karne ke bajaye unke andar ka math samajhna aapko top 1% engineer banata hai.
-2. **Vectorization Ki Taqat**: Python loops ke bajaye NumPy array operations use karein jo C/BLAS speed provide karte hain.
-3. **Debugging Mastery**: Jab loss decrease na ho raha ho, toh sabse pehle learning rate $\alpha$ aur gradient dimensions check karein.
+### 💻 Python Code
+
+```python
+def compare_gd_vs_ols(n_samples, n_features):
+    """
+    Recommends whether to use Gradient Descent or OLS (Normal Equation)
+    based on sample size (m) and feature dimension (d).
+    
+    Complexity Rules:
+    - OLS:              O(d^3) computation, memory heavy for large d
+    - Gradient Descent: O(k * m * d), highly scalable to Big Data
+    """
+    if n_features > 10000:
+        recommendation = "Gradient Descent (OLS matrix inversion O(d^3) will crash RAM!)"
+    elif n_samples > 1_000_000:
+        recommendation = "SGD / Mini-Batch Gradient Descent (Dataset too massive for full matrix in memory)"
+    else:
+        recommendation = "OLS Normal Equation (Fast, exact, and zero hyperparameter tuning required)"
+        
+    return recommendation
+
+# --- Function Call & Testing ---
+print("Small Dataset (m=1000, d=20):   ", compare_gd_vs_ols(1000, 20))
+print("High-Dimension (m=5000, d=25000):", compare_gd_vs_ols(5000, 25000))
+print("Big Data (m=10M, d=50):          ", compare_gd_vs_ols(10_000_000, 50))
+```
+
+---
+
+### 📌 Summary Points
+- Small features: OLS best hai.
+- Large scale / Big data: Gradient Descent best hai.

@@ -1,51 +1,67 @@
-# Lecture 26.11: K-Nearest Neighbors (KNN) from Scratch — Metric Space & Lazy Learning Formulation
+# Lecture 26.11: KNN Classifier (Algorithmic Steps)
 
-## 📌 Executive Summary
-Instance-based non-parametric learning theory, Euclidean distance geometry, hyperparameter k selection, and the critical requirement of feature scaling.
-
----
-
-## 🔬 Mathematical Formulation & Theory
-### 1. The Lazy Learning / Instance-Based Paradigm
-Unlike Linear and Logistic Regression which are **parametric eager learners** (they estimate a fixed vector of weights during training and discard the data), K-Nearest Neighbors is a **non-parametric lazy learner**:
-- **Training Phase (`fit`)**: Requires $\mathcal{O}(1)$ time. The algorithm simply stores the training instances in memory.
-- **Inference Phase (`predict`)**: Requires $\mathcal{O}(m \cdot d)$ compute per query point, as the distance between the query and all $m$ training points must be computed and sorted!
-
-### 2. Distance Metrics in Euclidean Space
-In $d$-dimensional space, the Euclidean distance ($L_2$ norm) between query point $\mathbf{x}$ and training sample $\mathbf{x}^{(i)}$ is:
-
-$$
-d(\mathbf{x}, \mathbf{x}^{(i)}) = \sqrt{\sum_{j=1}^d \left( x_j - x_j^{(i)} \right)^2} = \| \mathbf{x} - \mathbf{x}^{(i)} \|_2
-$$
-
-### 3. Hyperparameter $k$ Bias-Variance Trade-off
-- **$k=1$**: The model assigns the label of the single closest training instance.
-  - Decision boundaries are complex, jagged Voronoi polygons.
-  - Training accuracy is 100%, but the model suffers from **high variance (overfitting)** and is vulnerable to noise.
-- **Large $k$ (e.g. $k = m$)**: The model predicts the global majority class regardless of the query point's location (**high bias / underfitting**).
-- **Rule of Thumb**: Set $k = \sqrt{m}$, and select an **odd number** for binary classification to eliminate tie-breaking deadlocks.
-
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am outlines the algorithmic mechanics and step-by-step pseudo-code required to build a **k-Nearest Neighbors (kNN) Classifier from Scratch**.
 
 ---
 
-## 💻 Python & NumPy Implementation
-```python
-import numpy as np
+## 🏛️ The 4 Core Steps of kNN Scratch
+1. **Fit Step**: Store all training points $X_{\text{train}}$ and labels $y_{\text{train}}$ (no weights to optimize!).
+2. **Distance Matrix**: For any incoming query point, compute Euclidean distance to all stored points.
+3. **Sorting**: Use `np.argsort` to find the indices of the $k$ closest neighbors.
+4. **Majority Voting**: Use `np.bincount` to count votes and pick the winning class.
 
-def euclidean_distance(x1, x2):
-    return np.sqrt(np.sum((x1 - x2) ** 2))
+---
 
-# Verify distance computation
-p1 = np.array([1.0, 2.0])
-p2 = np.array([4.0, 6.0])
-dist = euclidean_distance(p1, p2)
-print(f"Distance between {p1} and {p2}: {dist:.4f} (Expected: 5.0)")
+## 📊 Visual Diagram: kNN Algorithmic Flow
 
+```mermaid
+flowchart TD
+    A["Step 1: Fit(X, y)<br/>Store training samples in memory"] --> B["Step 2: Predict(x_new)<br/>Compute distance to ALL training samples"]
+    B --> C["Step 3: np.argsort(distances)<br/>Extract indices of K closest samples"]
+    C --> D["Step 4: np.bincount(k_labels)<br/>Plurality Majority Vote"]
+    D --> E["Output: Most frequent class label"]
 ```
 
 ---
 
-## 🎯 Key Takeaways & Best Practices
-1. **First-Principles Transparency**: Building from scratch demystifies optimizer mechanics, memory layouts, and algorithmic failure modes.
-2. **Vectorization vs Loops**: Always eliminate Python `for` loops across sample dimensions by relying on BLAS-accelerated NumPy array operations.
-3. **Shape Integrity**: Maintain explicit assertions on input array ranks and shapes (`X.shape == (m, d)`, `y.shape == (m,)`) to prevent silent broadcasting bugs.
+## 💻 Python Implementation
+
+```python
+import numpy as np
+
+def compute_euclidean_distance_step(x1, x2):
+    """
+    Step 1 of kNN: Compute Euclidean distance between two feature vectors:
+    d = sqrt(sum((x1 - x2)^2))
+    """
+    return np.sqrt(np.sum((x1 - x2) ** 2))
+
+def retrieve_top_k_neighbors(distances, labels, k=3):
+    """
+    Step 2 & 3 of kNN: Sort distances in ascending order
+    and retrieve the labels of the top k nearest samples.
+    """
+    # np.argsort returns indices that would sort an array
+    sorted_indices = np.argsort(distances)
+    k_nearest_indices = sorted_indices[:k]
+    k_nearest_labels = labels[k_nearest_indices]
+    return k_nearest_labels
+
+# --- Function Call & Testing ---
+p_query = np.array([2.0, 3.0])
+p_train = np.array([[1.0, 2.0], [5.0, 5.0], [2.5, 3.5]])
+labels  = np.array([0, 1, 0])
+
+dists = [compute_euclidean_distance_step(p_query, pt) for pt in p_train]
+top_k_lbls = retrieve_top_k_neighbors(dists, labels, k=2)
+
+print("Distances to query point:", np.round(dists, 4))
+print("Top-2 Nearest Labels:   ", top_k_lbls)
+```
+
+---
+
+## 🔑 Key Takeaways
+1. kNN requires zero training iterations.
+2. `np.argsort` and `np.bincount` make vectorized kNN extremely concise in Python.

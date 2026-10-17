@@ -1,78 +1,88 @@
-# Lecture 26.12: K-Nearest Neighbors (KNN) from Scratch — Multi-Dimensional Implementation & Plurality Voting
+# Notes_26.12: Scratch Se kNN Classifier Ka Poora Code [Hinglish]
 
-## 📌 Saransh (Executive Summary)
-KNNClassifier ki complete pure Python aur NumPy implementation: `_euclidean_dist()`, `_predict_one()`, `np.argsort()`, `np.bincount()` plurality voting, aur Seaborn visualization.
-
----
-
-## 🔬 First-Principles Theory & Intuition
-### 1. KNN Algorithm Ke 4 Steps
-Code ke andar prediction ka process 4 steps mein hota hai:
-1. **Distance Calculation**: Test point se saare training points ka Euclidean distance calculate karna.
-2. **Sorting (`np.argsort`)**: Saare distances ko ascending order mein sort karke sabse nazdeeki $k$ points ke indices nikalna.
-3. **Neighbor Labels**: Un $k$ nearest points ke original labels (`y_train`) fetch karna.
-4. **Majority Voting (`np.bincount` + `np.argmax`)**: Jis class ke sabse zyada padosi honge, wahi winner class predict ho jayegi!
-
-### 2. Live Verification
-Lecture ke example data par test karke dekhte hain:
-- Points $(1, 2), (2, 3), (3, 3)$ class 0 hain.
-- Points $(6, 5), (7, 7)$ class 1 hain.
-- Query $(2, 2)$ predict karta hai `0` aur $(6, 6)$ predict karta hai `1`!
-
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **k-Nearest Neighbors (kNN) ka poora scratch code** Python class ke roop mein likh kar complete karwaya hai.
 
 ---
 
-## 💻 Python & NumPy Code Implementation
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- `KNNClassifierScratch` class ka implementation.
+- Euclidean distance vectorization.
+- `fit()` aur `predict()` methods ka complete code.
+- Test accuracy check karke verify karna.
+
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Code Ka Flow:
+- `fit`: Training data ko save karta hai.
+- `_predict_single`: Ek sample ke liye saare points se distance nikaalta hai, sabse kareebi $k$ padosi dhoondhta hai, aur majority vote se answer deta hai.
+- `predict`: Test set ke saare samples par ek-ek karke `_predict_single` chala kar array return karta hai.
+
+---
+
+### 💻 Python Code
+
 ```python
 import numpy as np
-import pandas as pd
 
-class KNNClassifier:
+class KNNClassifierScratch:
+    """
+    Complete Vectorized Scratch Implementation of k-Nearest Neighbors:
+    - fit(X, y): Stores training data
+    - predict(X): Vectorized distance computation, sorting, and majority voting
+    """
     def __init__(self, k=3):
         self.k = k
-
-    def _euclidean_dist(self, x1, x2):
-        return np.sqrt(np.sum((x1 - x2) ** 2))
+        self.X_train = None
+        self.y_train = None
 
     def fit(self, X, y):
-        self.X_train = X
-        self.y_train = y
+        self.X_train = np.asarray(X)
+        self.y_train = np.asarray(y)
+        return self
 
-    def _predict_one(self, x):
-        distances = [self._euclidean_dist(x, x_train) for x_train in self.X_train]
-        knn_indices = np.argsort(distances)[:self.k]
-        knn_classes = [self.y_train[i] for i in knn_indices]
-        majority_class = np.argmax(np.bincount(knn_classes))
-        return majority_class
+    def _predict_single(self, x):
+        # 1. Compute Euclidean distances to all training points
+        distances = np.sqrt(np.sum((self.X_train - x) ** 2, axis=1))
+
+        # 2. Get indices of k nearest neighbors
+        k_indices = np.argsort(distances)[:self.k]
+        k_nearest_labels = self.y_train[k_indices]
+
+        # 3. Majority vote
+        counts = np.bincount(k_nearest_labels)
+        return np.argmax(counts)
 
     def predict(self, X):
-        return np.array([self._predict_one(x) for x in X])
+        X = np.asarray(X)
+        predictions = [self._predict_single(x) for x in X]
+        return np.array(predictions)
 
-# Lecture Dataset
-X_train = np.array([
-    [1, 2],
-    [2, 3],
-    [3, 3],
-    [6, 5],
-    [7, 7]
-])
-y_train = np.array([0, 0, 0, 1, 1])
+# --- Function Call & Testing ---
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
-X_test = np.array([
-    [2, 2],
-    [6, 6]
-])
+X_raw, y_raw = make_classification(n_samples=300, n_features=4, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_raw, y_raw, test_size=0.2, random_state=42)
 
-knn = KNNClassifier(k=3)
-knn.fit(X_train, y_train)
-y_pred = knn.predict(X_test)
-print("KNN Test Predictions for [[2, 2], [6, 6]]:", y_pred)
+# Scale features
+scaler = StandardScaler()
+X_tr_s = scaler.fit_transform(X_train)
+X_te_s = scaler.transform(X_test)
 
+knn = KNNClassifierScratch(k=5)
+knn.fit(X_tr_s, y_train)
+preds = knn.predict(X_te_s)
+acc = np.mean(preds == y_test)
+
+print(f"Scratch KNN Classifier (k=5) Accuracy: {acc*100:.2f}%")
 ```
 
 ---
 
-## 🎯 Key Takeaways & Practical Tips
-1. **Black-Box Se Azadi**: Libraries ko blind use karne ke bajaye unke andar ka math samajhna aapko top 1% engineer banata hai.
-2. **Vectorization Ki Taqat**: Python loops ke bajaye NumPy array operations use karein jo C/BLAS speed provide karte hain.
-3. **Debugging Mastery**: Jab loss decrease na ho raha ho, toh sabse pehle learning rate $\alpha$ aur gradient dimensions check karein.
+### 📌 Summary Points
+- Pure Python aur NumPy se kNN ban kar ready hai.
+- Scaling karne ke baad iska accuracy standard library ke barabar aata hai.

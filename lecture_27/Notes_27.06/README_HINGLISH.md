@@ -1,94 +1,61 @@
-# Lecture 27.06: Correlation Analysis aur Multicollinearity Diagnostics
+# Notes_27.06: Correlation Analysis Aur Heatmap [Hinglish]
 
-## 📌 Executive Summary (Hinglish)
-Pearson correlation coefficient ka mathematical derivation, correlation heatmap visualization, loan approval ke primary risk drivers ki ranking, aur collinearity diagnostics.
-
----
-
-### 📋 Is Topic/Section Mein Hum Kya Cover Kar Rahe Hain?
-1. Pearson correlation coefficient ($r$) ka mathematical formula aur interpretation range $[-1, +1]$.
-2. Target variable `Loan_Approved` ke sath numerical features ke correlation ki ranking.
-3. Top positive drivers: `Credit_Score`, `Savings`, `Collateral_Value` ka empirical correlation impact.
-4. Top negative risk drivers: `DTI_Ratio` aur `Existing_Loans` ka default correlation.
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Correlation Heatmap** banakar samjhaya hai: kaun se features loan approval ke liye sabse zyada zimmedar hain aur kaun se rejection ke liye.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
-
-**Pearson Correlation**: Correlation measure karta hai ki do features ke beech linear relationship kitni strong hai. $r = +1$ perfect positive linear correlation hai aur $r = -1$ perfect negative.
-
-**Target Correlation Ranking**: Cleaned dataset mein target `Loan_Approved` ke sath sabse highest correlation `Credit_Score` (positive) aur `DTI_Ratio` (negative) ka hota hai.
-
-**Positive Asset Drivers**: Jin applicants ke paas high savings reserves aur collateral assets hote hain, unka creditworthiness score naturally boost hota hai.
-
-**Debt Burden Drivers**: `DTI_Ratio` badhne par default probability exponential rate se badhti hai, isliye iska correlation negative hota hai.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- `df.corr()` aur Seaborn heatmap ka use.
+- Positive correlation: Wo features jinke badhne se loan pass hone ka chance badhta hai (`Credit_Score`).
+- Negative correlation: Wo features jinke badhne se loan reject hota hai (`DTI_Ratio`).
+- Multicollinearity check karna.
 
 ---
 
-## 🏛️ Mathematical Architecture & Detailed Theory
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-### 📈 Pearson Product-Moment Correlation Formulation
+#### 1. Sabse Bada Hero Feature (`Credit_Score`):
+Heatmap mein sabse strong positive correlation `Credit_Score` ka dikhta hai. Agar applicant ka score 750+ hai toh loan approve hone ka chance exponentially badh jata hai.
 
-The linear association between two continuous random variables $X$ and $Y$ across a sample of $m$ observations is measured by the **Pearson Correlation Coefficient** $r_{xy}$:
-
-$$
-oxed{
-r_{xy} = rac{\sum_{i=1}^m (x_i - ar{x})(y_i - ar{y})}{\sqrt{\sum_{i=1}^m (x_i - ar{x})^2} \sqrt{\sum_{i=1}^m (y_i - ar{y})^2}} = rac{	ext{Cov}(X, Y)}{\sigma_X \sigma_Y}
-}
-$$
-
-Where:
-- $r_{xy} \in [-1.0, +1.0]$.
-- $r_{xy} = +1.0$ indicates perfect deterministic positive collinearity.
-- $r_{xy} = -1.0$ indicates perfect deterministic inverse collinearity.
-- $r_{xy} = 0.0$ signifies the complete absence of any linear dependency.
+#### 2. Sabse Bada Villian Feature (`DTI_Ratio`):
+Debt-to-Income (DTI) ratio ka negative correlation hota hai. Agar kisi insaan ki aamdani ka 60% hissa purani EMI bhadne mein ja raha hai, toh bank use naya loan dene se mana kar dega.
 
 ---
 
-### 🔍 Credit Risk Correlation Ranking Hierarchy
-
-In our encoded SecureTrust Bank design matrix, sorting features by their absolute correlation with the supervisory label `Loan_Approved` yields critical domain insights:
-
-```mermaid
-flowchart LR
-    A["Loan_Approved Target"] --> B["High Positive Correlation<br/>(+0.30 to +0.60)"]
-    A --> C["High Negative Correlation<br/>(-0.25 to -0.55)"]
-    A --> D["Weak / Neutral Correlation<br/>(-0.05 to +0.05)"]
-    
-    B --> B1["Credit_Score (Primary Underwriting Pillar)"]
-    B --> B2["Savings & Collateral_Value (Capital Buffer)"]
-    
-    C --> C1["DTI_Ratio (Excess Debt Burden)"]
-    C --> C2["Existing_Loans (Leverage Constraint)"]
-    
-    D --> D1["Demographic Features (Gender, Marital_Status)"]
-```
-
-#### Multicollinearity Alert:
-Features displaying severe pairwise correlation ($|r_{jk}| > 0.85$) inflate the parameter standard errors in linear models. In baseline loan data, `Applicant_Income` and `Total_Income` will naturally exhibit strong covariance, warranting careful ratio-based feature engineering.
-
----
-
-## 💻 Python Implementation & Code Example
+### 💻 Python Code
 
 ```python
 import pandas as pd
+import seaborn as sns
 
-# Load and compute correlation against target
-# Assume df_encoded is ready
-corr_series = df_encoded.corr()["Loan_Approved"].sort_values(ascending=False)
-print("--- Features Positively Correlated with Loan Approval ---")
-print(corr_series[corr_series > 0].head(5))
+def analyze_feature_correlations(df, target_col='Loan_Approved'):
+    """
+    Computes Pearson correlation matrix and identifies top risk drivers:
+    - Positive drivers: Features that increase approval probability (e.g. Credit_Score)
+    - Negative drivers: Features that increase rejection probability (e.g. DTI_Ratio)
+    """
+    corr_matrix = df.corr()
+    target_corrs = corr_matrix[target_col].sort_values(ascending=False)
 
-print("
---- Features Negatively Correlated with Loan Approval ---")
-print(corr_series[corr_series < 0].tail(5))
+    top_positive = target_corrs.index[1:4].tolist()
+    top_negative = target_corrs.index[-3:].tolist()
 
+    insights = {
+        'target_correlations': target_corrs.to_dict(),
+        'top_positive_drivers': top_positive,
+        'top_negative_drivers': top_negative
+    }
+    return insights
+
+# --- Function Call & Testing ---
+# insights = analyze_feature_correlations(encoded_df)
+# print("Top Positive Approval Factors:", insights['top_positive_drivers'])
+# print("Top Negative Risk Factors:    ", insights['top_negative_drivers'])
 ```
 
 ---
 
-## 🎯 Quick Revision Points (Interview Notes)
-- **Objective**: Credit risk modeling mein precision hamesha accuracy se zyada important hoti hai.
-- **Data Invariant**: SimpleImputer aur StandardScaler ko hamesha training data par `fit` karke test set par sirf `transform` kiya jaata hai.
-- **Decision Boundary**: Non-linear feature transformations ($DTI^2$, $Credit^2$) linear models ko non-linear patterns capture karne ki capability provide karte hain.
+### 📌 Summary Points
+- Credit Score positive factor hai, DTI ratio negative factor hai.
+- Heatmap se model ke liye sabse important features identify hote hain.

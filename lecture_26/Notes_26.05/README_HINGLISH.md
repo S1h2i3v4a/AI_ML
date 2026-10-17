@@ -1,83 +1,64 @@
-# Lecture 26.05: Linear Regression with Gradient Descent — Step 3: Analytical Gradient Derivation
+# Notes_26.05: Linear Regression GD (Step 3 — Gradients Calculation) [Hinglish]
 
-## 📌 Saransh (Executive Summary)
-Gradient Descent Step 3: Multivariate calculus chain rule se cost function ke partial derivatives derivation, weight gradient $dw$ aur bias gradient $db$ ka exact proof.
-
----
-
-## 🔬 First-Principles Theory & Intuition
-### 1. Step 3: Gradient Calculate Karna (Slope Dhoondhna)
-Gradient hume batata hai ki parameter ko thoda sa badhane ya ghatane se cost function kitna badlega ya ghatega.
-Hume do cheezein calculate karni hain:
-1. $\frac{\partial J}{\partial \mathbf{w}}$ (Weights ka gradient, jise code mein `dw` kehte hain)
-2. $\frac{\partial J}{\partial b}$ (Bias ka gradient, jise code mein `db` kehte hain)
-
-### 2. Step-by-Step Chain Rule Derivation
-Cost function:
-
-$$
-J(\mathbf{w}, b) = \frac{1}{2m} \sum_{i=1}^m \left( \hat{y}^{(i)} - y^{(i)} \right)^2
-$$
-
-Pehle power rule lagate hain: power 2 aage aayegi aur $\frac{1}{2}$ se cut jayegi:
-
-$$
-2 \cdot \frac{1}{2m} (\hat{y}^{(i)} - y^{(i)}) = \frac{1}{m} (\hat{y}^{(i)} - y^{(i)})
-$$
-
-Ab andar ka derivative:
-- $w_j$ ke respect mein: $\frac{\partial}{\partial w_j} (w_j x_j) = x_j^{(i)}$
-- $b$ ke respect mein: $\frac{\partial}{\partial b} (b) = 1$
-
-Isliye final formulas bante hain:
-
-$$
-dw = \frac{\partial J}{\partial \mathbf{w}} = \frac{1}{m} X^T (\hat{\mathbf{y}} - \mathbf{y})
-$$
-
-$$
-db = \frac{\partial J}{\partial b} = \frac{1}{m} \sum_{i=1}^m (\hat{y}^{(i)} - y^{(i)})
-$$
-
-Code mein yeh sirf do clean lines hain:
-```python
-db = (1 / m) * np.sum(y_pred - y)
-dw = (1 / m) * np.dot(X.T, (y_pred - y))
-```
-
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne Calculus chain rule ka use karke **Step 3: Gradients ($dw$ aur $db$)** nikaalna sikhaya hai.
 
 ---
 
-## 💻 Python & NumPy Code Implementation
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Gradient kya hota hai? (Slope / Dhalan).
+- Weights ke respect mein derivative: $dw = \frac{1}{m} X^T (\hat{y} - y)$.
+- Bias ke respect mein derivative: $db = \frac{1}{m} \sum (\hat{y} - y)$.
+- Negative gradient ki taraf chalne ka concept.
+
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. Gradient Ka Asal Matlab:
+Agar aap pahad par khade hain aur aapko sabse tezi se neeche utarna hai, toh gradient batata hai ki sabse teez dhalan kis disha mein hai.
+- Positive slope ka matlab hai weights zyada hain, unhe ghatao.
+- Negative slope ka matlab hai weights kam hain, unhe badhao.
+
+#### 2. Formulas:
+- **$dw$**: Saare features ke errors ko inputs ke sath multiply karke average nikaalta hai: $\frac{1}{m} X^T (\hat{y} - y)$.
+- **$db$**: Sirf seedhe errors ka average hota hai: $\frac{1}{m} \sum (\hat{y} - y)$.
+
+---
+
+### 💻 Python Code
+
 ```python
 import numpy as np
 
-def compute_gradients(X, y, weights, bias):
-    """Vectorized computation of analytical gradients dw and db."""
-    m = len(y)
-    y_pred = X @ weights + bias
-    residuals = y_pred - y
-    
-    # Analytical gradients
-    db = (1.0 / m) * np.sum(residuals)
-    dw = (1.0 / m) * (X.T @ residuals)
-    
+def compute_linear_regression_gradients(X, y_true, y_pred):
+    """
+    Step 3 of Gradient Descent: Compute partial derivatives of MSE cost.
+    Chain Rule Derivatives:
+    dw = dJ/dw = (1 / m) * X^T * (y_pred - y_true)
+    db = dJ/db = (1 / m) * sum(y_pred - y_true)
+    """
+    m = len(y_true)
+    error = y_pred - y_true
+
+    # Vectorized gradient computation
+    dw = (1.0 / m) * np.dot(X.T, error)
+    db = (1.0 / m) * np.sum(error)
+
     return dw, db
 
-# Verification on toy data
-X = np.array([[1.0], [2.0], [3.0]])
-y = np.array([2.0, 4.0, 6.0])
-w = np.array([0.0])
-b = 0.0
+# --- Function Call & Testing ---
+X_test = np.array([[1.0, 2.0], [2.0, 1.0], [3.0, 4.0]])
+y_actual = np.array([5.0, 4.0, 11.0])
+y_predicted = np.array([4.5, 3.8, 10.2])
 
-dw, db = compute_gradients(X, y, w, b)
-print(f"Analytical dw: {dw}, db: {db}")
-
+dw_grad, db_grad = compute_linear_regression_gradients(X_test, y_actual, y_predicted)
+print("Weight Gradients (dw):", dw_grad.round(4))
+print("Bias Gradient (db):   ", round(db_grad, 4))
 ```
 
 ---
 
-## 🎯 Key Takeaways & Practical Tips
-1. **Black-Box Se Azadi**: Libraries ko blind use karne ke bajaye unke andar ka math samajhna aapko top 1% engineer banata hai.
-2. **Vectorization Ki Taqat**: Python loops ke bajaye NumPy array operations use karein jo C/BLAS speed provide karte hain.
-3. **Debugging Mastery**: Jab loss decrease na ho raha ho, toh sabse pehle learning rate $\alpha$ aur gradient dimensions check karein.
+### 📌 Summary Points
+- Gradients batate hain ki parameters ko kitna aur kis disha mein badalna hai.
+- Vectorized $X^T (\hat{y} - y)$ se saare weights ke gradients ek baar mein nikal jaate hain.

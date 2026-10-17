@@ -1,61 +1,71 @@
-# Notes_25.13: What is Cross Validation?
+# Lecture 25.13: What is Cross Validation?
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_13.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Lecture 25 Overview](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces **K-Fold Cross Validation**, explaining how rotating the validation set across multiple folds provides a robust, low-variance evaluation of model skill.
 
 ---
 
-## 📌 Executive Summary
-K-Fold Cross Validation, Stratified K-Fold for class imbalance, and variance reduction.
+## 🏛️ How K-Fold Cross Validation Works ($K=5$)
+Instead of relying on a single static validation split:
+1. Divide the training data into $K$ equal subsets (folds).
+2. Run $K$ iterations. In each iteration $i$:
+   - Use fold $i$ as the validation data.
+   - Use the remaining $K-1$ folds combined as training data.
+3. Compute the average accuracy across all $K$ iterations.
+
+```mermaid
+flowchart TD
+    subgraph Iterations["5-Fold Cross Validation Iterations"]
+        direction TB
+        I1["Iteration 1: [ Val Fold 1 ] [ Train Fold 2 ] [ Train Fold 3 ] [ Train Fold 4 ] [ Train Fold 5 ] --> Score 1"]
+        I2["Iteration 2: [ Train Fold 1 ] [ Val Fold 2 ] [ Train Fold 3 ] [ Train Fold 4 ] [ Train Fold 5 ] --> Score 2"]
+        I3["Iteration 3: [ Train Fold 1 ] [ Train Fold 2 ] [ Val Fold 3 ] [ Train Fold 4 ] [ Train Fold 5 ] --> Score 3"]
+        I4["Iteration 4: [ Train Fold 1 ] [ Train Fold 2 ] [ Train Fold 3 ] [ Val Fold 4 ] [ Train Fold 5 ] --> Score 4"]
+        I5["Iteration 5: [ Train Fold 1 ] [ Train Fold 2 ] [ Train Fold 3 ] [ Train Fold 4 ] [ Val Fold 5 ] --> Score 5"]
+    end
+    Iterations --> FINAL["Average Score = Mean(Score 1..5)"]
+```
 
 ---
 
-## 🎯 Mathematical Formulations
-
-K-Fold Cross Validation Estimator:
-
-$$
-\text{CV}_K = \frac{1}{K} \sum_{k=1}^K \text{Score}_k
-$$
-
-Stratified Fold Class Ratio Invariant:
-
-$$
-\frac{N_{k, +}}{N_k} \approx \frac{N_{+}}{N} \quad \forall \; k \in \{1, 2, \dots, K\}
-$$
-
----
-
-## 💡 Conceptual Principles & Architecture
-
-### Single Train-Test Split Ki Kamzori:
-Agar hum sirf ek baar train/test split karte hain, toh ho sakta hai ki test set mein coincidental easy ya tough examples chale jayein. Isse performance estimate unstable ho jata hai.
-### K-Fold Solution:
-Dataset ko $K$ equal hisso (folds) mein divide kiya jata hai. Har iteration mein 1 fold test set banta hai aur baki $K-1$ folds train set bante hain. Yeh process $K$ baar chalta hai aur sabhi scores ka average nikala jata hai!
-- **Stratified K-Fold:** Imbalanced classification mein use hota hai taaki har fold mein positive aur negative class ka ratio original dataset jaisa hi barabar rahe.
-
----
-
-## 💻 Python Production Implementation
+## 💻 Python Implementation
 
 ```python
-from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.model_selection import cross_val_score, KFold
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import make_pipeline
-import pandas as pd
+from sklearn.datasets import make_classification
 
-df = pd.read_csv("heart.csv")
-X = df.drop("target", axis=1)
-y = df["target"]
+def run_kfold_cross_validation(n_splits=5):
+    """
+    Executes K-Fold Cross Validation:
+    Splits training data into K equal folds, rotating the validation
+    fold across K iterations, and computes mean performance.
+    """
+    X, y = make_classification(n_samples=500, random_state=42)
+    knn = KNeighborsClassifier(n_neighbors=5)
 
-pipe = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=5))
-skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    # 1. Initialize KFold
+    kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 
-scores = cross_val_score(pipe, X, y, cv=skf, scoring='accuracy')
-print("5-Fold Scores:", scores.round(4))
-print(f"Mean CV Accuracy: {scores.mean():.4f} (+/- {scores.std():.4f})")
+    # 2. Compute cross-validated scores
+    cv_scores = cross_val_score(knn, X, y, cv=kf, scoring='accuracy')
+
+    summary = {
+        'fold_scores': cv_scores,
+        'mean_score':  float(cv_scores.mean()),
+        'std_score':   float(cv_scores.std())
+    }
+    return summary
+
+# --- Function Call & Testing ---
+res = run_kfold_cross_validation(n_splits=5)
+print("5-Fold Individual Accuracies:", res['fold_scores'].round(4))
+print(f"Mean CV Accuracy:            {res['mean_score']*100:.2f}% (Std: +/- {res['std_score']*100:.2f}%)")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. Every single data point gets to be in the validation set exactly once.
+2. The average cross-validation score eliminates the luck or bad variance of a single train/validation split.
+3. Standard choice is $K = 5$ or $K = 10$.

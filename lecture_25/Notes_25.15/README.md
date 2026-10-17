@@ -1,59 +1,78 @@
-# Notes_25.15: Pipelines in Scikit-Learn
+# Lecture 25.15: Pipeline in Scikit-Learn
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_15.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Lecture 25 Overview](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am wraps up Lecture 25 by demonstrating Scikit-Learn's **Pipeline** class, showing how to cleanly chain transformers and estimators into a single production object while eliminating data leakage during cross-validation.
 
 ---
 
-## 📌 Executive Summary
-Chaining feature preprocessing with estimators using Pipeline, production deployment standards.
+## 🏛️ Pipeline Architecture
+
+```mermaid
+flowchart LR
+    RawInput["Raw Input Features X"] --> Step1["Step 1: StandardScaler()<br/>Scales features"]
+    Step1 --> Step2["Step 2: KNeighborsClassifier()<br/>Predicts class labels"]
+    Step2 --> FinalOutput["Final Output y_pred"]
+```
 
 ---
 
-## 🎯 Mathematical Formulations
-
-Pipeline Composite Transformation Map:
-
-$$
-\mathbf{x} \xrightarrow{\text{Step 1: Scaler}} \mathbf{z} = \frac{\mathbf{x} - \mu_{\text{fold}}}{\sigma_{\text{fold}}} \xrightarrow{\text{Step 2: Model}} \hat{y} = f(\mathbf{z})
-$$
+## 💡 Why Pipelines Are Mandatory in Production
+1. **Zero Data Leakage during CV**: When running `cross_val_score(pipe, X, y)`, the scaler is fit **only on each training fold** and transformed onto the validation fold automatically!
+2. **Clean Code**: You only need to call `pipeline.fit(X_train, y_train)` and `pipeline.predict(X_test)`.
+3. **Production Deployment**: A single pickle file contains both the scaler and the trained classifier.
 
 ---
 
-## 💡 Conceptual Principles & Architecture
-
-### Pipeline Kyu Industry Standard Hai?
-1. **Zero Data Leakage:** Jab hum K-Fold Cross Validation mein Pipeline use karte hain, toh `StandardScaler` har fold ke andar independently fit hota hai. Validation fold ka data training fold ke scaler mein kabhi leak nahi hota!
-2. **Clean Code & Reusability:** Preprocessing aur prediction ek hi single object ban jaata hai: `pipe.fit(X_train, y_train)` aur `pipe.predict(X_new)`.
-3. **Easy Production Deployment:** Production server par alag se scaler file aur model file manage nahi karni padti; ek single `.pkl` pipeline file deploy ho jati hai.
-
----
-
-## 💻 Python Production Implementation
+## 💻 Python Implementation
 
 ```python
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-import pandas as pd
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.datasets import make_classification
 
-df = pd.read_csv("heart.csv")
-X = df.drop("target", axis=1)
-y = df["target"]
+def build_knn_production_pipeline():
+    """
+    Constructs a clean, leak-free Scikit-Learn Pipeline:
+    Step 1: StandardScaler
+    Step 2: KNeighborsClassifier
+    
+    Demonstrates how Pipeline automatically prevents data leakage
+    during cross-validation and simplifies production deployment.
+    """
+    # 1. Dataset
+    X, y = make_classification(n_samples=500, n_features=10, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # 2. Build Pipeline
+    pipe = Pipeline([
+        ('scaler', StandardScaler()),
+        ('classifier', KNeighborsClassifier(n_neighbors=5))
+    ])
 
-# Production Pipeline
-model_pipeline = Pipeline([
-    ('scaler', StandardScaler()),
-    ('classifier', KNeighborsClassifier(n_neighbors=7, weights='distance'))
-])
+    # 3. Train entire chain in one line
+    pipe.fit(X_train, y_train)
 
-model_pipeline.fit(X_train, y_train)
-test_accuracy = model_pipeline.score(X_test, y_test)
-print(f"Production Pipeline Test Accuracy: {test_accuracy:.4f}")
+    # 4. Predict & Evaluate
+    test_score = pipe.score(X_test, y_test)
+
+    # 5. Leak-Free Cross-Validation
+    cv_scores = cross_val_score(pipe, X_train, y_train, cv=5)
+
+    return pipe, test_score, cv_scores.mean()
+
+# --- Function Call & Testing ---
+pipeline_model, score, mean_cv = build_knn_production_pipeline()
+print(f"Pipeline Test Accuracy:     {score*100:.2f}%")
+print(f"Pipeline 5-Fold CV Accuracy: {mean_cv*100:.2f}%")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. A Pipeline chains preprocessing steps and ends with a final model estimator.
+2. In cross-validation, Pipelines completely eliminate data leakage.
+3. Call `pipe.fit()` once, and all scaling and model fitting happen sequentially.

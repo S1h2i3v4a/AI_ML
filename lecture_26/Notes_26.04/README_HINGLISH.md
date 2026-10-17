@@ -1,69 +1,60 @@
-# Lecture 26.04: Linear Regression with Gradient Descent — Step 2: Mean Squared Error (MSE) Cost Function
+# Notes_26.04: Linear Regression GD (Step 2 — MSE Cost Calculation) [Hinglish]
 
-## 📌 Saransh (Executive Summary)
-Gradient Descent Step 2: Mean Squared Error (MSE) cost function ka mathematical derivation, $\frac{1}{2m}$ scaling ka logic, aur convex loss surface ka visual breakdown.
-
----
-
-## 🔬 First-Principles Theory & Intuition
-### 1. Step 2: Predictions Calculate Karna Aur Cost Compute Karna
-Model jab weights initialize kar leta hai, tab woh har iteration mein pehle prediction $\hat{y}$ calculate karta hai:
-
-$$
-\hat{y}^{(i)} = \mathbf{w}^T \mathbf{x}^{(i)} + b
-$$
-
-Aur phir check karta hai ki model ne kitni badi galti (error / residual) ki:
-
-$$
-e^{(i)} = \hat{y}^{(i)} - y^{(i)}
-$$
-
-### 2. Mean Squared Error (MSE) Ka Formula
-Sari galtiyon ka square karke average nikalne ko Mean Squared Error kehte hain:
-
-$$
-J(\mathbf{w}, b) = \frac{1}{2m} \sum_{i=1}^m \left( \hat{y}^{(i)} - y^{(i)} \right)^2
-$$
-
-### 3. Formula Mein $\frac{1}{2}$ Kyun Lagate Hain?
-Square term $(z)^2$ ka derivative $2z$ hota hai.
-Agar hum formula mein pehle se $\frac{1}{2}$ laga denge, toh derivative lete waqt 2 aur $\frac{1}{2}$ aapas mein cancel out ho jayenge!
-Is mathematical convenience se derivative bilkul clean aur simple ban jata hai.
-
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne Gradient Descent ka **Doosra Step (Step 2)** samjhaya hai: **Mean Squared Error (MSE)** cost function ka formula aur iska code.
 
 ---
 
-## 💻 Python & NumPy Code Implementation
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Prediction error (residuals) kya hota hai?
+- Mean Squared Error ka formula: $J = \frac{1}{2m} \sum (\hat{y} - y)^2$.
+- Formula mein $\frac{1}{2}$ kyu lagaya jata hai?
+- Python mein vectorized cost calculation.
+
+---
+
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
+
+#### 1. MSE Formula Ka Logic
+Har sample par model ka error hota hai: $(\hat{y} - y)$.
+1. Agar hum sirf error jodein, toh positive aur negative error aapas mein cancel ho kar 0 ban sakte hain!
+2. Isliye hum **Square** karte hain: $(\hat{y} - y)^2$. Square karne se saare errors positive ho jaate hain aur badi galtiyon par bohot bada penalty lagta hai.
+3. Fir sabhi samples ka average nikaalne ke liye $m$ se divide karte hain.
+
+#### 2. Formula Mein 1/2 Kyu Aaya?
+Derivative lete waqt jab power 2 aage aati hai, toh yeh $\frac{1}{2}$ se cut ho jaati hai! Yeh sirf calculus ko aasan aur clean banane ke liye lagaya jata hai.
+
+---
+
+### 💻 Python Code
+
 ```python
 import numpy as np
 
-def compute_mse_cost(X, y, weights, bias):
-    """Compute vectorized Mean Squared Error cost J(w, b)."""
-    m = len(y)
-    y_pred = X @ weights + bias
-    residuals = y_pred - y
-    cost = (1.0 / (2.0 * m)) * np.sum(residuals ** 2)
-    return cost
+def compute_mse_cost(y_true, y_pred):
+    """
+    Step 2 of Gradient Descent: Compute Mean Squared Error (MSE) Cost.
+    Formula: J = (1 / (2 * m)) * sum((y_pred - y_true)^2)
+    
+    The 1/2 factor simplifies calculus derivatives.
+    """
+    m = len(y_true)
+    if m == 0:
+        return 0.0
+    error_residuals = y_pred - y_true
+    cost = (1.0 / (2.0 * m)) * np.sum(error_residuals ** 2)
+    return float(cost)
 
-# Test cost computation
-X_demo = np.array([[1.0], [2.0], [3.0], [4.0]])
-y_demo = np.array([2.0, 4.0, 6.0, 8.0])
+# --- Function Call & Testing ---
+actual_vals    = np.array([3.0, -0.5, 2.0, 7.0])
+predicted_vals = np.array([2.5,  0.0, 2.0, 8.0])
 
-w_good = np.array([2.0])
-b_good = 0.0
-
-w_bad = np.array([0.5])
-b_bad = 1.0
-
-print(f"Optimal Parameters Cost: {compute_mse_cost(X_demo, y_demo, w_good, b_good):.6f}")
-print(f"Sub-optimal Parameters Cost: {compute_mse_cost(X_demo, y_demo, w_bad, b_bad):.6f}")
-
+loss = compute_mse_cost(actual_vals, predicted_vals)
+print(f"Calculated MSE Loss (J): {loss:.4f}")
 ```
 
 ---
 
-## 🎯 Key Takeaways & Practical Tips
-1. **Black-Box Se Azadi**: Libraries ko blind use karne ke bajaye unke andar ka math samajhna aapko top 1% engineer banata hai.
-2. **Vectorization Ki Taqat**: Python loops ke bajaye NumPy array operations use karein jo C/BLAS speed provide karte hain.
-3. **Debugging Mastery**: Jab loss decrease na ho raha ho, toh sabse pehle learning rate $\alpha$ aur gradient dimensions check karein.
+### 📌 Summary Points
+- Step 2 model ke error ko measure karta hai.
+- MSE hamesha positive value deta hai.

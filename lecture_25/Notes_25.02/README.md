@@ -1,62 +1,74 @@
-# Notes_25.02: Using StandardScaler & Preventing Data Leakage
+# Lecture 25.02: Using StandardScaler in Scikit-Learn
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_02.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Lecture 25 Overview](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am demonstrates how to implement **StandardScaler** in Scikit-Learn, highlighting the critical rule of machine learning hygiene: **preventing data leakage** between training and testing splits.
 
 ---
 
-## 📌 Executive Summary
-Scikit-Learn StandardScaler implementation and preventing data leakage across train and test splits.
+## ⚠️ Data Leakage: fit_transform vs transform
+A frequent mistake made by beginners is fitting the scaler on the entire dataset before splitting, or calling `fit_transform()` on the test dataset.
+
+```mermaid
+flowchart TD
+    A["Raw Dataset"] --> B["train_test_split()"]
+    B --> C["X_train (80%)"]
+    B --> D["X_test (20%)"]
+    
+    C --> E["scaler.fit_transform(X_train)<br/>Calculates μ_train & σ_train<br/>Scales X_train"]
+    D --> F["scaler.transform(X_test)<br/>Uses ALREADY learned μ_train & σ_train<br/>Zero leakage from future data!"]
+```
 
 ---
 
-## 🎯 Mathematical Formulations
-
-Training Set parameters:
-
-$$
-\mu_{\text{train}} = \frac{1}{n_{\text{train}}} \sum_{i=1}^{n_{\text{train}}} x_i, \qquad \sigma_{\text{train}} = \sqrt{\frac{1}{n_{\text{train}}} \sum_{i=1}^{n_{\text{train}}} (x_i - \mu_{\text{train}})^2}
-$$
-
-Transformation rule (Strict Data Hygiene):
-
-$$
-X_{\text{train, scaled}} = \frac{X_{\text{train}} - \mu_{\text{train}}}{\sigma_{\text{train}}}, \qquad X_{\text{test, scaled}} = \frac{X_{\text{test}} - \mu_{\text{train}}}{\sigma_{\text{train}}}
-$$
+## 🔑 Crucial Rules
+1. `fit()` computes the sample mean $\mu$ and standard deviation $\sigma$.
+2. `transform()` subtracts $\mu$ and divides by $\sigma$.
+3. `fit_transform()` does both in one step — **only use this on `X_train`**.
+4. On `X_test`, **only call `transform()`**. The model must never peek at the distribution of the test data.
 
 ---
 
-## 💡 Conceptual Principles & Architecture
-
-### Golden Rule: Data Leakage Kya Hota Hai?
-Kayi beginners galti se poore dataset par pehle `scaler.fit_transform(X)` kar dete hain aur fir train/test split karte hain. Yeh bohot badi galti hai jise **Data Leakage** kehte hain!
-- Agar aap test set ki information ($\mu$ aur $\sigma$) scaling mein include kar lete hain, toh aapka model test data ki distribution pehle hi "cheat" kar leta hai.
-- **Sahi Tareeqa:** Pehle `train_test_split` karein. Fir scaler ko **sirf training set** par `fit` karein (`scaler.fit_transform(X_train)`), aur test set par **sirf `transform`** karein (`scaler.transform(X_test)`).
-
----
-
-## 💻 Python Production Implementation
+## 💻 Python Implementation
 
 ```python
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-import numpy as np
 
-X = np.array([[22, 45000], [38, 85000], [26, 52000], [50, 110000], [30, 68000], [42, 95000]])
-y = np.array([0, 1, 0, 1, 0, 1])
+def scale_features_without_leakage(X, y):
+    """
+    Applies StandardScaler properly to avoid data leakage:
+    - fit_transform() is called ONLY on X_train (learns mean and std).
+    - transform() is called on X_test (uses training mean and std).
+    """
+    # 1. Split data first
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-# 1. First Split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+    # 2. Fit and transform training set
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
 
-# 2. Fit ONLY on Train, Transform Both
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)  # ONLY transform! Never fit on test!
+    # 3. Transform test set (NEVER call fit on test data!)
+    X_test_scaled = scaler.transform(X_test)
 
-print("Train Mean:", scaler.mean_)
-print("Train Scaled:\n", X_train_scaled.round(2))
-print("Test Scaled (using train mean/std):\n", X_test_scaled.round(2))
+    return X_train_scaled, X_test_scaled, scaler
+
+# --- Function Call & Testing ---
+np.random.seed(42)
+X_dummy = np.random.randn(100, 3) * 50 + 100
+y_dummy = np.random.randint(0, 2, 100)
+
+X_tr_s, X_te_s, trained_scaler = scale_features_without_leakage(X_dummy, y_dummy)
+print("Training Scaled Mean:", X_tr_s.mean(axis=0).round(2))
+print("Training Scaled Std: ", X_tr_s.std(axis=0).round(2))
+print("Learned Feature Means:", trained_scaler.mean_.round(2))
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. Always split your data **before** applying any feature scaling.
+2. Apply `scaler.fit_transform()` exclusively to the training set.
+3. Apply `scaler.transform()` to the test set and production inference data.

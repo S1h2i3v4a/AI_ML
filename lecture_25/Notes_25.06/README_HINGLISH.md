@@ -1,54 +1,118 @@
-# Notes_25.06: Naive Bayes Solved Example Aur Laplace Smoothing [Hinglish]
+# Notes_25.06: Naive Bayes Step-by-Step Blackboard Example [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_06.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 25 Overview](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne blackboard par **Weather aur Wind** ke 5 dino ke dataset par haath se step-by-step Naive Bayes calculate karke samjhaya hai.
 
 ---
 
-## 📌 Executive Summary
-Table se probability calculate karne ka example aur Zero Frequency problem ka Laplace solution.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Blackboard ke 5-row dataset se frequency tables banana.
+- Class Prior $P(\text{Yes})$ aur $P(\text{No})$ calculate karna.
+- Likelihoods ($P(\text{Sunny}|\text{Yes})$, $P(\text{Strong}|\text{No})$) nikalna.
+- Naye test din ($Weather=Sunny, Wind=Strong$) par final prediction nikalna.
 
 ---
 
-## 🎯 Mathematical Formulations
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-Zero Frequency Problem & Additive Laplace Smoothing ($\alpha = 1$):
+#### 1. Blackboard Dataset:
+- Total Din: 5
+- Match Khela (Yes): 3 din
+- Match Nahi Khela (No): 2 din
+
+#### 2. Prior Probabilities:
 
 $$
-P(w_i \mid y) = \frac{\text{Count}(w_i, y) + \alpha}{\sum_{w \in V} \text{Count}(w, y) + \alpha |V|}
+P(\text{Yes}) = \frac{3}{5} = 0.60, \quad P(\text{No}) = \frac{2}{5} = 0.40
 $$
 
-Jahan $|V|$ vocabulary size (unique words ki sankhya) hai aur $\alpha = 1$ smoothing parameter hai.
+#### 3. Likelihoods (Condition ke hisab se chances):
+- 3 baar Match Khela gaya tha, usme se Sunny sirf 1 baar tha: $P(\text{Sunny}|\text{Yes}) = \frac{1}{3}$
+- 3 baar Match Khela gaya tha, usme Strong hawa 1 baar thi: $P(\text{Strong}|\text{Yes}) = \frac{1}{3}$
+- 2 baar Match Nahi Khela gaya, usme Sunny 1 baar tha: $P(\text{Sunny}|\text{No}) = \frac{1}{2}$
+- 2 baar Match Nahi Khela gaya, usme Strong hawa 1 baar thi: $P(\text{Strong}|\text{No}) = \frac{1}{2}$
+
+#### 4. Scores Ka Comparison:
+
+$$
+\text{Score}(\text{Yes}) = \frac{3}{5} \times \frac{1}{3} \times \frac{1}{3} = 0.0667
+$$
+
+$$
+\text{Score}(\text{No}) = \frac{2}{5} \times \frac{1}{2} \times \frac{1}{2} = 0.1000
+$$
+
+Kyunki **$0.1000 > 0.0667$**, isliye model ne predict kiya: **Play = No**!
 
 ---
 
-## 💡 Concept Intuition & Key Insights (Desi Style)
+### 📊 Visual Flowchart: Decision Tree
 
-### Zero Frequency Problem Kya Hai?
-Maan lijiye training data mein word `"Bitcoin"` kabhi Ham email mein nahi aaya. Toh $P(\text{"Bitcoin"} \mid \text{Ham}) = 0$.
-Jab test email aayegi jisme `"Bitcoin"` likha hoga, toh probability multiply hokar:
-$P(\mathbf{x} \mid \text{Ham}) = P(x_1 \mid \text{Ham}) \times \dots \times 0 = 0$!
-Ek naye word ki wajah se poori probability zero ho gayi!
-### Solution: Laplace Smoothing
-Hum numerator mein $+1$ aur denominator mein $+|V|$ add kar dete hain. Isse kisi bhi word ki probability kabhi exactly zero nahi hoti.
+```mermaid
+flowchart TD
+    A["Input: Sunny + Strong Wind"] --> B["Score(Yes) = 0.0667"]
+    A --> C["Score(No) = 0.1000"]
+    B --> DCompare
+    C --> D
+    D --> E["Winner: Play = No!"]
+```
 
 ---
 
-## 💻 Python Production Implementation
+### 💻 Python Code
 
 ```python
-# Laplace smoothing example
-count_word = 0
-total_words_in_class = 500
-vocab_size = 1000
-alpha = 1.0
+def naive_bayes_weather_predict(weather_val, wind_val):
+    """
+    Demonstrates manual Naive Bayes step-by-step probability calculation
+    using Shraddha ma'am's Weather/Wind -> Play Tennis blackboard dataset.
+    
+    Dataset Breakdown:
+    - Total Days = 5
+    - Play = Yes (3 days), Play = No (2 days)
+    
+    Calculates P(Yes|X) vs P(No|X) and returns predicted class with scores.
+    """
+    # 1. Class Priors
+    p_yes = 3 / 5
+    p_no  = 2 / 5
 
-prob_without_smoothing = count_word / total_words_in_class
-prob_with_smoothing = (count_word + alpha) / (total_words_in_class + alpha * vocab_size)
+    # 2. Likelihood tables from blackboard
+    # Weather given Class:
+    likelihood_weather = {
+        'Yes': {'Sunny': 1/3, 'Overcast': 1/3, 'Rainy': 1/3},
+        'No':  {'Sunny': 1/2, 'Overcast': 0/2, 'Rainy': 1/2}
+    }
 
-print(f"Without smoothing : {prob_without_smoothing}")
-print(f"With smoothing    : {prob_with_smoothing:.6f}")
+    # Wind given Class:
+    likelihood_wind = {
+        'Yes': {'Strong': 1/3, 'Weak': 2/3},
+        'No':  {'Strong': 1/2, 'Weak': 1/2}
+    }
+
+    # 3. Calculate Numerator (Posterior Score)
+    score_yes = p_yes * likelihood_weather['Yes'][weather_val] * likelihood_wind['Yes'][wind_val]
+    score_no  = p_no  * likelihood_weather['No'][weather_val]  * likelihood_wind['No'][wind_val]
+
+    # 4. ArgMax Decision
+    prediction = "Play = Yes" if score_yes > score_no else "Play = No"
+
+    return {
+        'Score_Yes': score_yes,
+        'Score_No': score_no,
+        'Prediction': prediction
+    }
+
+# --- Function Call & Testing ---
+result = naive_bayes_weather_predict(weather_val='Sunny', wind_val='Strong')
+print("Weather = Sunny, Wind = Strong:")
+print(f"  Posterior Score (Yes): {result['Score_Yes']:.4f}")
+print(f"  Posterior Score (No) : {result['Score_No']:.4f}")
+print(f"  Final Decision       : {result['Prediction']}")
 ```
+
+---
+
+### 📌 Summary Points
+- Probability score jiska sabse zyada hoga, model wahi class predict karega.
+- Blackboard calculations se Naive Bayes ka internal math bilkul clear ho jata hai.

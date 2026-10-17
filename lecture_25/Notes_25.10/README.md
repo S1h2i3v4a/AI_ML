@@ -1,55 +1,63 @@
-# Notes_25.10: kNN Classification Code in Python
+# Lecture 25.10: kNN Implementation in Scikit-Learn
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_10.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Lecture 25 Overview](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am writes the complete Scikit-Learn code for **KNeighborsClassifier**, emphasizing why **feature scaling is strictly mandatory** before passing data into kNN.
 
 ---
 
-## 📌 Executive Summary
-Implementing KNeighborsClassifier on heart disease data with feature scaling.
+## ⚠️ Why Scaling is Non-Negotiable for kNN
+kNN relies directly on Euclidean distance:
+$$\sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}$$
+If one feature has values around 100,000 and another has values around 2, the unscaled distance will be 99.99% driven by the first feature alone. Without `StandardScaler`, kNN degrades into a single-feature model!
 
 ---
 
-## 🎯 Mathematical Formulations
-
-Uniform vs Distance-Weighted Voting:
-
-$$
-w_i = \frac{1}{d(\mathbf{x}, \mathbf{x}_i)}, \qquad \hat{y} = \arg\max_c \sum_{i \in N_K, y_i = c} w_i
-$$
-
----
-
-## 💡 Conceptual Principles & Architecture
-
-### Feature Scaling kNN Ke Liye Compulsory Hai!
-kNN geometry aur distances par nirbhar karta hai. Agar hum data scale nahi karenge, toh bada feature distance ko dominate karega aur accuracy dramatically drop ho jayegi.
-
----
-
-## 💻 Python Production Implementation
+## 💻 Python Implementation
 
 ```python
-import pandas as pd
+from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 
-df = pd.read_csv("heart.csv")
-X = df.drop("target", axis=1)
-y = df["target"]
+def train_knn_with_proper_scaling(n_neighbors=5):
+    """
+    Demonstrates training KNeighborsClassifier with mandatory StandardScaler.
+    Feature scaling is strictly mandatory for kNN because distances are
+    distorted by unscaled features.
+    """
+    # 1. Dataset with different feature scales
+    X, y = make_classification(n_samples=400, n_features=4, random_state=42)
+    # Artificially blow up scale of feature 0
+    X[:, 0] = X[:, 0] * 1000
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-scaler = StandardScaler()
-X_train_s = scaler.fit_transform(X_train)
-X_test_s = scaler.transform(X_test)
+    # 2. Scaling (MANDATORY for kNN)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled  = scaler.transform(X_test)
 
-knn = KNeighborsClassifier(n_neighbors=5, weights='distance')
-knn.fit(X_train_s, y_train)
-print("kNN Accuracy:", accuracy_score(y_test, knn.predict(X_test_s)).round(4))
+    # 3. Fit kNN Model
+    knn = KNeighborsClassifier(n_neighbors=n_neighbors)
+    knn.fit(X_train_scaled, y_train)
+
+    # 4. Predict & Score
+    acc = knn.score(X_test_scaled, y_test)
+
+    return knn, acc
+
+# --- Function Call & Testing ---
+model, test_acc = train_knn_with_proper_scaling(n_neighbors=5)
+print(f"KNeighborsClassifier (k=5) Test Accuracy: {test_acc*100:.2f}%")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. Always apply `StandardScaler` before fitting `KNeighborsClassifier`.
+2. Tune `n_neighbors` (standard default is 5).
+3. Ensure no data leakage: `fit_transform` on train, `transform` on test.

@@ -1,82 +1,113 @@
-# Lecture 26.06: Linear Regression with Gradient Descent — Step 4: Parameter Updates & Scratch Implementation
+# Notes_26.06: Linear Regression GD (Step 4 — Update Rule Aur Poora Model) [Hinglish]
 
-## 📌 Saransh (Executive Summary)
-Gradient Descent Step 4: Parameter update rule $\theta := \theta - \alpha \nabla J$, pure Python aur NumPy se full `LinearRegression` class implementation, aur live training run.
-
----
-
-## 🔬 First-Principles Theory & Intuition
-### 1. Step 4: Parameters Ko Update Karna
-Gradients $dw$ aur $db$ calculate karne ke baad, parameters ko downhill step karwaya jata hai:
-
-$$
-\mathbf{w} := \mathbf{w} - \alpha \cdot dw
-$$
-
-$$
-b := b - \alpha \cdot db
-$$
-
-Negative sign $(-)$ isliye lagaya jata hai kyunki gradient uphill (chadhai) ki taraf point karta hai, aur hume loss ko kam (downhill) karna hai!
-
-### 2. Pure NumPy Class Implementation
-Charo steps ko combine karke class banai jaati hai:
-1. `__init__`: `lr` aur `n_iter` store karta hai.
-2. `fit(X, y)`: Zero initialization karta hai aur loop chala kar predictions, gradients, aur updates perform karta hai.
-3. `predict(X)`: Fitted parameters se naye test data par $\hat{y} = X \mathbf{w} + b$ return karta hai.
-
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne Gradient Descent ka aakhri step (**Step 4: Parameter Updates**) samjhaya hai aur chaaron steps ko ek complete **Object-Oriented Programming (OOP) Class** mein assemble karke dikhaya hai.
 
 ---
 
-## 💻 Python & NumPy Code Implementation
-```python
-import numpy as np
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Parameter update formula: $w := w - \alpha \cdot dw$ aur $b := b - \alpha \cdot db$.
+- Learning rate $\alpha$ ka role.
+- 4 steps ko assemble karke complete `LinearRegressionScratch` class banana.
+- Synthetic data par model ko train karke true slope aur intercept nikalna.
 
-class LinearRegression:
-    """Production-grade Linear Regression with Vectorized Batch Gradient Descent."""
-    def __init__(self, lr=0.01, n_iter=1000):
-        self.lr = lr
-        self.n_iter = n_iter
-        self.weights = None
-        self.bias = None
+---
 
-    def fit(self, X, y):
-        m, n = X.shape
-        self.weights = np.zeros(n)
-        self.bias = 0.0
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-        for i in range(self.n_iter):
-            # STEP 2 - calc y_pred
-            y_pred = self.bias + np.dot(X, self.weights)
-            
-            # STEP 3 - calc gradient
-            db = (1.0 / m) * np.sum(y_pred - y)
-            dw = (1.0 / m) * np.dot(X.T, (y_pred - y))
-            
-            # STEP 4 - convergence theorem - params update
-            self.bias -= self.lr * db
-            self.weights -= self.lr * dw
+#### 1. Step 4: Update Rule Ka Logic
+Har epoch mein hum weights ko thoda sa sudharte hain:
+- $w = w - \alpha \cdot dw$
+- $b = b - \alpha \cdot db$
 
-    def predict(self, X):
-        return self.bias + np.dot(X, self.weights)
+Gradients batate hain ki error kis taraf badh raha hai, toh hum minus ($-$) sign lagakar error ke ulte (opposite) disha mein step lete hain taaki error har round mein kam hota jaye!
 
-# Test with Lecture Example
-X = np.array([[1], [2], [3], [4], [5]])
-y = np.array([2, 4, 6, 8, 10])
+#### 2. Chaaron Steps Ka Ek Glance:
+1. **Step 1**: $w=0, b=0$ se shuru karo.
+2. **Step 2**: Prediction $\hat{y} = Xw + b$ aur error $J$ nikalo.
+3. **Step 3**: Dhalan (gradients $dw, db$) calculate karo.
+4. **Step 4**: Weights aur bias ko update karo ($w = w - \alpha dw$).
 
-model = LinearRegression(lr=0.01, n_iter=1000)
-model.fit(X, y)
+---
 
-y_pred = model.predict(X)
-print("Fitted Weights:", model.weights)
-print("Fitted Bias:   ", model.bias)
-print("Predictions:   ", y_pred)
+### 📊 Visual Flowchart: Gradient Descent Ka Poora Loop
 
+```mermaid
+flowchart TD
+    A["Step 1: w = 0, b = 0 se start karo"] --> B["Epoch Loop Shuru"]
+    B --> C["Step 2: y_hat = Xw + b aur Cost J nikalo"]
+    C --> D["Step 3: Gradients dw aur db calculate karo"]
+    D --> E["Step 4: Parameters update karo: w = w - lr*dw"]
+    E --> FEpochs khatam huye?
+    F -->|"Nahi"| B
+    F -->|"Haan"| G["Model Train Ho Gaya! (Best Fit Line Mil Gayi)"]
 ```
 
 ---
 
-## 🎯 Key Takeaways & Practical Tips
-1. **Black-Box Se Azadi**: Libraries ko blind use karne ke bajaye unke andar ka math samajhna aapko top 1% engineer banata hai.
-2. **Vectorization Ki Taqat**: Python loops ke bajaye NumPy array operations use karein jo C/BLAS speed provide karte hain.
-3. **Debugging Mastery**: Jab loss decrease na ho raha ho, toh sabse pehle learning rate $\alpha$ aur gradient dimensions check karein.
+### 💻 Python Code
+
+```python
+import numpy as np
+
+class LinearRegressionScratch:
+    """
+    Complete Scratch Implementation of Linear Regression with Gradient Descent:
+    Step 1: Initialize weights (w) and bias (b) to zeros.
+    Step 2: Predict y_hat and calculate MSE cost.
+    Step 3: Compute gradients (dw, db).
+    Step 4: Update parameters: w = w - lr * dw, b = b - lr * db.
+    """
+    def __init__(self, learning_rate=0.01, epochs=1000):
+        self.lr = learning_rate
+        self.epochs = epochs
+        self.w = None
+        self.b = None
+        self.cost_history = []
+
+    def fit(self, X, y):
+        m, d = X.shape
+        # Step 1: Initialize
+        self.w = np.zeros(d)
+        self.b = 0.0
+        self.cost_history = []
+
+        for _ in range(self.epochs):
+            # Step 2: Hypothesis & Cost
+            y_hat = np.dot(X, self.w) + self.b
+            cost = (1.0 / (2.0 * m)) * np.sum((y_hat - y) ** 2)
+            self.cost_history.append(cost)
+
+            # Step 3: Gradients
+            error = y_hat - y
+            dw = (1.0 / m) * np.dot(X.T, error)
+            db = (1.0 / m) * np.sum(error)
+
+            # Step 4: Parameter Updates
+            self.w -= self.lr * dw
+            self.b -= self.lr * db
+
+        return self
+
+    def predict(self, X):
+        return np.dot(X, self.w) + self.b
+
+# --- Function Call & Testing ---
+np.random.seed(42)
+X_synthetic = 2 * np.random.rand(100, 1)
+# True relationship: y = 4 + 3x
+y_synthetic = 4 + 3 * X_synthetic.squeeze() + np.random.randn(100) * 0.2
+
+model = LinearRegressionScratch(learning_rate=0.1, epochs=500)
+model.fit(X_synthetic, y_synthetic)
+
+print(f"True slope: 3.0 | Learned Weight (w): {model.w[0]:.4f}")
+print(f"True bias:  4.0 | Learned Bias (b):   {model.b:.4f}")
+print(f"Initial Cost: {model.cost_history[0]:.4f} -> Final Cost: {model.cost_history[-1]:.4f}")
+```
+
+---
+
+### 📌 Summary Points
+- 4 simple steps ko loop mein chalane se model fit hota hai.
+- Scratch class Scikit-Learn ke `fit()` aur `predict()` API ki tarah hi kaam karti hai.

@@ -1,50 +1,77 @@
-# Lecture 26.11: K-Nearest Neighbors (KNN) from Scratch — Metric Space & Lazy Learning Formulation
+# Notes_26.11: kNN Classifier Ke Steps [Hinglish]
 
-## 📌 Saransh (Executive Summary)
-K-Nearest Neighbors (KNN) classifier ka first-principles foundation, non-parametric lazy learning, Euclidean distance metric, aur hyperparameter $k$ selection.
-
----
-
-## 🔬 First-Principles Theory & Intuition
-### 1. Lazy Learner Ka Matlab Kya Hai?
-Linear Regression ya Logistic Regression mein `fit()` chalane ke baad mathematical weights mil jate hain aur training data ko delete bhi kar dein toh model predict kar sakta hai.
-Lekin KNN ek **Lazy Learner** hai:
-- `fit()` ke time par koi math ya calculation nahi hoti! Yeh sirf training points ko memory mein save kar leta hai.
-- Asli calculation `predict()` ke time par hoti hai jab har naye point ka distance saare puraane points se nikalna padta hai.
-
-### 2. Euclidean Distance Ka Formula
-Do points ke beech ka shortest straight-line distance nikalne ke liye Pythagorean theorem use hota hai:
-
-$$
-d(\mathbf{x}_1, \mathbf{x}_2) = \sqrt{\sum_{j=1}^d (x_{1j} - x_{2j})^2}
-$$
-
-### 3. $k$ Ki Value Kaise Chunein?
-- Agar $k=1$ chuna: Model overfit karega, ek single noisy outlier point se galat prediction de dega.
-- Agar $k$ bohot bada chuna: Model underfit karega aur hamesha majority class hi bolega.
-- Binary classification mein $k$ hamesha **odd number (3, 5, 7)** chunna chahiye taaki voting mein tie na ho!
-
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **kNN Classifier ko scratch se code karne ke 4 steps** blackboard par samjhaye hain.
 
 ---
 
-## 💻 Python & NumPy Code Implementation
-```python
-import numpy as np
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- kNN ka `fit()` method itna simple kyu hota hai?
+- Naye query point ke liye distance kaise calculate hoti hai.
+- `np.argsort()` se top $k$ padosi nikaalna.
+- `np.bincount()` se majority vote lena.
 
-def euclidean_distance(x1, x2):
-    return np.sqrt(np.sum((x1 - x2) ** 2))
+---
 
-# Verify distance computation
-p1 = np.array([1.0, 2.0])
-p2 = np.array([4.0, 6.0])
-dist = euclidean_distance(p1, p2)
-print(f"Distance between {p1} and {p2}: {dist:.4f} (Expected: 5.0)")
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
+#### 1. Chaar Steps:
+1. **`fit(X, y)`**: kNN mein koi formula train nahi hota; sirf training data ko `self.X_train` aur `self.y_train` mein save kar liya jata hai.
+2. **Distance Calculation**: Jab naya point aata hai, toh pure training set ke sath uski Euclidean distance nikaalo.
+3. **Sorting**: `np.argsort()` chalao taaki sabse kam distance wale top $k$ padosiyon ke index mil jayein.
+4. **Majority Vote**: Dekho ki in $k$ padosiyon mein kiske paas sabse zyada votes hain.
+
+---
+
+### 📊 Visual Flowchart: kNN Ke 4 Steps
+
+```mermaid
+flowchart TD
+    A["Step 1: fit(X, y)<br/>Data ko memory mein store karo"] --> B["Step 2: predict(x_new)<br/>Saare points se doori nikalo"]
+    B --> C["Step 3: np.argsort<br/>Top K sabse kareebi padosi chun lo"]
+    C --> D["Step 4: np.bincount<br/>Majority voting karao"]
+    D --> E["Winner Class Predict Karo!"]
 ```
 
 ---
 
-## 🎯 Key Takeaways & Practical Tips
-1. **Black-Box Se Azadi**: Libraries ko blind use karne ke bajaye unke andar ka math samajhna aapko top 1% engineer banata hai.
-2. **Vectorization Ki Taqat**: Python loops ke bajaye NumPy array operations use karein jo C/BLAS speed provide karte hain.
-3. **Debugging Mastery**: Jab loss decrease na ho raha ho, toh sabse pehle learning rate $\alpha$ aur gradient dimensions check karein.
+### 💻 Python Code
+
+```python
+import numpy as np
+
+def compute_euclidean_distance_step(x1, x2):
+    """
+    Step 1 of kNN: Compute Euclidean distance between two feature vectors:
+    d = sqrt(sum((x1 - x2)^2))
+    """
+    return np.sqrt(np.sum((x1 - x2) ** 2))
+
+def retrieve_top_k_neighbors(distances, labels, k=3):
+    """
+    Step 2 & 3 of kNN: Sort distances in ascending order
+    and retrieve the labels of the top k nearest samples.
+    """
+    # np.argsort returns indices that would sort an array
+    sorted_indices = np.argsort(distances)
+    k_nearest_indices = sorted_indices[:k]
+    k_nearest_labels = labels[k_nearest_indices]
+    return k_nearest_labels
+
+# --- Function Call & Testing ---
+p_query = np.array([2.0, 3.0])
+p_train = np.array([[1.0, 2.0], [5.0, 5.0], [2.5, 3.5]])
+labels  = np.array([0, 1, 0])
+
+dists = [compute_euclidean_distance_step(p_query, pt) for pt in p_train]
+top_k_lbls = retrieve_top_k_neighbors(dists, labels, k=2)
+
+print("Distances to query point:", np.round(dists, 4))
+print("Top-2 Nearest Labels:   ", top_k_lbls)
+```
+
+---
+
+### 📌 Summary Points
+- kNN ka `fit` instant hota hai.
+- Prediction ke steps: Distance -> Sort -> Top K -> Vote.

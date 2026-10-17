@@ -1,86 +1,78 @@
-# Lecture 27.08: Multi-Model Training & Evaluation — Baseline Classification
+# Lecture 27.08: Multi-Model Training & Benchmarking
 
-## 📌 Executive Summary
-Training and benchmarking Logistic Regression, K-Nearest Neighbors (k=5), and Gaussian Naive Bayes, evaluating Confusion Matrix, Precision, Recall, and F1-Score.
-
----
-
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### 🥊 Multi-Model Architectural Benchmark Suite
-
-To discover the optimal inductive bias for credit underwriting, we establish three distinct mathematical learners on the standardized training partition $\mathcal{D}_{	ext{train}}$:
-
-#### 1. Discriminative Linear Hyperplane: Logistic Regression
-Models the posterior probability via the Sigmoid logistic link:
-
-$$
-P(Y = 1 | \mathbf{x}) = \sigma(\mathbf{w}^T \mathbf{x} + b) = rac{1}{1 + e^{-(\mathbf{w}^T \mathbf{x} + b)}}
-$$
-
-Loss function is convex Binary Cross-Entropy (Log-Loss):
-
-$$
-J(\mathbf{w}, b) = -rac{1}{m} \sum_{i=1}^m \left[ y_i \ln \hat{y}_i + (1 - y_i) \ln(1 - \hat{y}_i) ight]
-$$
-
-#### 2. Non-Parametric Metric Space: K-Nearest Neighbors ($k=5$)
-Assigns class probability via local majority density within neighborhood $\mathcal{N}_k(\mathbf{x})$:
-
-$$
-P(Y = 1 | \mathbf{x}) = rac{1}{k} \sum_{i \in \mathcal{N}_k(\mathbf{x})} y_i
-$$
-
-#### 3. Generative Class-Conditional Density: Gaussian Naive Bayes
-Applies Bayes' rule under the conditional feature independence assumption:
-
-$$
-P(Y = c | \mathbf{x}) \propto P(Y = c) \prod_{j=1}^d rac{1}{\sqrt{2\pi \sigma_{jc}^2}} \exp\left( -rac{(x_j - \mu_{jc})^2}{2\sigma_{jc}^2} ight)
-$$
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am trains and evaluates three distinct classifiers on the standardized loan dataset: **Logistic Regression**, **K-Nearest Neighbors (k=5)**, and **Gaussian Naive Bayes**, demonstrating why **Naive Bayes is chosen as the winner based on Precision**.
 
 ---
 
-### 📊 Comparative Baseline Metrics Matrix
+## 🏆 Model Benchmark Results from Lecture
+On the classroom dataset, the three models achieved:
+1. **Logistic Regression**: High overall accuracy, moderate precision.
+2. **KNN (k=5)**: Solid recall, but lower precision.
+3. **Gaussian Naive Bayes**: **Highest Precision (over 80.3%)** with minimal False Positives!
 
-| Classifier | Accuracy | Precision (Safety) | Recall (Coverage) | F1-Score | Primary Architectural Characteristic |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Logistic Regression** | $pprox 84.7\%$ | $pprox 78.5\%$ | $pprox 71.4\%$ | $pprox 0.75$ | Linear decision boundary, high interpretability |
-| **KNN ($k=5$)** | $pprox 81.6\%$ | $pprox 73.1\%$ | $pprox 64.3\%$ | $pprox 0.68$ | Non-linear local tessellation, sensitive to local noise |
-| **Gaussian Naive Bayes** | $pprox 83.2\%$ | $pprox \mathbf{88.6\%}$ | $pprox 55.4\%$ | $pprox 0.68$ | **Maximum Precision**, lowest false approval defaults |
+```mermaid
+flowchart TD
+    Bench["Multi-Model Benchmark"] --> M1["Logistic Regression<br/>Accuracy: ~85% | Precision: ~78%"]
+    Bench --> M2["KNN (k=5)<br/>Accuracy: ~83% | Precision: ~75%"]
+    Bench --> M3["Gaussian Naive Bayes<br/>Accuracy: 86.5% | Precision: 80.4%"]
+
+    M3 --> WIN["WINNER: Gaussian Naive Bayes<br/>Minimizes costly loan defaults (False Positives)!"]
+```
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 💻 Python Implementation
 
 ```python
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 
-models = {
-    "Logistic Regression": LogisticRegression(),
-    "KNN (k=5)": KNeighborsClassifier(n_neighbors=5),
-    "Gaussian Naive Bayes": GaussianNB()
-}
+def benchmark_loan_approval_models(X_train, y_train, X_test, y_test):
+    """
+    Trains and benchmarks three core baseline classification models:
+    1. Logistic Regression
+    2. K-Nearest Neighbors (k=5)
+    3. Gaussian Naive Bayes
+    
+    Evaluates each on Accuracy, Precision, Recall, and F1.
+    In banking underwriting, the model with highest Precision is selected as winner!
+    """
+    models = {
+        'Logistic Regression': LogisticRegression(random_state=42),
+        'KNN Classifier':      KNeighborsClassifier(n_neighbors=5),
+        'Gaussian Naive Bayes': GaussianNB()
+    }
 
-for name, clf in models.items():
-    clf.fit(X_train_scaled, y_train)
-    preds = clf.predict(X_test_scaled)
-    print(f"=== {name} ===")
-    print("Precision:", round(precision_score(y_test, preds), 4))
-    print("Recall:   ", round(recall_score(y_test, preds), 4))
-    print("F1-Score: ", round(f1_score(y_test, preds), 4))
-    print("Accuracy: ", round(accuracy_score(y_test, preds), 4))
-    print("Confusion Matrix:
-", confusion_matrix(y_test, preds), "
-")
+    results = {}
+    for name, clf in models.items():
+        clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
+        
+        results[name] = {
+            'accuracy':  accuracy_score(y_test, y_pred),
+            'precision': precision_score(y_test, y_pred, zero_division=0),
+            'recall':    recall_score(y_test, y_pred, zero_division=0),
+            'f1_score':  f1_score(y_test, y_pred, zero_division=0)
+        }
 
+    # Best model on basis of Precision
+    best_model_name = max(results, key=lambda k: results[k]['precision'])
+    return results, best_model_name
+
+# --- Function Call & Testing ---
+# comparison, winner = benchmark_loan_approval_models(X_tr, y_tr, X_te, y_te)
+# for model_name, metrics in comparison.items():
+#     print(f"=== {model_name} ===")
+#     print(f"  Precision: {metrics['precision']*100:.2f}% | Accuracy: {metrics['accuracy']*100:.2f}%")
+# print()
+# print(f"Winning Model (Highest Precision): {winner}")
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Mathematical Grounding**: Every transformation and classification step directly addresses the underlying empirical distribution and financial risk constraints.
-2. **Reproducibility**: Clean, leak-free pipeline partitioning guarantees that performance metrics match production operating realities.
-3. **Domain Alignment**: Aligning model evaluation with the asymmetric cost of financial errors protects institutional solvency.
+## 🔑 Key Takeaways
+1. Never declare a model "the winner" based on raw accuracy alone.
+2. For banking risk, **Precision is king** because it minimizes unrecoverable loan defaults.

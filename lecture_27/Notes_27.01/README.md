@@ -1,104 +1,67 @@
 # Lecture 27.01: Problem Statement & Credit Risk Fundamentals
 
-## 📌 Executive Summary
-Real-world banking case study for SecureTrust Bank, the asymmetric cost of underwriting errors, Type I vs Type II errors, and the business rationale for precision-focused machine learning in loan approvals.
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am introduces the **CreditWise Loan Approval System** minor project for **SecureTrust Bank**, detailing the business challenges of credit underwriting and why financial classification requires prioritizing **Precision** over raw Accuracy.
 
 ---
 
-## 🏛️ Theoretical Formulation & Mathematical Architecture
-
-### 🏦 SecureTrust Bank Business Problem Statement
-
-In contemporary retail banking and financial institutions, **Credit Risk Underwriting** is the core operational process that determines an institution's solvency and profitability. 
-
-A mid-sized financial company named **SecureTrust Bank** offers personal and home loans across urban and rural regions in India. Every day, hundreds of applicants submit documentation. Historically, SecureTrust Bank relied on a manual underwriting protocol where credit officers inspected paper income proofs, tax filings, and subjective character references.
-
-#### Core Operational Vulnerabilities of Manual Underwriting:
-1. **High Latency & Inefficiency**: Turnaround time (TAT) per loan application averaged 5 to 10 business days.
-2. **Cognitive Bias & Inconsistency**: Different loan officers in different branches applied disparate heuristic criteria to identical applicant profiles.
-3. **The Dual Risk Dilemma**:
-   - **Good Customers Wrongly Rejected (Type II Error / False Negative)**: Loss of prime banking relationships and interest income to competitor NBFCs.
-   - **High-Risk Borrowers Wrongly Approved (Type I Error / False Positive)**: Direct credit default leading to Non-Performing Assets (NPAs) and capital write-offs.
+## 🏛️ Business Context: SecureTrust Bank
+A retail financial institution receives hundreds of daily loan applications for personal and home loans. 
+Historically, human credit officers evaluated applications manually. This created two critical vulnerabilities:
+1. **High Turnaround Time (TAT)**: 5 to 10 days per decision.
+2. **Asymmetric Error Costs**:
+   - **Type I Error (False Positive)**: Approving an applicant who defaults $\rightarrow$ **Severe principal loss (₹1,00,000+)**.
+   - **Type II Error (False Negative)**: Rejecting a creditworthy applicant $\rightarrow$ **Mild lost interest opportunity (₹10,000)**.
 
 ---
 
-### ⚖️ The Asymmetry of Financial Classification Errors
-
-In traditional machine learning benchmarks (e.g., MNIST digit recognition), all misclassifications carry an identical loss penalty. In financial risk management, the loss matrix is **severely asymmetric**:
+## 📊 Visual Diagram: Asymmetric Financial Risk
 
 ```mermaid
 flowchart TD
-    A["Loan Application Received"] --> B{"Model Decision"}
-    B -->|"Predict Approved (y_hat = 1)"| C{"Actual True Status"}
-    B -->|"Predict Rejected (y_hat = 0)"| D{"Actual True Status"}
-    
-    C -->|"Borrower Repays (y = 1)"| E["True Positive (TP)<br/>Reward: Net Interest Margin (+₹50,000)"]
-    C -->|"Borrower Defaults (y = 0)"| F["False Positive (FP) - TYPE I ERROR<br/>Severe Loss: Unrecovered Principal (-₹500,000)"]
-    
-    D -->|"Borrower Defaults (y = 0)"| G["True Negative (TN)<br/>Reward: Loss Avoidance (₹0 / Safe Capital)"]
-    D -->|"Borrower Repays (y = 1)"| H["False Negative (FN) - TYPE II ERROR<br/>Mild Loss: Lost Interest Opportunity (-₹20,000)"]
+    A["Loan Application Received"] --> BModel Decision
+    B -->|"Predict Approved (1)"| CActual Borrower Status
+    B -->|"Predict Rejected (0)"| DActual Borrower Status
+
+    C -->|"Borrower Repays"| TP["True Positive (TP)<br/>Reward: Net Interest Margin"]
+    C -->|"Borrower DEFAULTS!"| FP["False Positive (FP) - TYPE 1 ERROR<br/>CRITICAL LOSS: Lost Principal (10x worse!)"]
+
+    D -->|"Borrower Defaults"| TN["True Negative (TN)<br/>Safe Avoidance"]
+    D -->|"Borrower Repays"| FN["False Negative (FN) - TYPE 2 ERROR<br/>Minor Opportunity Loss: Lost Interest"]
 ```
-
-#### Mathematical Formulation of Underwriting Utility:
-Let $C_{	ext{FP}}$ denote the financial loss incurred from approving a borrower who subsequently defaults, and let $C_{	ext{FN}}$ denote the opportunity loss from rejecting a creditworthy borrower:
-
-$$
-	ext{Cost}(	ext{FP}) pprox 	ext{Loan Principal} 	imes 	ext{Loss Given Default (LGD)}
-$$
-
-$$
-	ext{Cost}(	ext{FN}) pprox 	ext{Loan Principal} 	imes 	ext{Net Interest Margin (NIM)}
-$$
-
-In commercial retail banking, typically:
-
-$$
-rac{C_{	ext{FP}}}{C_{	ext{FN}}} \in [5, 20]
-$$
-
-Because a single default can wipe out the profit margins of 10 to 15 successfully repaid loans, the operational objective function must heavily prioritize **Precision**:
-
-$$
-	ext{Precision} = rac{	ext{TP}}{	ext{TP} + 	ext{FP}}
-$$
-
-A high-precision underwriting engine guarantees that when the system issues an **Approved** decision, the probability of borrower default is minimized.
 
 ---
 
-## 💻 Vectorized Python Implementation
+## 💻 Python Implementation
 
 ```python
-import numpy as np
-import pandas as pd
-
-# Financial Utility Matrix simulation
-def calculate_underwriting_utility(tp, fp, fn, tn, 
-                                   interest_gain=50000.0, 
-                                   default_loss=250000.0, 
-                                   opportunity_loss=10000.0):
-    net_profit = (tp * interest_gain) - (fp * default_loss) - (fn * opportunity_loss)
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-    return {
-        "Net_Profit_INR": net_profit,
-        "Precision": precision,
-        "Recall": recall
+def calculate_loan_portfolio_loss(n_fp, n_fn, principal_loss=100000, interest_loss=10000):
+    """
+    Demonstrates Asymmetric Financial Loss in Loan Underwriting:
+    - False Positive (Type I): Bank approves a defaulter -> Loses entire principal (e.g. Rs 1,00,000)
+    - False Negative (Type II): Bank rejects a good borrower -> Loses opportunity interest margin (e.g. Rs 10,000)
+    
+    False Positives are 10x more costly, explaining why banks prioritize Precision over Accuracy!
+    """
+    total_fp_loss = n_fp * principal_loss
+    total_fn_loss = n_fn * interest_loss
+    total_financial_loss = total_fp_loss + total_fn_loss
+    
+    results = {
+        'total_loss': total_financial_loss,
+        'fp_loss_ratio': total_fp_loss / (total_financial_loss + 1e-9)
     }
+    return results
 
-# Benchmark: Model A (Balanced) vs Model B (High Precision)
-model_a = calculate_underwriting_utility(tp=80, fp=25, fn=20, tn=75)
-model_b = calculate_underwriting_utility(tp=65, fp=5, fn=35, tn=95)
-
-print("Model A (Naive Balanced):", model_a)
-print("Model B (High-Precision Guarded):", model_b)
-assert model_b["Net_Profit_INR"] > model_a["Net_Profit_INR"], "High-precision underwriting must preserve bank capital!"
-
+# --- Function Call & Testing ---
+# Suppose 10 defaulters were approved (FP) and 20 good borrowers rejected (FN)
+loss_report = calculate_loan_portfolio_loss(n_fp=10, n_fn=20)
+print(f"Total Portfolio Loss: Rs {loss_report['total_loss']:,}")
+print(f"Loss Driven by False Positives: {loss_report['fp_loss_ratio']*100:.1f}%")
 ```
 
 ---
 
-## 🔬 Key Engineering Takeaways & Invariants
-1. **Mathematical Grounding**: Every transformation and classification step directly addresses the underlying empirical distribution and financial risk constraints.
-2. **Reproducibility**: Clean, leak-free pipeline partitioning guarantees that performance metrics match production operating realities.
-3. **Domain Alignment**: Aligning model evaluation with the asymmetric cost of financial errors protects institutional solvency.
+## 🔑 Key Takeaways
+1. In retail lending, False Positives are catastrophic Non-Performing Assets (NPAs).
+2. Because of this asymmetry, the CreditWise system optimizes primarily for **Precision**.

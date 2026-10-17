@@ -1,68 +1,78 @@
-# Lecture 26.02: Linear Regression from Scratch — Mathematical Formulation & Hypothesis
+# Notes_26.02: Gradient Descent Ke Sath Linear Regression [Hinglish]
 
-## 📌 Saransh (Executive Summary)
-Linear Regression ke mathematical hypothesis ka deep breakdown, feature space se continuous target mapping, Best Fit Line (BFL) geometry, aur affine hyperplanes ka algebraic structure.
-
----
-
-## 🔬 First-Principles Theory & Intuition
-### 1. Linear Regression Ka Core Objective
-Supervised learning regression task mein hamare paas $m$ samples ka data hota hai:
-
-$$
-\mathcal{D} = \left\{ (\mathbf{x}^{(1)}, y^{(1)}), (\mathbf{x}^{(2)}, y^{(2)}), \dots, (\mathbf{x}^{(m)}, y^{(m)}) \right\}
-$$
-
-Jahan $\mathbf{x}^{(i)}$ input features hain aur $y^{(i)}$ continuous real number target value hai (jaise house price, salary, ya temperature).
-
-### 2. Hypothesis Function Ki Formulation
-Linear Regression ka fundamental assumption yeh hai ki target variable $y$, input features ka ek linear combination hai:
-
-$$
-h_\theta(\mathbf{x}) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \dots + \theta_d x_d
-$$
-
-- $\theta_0$ ko **Bias ya Intercept** kehte hain. Yeh line/hyperplane ka vertical position define karta hai jab saare features zero hon.
-- $\theta_1, \dots, \theta_d$ ko **Weights ya Slopes** kehte hain. Yeh batate hain ki kisi feature ke 1 unit badhne se target kitna badlega.
-
-### 3. Best Fit Line (BFL) Ki Geometry
-2D space ($d=1$) mein yeh line $y = mx + c$ banti hai.
-Multi-dimensional space ($d > 1$) mein yeh line ek $(d+1)$-dimensional **Hyperplane** ban jaati hai.
-Humara goal aise optimal $\mathbf{w}$ aur $b$ dhoondhna hai jisse predicted line aur actual data points ke beech ka gap (residual error) minimum ho sake.
-
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne **Linear Regression** ka mathematical foundation samjhaya hai: hypothesis function $\hat{y} = Xw + b$, Best Fit Line (BFL), aur cost function ka bowl shape.
 
 ---
 
-## 💻 Python & NumPy Code Implementation
-```python
-import numpy as np
-import matplotlib.pyplot as plt
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Linear Regression ka core equation: $\hat{y} = w \cdot x + b$.
+- Best Fit Line (BFL) ka concept.
+- Cost function $J(w)$ ka katora (parabolic bowl) shape.
+- Gradient descent kaise minimum error dhoondhta hai.
 
-# Generate synthetic linear regression dataset
-np.random.seed(42)
-m = 50
-X = 2 * np.random.rand(m, 1)
-true_w = 3.5
-true_b = 4.2
-y = true_w * X + true_b + np.random.randn(m, 1) * 0.8
+---
 
-# Hypothesis prediction function
-def predict_linear(X, w, b):
-    return X @ w + b
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-# Evaluate with sample weights
-w_init = np.array([[2.0]])
-b_init = 2.0
-y_pred = predict_linear(X, w_init, b_init)
+#### 1. Hypothesis Line Equation:
+Blackboard par ma'am ne Best Fit Line draw karke dikhaya:
 
-print(f"Sample X shape: {X.shape}, y shape: {y.shape}")
-print(f"Predictions first 5: \n{y_pred[:5].flatten()}")
+$$\hat{y} = w \cdot x + b$$
 
+- $w$ = Slope (line ka jhukav).
+- $b$ = Bias / Intercept (line y-axis ko kahan kaat ti hai).
+- $\hat{y}$ = Model dwara predict ki gayi value.
+
+#### 2. Parabolic Cost Function:
+Jab hum alag-alag $w$ ke liye error (loss) plot karte hain, toh ek **katora (U-shape / bowl)** banta hai. Is katore ke sabse neeche waale point (global minimum) par error sabse kam hota hai.
+
+---
+
+### 📊 Visual Flowchart: Best Fit Line Aur Minimum Loss
+
+```mermaid
+flowchart TD
+    A["Raw Data Points (x, y)"] --> B["Best Fit Line: y_hat = w*x + b"]
+    B --> C["Error Calculate Karo: (y_hat - y)^2"]
+    C --> D["U-Shape Parabola ke sabse bottom par pahuncho!"]
 ```
 
 ---
 
-## 🎯 Key Takeaways & Practical Tips
-1. **Black-Box Se Azadi**: Libraries ko blind use karne ke bajaye unke andar ka math samajhna aapko top 1% engineer banata hai.
-2. **Vectorization Ki Taqat**: Python loops ke bajaye NumPy array operations use karein jo C/BLAS speed provide karte hain.
-3. **Debugging Mastery**: Jab loss decrease na ho raha ho, toh sabse pehle learning rate $\alpha$ aur gradient dimensions check karein.
+### 💻 Python Code
+
+```python
+import numpy as np
+
+def compute_linear_hypothesis(X, w, b):
+    """
+    Computes the Linear Regression hypothesis: y_hat = X * w + b
+    
+    Parameters:
+        X: Feature matrix of shape (m, d)
+        w: Weights vector of shape (d,)
+        b: Bias scalar
+        
+    Returns:
+        y_hat: Continuous predictions vector of shape (m,)
+    """
+    y_hat = np.dot(X, w) + b
+    return y_hat
+
+# --- Function Call & Testing ---
+# 3 samples, 2 features
+X_sample = np.array([[1.0, 2.0], [2.0, 3.0], [3.0, 1.0]])
+weights  = np.array([0.5, -0.2])
+bias     = 1.0
+
+preds = compute_linear_hypothesis(X_sample, weights, bias)
+print("Input Features:\n", X_sample)
+print("Hypothesis Predictions (y_hat):", preds)
+```
+
+---
+
+### 📌 Summary Points
+- Linear regression continuous values predict karta hai.
+- Loss function bowl-shaped hota hai jiska ek hi global minimum hota hai.

@@ -1,52 +1,73 @@
-# Notes_25.08: Python Mein Naive Bayes Ka Implementation [Hinglish]
+# Notes_25.08: Scikit-Learn Mein Naive Bayes Ka Code [Hinglish]
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_08.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language / भाषा:** [English](README.md) | **हिंदी / Hinglish** | [⬅️ Lecture 25 Overview](../README_HINGLISH.md)
+## 📌 Topic Overview
+Is lecture mein Shraddha ma'am ne Python aur Scikit-Learn mein **GaussianNB** model ko train aur evaluate karne ka live code likh kar dikhaya hai.
 
 ---
 
-## 📌 Executive Summary
-Heart disease dataset par GaussianNB train karna aur metrics evaluate karna.
+### 📋 Is Topic Mein Hum Kya Seekhenge?
+- Scikit-Learn se `GaussianNB` kaise import aur initialize karte hain.
+- `model.fit()` aur `model.predict()` ka standard workflow.
+- Continuous features par Naive Bayes ka prediction check karna.
+- Classification Report (Precision, Recall, F1) ko interpret karna.
 
 ---
 
-## 🎯 Mathematical Formulations
+### 🔍 Har Ek Point Ka Simple & Detailed Explanation
 
-Model Log-Likelihood Decision Boundary:
+#### 1. GaussianNB Ki Khasiyat
+- Is model mein koi heavy hyperparameters tune nahi karne padte.
+- Yeh train hone mein bohot tezi se kaam karta hai kyunki iska `fit()` step sirf features ka mean aur variance calculate karta hai.
 
-$$
-\log P(y \mid \mathbf{x}) \propto \log P(y) + \sum_{j=1}^d \log P(x_j \mid y)
-$$
-
----
-
-## 💡 Concept Intuition & Key Insights (Desi Style)
-
-### Log-Probabilities Kyu Use Karte Hain?
-Jab d-dimensions bohot bada hota hai (e.g. text classification mein $10,000$ words), toh small probabilities ($0.001 	imes 0.002 	imes \dots$) multiply karte-karte computer ke floating point precision se bahar nikal kar underflow ($0.0$) ho jaati hain.
-Logarithm lene se multiplication addition ban jata hai: $\log(a \cdot b) = \log a + \log b$, jisse underflow bilkul prevent ho jata hai!
+#### 2. Workflow:
+1. Data ko train aur test mein split karo (`train_test_split`).
+2. Model ka object banao: `model = GaussianNB()`.
+3. Train karo: `model.fit(X_train, y_train)`.
+4. Test par predictions nikaalo: `y_pred = model.predict(X_test)`.
 
 ---
 
-## 💻 Python Production Implementation
+### 💻 Python Code
 
 ```python
-import pandas as pd
+from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score, classification_report
 
-df = pd.read_csv("heart.csv")
-X = df.drop("target", axis=1)
-y = df["target"]
+def train_and_evaluate_gaussian_nb():
+    """
+    Trains a GaussianNB classifier on a classification dataset,
+    evaluates its performance, and returns metrics.
+    """
+    # 1. Synthetic continuous feature dataset
+    X, y = make_classification(
+        n_samples=500, n_features=6, n_informative=4, random_state=42
+    )
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-gnb = GaussianNB()
-gnb.fit(X_train, y_train)
-y_pred = gnb.predict(X_test)
+    # 2. Fit Gaussian Naive Bayes
+    gnb = GaussianNB()
+    gnb.fit(X_train, y_train)
 
-print("Classification Report:\n", classification_report(y_test, y_pred))
+    # 3. Evaluate
+    y_pred = gnb.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
+
+    return gnb, acc, report
+
+# --- Function Call & Testing ---
+model, accuracy, metrics_report = train_and_evaluate_gaussian_nb()
+print(f"GaussianNB Accuracy: {accuracy*100:.1f}%")
+print("Classification Report:")
+print(metrics_report)
 ```
+
+---
+
+### 📌 Summary Points
+- GaussianNB fast aur robust baseline classifier hai.
+- Iska execution time almost instant hota hai.

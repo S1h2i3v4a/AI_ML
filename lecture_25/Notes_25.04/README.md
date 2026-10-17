@@ -1,57 +1,87 @@
-# Notes_25.04: Classification Evaluation Metrics
+# Lecture 25.04: Classification Evaluation Metrics
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_25_04.ipynb)
-[![PDF](https://img.shields.io/badge/PDF-notes.pdf-red.svg)](notes.pdf)
-
-🌐 **Language:** **English** | [हिंदी / Hinglish](README_HINGLISH.md) | [⬅️ Lecture 25 Overview](../README.md)
+## 📌 Topic Overview
+In this lecture, Shraddha ma'am covers the mathematical formulas and operational tradeoffs between **Accuracy**, **Precision**, **Recall (Sensitivity)**, and **F1 Score**, explaining when to prioritize Precision versus Recall.
 
 ---
 
-## 📌 Executive Summary
-Accuracy paradox, Precision, Recall, Specificity, and the harmonic mean F1-Score.
+## 📐 Mathematical Formulas
+
+### 1. Accuracy
+$$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
+- Measures overall proportion of correct classifications.
+- **Flaw**: Misleading when working with imbalanced datasets (e.g., predicting 99% non-fraud by simply predicting 0 every time).
+
+### 2. Precision
+$$\text{Precision} = \frac{TP}{TP + FP}$$
+- Question answered: *"When the model predicts Positive, how often is it actually right?"*
+- **Prioritize Precision when False Positives (FP) are costly** (e.g., Spam detection, loan approval).
+
+### 3. Recall (Sensitivity)
+$$\text{Recall} = \frac{TP}{TP + FN}$$
+- Question answered: *"Out of all actual Positive cases, how many did the model successfully catch?"*
+- **Prioritize Recall when False Negatives (FN) are dangerous** (e.g., Cancer detection, COVID screening, fire alarm).
+
+### 4. F1 Score
+$$\text{F1 Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+- Harmonic mean balancing Precision and Recall. Unlike arithmetic mean, harmonic mean severely punishes extreme values.
 
 ---
 
-## 🎯 Mathematical Formulations
+## ⚖️ Precision vs Recall Tradeoff
 
-Classification Metric Equations:
-
-$$
-\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}}
-$$
-
-$$
-\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}, \qquad \text{Recall (Sensitivity)} = \frac{\text{TP}}{\text{TP} + \text{FN}}
-$$
-
-$$
-\text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} = \frac{2\text{TP}}{2\text{TP} + \text{FP} + \text{FN}}
-$$
+```mermaid
+flowchart TD
+    AWhat is the cost of error?
+    A -->|"False Positive is Costly<br/>(e.g., Spam Filter, Job Screening)"| B["Maximize PRECISION<br/>Ensure predicted Positives are genuine"]
+    A -->|"False Negative is Dangerous<br/>(e.g., Cancer Detection, Fraud)"| C["Maximize RECALL<br/>Catch every single Positive case"]
+    B --> D["Balance using F1 Score"]
+    C --> D
+```
 
 ---
 
-## 💡 Conceptual Principles & Architecture
-
-### Accuracy Paradox (Accuracy Dhoka Kyu Deti Hai?):
-Maan lijiye $1000$ logo mein se sirf $5$ logo ko cancer hai ($99.5\%$ negative class). Agar model bina soche sabhi ko 'Negative' bol de, toh model ki Accuracy $99.5\%$ hogi! Lekin asal mein cancer wale saare $5$ mareez mar jayenge. Isliye Imbalanced data mein Accuracy useless hoti hai.
-
-### Precision vs Recall Kab Use Karein?
-- **High Recall Zaroori:** Medical diagnosis (Cancer detection) ya Fraud detection mein. Hum ek bhi positive patient chhod nahi sakte (FN minimize karna hai).
-- **High Precision Zaroori:** YouTube recommendations, Spam filters, ya Job applicant screening mein. Agar koi email genuine hai toh woh Spam folder mein nahi jaani chahiye (FP minimize karna hai).
-
----
-
-## 💻 Python Production Implementation
+## 💻 Python Implementation
 
 ```python
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-y_true = [1, 0, 1, 1, 0, 1, 0, 0, 1, 0]
-y_pred = [1, 0, 1, 0, 0, 1, 1, 0, 1, 0]
+def evaluate_classification_performance(y_true, y_pred):
+    """
+    Computes all standard classification metrics:
+    - Accuracy:  Overall correctness
+    - Precision: Confidence when predicting positive (Minimizes FP)
+    - Recall:    Ability to capture all actual positives (Minimizes FN)
+    - F1-Score:  Harmonic mean of Precision and Recall
+    """
+    acc  = accuracy_score(y_true, y_pred)
+    prec = precision_score(y_true, y_pred, zero_division=0)
+    rec  = recall_score(y_true, y_pred, zero_division=0)
+    f1   = f1_score(y_true, y_pred, zero_division=0)
 
-print(f"Accuracy  : {accuracy_score(y_true, y_pred):.4f}")
-print(f"Precision : {precision_score(y_true, y_pred):.4f}")
-print(f"Recall    : {recall_score(y_true, y_pred):.4f}")
-print(f"F1-Score  : {f1_score(y_true, y_pred):.4f}")
+    results = {
+        'accuracy':  float(acc),
+        'precision': float(prec),
+        'recall':    float(rec),
+        'f1_score':  float(f1)
+    }
+    return results
+
+# --- Function Call & Testing ---
+# Real-world scenario: Imbalanced medical test
+y_actual    = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1]
+y_predicted = [0, 0, 0, 0, 0, 1, 0, 0, 1, 1]
+
+metrics = evaluate_classification_performance(y_actual, y_predicted)
+print(f"Accuracy:  {metrics['accuracy']:.3f}")
+print(f"Precision: {metrics['precision']:.3f} (When model says Positive, it is right 66.7% of the time)")
+print(f"Recall:    {metrics['recall']:.3f} (Model caught 66.7% of actual disease cases)")
+print(f"F1-Score:  {metrics['f1_score']:.3f}")
 ```
+
+---
+
+## 🔑 Key Takeaways
+1. Never rely on Accuracy alone on imbalanced datasets.
+2. High Precision avoids false alarms; High Recall avoids missed detections.
+3. F1-Score provides a single balanced metric when precision and recall must both be healthy.
