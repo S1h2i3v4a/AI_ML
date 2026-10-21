@@ -1,0 +1,37 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# === Jupyter Notebooks ===
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# === Virtual Environment ===
+venv/
+env/
+.venv/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Data (large files) ===
+# Keep raw data tracked, ignore processed
+data/processed/*.csv
+
+# === Models (large binary files) ===
+# Uncomment below if models are too large for GitHub
+# models/*.joblib
