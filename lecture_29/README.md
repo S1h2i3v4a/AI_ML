@@ -58,3 +58,17 @@ Welcome to **Lecture 29: Supervised Machine Learning (Part 5)**, a dual-focus de
    Ensembling $M$ de-correlated estimators yields $\text{Var}(\bar{f}) = \rho \sigma^2 + \frac{1 - \rho}{M} \sigma^2$, collapsing variance to $\rho \sigma^2$.
 5. **Out-Of-Bag (OOB) Convergence Derivation**:
    Probability of a sample being excluded from a bootstrap replicate converges to $\lim_{N \to \infty} (1 - \frac{1}{N})^N = \frac{1}{e} \approx 36.79\%$.
+
+---
+
+### 🧪 Practice Problems & Systems Engineering Suite
+
+A comprehensive industrial problem set designed to test first-principles SVM and Ensemble algorithms:
+- **Practice Problems Overview**: [Practice_Problems/README.md](Practice_Problems/README.md) | [हिंदी / Hinglish](Practice_Problems/README_HINGLISH.md)
+- **Questions Directory**: [Practice_Problems/Questions/README.md](Practice_Problems/Questions/README.md) | [questions.ipynb](Practice_Problems/Questions/questions.ipynb)
+- **Solutions Directory**: [Practice_Problems/Solutions/README.md](Practice_Problems/Solutions/README.md) | [solutions.ipynb](Practice_Problems/Solutions/solutions.ipynb)
+
+#### 🔬 Systems Engineering Case Studies (300 DPI Visualizations):
+- **Case Study 1**: SVR Epsilon-Insensitive Tube & Target Scaling Effect ([Figure](Practice_Problems/Solutions/case1_svr_epsilon_tube_and_scaling.png))
+- **Case Study 2**: Out-Of-Bag (OOB) Mathematical Convergence & Random Forest Validation ([Figure](Practice_Problems/Solutions/case2_oob_convergence_and_bootstrap.png))
+- **Case Study 3**: Wisdom of Crowds & Leo Breiman's Variance Decomposition ([Figure](Practice_Problems/Solutions/case3_random_forest_variance_collapse.png))

@@ -1,174 +1,98 @@
 # Lecture 28: Practice Problems Suite (Questions - Hinglish)
 ## Supervised Machine Learning (Part 4) — Decision Trees
 
-Yeh assignment set Decision Trees ke core impurity metrics (Entropy, Gini), threshold optimization, pruning regularizers, aur ShopSmart e-commerce purchase prediction par focused hai.
-
----
-## Problem 01: Pure NumPy Shannon Entropy Calculator
-
-### 📋 Is Question Mein Aapse Kya Pucha Gaya Hai?
-1. Pure NumPy use karke multi-class labels ke liye Shannon Entropy calculator class banayein.
-2. Mathematical formula $H(S) = -\sum_{k=1}^K p_k \log_2(p_k)$ implement karein.
-3. Zero probability limit condition $0 \log_2(0) \equiv 0$ ko numerically safe banayein.
-4. Pure node par $H = 0.0$ aur 50-50 binary mixture par $H = 1.0$ bit assert karein.
+Yeh problem set Decision Trees ke mathematical foundations, impurity calculation, threshold optimization, C4.5 gain ratio regularization, variance reduction, aur cost-complexity pruning par structured case-based questions provide karta hai. Sabhi questions strictly Lecture 28 ke syllabus par based hain.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+## 🛒 Case Study 1: E-Commerce Visitor Purchase Conversion (ShopSmart Dataset)
 
-**Formula Formulation**: Target array $y$ ke unique classes aur counts nikaal kar empirical class probabilities $p_k = N_k / N$ compute karein.
+### 🎯 Business Context & Scenario
+ShopSmart ek e-commerce platform hai jisme 12,330 visitor clickstream records hain (`shop_smart_ecommerce.csv`). Dataset mein 18 features hain:
+- Numerical features: `Administrative_Duration`, `Informational_Duration`, `ProductRelated_Duration`, `BounceRates`, `ExitRates`, `PageValues`.
+- Categorical features: `Month`, `OperatingSystems`, `Browser`, `Region`, `TrafficType`, `VisitorType`, `Weekend`.
+- Target: `Revenue` (Boolean: `True` agar visitor ne khareedari ki, `False` agar session abandon kiya; ~15.4% positive rate).
 
-**Numerical Stability**: Log of zero mathematically undefined hota hai. Isliye zero probabilities ko filter out karein ya $\epsilon = 10^{-15}$ add karein.
-
-**Base-2 Logarithm**: Base 2 logarithm se output Shannon 'bits' of information mein express hota hai.
-
-**Integrity Assertions**: Unit tests mein perfectly pure array aur uniform distribution pass karke theoretical bounds verify karein.
-
----
-## Problem 02: Pure NumPy Gini Impurity aur Weighted Split Evaluator
-
-### 📋 Is Question Mein Aapse Kya Pucha Gaya Hai?
-1. Multi-class labels ke liye Gini Impurity formula $G(S) = 1 - \sum_{k=1}^K p_k^2$ implement karein.
-2. Candidate split ke liye weighted child impurity calculate karein: $G(S, A) = \frac{|S_L|}{|S|} G(S_L) + \frac{|S_R|}{|S|} G(S_R)$.
-3. Gini-based Information Gain define karein: $\Delta G = G(S) - G(S, A)$.
-4. Pure node par $G = 0.0$ aur binary 50-50 mix par $G = 0.50$ assert verify karein.
-
----
-
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
-
-**Gini Impurity Formula**: $1 - \sum p_k^2$ probability of misclassification measure karta hai.
-
-**Split Evaluation**: Left child aur right child ke sample sizes ke proportional weights lagakar child impurity aggregate karein.
-
-**Gain Metric**: $\Delta G$ measure karta hai ki split se disorder kitna kam hua.
-
-**Verification**: Pure split par $\Delta G$ maximum aana chahiye.
-
----
-## Problem 03: Continuous Feature Split Finder aur Threshold Optimizer
-
-### 📋 Is Question Mein Aapse Kya Pucha Gaya Hai?
-1. Continuous numerical feature array aur class labels accept karne wala `ContinuousSplitFinder` construct karein.
-2. Unique values ko sort karke adjacent values ke midpoints $\theta_i = \frac{x_i + x_{i+1}}{2}$ generate karein.
-3. Har candidate threshold par binary split evaluate karke maximum Gini Gain locate karein.
-4. Optimal split threshold $\theta^*$ aur peak Gini Gain return karein.
+### 📝 Case Study Questions
+1. **Unconstrained Tree ki Overfitting**: Training set par unconstrained `DecisionTreeClassifier(random_state=42)` fit karein. Model ki depth (`get_depth()`) aur leaf count (`get_n_leaves()`) check karein. Training accuracy aur test F1-score compare karein. Explain karein ki jab `min_samples_leaf=1` hota hai toh tree training noise ko memorize kyun kar leta hai?
+2. **Pre-Pruning Grid Search**: Ek `GridSearchCV` pipeline banayein jisme testing parameters hon:
+   - `max_depth` $\in [3, 5, 8, 12]$
+   - `min_samples_leaf` $\in [5, 10, 20, 50]$
+   - `min_impurity_decrease` $\in [0.0, 0.001, 0.005]$
+   Scoring metric `f1` use karke 5-fold Stratified CV run karein aur optimal parameters bataiye.
+3. **Minimal Cost-Complexity Post-Pruning**: Scikit-learn ke `cost_complexity_pruning_path(X_train, y_train)` function se effective alphas (`ccp_alphas`) nikaalein:
+   - Alphas ke sequence par alag-alag trees train karein.
+   - Nodes count vs $\alpha$ aur test F1-score vs $\alpha$ plot karein.
+   - F1 benchmark > 0.55 beat karne wala optimal $\alpha_{\text{opt}}$ identify karein.
+4. **Production Decision Rules**: Optimal tree ke top rules ko `export_text` function se print karein. Root node par konsa feature split ho raha hai aur kis threshold par? Business perspective se `PageValues` itna important kyun hai?
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+## 🏥 Case Study 2: Hospital Emergency Triage aur High-Cardinality ID Failure (C4.5 Gain Ratio)
 
-**Continuous Thresholding**: Continuous feature par infinite points nahi balki observed data points ke midpoints hi test karne hote hain.
+### 🎯 Clinical Context & Scenario
+Ek emergency hospital ward mein 100 incoming patients ka triage data hai:
+- Target: `Emergency_Admit` (60 positive / admit, 40 negative / discharge).
+- Features:
+  - `Patient_ID`: Unique integer $1, 2, \dots, 100$.
+  - `Heart_Rate_High`: Binary (50 high: 45 admit, 5 discharge; 50 normal: 15 admit, 35 discharge).
+  - `Oxygen_Sat_Low`: Binary (40 low: 38 admit, 2 discharge; 60 normal: 22 admit, 38 discharge).
 
-**Search Protocol**: Sorted unique values $x_{(1)} < x_{(2)} < \dots < x_{(u)}$ ke beech $u-1$ split cutoffs test karein.
-
-**Impurity Optimization**: Har cutoff $\theta$ ke liye $x \le \theta$ (Left) aur $x > \theta$ (Right) subsets banayein aur gain calculate karein.
-
-**Output Contract**: Best threshold aur corresponding best gain score return ho.
-
----
-## Problem 04: C4.5 Information Gain Ratio Optimizer
-
-### 📋 Is Question Mein Aapse Kya Pucha Gaya Hai?
-1. High-cardinality feature bias ko penalize karne wala `GainRatioOptimizer` implement karein.
-2. Split Information formula $SplitInfo(S, A) = -\sum \frac{|S_v|}{|S|} \log_2 \frac{|S_v|}{|S|}$ calculate karein.
-3. Information Gain Ratio $GainRatio = \frac{IG}{SplitInfo}$ compute karein.
-4. Prove karein ki Gain Ratio unique IDs wale useless features ko reject karta hai.
-
----
-
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
-
-**High-Cardinality Flaw**: Agar feature me har row ka unique ID ho, toh standard Information Gain use highest rank de deta hai jo severe overfitting hai.
-
-**Split Information Regularizer**: Split Information split ke branches ki entropy measure karti hai. Zyada uniform chote branches hone par SplitInfo bohot high ho jaata hai.
-
-**Gain Ratio Normalization**: $IG / SplitInfo$ ratio branching complexity ko control mein rakhta hai.
-
-**Numerical Protection**: Division by zero prevent karne ke liye $\epsilon = 10^{-10}$ add karein.
-
----
-## Problem 05: Regression Tree Variance Reduction Split Evaluator
-
-### 📋 Is Question Mein Aapse Kya Pucha Gaya Hai?
-1. Continuous regression targets ke liye `VarianceReductionSplitter` implement karein.
-2. Sample Variance formula $I_{\text{MSE}}(S) = \frac{1}{|S|} \sum (y_i - \bar{y})^2$ calculate karein.
-3. Variance Reduction $\Delta V = \text{Var}(S) - [\frac{|S_L|}{|S|} \text{Var}(S_L) + \frac{|S_R|}{|S|} \text{Var}(S_R)]$ evaluate karein.
-4. Bivariate continuous dataset par optimal regression split cutoff determine karein.
+### 📝 Case Study Questions
+1. **Parent Node ki Shannon Entropy**: Parent node $S$ ki Shannon Entropy calculate karein:
+   $$H(S) = - \sum_{k=1}^K p_k \log_2(p_k)$$
+   $p_1 = 0.60$ aur $p_2 = 0.40$ ke liye step-by-step answer nikalein.
+2. **Patient_ID vs Clinical Features ka Information Gain**:
+   - Agar hum `Patient_ID` par split karte hain (100 leaves, har leaf mein 1 patient), toh child entropy $H(S, \text{Patient\_ID})$ kya hogi? Information Gain $IG(S, \text{Patient\_ID})$ kitna aayega?
+   - `Heart_Rate_High` feature ka weighted child entropy aur Information Gain calculate karein.
+   - ID3/Hunt's greedy algorithm kis feature ko root chunega? Medical treatment ke liye yeh kitna bada disaster hai?
+3. **C4.5 Split Information Penalty**:
+   - `Patient_ID` ke liye C4.5 Split Information formula evaluate karein:
+     $$SplitInfo(S, \text{Patient\_ID}) = - \sum_{v=1}^{100} \frac{1}{100} \log_2\left(\frac{1}{100}\right) = \log_2(100) \approx 6.6439\text{ bits}$$
+   - Gain Ratio calculate karein:
+     $$GR(S, \text{Patient\_ID}) = \frac{IG(S, \text{Patient\_ID})}{SplitInfo(S, \text{Patient\_ID})}$$
+   - `Heart_Rate_High` ka $SplitInfo$ aur $GR$ calculate karein.
+   - Prove karein ki C4.5 Gain Ratio high-cardinality ID features ko disqualify kyun kar deta hai.
+4. **Pure NumPy Implementation**: Pure NumPy mein `ShannonEntropyCalculator` aur `GainRatioOptimizer` classes banayein jisme $0 \log_2 0 \equiv 0$ boundary condition properly handled ho.
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+## 🏙️ Case Study 3: Property Valuation Engine (Regression Trees & Variance Reduction)
 
-**Continuous Node Impurity**: Regression trees mein Gini ya Entropy ke bajaye target values ka sample variance impurity metric banta hai.
+### 🎯 Real Estate Context & Scenario
+Ek property valuation model 8 calibration flats ke monthly rent $y$ (in thousands of INR) ko area $x$ (in sq ft) ke basis par predict kar raha hai:
+```plaintext
+Property Index:     [ 1,    2,    3,    4,    5,    6,    7,    8   ]
+Area (sq ft):       [ 600,  800,  950,  1100, 1300, 1500, 1800, 2200]
+Monthly Rent (kINR):[ 18.0, 22.0, 25.0, 28.0, 36.0, 40.0, 48.0, 55.0]
+```
 
-**Variance Reduction Criterion**: Split aisa hona chahiye jo children subsets ki overall variance ko maximum drop kare.
-
-**Leaf Mean Estimation**: Child nodes apne respective target sample mean $\bar{y}_L$ aur $\bar{y}_R$ predict karte hain.
-
-**Verification**: Numerical test par highest variance drop assert karein.
-
----
-## Problem 06: Minimal Cost-Complexity Pruning Path Analyzer
-
-### 📋 Is Question Mein Aapse Kya Pucha Gaya Hai?
-1. Scikit-Learn DecisionTreeClassifier se Cost Complexity Pruning path analyze karne wala tool develop karein.
-2. `clf.cost_complexity_pruning_path(X, y)` se `ccp_alphas` aur `impurities` extract karein.
-3. Har candidate alpha par tree fit karke total node count aur leaf count inspect karein.
-4. Demonstrate karein ki alpha badhne par tree structure monotonically shrink hota hai.
-
----
-
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
-
-**Breiman Cost-Complexity**: $R_\alpha(T) = R(T) + \alpha |T|$ mein $\alpha$ badhane se complex subtrees prune hote hain.
-
-**Alpha Spectrum Extraction**: Scikit-Learn `cost_complexity_pruning_path` finite critical points calculate karta hai.
-
-**Monotonic Shrinkage**: Assert karein ki agar $\alpha_2 > \alpha_1$ ho toh $|T(\alpha_2)| \le |T(\alpha_1)|$.
-
-**Pruning Range**: Maximum alpha par poori tree single root node ban jaati hai.
-
----
-## Problem 07: Automated Pre-Pruning Cross-Validation Optimizer
-
-### 📋 Is Question Mein Aapse Kya Pucha Gaya Hai?
-1. Hyperparameter grid search evaluate karne wala `PrePruningGridSearchOptimizer` build karein.
-2. Search space mein `max_depth`, `min_samples_split`, aur `min_samples_leaf` encompass karein.
-3. Stratified K-Fold cross validation se imbalanced F1 metric optimize karein.
-4. Best estimator extract karke test set par generalization score verify karein.
+### 📝 Case Study Questions
+1. **Parent Node ki Variance**: Sabhi 8 flats ke rent ka sample variance $I_{\text{MSE}}(S)$ calculate karein:
+   $$I_{\text{MSE}}(S) = \frac{1}{|S|} \sum_{i=1}^{|S|} (y_i - \bar{y})^2$$
+2. **Candidate Split Evaluation**:
+   - Midpoint candidate threshold $\theta = 1200\text{ sq ft}$ par split evaluate karein:
+     - Left partition $S_L$: Area $\le 1200$ (rents: 18, 22, 25, 28).
+     - Right partition $S_R$: Area $> 1200$ (rents: 36, 40, 48, 55).
+   - $\bar{y}_L$, $\text{Var}(S_L)$, $\bar{y}_R$, $\text{Var}(S_R)$ compute karein.
+   - Variance Reduction calculate karein:
+     $$\Delta \text{Var} = \text{Var}(S) - \left[\frac{|S_L|}{|S|}\text{Var}(S_L) + \frac{|S_R|}{|S|}\text{Var}(S_R)\right]$$
+3. **Continuous Split Finder**: Pure NumPy mein `ContinuousSplitFinder` class likhein jo midpoints $\theta_i = \frac{x_i + x_{i+1}}{2}$ test karke maximum variance reduction aur best threshold locate kare.
+4. **Outlier Sensitivity (MSE vs MAE Criterion)**: Agar property 8 ek luxury penthouse ho jiska rent $180.0\text{ kINR}$ ho jaye, toh MSE criterion (mean prediction) drastically distort kyun hota hai, jabki MAE criterion (median prediction) stable kyun rehta hai?
 
 ---
 
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
+## 📐 Case Study 4: Mathematical Equivalence (Gini Impurity vs Shannon Entropy)
 
-**Hyperparameter Surface**: Trees mein depth aur leaf constraints non-linearly interact karte hain. Exhaustive grid search optimal combination find karta hai.
-
-**Stratified CV**: Imbalanced classification mein har fold mein class proportions preserve hona mandatory hai.
-
-**F1 Optimization**: Accuracy ke bajaye `scoring='f1_macro'` use karein taaki minority class ignore na ho.
-
-**Generalization Safeguards**: Training score aur test score ka difference evaluate karke overfitting check karein.
-
----
-## Problem 08: ShopSmart E-Commerce Purchase Predictor Pipeline (F1 > 0.55)
-
-### 📋 Is Question Mein Aapse Kya Pucha Gaya Hai?
-1. Official assignment dataset `shop_smart_ecommerce.csv` (12,330 sessions) par production pipeline design karein.
-2. `ColumnTransformer` se continuous numerical standardization aur categorical OneHotEncoding implement karein.
-3. Pruned `DecisionTreeClassifier` configure karein jo imbalanced target `Revenue` handle kare.
-4. Holdout test set par official course benchmark **F1-Score > 0.55** exceed karein.
-
----
-
-### 🔍 Har Ek Bullet Point Ka Detailed Explanation
-
-**Real-World E-Commerce Benchmark**: ShopSmart company online browsing sessions se purchase probability predict karna chahti hai.
-
-**Imbalanced Class Target**: Majority sessions (84%) mein purchase nahi hota (`Revenue = False`). Sirf 16% purchase karte hain. Isliye F1 score critical metric hai.
-
-**Clean Preprocessing Pipeline**: Numerical attributes (`PageValues`, `BounceRates`, `ExitRates`, etc.) aur categorical attributes (`Month`, `VisitorType`, `Weekend`) ko composite transformer me wrap karein.
-
-**Benchmark Achievement**: Unpruned tree F1 0.45-0.50 par fail hoti hai. Pruning lagakar model ko 0.55+ benchmark surpass karwayein.
-
----
+### 🎯 Theoretical Formulation & Derivation
+1. **Taylor Series Expansion**:
+   Prove karein ki $\ln(u)$ ka Taylor series around 1 hota hai:
+   $$\ln(u) = (u - 1) - \frac{(u - 1)^2}{2} + \dots$$
+   $u = p_k$ rakh kar prove karein ki first-order approximation se:
+   $$H(S) \approx \frac{1}{\ln 2} G(S)$$
+2. **Numerical Bounds Comparison**:
+   Binary balanced distribution ($p = 0.5$) ke liye $H(0.5)$ aur $G(0.5)$ compare karein. Curve $\frac{1}{2} H(p)$ aur $G(p)$ ke concordance ko explain karein.
+3. **Pure NumPy Gini Evaluator**:
+   Pure NumPy mein `GiniImpurityEvaluator` implement karein jo weighted split impurity calculate kare.
+4. **Scikit-Learn Default Invariant**:
+   Scikit-learn by default Gini impurity kyun use karta hai? Computational complexity analyze karein (simple multiplication vs transcendental base-2 log calculations).

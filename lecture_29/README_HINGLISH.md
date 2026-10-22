@@ -58,3 +58,17 @@ Dusre hisse me hum explore karenge **Ensemble Learning** — jisme 'Wisdom of Cr
 4. **SVR $\\epsilon$-Insensitive Tube**: Tube ke andar ke points ka error 0 hota hai, sirf bahar ke outliers par penalty lagti hai.
 5. **Bagging Variance Reduction**: Multiple independent trees ka average lene se individual tree ki high-variance khatam ho jati hai.
 6. **OOB Score**: $36.8\%$ unseen data par validation score bina alag train-test split ya cross-validation ke free me milta hai!
+
+---
+
+### 🧪 Practice Problems & Systems Engineering Suite (Hinglish)
+
+SVM aur Ensemble Learning par first-principles industrial practice problem set:
+- **Practice Problems Overview**: [Practice_Problems/README_HINGLISH.md](Practice_Problems/README_HINGLISH.md) | [English](Practice_Problems/README.md)
+- **Questions Directory**: [Practice_Problems/Questions/README_HINGLISH.md](Practice_Problems/Questions/README_HINGLISH.md) | [questions.ipynb](Practice_Problems/Questions/questions.ipynb)
+- **Solutions Directory**: [Practice_Problems/Solutions/README_HINGLISH.md](Practice_Problems/Solutions/README_HINGLISH.md) | [solutions.ipynb](Practice_Problems/Solutions/solutions.ipynb)
+
+#### 🔬 Systems Engineering Case Studies (300 DPI Graphics):
+- **Case Study 1**: SVR Epsilon-Insensitive Tube & Target Scaling Effect ([Figure](Practice_Problems/Solutions/case1_svr_epsilon_tube_and_scaling.png))
+- **Case Study 2**: Out-Of-Bag (OOB) Mathematical Convergence & Random Forest Validation ([Figure](Practice_Problems/Solutions/case2_oob_convergence_and_bootstrap.png))
+- **Case Study 3**: Wisdom of Crowds & Leo Breiman's Variance Decomposition ([Figure](Practice_Problems/Solutions/case3_random_forest_variance_collapse.png))
