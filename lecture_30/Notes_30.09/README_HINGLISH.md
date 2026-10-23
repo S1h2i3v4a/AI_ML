@@ -1,7 +1,7 @@
 # Lecture 30.09: Ensembling Paradigms — Homogeneous Aur Heterogeneous Ensembles Ka Farak [Hinglish]
 
 [![Status](https://img.shields.io/badge/Status-Complete-success.svg)](#)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_30_09.ipynb)
+[![Theory](https://img.shields.io/badge/Topic-Theory%20%26%20Math-lightgrey.svg)](#)
 [![English Notes](https://img.shields.io/badge/Notes-English-blue.svg)](README.md)
 [![English PDF](https://img.shields.io/badge/PDF-English-red.svg)](notes.pdf)
 [![Hinglish PDF](https://img.shields.io/badge/PDF-Hinglish-green.svg)](notes_hinglish.pdf)
@@ -64,5 +64,6 @@ Heterogeneous ensembles minimize the cross-correlation $\rho \to 0$, maximizing 
 
 ---
 
-### 💻 Standalone Python Code & Verification
-Iss module ka complete runnable code [Jupyter Notebook](lecture_30_09.ipynb) mein available hai.
+### 📌 Note on Code
+Yeh pure conceptual, mathematical, aur blackboard theory lecture hai. Ma'am ne is lecture mein code nahi likha hai, isliye rule ke mutabiq isme koi extra synthetic code add nahi kiya gaya hai.
+

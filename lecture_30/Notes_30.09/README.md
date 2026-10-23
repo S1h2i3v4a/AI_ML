@@ -1,7 +1,7 @@
 # Lecture 30.09: Ensembling Paradigms — Homogeneous vs Heterogeneous
 
 [![Status](https://img.shields.io/badge/Status-Complete-success.svg)](#)
-[![Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg?logo=jupyter&logoColor=white)](lecture_30_09.ipynb)
+[![Theory](https://img.shields.io/badge/Topic-Theory%20%26%20Math-lightgrey.svg)](#)
 [![Hinglish Notes](https://img.shields.io/badge/Notes-Hinglish-yellow.svg)](README_HINGLISH.md)
 [![English PDF](https://img.shields.io/badge/PDF-English-red.svg)](notes.pdf)
 [![Hinglish PDF](https://img.shields.io/badge/PDF-Hinglish-green.svg)](notes_hinglish.pdf)
@@ -65,5 +65,6 @@ Heterogeneous ensembles minimize the cross-correlation $\rho \to 0$, maximizing 
 
 ---
 
-### 💻 Implementation
-The fully tested and verified standalone implementation is provided in the synchronized [Jupyter Notebook](lecture_30_09.ipynb).
+### 📌 Note on Code
+This is a pure conceptual, mathematical, and blackboard theory lecture. In accordance with course guidelines, no synthetic code is appended.
+

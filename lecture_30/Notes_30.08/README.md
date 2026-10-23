@@ -70,3 +70,13 @@ $$
 
 ### 💻 Implementation
 The fully tested and verified standalone implementation is provided in the synchronized [Jupyter Notebook](lecture_30_08.ipynb).
+
+
+---
+
+### 🔬 Capstone Project Reference: NovaGen Research Labs
+The complete end-to-end clinical trial classification project using XGBoost, Random Forest, and Voting Ensembles is located in:
+👉 **[NovaGen_Lab_Project/](../NovaGen_Lab_Project/README.md)**
+- **Notebook**: [`NovaGen_Lab_Project/novagen.ipynb`](../NovaGen_Lab_Project/novagen.ipynb)
+- **Dataset**: [`NovaGen_Lab_Project/novagen_dataset.csv`](../NovaGen_Lab_Project/novagen_dataset.csv)
+- **Problem Statement**: [`NovaGen_Lab_Project/Supervised ML _Assignment5.pdf`](../NovaGen_Lab_Project/Supervised%20ML%20_Assignment5.pdf)

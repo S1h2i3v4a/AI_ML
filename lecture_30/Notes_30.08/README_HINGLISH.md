@@ -69,3 +69,13 @@ $$
 
 ### 💻 Standalone Python Code & Verification
 Iss module ka complete runnable code [Jupyter Notebook](lecture_30_08.ipynb) mein available hai.
+
+
+---
+
+### 🔬 Capstone Project Reference: NovaGen Research Labs
+XGBoost, Random Forest aur Voting Ensembles par based end-to-end clinical trial classification project yahan available hai:
+👉 **[NovaGen_Lab_Project/](../NovaGen_Lab_Project/README_HINGLISH.md)**
+- **Project Notebook**: [`NovaGen_Lab_Project/novagen.ipynb`](../NovaGen_Lab_Project/novagen.ipynb)
+- **Project Dataset**: [`NovaGen_Lab_Project/novagen_dataset.csv`](../NovaGen_Lab_Project/novagen_dataset.csv)
+- **Assignment Document**: [`NovaGen_Lab_Project/Supervised ML _Assignment5.pdf`](../NovaGen_Lab_Project/Supervised%20ML%20_Assignment5.pdf)
