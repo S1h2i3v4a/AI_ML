@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Practical implementation of XGBClassifier from the xgboost library. Covers data preparation, missing value handling, hyperparameter tuning, feature importance extraction, and classification evaluation.
 
-> **Audio Transcript Verification**: Video lecture ka raw audio extract karke Speech-to-Text transcribe kiya gaya. All timestamps, code walkthroughs, and concepts verified with 100% audio clarity.
 
 ---
 

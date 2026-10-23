@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Fundamental comparison of ensemble paradigms. Homogeneous ensembles aggregate multiple replicas of the same model family (e.g., all Decision Trees in Random Forest or Boosting). Heterogeneous ensembles combine completely different model architectures (e.g., Logistic Regression + SVM + Decision Trees).
 
-> **Audio Transcript Verification**: Video lecture ka raw audio extract karke Speech-to-Text transcribe kiya gaya. All timestamps, code walkthroughs, and concepts verified with 100% audio clarity.
 
 ---
 

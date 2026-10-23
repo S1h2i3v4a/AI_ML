@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Gradient Boosting Regressor sequentially builds decision trees where each subsequent tree predicts the residual errors of the previous ensemble. Shrinkage via learning rate eta guarantees steady descent without overfitting.
 
-> **Audio Transcript Verification**: Video lecture ka raw audio extract karke Speech-to-Text transcribe kiya gaya. All timestamps and explanations verified with 100% audio clarity.
 
 ---
 
@@ -61,6 +60,35 @@ flowchart TD
 ```
 
 ---
+
+
+
+---
+
+### 📋 Ma'am Ka Classroom Blackboard GPA Example Table
+
+| Student ID | SEM ($X_1$) | BRANCH ($X_2$) | Actual GPA ($y$) | Baseline $F_0$ (Mean = 7.6) | Residual $R_1 = y - F_0$ | Tree 1 Pred ($DT_1$) | Updated $F_1 = F_0 + 0.1 \cdot DT_1$ | Residual $R_2 = y - F_1$ |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1** | 4 | ECE | **8.0** | 7.6 | **+0.4** | +0.3 | **7.63** | +0.37 |
+| **2** | 6 | CSE | **6.0** | 7.6 | **-1.6** | -1.2 | **7.48** | -1.48 |
+| **3** | 4 | CSE | **8.0** | 7.6 | **+0.4** | +0.3 | **7.63** | +0.37 |
+| **4** | 8 | MECH | **7.0** | 7.6 | **-0.6** | -0.5 | **7.55** | -0.55 |
+| **5** | 6 | ECE | **9.0** | 7.6 | **+1.4** | +1.1 | **7.71** | +1.29 |
+
+---
+
+### 📊 Ma'am Ka Blackboard Step-by-Step Architecture
+
+```mermaid
+flowchart TD
+    A["Raw Student Records: (SEM, BRANCH, Actual GPA)"] --> B["Step 1: Baseline Constant Model F_0 = mean(y) = 7.6"]
+    B --> C["Step 2: Residuals R_1 = [8-7.6=0.4, 6-7.6=-1.6, 8-7.6=0.4, 7-7.6=-0.6, 9-7.6=1.4]"]
+    C --> D["Step 3: Fit Decision Tree DT_1 on (X, R_1)"]
+    D --> E["Step 4: Update Model: F_1(x) = 7.6 + 0.1 * DT_1(x)"]
+    E --> F["Step 5: Compute New Residuals R_2 = y - F_1(x)"]
+    F --> G["Step 6: Fit DT_2 and Sequentially Accumulate Trees"]
+    G --> H["Final Gradient Boosting Regressor: F_M(x) = F_0 + sum(0.1 * DT_m(x))"]
+```
 
 ### 🔢 Mathematical Derivation
 

@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Practical implementation of StackingClassifier and StackingRegressor using scikit-learn. Demonstrates out-of-fold cross-validation with cv=5, configuring custom meta-estimators, and evaluating performance gains.
 
-> **Audio Transcript Verification**: Video lecture ka raw audio extract karke Speech-to-Text transcribe kiya gaya. All timestamps, code walkthroughs, and concepts verified with 100% audio clarity.
 
 ---
 

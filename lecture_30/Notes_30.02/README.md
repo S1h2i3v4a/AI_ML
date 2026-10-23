@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Gradient Boosting for classification operates in Log-Odds space. The initial baseline prediction is log(p / (1 - p)), transformed via Sigmoid into probability. Trees are fitted on pseudo-residuals (y - p) and updated sequentially.
 
-> **Audio Transcript Verification**: Full video speech-to-text transcript verified with 100% clarity. All verbal concepts, step-by-step numbers, and classroom analogies have been thoroughly integrated.
 
 ---
 
@@ -62,6 +61,37 @@ flowchart TD
 ```
 
 ---
+
+
+
+---
+
+### 📋 Ma'am's Classroom Binary Classification Matrix
+
+| Sample Index | Features ($X$) | Actual Label ($y \in \{0, 1\}$) | Initial Baseline Log-Odds ($F_0$) | Probability ($p_0 = \sigma(F_0)$) | Pseudo-Residual ($r_1 = y - p_0$) |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| **1** | $x_1$ | **1 (Success)** | $\ln(p / (1 - p))$ | $p_0$ | **$1 - p_0$** |
+| **2** | $x_2$ | **0 (Failure)** | $\ln(p / (1 - p))$ | $p_0$ | **$0 - p_0$** |
+| **3** | $x_3$ | **1 (Success)** | $\ln(p / (1 - p))$ | $p_0$ | **$1 - p_0$** |
+| **4** | $x_4$ | **0 (Failure)** | $\ln(p / (1 - p))$ | $p_0$ | **$0 - p_0$** |
+
+---
+
+### 📊 Ma'am's Blackboard Classification Workflow
+
+```mermaid
+flowchart TD
+    A["Binary Target y in {0, 1}"] --> B["Step 1: Compute Prior Probability p = count(1) / N"]
+    B --> C["Step 2: Initial Baseline Log-Odds F_0 = ln(p / (1 - p))"]
+    C --> D["Step 3: Transform Log-Odds to Probability: p_i = 1 / (1 + e^-F)"]
+    D --> E["Step 4: Compute Residuals r_i = y_i - p_i"]
+    E --> F["Step 5: Fit Regression Tree on Residuals"]
+    F --> G["Step 6: Compute Leaf Output: gamma = sum(r_i) / sum(p_i * (1 - p_i))"]
+    G --> H["Step 7: Update Log-Odds: F_m = F_{m-1} + eta * gamma"]
+    H --> I{"Final Probability p = sigma(F_M) >= 0.5?"}
+    I -->|"Yes"| J1["Predict Class 1"]
+    I -->|"No"| J0["Predict Class 0"]
+```
 
 ### 🔢 Mathematical Formulation
 

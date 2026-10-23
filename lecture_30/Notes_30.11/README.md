@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Practical implementation of VotingClassifier and VotingRegressor in scikit-learn. Bundling LogisticRegression, SVC(probability=True), DecisionTreeClassifier, and evaluating hard vs soft voting performance.
 
-> **Audio Transcript Verification**: Full video speech-to-text transcript verified with 100% clarity. All verbal concepts, architectural comparisons, and code implementations have been integrated.
 
 ---
 

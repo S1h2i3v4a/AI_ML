@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Comprehensive intuition for AdaBoost (Adaptive Boosting). Covers the school quiz teacher analogy, Email Spam classification dataset, uniform sample weights w_i = 1/N, decision stumps, stump voting power alpha, and sample reweighting.
 
-> **Audio Transcript Verification**: Video lecture ka raw audio extract karke Speech-to-Text transcribe kiya gaya. All timestamps and explanations verified with 100% audio clarity.
 
 ---
 
@@ -69,6 +68,35 @@ flowchart TD
 ```
 
 ---
+
+
+
+---
+
+### 📋 Ma'am Ka Classroom Blackboard Email Spam Reweighting Table
+
+| Email ID | Email Length | No. of Links | Actual Target: Spam? ($y$) | Initial Weight ($w_1 = 1/6$) | Stump 1 Split Prediction | Classification Status | Weight Update Direction |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1** | Long | Many | **+1 (Spam)** | 1/6 (0.167) | +1 (Spam) | Correct | Multiplied by $e^{-\alpha}$ (Decreased) |
+| **2** | Short | Few | **-1 (Not Spam)** | 1/6 (0.167) | -1 (Not Spam) | Correct | Multiplied by $e^{-\alpha}$ (Decreased) |
+| **3** | Long | Few | **-1 (Not Spam)** | 1/6 (0.167) | +1 (Spam) | **WRONG (Misclassified!)** | **Multiplied by $e^{+\alpha}$ (Increased!)** |
+| **4** | Short | Many | **+1 (Spam)** | 1/6 (0.167) | +1 (Spam) | Correct | Multiplied by $e^{-\alpha}$ (Decreased) |
+| **5** | Medium | Many | **+1 (Spam)** | 1/6 (0.167) | +1 (Spam) | Correct | Multiplied by $e^{-\alpha}$ (Decreased) |
+| **6** | Medium | Few | **-1 (Not Spam)** | 1/6 (0.167) | -1 (Not Spam) | Correct | Multiplied by $e^{-\alpha}$ (Decreased) |
+
+---
+
+### 📊 Ma'am Ka Decision Stump Aur Reweighting Architecture
+
+```mermaid
+flowchart TD
+    A["N=6 Email Samples with Equal Weights w_i = 1/6"] --> B["Step 1: Fit Weak Decision Stump h_1 (Links > Few?)"]
+    B --> C["Step 2: Calculate Weighted Error E_1 = 1/6 = 0.167"]
+    C --> D["Step 3: Calculate Stump Amount of Say: alpha_1 = 0.5 * ln((1 - 1/6) / (1/6)) = 0.805"]
+    D --> E["Step 4: Reweight Samples:<br/>Wrong Sample 3: w * exp(+0.805) = w * 2.237<br/>Correct Samples: w * exp(-0.805) = w * 0.447"]
+    E --> F["Step 5: Normalize Weights: w_norm = w_new / sum(w_new)"]
+    F --> G["Next Stump h_2 Focuses Heavily on Misclassified Sample 3!"]
+```
 
 ### 🔢 Mathematical Derivation
 

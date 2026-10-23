@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Comprehensive architectural comparison between Blending and Stacking. Blending simplifies meta-learning by replacing K-Fold cross-validation with a clean 3-way holdout split (Training, Validation Meta-Set, and Testing Meta-Set).
 
-> **Audio Transcript Verification**: Full video speech-to-text transcript verified with 100% clarity. All verbal concepts, architectural comparisons, and code implementations have been integrated.
 
 ---
 
@@ -68,6 +67,41 @@ flowchart TD
 ```
 
 ---
+
+
+
+---
+
+### 📋 Ma'am's Classroom 3-Way Blending Split Matrix
+
+| Data Partition | Typical Split Size | Purpose in Blending Pipeline | Models Utilizing This Partition |
+| :---: | :---: | :---: | :---: |
+| **Training Set** | ~60% of Dataset | Train Level-0 Base Estimators from scratch | Base Models (Model 1, Model 2, Model 3) |
+| **Validation Set** | ~20% of Dataset | Base models predict on this $\rightarrow$ forms **Validation Meta-Set** | Meta-Model (Level-1 Logistic Regression) Trains Here |
+| **Testing Set** | ~20% of Dataset | Base models predict on this $\rightarrow$ forms **Testing Meta-Set** | Meta-Model Evaluates Final Accuracy Here |
+
+---
+
+### 📊 Ma'am's Blending Workflow Architecture
+
+```mermaid
+flowchart TD
+    A["Raw Dataset"] --> B1["1. Training Set (~60%)"]
+    A --> B2["2. Validation Holdout Set (~20%)"]
+    A --> B3["3. Testing Set (~20%)"]
+    
+    B1 --> C["Train Base Models (LR, DT, SVC)"]
+    
+    C --> D["Base Models Predict on Validation Set"]
+    D --> E["Validation Meta-Set"]
+    E --> F["Train Meta-Model (Logistic Regression)"]
+    
+    C --> G["Base Models Predict on Testing Set"]
+    G --> H["Testing Meta-Set"]
+    
+    H --> I["Meta-Model Evaluates on Testing Meta-Set"]
+    F --> I
+```
 
 ### 🔢 Mathematical Formulation
 

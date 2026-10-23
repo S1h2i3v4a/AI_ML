@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Comprehensive architectural comparison of modern gradient boosting libraries: XGBoost (2nd-order Taylor expansion & L1/L2 regularization), LightGBM (histogram binning & leaf-wise growth), and CatBoost (categorical encoding & symmetric trees).
 
-> **Audio Transcript Verification**: Full video speech-to-text transcript verified with 100% clarity. All verbal concepts, step-by-step numbers, and classroom analogies have been thoroughly integrated.
 
 ---
 

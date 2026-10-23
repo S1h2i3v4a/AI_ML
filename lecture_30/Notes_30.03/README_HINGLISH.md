@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Practical implementation of GradientBoostingRegressor in scikit-learn. Explores synthetic regression data generation, key hyperparameters including learning_rate, n_estimators, subsample, and max_depth, along with R2 evaluation.
 
-> **Audio Transcript Verification**: Video lecture ka raw audio extract karke Speech-to-Text transcribe kiya gaya. All timestamps and explanations verified with 100% audio clarity.
 
 ---
 

@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Comprehensive intuition for Voting Classifiers. Compares Hard Voting (discrete majority class vote) and Soft Voting (weighted average of predicted class probabilities). Explores why soft voting produces superior calibration and smoother decision boundaries.
 
-> **Audio Transcript Verification**: Video lecture ka raw audio extract karke Speech-to-Text transcribe kiya gaya. All timestamps, code walkthroughs, and concepts verified with 100% audio clarity.
 
 ---
 
@@ -71,6 +70,41 @@ flowchart TD
 ```
 
 ---
+
+
+
+---
+
+### 📋 Ma'am Ka Voting Comparison Matrix (Hard vs Soft)
+
+| Base Model | Architecture Family | Hard Vote Output | Class 1 Probability $P(y=1)$ | Model Confidence Interpretation |
+| :---: | :---: | :---: | :---: | :---: |
+| **Model 1** | Logistic Regression | **Class 1** | **0.90** | Extremely Confident in Class 1 |
+| **Model 2** | Support Vector Machine (SVC) | **Class 0** | **0.49** | Borderline Uncertainty (Slight Class 0 lean) |
+| **Model 3** | Decision Tree Classifier | **Class 0** | **0.48** | Borderline Uncertainty (Slight Class 0 lean) |
+| **Final Ensemble** | **Hard Voting** | **Class 0** | - | **Majority Rule Wins (2 votes vs 1)** |
+| **Final Ensemble** | **Soft Voting** | **Class 1** | **Avg $P = 0.623 \ge 0.5$** | **High Confidence of Model 1 Overrides Weak Borderlines!** |
+
+---
+
+### 📊 Ma'am Ka Hard vs Soft Voting Resolution Workflow
+
+```mermaid
+flowchart TD
+    X["Query Sample x"] --> M1["Model 1: Logistic Regression<br/>P(1)=0.90 | Pred=1"]
+    X --> M2["Model 2: SVC<br/>P(1)=0.49 | Pred=0"]
+    X --> M3["Model 3: Decision Tree<br/>P(1)=0.48 | Pred=0"]
+    
+    M1 --> HV["Hard Voting: Count Class Labels"]
+    M2 --> HV
+    M3 --> HV
+    HV --> RH["Class 0 Wins (2 vs 1 Votes)"]
+    
+    M1 --> SV["Soft Voting: Average Probabilities"]
+    M2 --> SV
+    M3 --> SV
+    SV --> RS["Avg P(1) = (0.90+0.49+0.48)/3 = 0.623 -> Class 1 Wins!"]
+```
 
 ### 🔢 Mathematical Derivation
 

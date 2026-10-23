@@ -11,7 +11,6 @@
 ## 📌 Topic Overview
 Practical implementation of GradientBoostingClassifier in scikit-learn. Generating binary classification datasets with make_classification, model training, accuracy evaluation, and classification report analysis.
 
-> **Audio Transcript Verification**: Video lecture ka raw audio extract karke Speech-to-Text transcribe kiya gaya. All timestamps and explanations verified with 100% audio clarity.
 
 ---
 
