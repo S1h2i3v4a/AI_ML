@@ -35,9 +35,3 @@ flowchart TD
 - **Commit Frequently**: Small, focused commits are easier to debug, review, and revert than massive, monolithic changes.
 - **Never Commit Secrets**: Never commit API keys, database passwords, or private environment files (`.env`).
 - **Push at End of Day**: Always push your work to remote before shutting down to prevent data loss.
-
----
-
-## 4. Visual Reference
-
-![Git Workflow](keyframe_01.png)

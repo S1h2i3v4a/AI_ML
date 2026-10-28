@@ -39,9 +39,3 @@ git push -u origin main
 When pushing commits, GitHub verifies write permissions:
 - **Personal Access Tokens (PAT)**: GitHub has deprecated raw account passwords for CLI operations. You generate a token under GitHub **Settings** $	o$ **Developer Settings** $	o$ **Personal Access Tokens** with `repo` scope.
 - **Git Credential Manager (GCM)**: On modern Windows/macOS installations, Git automatically opens a browser window for a one-click OAuth login, saving your credentials securely in the OS credential vault.
-
----
-
-## 4. Visual Reference
-
-![Push Command](keyframe_01.png)

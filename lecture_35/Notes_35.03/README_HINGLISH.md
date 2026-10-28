@@ -44,9 +44,3 @@ flowchart TD
    - **Commit directly to main**: Enter karte hi change repository ke history mein permanently save ho jata hai.
 3. **Commit History**:
    - Commits par click karke aap dekh sakte ho kisne kab kya change kiya. Green color added lines dikhata hai aur Red color deleted lines dikhata hai.
-
----
-
-## 4. Visual Reference
-
-![Using GitHub Interface](keyframe_01.png)

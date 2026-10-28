@@ -56,9 +56,3 @@ git status
    ```text
    nothing to commit, working tree clean
    ```
-
----
-
-## 3. Visual Reference
-
-![Git Status Command](keyframe_01.png)

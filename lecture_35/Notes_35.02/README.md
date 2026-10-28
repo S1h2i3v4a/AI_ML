@@ -40,9 +40,3 @@ If you possess an active academic institution email (e.g., `.edu` or `.ac.in`), 
 - Free GitHub Pro account features.
 - Cloud credits (AWS, Microsoft Azure, DigitalOcean).
 - Free custom domain names and development software licenses.
-
----
-
-## 4. Visual Reference
-
-![Creating GitHub Account](keyframe_01.png)

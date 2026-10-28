@@ -27,9 +27,3 @@ Initialized empty Git repository in C:/Users/Engineer/my_ml_project/.git/
 Git is folder ke andar ek hidden `.git/` folder create karta hai:
 - Is `.git/` folder ke andar Git ka pura internal database hota hai (objects, commits, branches, config).
 - **Caution**: Is hidden `.git/` folder ko kabhi manual delete mat karna, warna project ka pura commit history gayab ho jayega!
-
----
-
-## 3. Visual Reference
-
-![Init Command](keyframe_01.png)

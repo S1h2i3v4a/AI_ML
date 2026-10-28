@@ -34,9 +34,3 @@ git push -u origin main
 Pehli baar push karne par GitHub verification maangta hai:
 - Modern systems par browser popup khulta hai jisme **Authorize GitCredentialManager** par click karte hi login ho jata hai.
 - Password ki jagah **Personal Access Token (PAT)** use hota hai jo GitHub settings se generate hota hai.
-
----
-
-## 4. Visual Reference
-
-![Push Command](keyframe_01.png)

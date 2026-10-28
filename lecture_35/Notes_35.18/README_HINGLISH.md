@@ -50,9 +50,3 @@ const PORT = 8080; // Doosri branch ka incoming code
    git commit -m "Resolve merge conflict in app.js"
    ```
 6. **Push Karein**: `git push origin main`.
-
----
-
-## 4. Visual Reference
-
-![Merge Conflicts](keyframe_01.png)

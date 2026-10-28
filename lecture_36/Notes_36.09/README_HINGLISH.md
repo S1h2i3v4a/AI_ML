@@ -68,9 +68,3 @@ check = neuron.weight @ inputs + neuron.bias
 print("Manual check:", check)
 ```
 Dono outputs 100% exact match hote hain!
-
----
-
-## 3. Visual Reference
-
-![Building a Neuron Code](keyframe_01.png)

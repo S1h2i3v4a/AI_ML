@@ -44,9 +44,3 @@ git version 2.44.0.windows.1
 *(The specific version number may vary depending on your installation).*
 
 If the command returns `command not found`, ensure that Git is installed and that its binary path is added to your operating system's environment variables.
-
----
-
-## 4. Visual Reference
-
-![Using Git CLI](keyframe_01.png)

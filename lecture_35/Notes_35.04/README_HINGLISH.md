@@ -41,9 +41,3 @@ git version 2.44.0.windows.1
 ```
 
 Agar version number print ho raha hai, iska matlab Git successfully installed aur configure hai.
-
----
-
-## 4. Visual Reference
-
-![Using Git CLI](keyframe_01.png)

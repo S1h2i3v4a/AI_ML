@@ -67,9 +67,3 @@ In engineering teams, developers do not merge branches locally and push directly
    git checkout main
    git pull origin main
    ```
-
----
-
-## 4. Visual Reference
-
-![Merging Branches](keyframe_01.png)

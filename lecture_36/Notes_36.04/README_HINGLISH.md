@@ -102,9 +102,3 @@ flowchart LR
 3. **Backpropagation**: Calculus ke chain rule se error ko peeche bhej kar gradients calculate karta hai.
 4. **Optimizer**: Weights aur bias ko update karta hai taaki agle round me error kam ho:
 $$w \leftarrow w - \eta rac{\partial L}{\partial w}$$
-
----
-
-## 6. Visual Reference
-
-![Perceptron in Depth](keyframe_01.png)

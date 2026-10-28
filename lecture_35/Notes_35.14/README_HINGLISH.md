@@ -36,9 +36,3 @@ gitGraph
 1. **Safety aur Isolation**: Jab tak naya feature pura ban kar test na ho jaye, tab tak wo alag branch mein rehta hai aur main code safe rehta hai.
 2. **Parallel Kaam**: Har developer apni branch mein bina kisi tension ke naya code experiment kar sakta hai.
 3. **Code Review**: Feature complete hone ke baad hi team use review karke main branch mein merge karti hai.
-
----
-
-## 3. Visual Reference
-
-![Git Branches](keyframe_01.png)

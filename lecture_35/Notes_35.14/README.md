@@ -36,9 +36,3 @@ gitGraph
 1. **Total Isolation**: Experimental code on a feature branch cannot corrupt or break the stable `main` branch.
 2. **Parallel Team Development**: Multiple engineers develop separate features simultaneously without blocking each other.
 3. **Controlled Integration**: Changes are merged into `main` only after passing rigorous automated testing and peer code reviews via Pull Requests.
-
----
-
-## 3. Visual Reference
-
-![Git Branches](keyframe_01.png)

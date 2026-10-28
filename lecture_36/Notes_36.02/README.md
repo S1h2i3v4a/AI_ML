@@ -53,9 +53,3 @@ flowchart LR
 | **Training Duration** | Fast (seconds to minutes) | Prolonged (hours, days, or weeks depending on parameter count) |
 | **Model Interpretability** | High (**Glass Box** models; feature importances, decision paths clear) | Low (**Black Box** models; millions of non-linear weights make reasoning opaque) |
 | **Data Modality** | Best for structured, tabular data (Excel sheets, SQL tables) | Dominates unstructured data (high-resolution images, raw audio, video, text) |
-
----
-
-## 5. Visual Reference
-
-![Machine Learning vs Deep Learning](keyframe_01.png)

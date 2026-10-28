@@ -31,9 +31,3 @@ Run the verification command directly in the integrated terminal:
 git --version
 ```
 Once verified, you can execute all Git commands (`git status`, `git add`, `git commit`, `git push`) seamlessly without ever leaving your editor.
-
----
-
-## 5. Visual Reference
-
-![Git with VSCode](keyframe_01.png)

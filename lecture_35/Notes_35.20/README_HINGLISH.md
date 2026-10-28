@@ -48,9 +48,3 @@ flowchart TD
    git push origin fix-bug
    ```
 6. **Pull Request (PR) Bhejein**: Original repo par ja kar **Contribute / Open Pull Request** par click karein.
-
----
-
-## 4. Visual Reference
-
-![What is Forking](keyframe_01.png)

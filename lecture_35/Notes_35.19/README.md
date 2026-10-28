@@ -69,9 +69,3 @@ git commit --amend --no-edit
 1. **`git reset --soft HEAD~1`**: Removes the commit, but keeps changes staged in the index (ready to re-commit).
 2. **`git reset --mixed HEAD~1`** *(default)*: Removes the commit and unstages changes, keeping modifications in your working directory.
 3. **`git reset --hard HEAD~1`**: Completely obliterates the commit and wipes out all file modifications on disk.
-
----
-
-## 4. Visual Reference
-
-![Fixing Mistakes](keyframe_01.png)

@@ -65,9 +65,3 @@ flowchart LR
 | **Internet Chahiye?** | Bilkul nahi, pura offline chalta hai | Haan, remote sync ke liye internet chahiye |
 | **Interface** | Terminal / Bash Commands | Graphical Web Dashboard |
 | **Mukhya Upyog** | Changes track karna, branches banana | Remote backup, collaboration, portfolio |
-
----
-
-## 5. Visual Reference
-
-![Git and GitHub Overview](keyframe_01.png)

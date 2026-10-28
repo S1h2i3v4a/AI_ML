@@ -55,9 +55,3 @@ Agar koi nayi file create nahi hui hai, sirf puraani files modify hui hain, toh 
 ```bash
 git commit -am "Fix typo in login heading"
 ```
-
----
-
-## 4. Visual Reference
-
-![Add and Commit Commands](keyframe_01.png)

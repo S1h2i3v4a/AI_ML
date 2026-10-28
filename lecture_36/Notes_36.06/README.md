@@ -30,9 +30,3 @@ flowchart TD
 1. **Pythonic Mental Model**: PyTorch feels like native Python and NumPy. Writing a neural network in PyTorch involves subclassing `torch.nn.Module` and implementing standard Python loops.
 2. **Interactive Debugging**: Because computation graphs are built dynamically on the fly, developers can inspect intermediate tensor activations using standard Python `print()` statements or IDE debuggers.
 3. **Industry & Research Dominance**: Over 80% of recent AI research papers (NeurIPS, ICML, CVPR) and modern open-source models (Llama 3, Stable Diffusion) are authored natively in PyTorch.
-
----
-
-## 4. Visual Reference
-
-![PyTorch vs TensorFlow vs Keras](keyframe_01.png)

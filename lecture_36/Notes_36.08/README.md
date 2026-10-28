@@ -38,9 +38,3 @@ flowchart TD
 - **Session Timeouts**: Idle sessions disconnect after approximately 90 minutes.
 - **Maximum Lifespan**: Continuous runtime is capped at 12 hours on the free tier.
 - **Ephemeral Disk Storage**: Files stored in the local `/content/` directory are erased when the virtual machine terminates (always mount Google Drive for permanent storage).
-
----
-
-## 4. Visual Reference
-
-![Google Colab Alternative](keyframe_01.png)

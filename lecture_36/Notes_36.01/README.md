@@ -45,9 +45,3 @@ Deep Learning powers the most transformative technological innovations of the 21
 | **Speech Recognition & Audio** | Voice assistants (Siri, Alexa), real-time speech-to-text transcription | Recurrent Neural Networks (RNNs), Conformer Models |
 | **Recommendation Systems** | Personalized video & product feeds (YouTube, Netflix, Amazon) | Deep Collaborative Filtering, Two-Tower Embeddings |
 | **Generative AI** | Text-to-image synthesis (Midjourney, DALL-E), AI code generation | Diffusion Models, Generative Adversarial Networks (GANs) |
-
----
-
-## 4. Visual Reference
-
-![What is Deep Learning Overview](keyframe_01.png)

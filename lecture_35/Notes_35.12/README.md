@@ -57,9 +57,3 @@ git branch -M main
 git push -u origin main
 ```
 Your local files and complete commit history are now live on GitHub!
-
----
-
-## 3. Visual Reference
-
-![Pushing Local Repo](keyframe_01.png)

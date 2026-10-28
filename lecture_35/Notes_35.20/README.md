@@ -51,9 +51,3 @@ flowchart TD
 6. **Open Pull Request**:
    - Go to the original upstream repository on GitHub.
    - Click **New Pull Request** $	o$ compare across forks $	o$ submit for project maintainer review.
-
----
-
-## 4. Visual Reference
-
-![What is Forking](keyframe_01.png)

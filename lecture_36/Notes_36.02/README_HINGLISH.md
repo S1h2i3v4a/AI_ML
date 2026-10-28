@@ -43,9 +43,3 @@ flowchart TD
 | **Training Time** | Kuch seconds ya minutes | Ghanto, dino ya hafton ka samay lagta hai |
 | **Interpretability** | **Glass Box**: Samajhna aasan hai ki model ne decision kyun liya | **Black Box**: Crodon parameters hone ki wajah se decision explain karna mushkil |
 | **Data Type** | Tabular / Excel / CSV data ke liye best | Images, Video, Audio, aur Text ke liye unbeatable |
-
----
-
-## 5. Visual Reference
-
-![Machine Learning vs Deep Learning](keyframe_01.png)

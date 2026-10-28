@@ -55,9 +55,3 @@ git branch -D feature-login
 
 > [!CAUTION]
 > Jis branch par aap khade ho, use delete nahi kar sakte. Pehle `git checkout main` karein, phir doosri branch delete karein.
-
----
-
-## 3. Visual Reference
-
-![Branch Commands](keyframe_01.png)

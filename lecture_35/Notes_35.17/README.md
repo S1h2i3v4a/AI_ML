@@ -41,9 +41,3 @@ $$	ext{git pull} = 	ext{git fetch} + 	ext{git merge}$$
 
 - **`git fetch`**: Downloads commits and branch updates from GitHub without altering your working files. It is 100% safe to run anytime.
 - **`git pull`**: Automatically executes `git fetch` followed immediately by `git merge`. If conflicts exist between remote and local changes, Git flags a merge conflict.
-
----
-
-## 4. Visual Reference
-
-![Pull Command](keyframe_01.png)

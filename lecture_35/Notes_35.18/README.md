@@ -58,9 +58,3 @@ const PORT = 8080; // Incoming branch changes from feature/remote
    ```bash
    git push origin main
    ```
-
----
-
-## 4. Visual Reference
-
-![Merge Conflicts](keyframe_01.png)

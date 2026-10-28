@@ -43,9 +43,3 @@ flowchart LR
 | **Voice & Speech** | Siri, Alexa, Speech-to-text transcription | Recurrent Neural Networks (RNN) |
 | **Recommendation Engines** | YouTube videos aur Netflix movies ki recommendation | Deep Neural Collaborative Filtering |
 | **Generative AI** | AI image generation (Midjourney), AI video generation | Diffusion Models aur GANs |
-
----
-
-## 4. Visual Reference
-
-![What is Deep Learning Overview](keyframe_01.png)

@@ -35,9 +35,3 @@ flowchart TD
 ### Dhyan Rakhne Wali Baatein:
 - **Idle Timeout**: Agar 90 minutes tak notebook touch nahi ki, toh disconnect ho jati hai.
 - **Temporary Storage**: Notebook band hote hi local files delete ho jati hain, isliye hamesha Google Drive mount karke kaam karein.
-
----
-
-## 4. Visual Reference
-
-![Google Colab Alternative](keyframe_01.png)

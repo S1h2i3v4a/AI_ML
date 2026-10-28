@@ -49,9 +49,3 @@ git config user.email
 ### Where Configurations are Stored:
 - **Global**: Stored in `~/.gitconfig` (applies to all repositories for the current operating system user).
 - **Local**: Stored in `.git/config` inside a specific repository (overrides global settings for that specific project).
-
----
-
-## 4. Visual Reference
-
-![Configuring Git](keyframe_01.png)

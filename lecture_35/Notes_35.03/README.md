@@ -51,9 +51,3 @@ GitHub provides a complete in-browser editor allowing quick changes:
 4. **Inspecting Commit History**:
    - Click the commit counter (e.g., `3 commits`) to view the timeline.
    - Each commit displays its author, timestamp, unique 7-character SHA hash, and diff view (green for added lines, red for deleted lines).
-
----
-
-## 4. Visual Reference
-
-![Using GitHub Interface](keyframe_01.png)

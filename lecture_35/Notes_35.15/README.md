@@ -70,9 +70,3 @@ git branch -D feature-login
 
 > [!CAUTION]
 > You cannot delete a branch that you are currently standing on. Always checkout to another branch (e.g. `main`) before executing `git branch -d`.
-
----
-
-## 3. Visual Reference
-
-![Branch Commands](keyframe_01.png)

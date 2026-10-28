@@ -34,9 +34,3 @@ Agar aapke paas college ki `.edu` ya `.ac.in` email ID hai, toh aap **GitHub Stu
 - GitHub Copilot free milta hai.
 - GitHub Pro account features free milte hain.
 - Free cloud hosting credits (Azure, DigitalOcean) milte hain.
-
----
-
-## 4. Visual Reference
-
-![Creating GitHub Account](keyframe_01.png)

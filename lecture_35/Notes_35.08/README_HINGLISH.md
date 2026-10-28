@@ -46,9 +46,3 @@ git status
    - Jo purani tracked files mein aapne naya code likha hai par abhi stage nahi kiya hai.
 4. **Working tree clean**:
    - Sabhi changes commit ho chuke hain aur koi nayi file ya change pending nahi hai.
-
----
-
-## 3. Visual Reference
-
-![Git Status Command](keyframe_01.png)

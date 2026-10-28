@@ -32,9 +32,3 @@ Git creates a hidden directory named `.git/` in the root of your project folder.
 
 > [!WARNING]
 > Never manually delete or edit files inside `.git/` unless you are performing expert surgery. Deleting `.git/` destroys your entire version control history (though your raw project files remain intact).
-
----
-
-## 3. Visual Reference
-
-![Init Command](keyframe_01.png)

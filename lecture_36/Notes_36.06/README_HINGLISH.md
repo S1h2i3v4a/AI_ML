@@ -30,9 +30,3 @@ flowchart TD
 1. **Python jaisa natural**: PyTorch likhte waqt lagta hai ki hum normal Python code likh rahe hain.
 2. **Debugging aasan hai**: Dynamic graph hone ki wajah se kisi bhi line par `print()` karke tensor check kar sakte hain.
 3. **Industry aur Research Standard**: Aaj 80%+ nayi AI research aur open-source models (jaise Llama, Stable Diffusion) PyTorch me hi bante hain.
-
----
-
-## 4. Visual Reference
-
-![PyTorch vs TensorFlow vs Keras](keyframe_01.png)

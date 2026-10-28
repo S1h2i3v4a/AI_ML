@@ -52,9 +52,3 @@ neuron.weight @ inputs + neuron.bias
 neuron.bias
 ```
 `@` operator matrix multiplication karta hai. Prove ho gaya ki PyTorch andar wahi $W \cdot X + B$ formula chala raha hai.
-
----
-
-## 3. Visual Reference
-
-![Interactive Notebook Walkthrough](keyframe_01.png)

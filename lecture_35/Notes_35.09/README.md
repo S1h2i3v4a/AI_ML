@@ -60,9 +60,3 @@ git commit -am "Update landing page typography"
 1. **Imperative Mood**: Write in the present tense (e.g., `Add user login`, not `Added user login`).
 2. **Clear & Actionable**: Describe *what* and *why*, not just the line numbers.
 3. **Atomic Commits**: Keep commits focused on a single logical change or bug fix.
-
----
-
-## 4. Visual Reference
-
-![Add and Commit Commands](keyframe_01.png)

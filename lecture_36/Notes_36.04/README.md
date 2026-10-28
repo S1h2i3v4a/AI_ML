@@ -115,9 +115,3 @@ flowchart LR
 4. **Parameter Update (Optimizer)**: Optimization algorithms (like Stochastic Gradient Descent or Adam) update weights and biases to minimize loss:
 $$w \leftarrow w - \eta rac{\partial L}{\partial w}$$
    where $\eta$ represents the learning rate.
-
----
-
-## 6. Visual Reference
-
-![Perceptron in Depth](keyframe_01.png)

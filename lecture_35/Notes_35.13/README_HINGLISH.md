@@ -30,9 +30,3 @@ flowchart TD
 - **Chote-Chote Commits**: Har ek feature ya fix ka alag commit banayein taaki roll back karna aasan ho.
 - **Passwords Kabhi Commit Na Karein**: API keys aur sensitive passwords ko kabhi Git mein add na karein.
 - **Roz Push Karein**: Din khatam hone par hamesha code GitHub par push karein taaki backup safe rahe.
-
----
-
-## 4. Visual Reference
-
-![Git Workflow](keyframe_01.png)

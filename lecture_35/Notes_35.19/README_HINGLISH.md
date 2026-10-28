@@ -53,9 +53,3 @@ git commit --amend -m "Naya sahi commit message"
   - Yeh pichle commit ko history se gayab kar deta hai.
   - `--soft`: Commit gayab hoga par code staging area mein bacha rahega.
   - `--hard`: Commit aur code dono permanently gayab ho jayenge (dhyan se use karein).
-
----
-
-## 4. Visual Reference
-
-![Fixing Mistakes](keyframe_01.png)

@@ -75,9 +75,3 @@ flowchart LR
      - *Binary Classification*: 1 node with **Sigmoid** activation (probability $\in [0, 1]$).
      - *Multi-Class Classification*: $K$ nodes with **Softmax** activation (probability distribution summing to 1).
      - *Regression*: 1 node with **Linear** (no) activation (continuous real number).
-
----
-
-## 3. Visual Reference
-
-![What are Neural Networks](keyframe_01.png)

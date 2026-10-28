@@ -67,9 +67,3 @@ flowchart LR
    - Jin networks mein 1 se zyada hidden layers hoti hain, unhe **Deep Neural Networks** kaha jata hai.
 3. **Output Layer**:
    - Yeh final answer deti hai (jaise Spam hai ya nahi, ya phir car ki price kya hogi).
-
----
-
-## 3. Visual Reference
-
-![What are Neural Networks](keyframe_01.png)

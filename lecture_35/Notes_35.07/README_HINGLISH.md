@@ -50,9 +50,3 @@ origin  https://github.com/delta-student/delta-demo.git (fetch)
 origin  https://github.com/delta-student/delta-demo.git (push)
 ```
 Ab aapka local system cloud repository ke sath fully connected hai.
-
----
-
-## 4. Visual Reference
-
-![Clone Command](keyframe_01.png)

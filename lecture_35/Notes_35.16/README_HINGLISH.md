@@ -58,9 +58,3 @@ Company mein developers direct main branch mein merge nahi karte. **Pull Request
    git checkout main
    git pull origin main
    ```
-
----
-
-## 4. Visual Reference
-
-![Merging Branches](keyframe_01.png)

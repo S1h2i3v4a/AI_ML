@@ -50,9 +50,3 @@ flowchart LR
 ## 3. Hidden Layers Complex Problems kaise solve karti hain?
 
 Pehli layer data ki choti-choti lines banati hai, doosri layer un lines ko jodkar polygons aur curves banati hai, aur aakhri layer kisi bhi complex non-linear pattern (jaise XOR) ko aasani se solve kar leti hai.
-
----
-
-## 4. Visual Reference
-
-![Multi-layered Neural Networks](keyframe_01.png)

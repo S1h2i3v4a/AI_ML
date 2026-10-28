@@ -31,9 +31,3 @@ Terminal mein command chala kar check karein:
 git --version
 ```
 Ab aap VS Code ke andar se hi `git status`, `git add`, `git commit` aasaani se execute kar sakte hain.
-
----
-
-## 5. Visual Reference
-
-![Git with VSCode](keyframe_01.png)

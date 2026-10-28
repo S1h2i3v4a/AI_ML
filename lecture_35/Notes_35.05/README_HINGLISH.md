@@ -47,9 +47,3 @@ git config --list
 git config user.name
 git config user.email
 ```
-
----
-
-## 4. Visual Reference
-
-![Configuring Git](keyframe_01.png)

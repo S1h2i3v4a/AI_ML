@@ -54,9 +54,3 @@ flowchart LR
    - Layer 1: Combines input features into linear boundaries.
    - Layer 2: Combines linear boundaries into convex polygonal regions.
    - Layer 3+: Assembles complex non-linear manifolds and curved boundaries, easily separating non-linear patterns like XOR.
-
----
-
-## 4. Visual Reference
-
-![Multi-layered Neural Networks](keyframe_01.png)

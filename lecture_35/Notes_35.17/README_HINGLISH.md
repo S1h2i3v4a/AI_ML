@@ -30,9 +30,3 @@ $$	ext{git pull} = 	ext{git fetch} + 	ext{git merge}$$
 
 - **`git fetch`**: Sirf GitHub se data download karke memory mein rakhta hai, aapki chal rahi files ko bilkul touch nahi karta (100% safe).
 - **`git pull`**: Download bhi karta hai aur sath hi sath aapke local folder ke files ko update (merge) bhi kar deta hai.
-
----
-
-## 4. Visual Reference
-
-![Pull Command](keyframe_01.png)

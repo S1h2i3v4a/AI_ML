@@ -68,9 +68,3 @@ neuron.bias
 1. A single artificial neuron in PyTorch is implemented as `nn.Linear(in_features, 1)`.
 2. PyTorch manages weights and biases automatically as learnable `nn.Parameter` objects.
 3. The forward pass of a neuron without activation is strictly equivalent to matrix multiplication plus bias addition.
-
----
-
-## 4. Visual Reference
-
-![Interactive Notebook Walkthrough](keyframe_01.png)

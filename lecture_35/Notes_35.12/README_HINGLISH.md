@@ -52,9 +52,3 @@ git push -u origin main
 ```
 
 Ab browser refresh karke dekhein, aapka pura code GitHub par live ho chuka hoga!
-
----
-
-## 3. Visual Reference
-
-![Pushing Local Repo](keyframe_01.png)

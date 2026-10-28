@@ -65,9 +65,3 @@ flowchart LR
 | **Internet Requirement** | Fully functional offline | Requires active internet connection |
 | **Interface** | Command Line Interface (CLI) / Shell | Graphical Web Interface & REST API |
 | **Primary Responsibility** | Tracking file changes, commits, branches | Remote backup, team collaboration, PR reviews |
-
----
-
-## 5. Visual Reference
-
-![Git and GitHub Overview](keyframe_01.png)
