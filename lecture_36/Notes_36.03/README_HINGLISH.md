@@ -6,18 +6,7 @@ Deep Learning ki shuruaat insani dimaag (human brain) ki working samajh kar hui.
 
 ### Biological Neuron aur Artificial Neuron ka Comparison:
 
-```mermaid
-flowchart LR
-    subgraph Dimaag ka Biological Neuron
-        A[Dendrites<br/>Signals receive karte hain] --> B[Soma / Cell Body<br/>Signals ko jodta hai]
-        B --> C[Axon<br/>Signal aage bhejta hai]
-    end
-    subgraph Computer ka Artificial Neuron
-        E[Inputs x1, x2, ... xn<br/>Input features] --> F[Summation Σ<br/>Weighted sum jodta hai]
-        F --> G[Activation Function<br/>Faisla karta hai kitna fire hoga]
-        G --> H[Output y-hat<br/>Agle neuron ko signal deta hai]
-    end
-```
+![Biological Neuron vs Artificial Neuron Mapping](bio_vs_artificial_neuron.png)
 
 | Biological Dimaag | Artificial Neural Network | Kaam kya hai? |
 | :--- | :--- | :--- |
@@ -33,30 +22,7 @@ flowchart LR
 
 Ek Artificial Neural Network teen types ki **Layers** se milkar banta hai:
 
-```mermaid
-flowchart LR
-    subgraph Input Layer
-        I1((Feature 1))
-        I2((Feature 2))
-        I3((Feature 3))
-    end
-    subgraph Hidden Layer
-        H1((Neuron 1))
-        H2((Neuron 2))
-        H3((Neuron 3))
-        H4((Neuron 4))
-    end
-    subgraph Output Layer
-        O1((Prediction))
-    end
-    I1 --> H1 & H2 & H3 & H4
-    I2 --> H1 & H2 & H3 & H4
-    I3 --> H1 & H2 & H3 & H4
-    H1 --> O1
-    H2 --> O1
-    H3 --> O1
-    H4 --> O1
-```
+![3-Layer Artificial Neural Network Architecture](ann_architecture.png)
 
 1. **Input Layer**:
    - Yeh network ka gateway hai jahan data enter karta hai.

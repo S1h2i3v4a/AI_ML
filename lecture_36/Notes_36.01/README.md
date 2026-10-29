@@ -4,16 +4,7 @@
 
 **Deep Learning (DL)** is a specialized subfield of **Machine Learning (ML)**, which itself is a branch of **Artificial Intelligence (AI)**. Deep Learning algorithms are inspired by the biological structure and cognitive functioning of the human brain, utilizing multi-layered artificial neural networks to learn representations directly from data.
 
-```mermaid
-flowchart TD
-    subgraph AI Ecosystem
-        A[Artificial Intelligence<br/>Techniques enabling machines to mimic human intelligence]
-        B[Machine Learning<br/>Statistical algorithms learning patterns from data]
-        C[Deep Learning<br/>Multi-layered Artificial Neural Networks learning deep representations]
-        A --> B
-        B --> C
-    end
-```
+![AI, ML, and Deep Learning Hierarchy](ai_ml_dl_hierarchy.png)
 
 ---
 
@@ -21,12 +12,7 @@ flowchart TD
 
 Although the theoretical foundations of neural networks were established in the 1950s and 1980s, Deep Learning only achieved mainstream dominance over the past decade due to the confluence of three key technological breakthroughs:
 
-```mermaid
-flowchart LR
-    A[1. Big Data<br/>Internet, Mobile, IoT, Social Media] --> D[Deep Learning Revolution]
-    B[2. Hardware Acceleration<br/>NVIDIA GPUs & TPUs for Parallel Matrix Math] --> D
-    C[3. Algorithmic Innovations<br/>ReLU, Backpropagation, Dropout, Transformers] --> D
-```
+![Three Drivers of Deep Learning Revolution](dl_revolution_drivers.png)
 
 1. **Explosion of Big Data**: Billions of interconnected smartphones, sensors, cameras, and internet services generate petabytes of unstructured text, audio, and visual data daily.
 2. **GPU & TPU Acceleration**: Deep neural networks require trillions of floating-point matrix multiplications. Modern GPUs (Graphics Processing Units) and TPUs (Tensor Processing Units) perform thousands of parallel matrix computations simultaneously, reducing training times from months to hours.

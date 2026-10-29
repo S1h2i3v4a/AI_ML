@@ -8,16 +8,7 @@ Every groundbreaking frontier in modern artificial intelligence—from autonomou
 
 ## Architectural Taxonomy: AI vs ML vs DL
 
-```mermaid
-flowchart TD
-    subgraph Artificial Intelligence Ecosystem
-        AI["Artificial Intelligence (AI)<br/>Overarching science of creating intelligent machines mimicking human cognition"]
-        ML["Machine Learning (ML)<br/>Statistical learning from data without explicit procedural programming"]
-        DL["Deep Learning (DL)<br/>Multi-layered Artificial Neural Networks learning hierarchical representations"]
-        AI --> ML
-        ML --> DL
-    end
-```
+![AI, ML, and Deep Learning Hierarchy](ai_ml_dl_hierarchy.png)
 
 ---
 
@@ -25,34 +16,7 @@ flowchart TD
 
 The foundational building block of all neural networks is the artificial neuron, which computes a linear combination of input features weighted by synaptic parameters, offsets the sum with a bias, and evaluates an activation function:
 
-```mermaid
-flowchart LR
-    subgraph Inputs Vector
-        X1["x1"]
-        X2["x2"]
-        X3["x3"]
-        B["+1 (Bias Input)"]
-    end
-    subgraph Parameter Weights
-        W1["w1"]
-        W2["w2"]
-        W3["w3"]
-        WB["b"]
-    end
-    subgraph Mathematical Core
-        SUM["Linear Combiner (Σ)<br/>z = w1*x1 + w2*x2 + w3*x3 + b"]
-        ACT["Activation Function f(z)<br/>Step / Sigmoid / ReLU"]
-    end
-    subgraph Prediction
-        Y["Output: y_hat = f(z)"]
-    end
-    X1 -->|w1| SUM
-    X2 -->|w2| SUM
-    X3 -->|w3| SUM
-    B -->|b| SUM
-    SUM --> ACT
-    ACT --> Y
-```
+![Perceptron Full Architecture](perceptron_architecture.png)
 
 ### The Primary Mathematical Formulation:
 $$z = \sum_{i=1}^n w_i x_i + b = \mathbf{w}^T \mathbf{x} + b$$

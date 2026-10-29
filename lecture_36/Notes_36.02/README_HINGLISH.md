@@ -4,18 +4,7 @@
 
 Traditional Machine Learning aur Deep Learning dono data se seekhte hain, lekin kaam karne ka tareeqa bilkul alag hota hai:
 
-```mermaid
-flowchart TD
-    subgraph Traditional Machine Learning
-        A1[Raw Input Data<br/>Images ya Text] --> B1[Manual Feature Engineering<br/>Insaan manually features nikalta hai]
-        B1 --> C1[ML Algorithm<br/>Random Forest, SVM, Logistic Regression]
-        C1 --> D1[Output Result]
-    end
-    subgraph Deep Learning
-        A2[Raw Input Data<br/>Direct raw pixels ya audio] --> B2[Deep Neural Network<br/>Features aur Classification dono khud karta hai]
-        B2 --> D2[Output Result]
-    end
-```
+![Traditional Machine Learning vs Deep Learning Pipeline](ml_vs_dl_pipeline.png)
 
 ---
 

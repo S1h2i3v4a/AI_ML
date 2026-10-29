@@ -6,19 +6,7 @@ The foundational architecture of Deep Learning is inspired by the human neurolog
 
 ### Biological vs Artificial Neuron Mapping:
 
-```mermaid
-flowchart LR
-    subgraph Biological Neuron
-        A[Dendrites<br/>Receive incoming chemical signals] --> B[Cell Body / Soma<br/>Sums incoming electrical impulses]
-        B --> C[Axon<br/>Conducts output action potential]
-        C --> D[Synapse<br/>Connects to downstream neurons]
-    end
-    subgraph Artificial Neuron
-        E[Inputs x1, x2, ... xn<br/>Input feature signals] --> F[Summation Node Σ<br/>Weighted sum: w1*x1 + ... + b]
-        F --> G[Activation Function f<br/>Non-linear thresholding]
-        G --> H[Output y-hat<br/>Transmitted to next layer]
-    end
-```
+![Biological Neuron vs Artificial Neuron Mapping](bio_vs_artificial_neuron.png)
 
 | Biological Component | Artificial Neural Network Equivalent | Computational Role |
 | :--- | :--- | :--- |
@@ -34,30 +22,7 @@ flowchart LR
 
 An **Artificial Neural Network (ANN)** is organized into discrete sequential groups of artificial neurons called **Layers**:
 
-```mermaid
-flowchart LR
-    subgraph Input Layer
-        I1((x1))
-        I2((x2))
-        I3((x3))
-    end
-    subgraph Hidden Layer
-        H1((h1))
-        H2((h2))
-        H3((h3))
-        H4((h4))
-    end
-    subgraph Output Layer
-        O1((y_hat))
-    end
-    I1 --> H1 & H2 & H3 & H4
-    I2 --> H1 & H2 & H3 & H4
-    I3 --> H1 & H2 & H3 & H4
-    H1 --> O1
-    H2 --> O1
-    H3 --> O1
-    H4 --> O1
-```
+![3-Layer Artificial Neural Network Architecture](ann_architecture.png)
 
 ### The Three Fundamental Layer Types:
 1. **Input Layer**:

@@ -4,18 +4,7 @@
 
 While both Machine Learning and Deep Learning learn patterns from data, their architectural workflows, data dependencies, and feature extraction mechanisms are fundamentally distinct.
 
-```mermaid
-flowchart TD
-    subgraph Traditional Machine Learning Pipeline
-        A1[Raw Input Data<br/>Images / Text / Tables] --> B1[Manual Feature Engineering<br/>Domain expert selects edges, colors, tokens]
-        B1 --> C1[Machine Learning Classifier<br/>Logistic Regression, Random Forest, SVM]
-        C1 --> D1[Output Prediction]
-    end
-    subgraph Deep Learning Pipeline
-        A2[Raw Input Data<br/>Raw Pixels / Raw Audio / Raw Text] --> B2[Deep Neural Network Architecture<br/>Automated Hierarchical Feature Extraction + Classification]
-        B2 --> D2[Output Prediction]
-    end
-```
+![Traditional Machine Learning vs Deep Learning Pipeline](ml_vs_dl_pipeline.png)
 
 ---
 

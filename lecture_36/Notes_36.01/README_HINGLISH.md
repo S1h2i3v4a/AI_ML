@@ -4,16 +4,7 @@
 
 **Deep Learning (DL)** dar-asal **Machine Learning (ML)** ka ek advanced subset hai, jo khud **Artificial Intelligence (AI)** ke andar aata hai. Deep Learning human brain (insani dimaag) ke neurons aur neural networks ke structure se inspire hokar banaya gaya hai.
 
-```mermaid
-flowchart TD
-    subgraph AI ka Hierarchy
-        A[Artificial Intelligence AI<br/>Machines ko insano ki tarah smart banana]
-        B[Machine Learning ML<br/>Data se patterns seekhne wale algorithms]
-        C[Deep Learning DL<br/>Multi-layered Neural Networks jo complex data seekhte hain]
-        A --> B
-        B --> C
-    end
-```
+![AI, ML, aur Deep Learning ka Hierarchy](ai_ml_dl_hierarchy.png)
 
 ---
 
@@ -21,12 +12,7 @@ flowchart TD
 
 Neural networks ki theory 1950s mein hi invent ho chuki thi, lekin pichle 10-15 saalon mein Deep Learning ne poori duniya badal di. Iske piche teen bade factors hain:
 
-```mermaid
-flowchart LR
-    A[1. Big Data<br/>Internet, Smartphones aur Social Media ka data] --> D[Deep Learning Revolution]
-    B[2. Powerful GPUs<br/>NVIDIA GPUs jo parallel matrix calculations karte hain] --> D
-    C[3. Naye Algorithms<br/>ReLU activation, Backpropagation, Transformers] --> D
-```
+![Deep Learning Revolution ke 3 Mukhya Drivers](dl_revolution_drivers.png)
 
 1. **Big Data ki Uplabdhta**: Internet aur smartphones ki wajah se aaj hamare paas billions of images, videos, audios aur text documents maujood hain.
 2. **GPU aur Compute Power**: Neural network mein lakho-crodon matrix multiplications hote hain. NVIDIA ke modern GPUs in calculations ko CPU ke mukable hazaron guna fast process kar sakte hain.

@@ -12,32 +12,7 @@ This limitation caused the famous "AI Winter" until researchers developed **Mult
 
 A **Multi-Layer Perceptron (MLP)** or Feedforward Deep Neural Network overcomes this limitation by inserting one or more **Hidden Layers** between the input and output layers.
 
-```mermaid
-flowchart LR
-    subgraph Input Layer
-        X1((x1))
-        X2((x2))
-    end
-    subgraph Hidden Layer 1
-        H11((h1_1))
-        H12((h1_2))
-        H13((h1_3))
-    end
-    subgraph Hidden Layer 2
-        H21((h2_1))
-        H22((h2_2))
-    end
-    subgraph Output Layer
-        Y1((y_hat))
-    end
-    X1 --> H11 & H12 & H13
-    X2 --> H11 & H12 & H13
-    H11 --> H21 & H22
-    H12 --> H21 & H22
-    H13 --> H21 & H22
-    H21 --> Y1
-    H22 --> Y1
-```
+![Multi-Layer Perceptron (MLP) Architecture](mlp_architecture.png)
 
 ### Architectural Terminology:
 - **Fully Connected (Dense) Layer**: A layer where every single neuron connects to every single neuron in the subsequent layer.

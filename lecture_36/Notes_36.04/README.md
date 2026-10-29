@@ -10,34 +10,7 @@ The **Perceptron** is the simplest mathematical model of an artificial neuron an
 
 A perceptron accepts multiple numerical input signals, computes a linear combination using synaptic weights and a bias term, and passes the result through an activation function to generate an output.
 
-```mermaid
-flowchart LR
-    subgraph Inputs
-        X1["x1"]
-        X2["x2"]
-        X3["x3"]
-        B["Bias (+1)"]
-    end
-    subgraph Weights
-        W1["w1"]
-        W2["w2"]
-        W3["w3"]
-        WB["b"]
-    end
-    subgraph Processing Core
-        SUM["Summation Node (Σ)<br/>z = w1*x1 + w2*x2 + w3*x3 + b"]
-        ACT["Activation Function f(z)<br/>Step / Sigmoid / ReLU"]
-    end
-    subgraph Output
-        Y["Output (y_hat)"]
-    end
-    X1 -->|w1| SUM
-    X2 -->|w2| SUM
-    X3 -->|w3| SUM
-    B -->|b| SUM
-    SUM --> ACT
-    ACT --> Y
-```
+![Perceptron Full Architecture](perceptron_architecture.png)
 
 ### The Step-by-Step Mathematical Formulation:
 
@@ -72,14 +45,7 @@ No matter how many hidden layers are stacked, a purely linear network cannot sol
 
 ## 4. Key Activation Functions Introduced
 
-```mermaid
-flowchart TD
-    subgraph Activation Functions
-        A1[1. Step Function<br/>Historical Rosenblatt: f z = 1 if z >= 0 else 0]
-        A2[2. Sigmoid Function<br/>Probability squashing: σ z = 1 / 1 + e^-z]
-        A3[3. ReLU Function<br/>Industry standard: f z = max 0, z]
-    end
-```
+![Activation Functions Comparison](activation_functions.png)
 
 ### 1. Step Function (Threshold Logic Unit):
 $$f(z) = egin{cases} 1 & 	ext{if } z \ge 0 \ 0 & 	ext{if } z < 0 \end{cases}$$

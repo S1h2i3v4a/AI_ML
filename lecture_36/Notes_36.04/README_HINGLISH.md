@@ -10,34 +10,7 @@
 
 Perceptron inputs leta hai, unhe weights se multiply karta hai, bias jodta hai, aur activation function se pass karke output banata hai:
 
-```mermaid
-flowchart LR
-    subgraph Inputs
-        X1["x1 (Feature 1)"]
-        X2["x2 (Feature 2)"]
-        X3["x3 (Feature 3)"]
-        B["Bias (+1)"]
-    end
-    subgraph Weights
-        W1["w1"]
-        W2["w2"]
-        W3["w3"]
-        WB["b (Bias Weight)"]
-    end
-    subgraph Core Processing
-        SUM["Summation Node (Σ)<br/>z = w1*x1 + w2*x2 + w3*x3 + b"]
-        ACT["Activation Function f(z)<br/>Step / Sigmoid / ReLU"]
-    end
-    subgraph Final Result
-        Y["Output (y_hat)"]
-    end
-    X1 -->|w1| SUM
-    X2 -->|w2| SUM
-    X3 -->|w3| SUM
-    B -->|b| SUM
-    SUM --> ACT
-    ACT --> Y
-```
+![Perceptron Full Architecture](perceptron_architecture.png)
 
 ### Formula ka Breakdown:
 
@@ -64,14 +37,7 @@ Real-world problems linear nahi hotin. **Activation functions non-linearity intr
 
 ## 4. Teen Mukhya Activation Functions
 
-```mermaid
-flowchart TD
-    subgraph Activation Functions
-        A1[1. Step Function<br/>Puraana tarika: agar z >= 0 toh 1, warna 0]
-        A2[2. Sigmoid Function<br/>Output ko 0 aur 1 ke beech squash karta hai]
-        A3[3. ReLU Function<br/>max 0, z - Modern Deep Learning ka gold standard]
-    end
-```
+![Activation Functions Comparison](activation_functions.png)
 
 1. **Step Function**:
 $$f(z) = 1 	ext{ agar } z \ge 0, 	ext{ warna } 0$$
